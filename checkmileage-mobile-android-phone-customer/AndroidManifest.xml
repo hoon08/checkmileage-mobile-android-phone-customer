@@ -6,25 +6,19 @@
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="15" />
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <application
-        android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_main" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name="Main_TabsActivity"></activity>
-        <activity android:name="No_QR_PageActivity"></activity>
-        <activity android:name="CreateQRPageActivity"></activity>
-        <activity android:name="ScanQRPageActivity"></activity>
-        <activity android:name="MyQRPageActivity"></activity>
-    </application>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /><application>
+		<activity android:name="MemberStoreMapPageActivity"></activity>
+		<activity android:name="MemberStoreListPageActivity"></activity>
+		<activity android:name="SettingsPageActivity"></activity>
+		<activity android:name="Settings_PasswordPageActivity"></activity>
+		<activity android:name="UnlockPageActivity"></activity>
+		<activity android:name="Settings_NotifyPageActivity"></activity>
+		<activity android:name="Settings_MyInfoPageActivity"></activity>
+		<activity android:name="Settings_FAQPageActivity"></activity>
+		<activity android:name="Settings_InfoPageActivity"></activity>
+		<activity android:name="Settings_TermsPageActivity"></activity>
+		<activity android:name="Settings_LeavePageActivity"></activity>
+		<activity android:name="Settings_AboutPageActivity"></activity>
+	</application>
 
 </manifest>

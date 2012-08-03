@@ -1,5 +1,5 @@
 package co.kr.bettersoft.checkmileage_mobile_android_phone_customer;
-
+// 내 QR 보기 화면
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
