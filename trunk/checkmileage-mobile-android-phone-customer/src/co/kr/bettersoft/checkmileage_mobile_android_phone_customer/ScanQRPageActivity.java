@@ -1,5 +1,5 @@
 package co.kr.bettersoft.checkmileage_mobile_android_phone_customer;
-
+// QR 스켄 페이지
 
 import android.app.Activity;
 import android.content.Intent;
