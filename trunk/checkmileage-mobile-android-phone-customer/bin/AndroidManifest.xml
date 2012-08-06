@@ -66,8 +66,6 @@
 			</intent-filter>
 		</activity>
 	    
-	    
-	    
 	    <activity android:name="Settings_AboutPageActivity"></activity>
 	    <activity android:name="Settings_FAQPageActivity"></activity>
 	    <activity android:name="Settings_NotifyPageActivity"></activity>

@@ -76,7 +76,7 @@ public class MyQRPageActivity extends Activity {
 	    new Thread(
         		new Runnable(){
         			public void run(){
-        				 bmp = downloadBitmap("http://chart.apis.google.com/chart?cht=qr&chs="+qrSize+"x"+qrSize+"&choe=UTF-8&chld=H&chl=http://www.dayve.com"); 
+        				 bmp = downloadBitmap("http://chart.apis.google.com/chart?cht=qr&chs="+qrSize+"x"+qrSize+"&choe=UTF-8&chld=H&chl="+qrCode); 
         				    Log.w("MyQRPageActivity", "bmp size getHeight" + bmp.getHeight()); 
         					Log.w("MyQRPageActivity", "bmp size getWidth" + bmp.getWidth());  
         						Message message = handler.obtainMessage();
