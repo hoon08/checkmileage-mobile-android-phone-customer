@@ -58,11 +58,17 @@ public class MainActivity extends Activity {
         						// ... // QR코드가 있는지 확인. properties 파일 이용.
         						Log.i("MainActivity", "Go Main Pages");
         						Intent intent = new Intent(MainActivity.this, Main_TabsActivity.class);
+        						
         						startActivity(intent);
+        						
+        						
+        						
+        						
         						finish();		// 다른 액티비티를 호출하고 자신은 종료. 
         					}else {
         						Log.i("MainActivity", "Go get QR");
-        						Intent intent = new Intent(MainActivity.this, No_QR_PageActivity.class);
+//        						Intent intent = new Intent(MainActivity.this, No_QR_PageActivity.class);
+        						Intent intent = new Intent(MainActivity.this, CommonUtils.class);
         						startActivity(intent);
         						finish();		// 다른 액티비티를 호출하고 자신은 종료.
         						// ...
