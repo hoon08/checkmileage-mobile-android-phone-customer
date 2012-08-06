@@ -34,7 +34,7 @@ public class MyQRPageActivity extends Activity {
 	static Bitmap bmp =null;
 	 static Bitmap bmp2 =null;
 	static ImageView imgView;
-	
+	static String qrCode = "test1234";
 	static // 핸들러 등록
 	Handler handler = new Handler(){
     	@Override
@@ -48,7 +48,6 @@ public class MyQRPageActivity extends Activity {
     		}
     	}
     };
-	
     
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +57,7 @@ public class MyQRPageActivity extends Activity {
 	    /*
 	     *  QR 크기를 화면에 맞추기 위해 화면 크기를 구함.
 	     */
+	    Log.i("qrCode : ", "" + qrCode);
 		float screenWidth = this.getResources().getDisplayMetrics().widthPixels;
 		Log.i("screenWidth : ", "" + screenWidth);
 		float screenHeight = this.getResources().getDisplayMetrics().heightPixels;
