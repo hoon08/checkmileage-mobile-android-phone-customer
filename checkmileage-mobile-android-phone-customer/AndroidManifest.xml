@@ -2,7 +2,6 @@
     package="co.kr.bettersoft.checkmileage_mobile_android_phone_customer"
     android:versionCode="1"
     android:versionName="1.0" >
-
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -25,7 +24,6 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    
     
     <uses-sdk
         android:minSdkVersion="8"
@@ -65,9 +63,6 @@
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
-	    
-	    
-	    
 	    <activity android:name="Settings_AboutPageActivity"></activity>
 	    <activity android:name="Settings_FAQPageActivity"></activity>
 	    <activity android:name="Settings_NotifyPageActivity"></activity>
@@ -78,11 +73,6 @@
 		<activity android:name="SettingsPageActivity"></activity>
 		<activity android:name="Settings_PasswordPageActivity"></activity>
 		<activity android:name="UnlockPageActivity"></activity>
-		
+		<activity android:name="CommonUtils"></activity>
 	</application>
-
-	
-	
-	
-	
 </manifest>
