@@ -27,7 +27,6 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     
     
-    
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="15" />
@@ -48,7 +47,27 @@
 	    <activity android:name="MyMileagePageActivity"></activity>
 	    <activity android:name="MyQRPageActivity"></activity>
 	    <activity android:name="No_QR_PageActivity"></activity>
-	    <activity android:name="ScanQRPageActivity"></activity>
+	    <activity android:name="ScanQRPageActivity"
+				  android:theme="@android:style/Theme.Light.NoTitleBar"
+                  android:label="@string/app_name"
+                  android:configChanges="orientation">
+	        <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+	    </activity>
+	    
+	    <activity android:name="com.google.zxing.client.android.CaptureActivity"
+				  android:screenOrientation="landscape" android:configChanges="orientation|keyboardHidden"
+				  android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+				  android:windowSoftInputMode="stateAlwaysHidden">
+			<intent-filter>
+				<action android:name="com.google.zxing.client.android.SCAN" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
+	    
+	    
+	    
 	    <activity android:name="Settings_AboutPageActivity"></activity>
 	    <activity android:name="Settings_FAQPageActivity"></activity>
 	    <activity android:name="Settings_NotifyPageActivity"></activity>
