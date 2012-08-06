@@ -6,24 +6,18 @@
                 android:id="@+id/first"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:gravity="right"
+                android:gravity="center"
                 android:orientation="vertical" >
 
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="이름" />
-
                 <ImageView
+                    android:id="@+id/myQRCode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/flag" />
-                <EditText
+                <TextView
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" />
-                <Button
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="이름입력" />
+                    android:text="가맹점에 있는 QR스케너에 바코드를 스켄해 주세요." />
+                
             </LinearLayout>
 </RelativeLayout>
