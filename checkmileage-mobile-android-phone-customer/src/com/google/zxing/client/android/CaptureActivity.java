@@ -135,7 +135,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     }
 
     Intent intent = getIntent();
-    String action = intent == null ? null : intent.getAction();
+    String action = intent == null ? null : "com.google.zxing.client.android.SCAN";
     if (intent != null && action != null) {
       if (action.equals(Intents.Scan.ACTION)) {
         // Scan the formats the intent requested, and return the result to the calling activity.

@@ -36,9 +36,11 @@ public class ScanQRPageActivity extends Activity {
 //	        startActivity(intent2);
 //	        finish();
 	    
-	    Intent intent = new Intent("com.google.zxing.client.android.SCAN");
+//	    Intent intent = new Intent("com.google.zxing.client.android.CaptureActivityHandler");
+	    Intent intent = new Intent(ScanQRPageActivity.this,com.google.zxing.client.android.CaptureActivity.class);
+//	    Intent intent = new Intent("com.google.zxing.client.android.SCAN");
         intent.setPackage("com.google.zxing.client.android");
-        intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
+//        intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
         try{
         	startActivityForResult(intent, 0);
         }catch(Exception e){
