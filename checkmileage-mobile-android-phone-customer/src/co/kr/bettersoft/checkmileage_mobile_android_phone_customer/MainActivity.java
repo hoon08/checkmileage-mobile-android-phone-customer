@@ -49,7 +49,7 @@ public class MainActivity extends Activity {
         		new Runnable(){
         			public void run(){
         				try{
-        					Thread.sleep(2000);
+        					Thread.sleep(1000);
         					// 잠금기능 사용시 비번 입력 페이지로 이동..
         					     // 은 아직 미구현.
         					
