@@ -15,7 +15,6 @@ public class ScanQRPageActivity extends Activity {
 	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
 	 */
 	
-	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -60,9 +59,12 @@ public class ScanQRPageActivity extends Activity {
 		super.onActivityResult(requestCode, resultCode, intent);
 		
 		if(requestCode == 0) {
-              if(resultCode == RESULT_OK) {
-            	  // 성공시 다음 페이지로 이동. qrCode 에 값 세팅해서 줌.
-                     MyQRPageActivity.qrCode = intent.getStringExtra("SCAN_RESULT");
+              if(resultCode == RESULT_OK) {  // 성공시
+            	  String qrcode = intent.getStringExtra("SCAN_RESULT");
+            	  // 1. 로컬 파일에 QR 코드를 저장함
+
+            	  // 2. 다음 페이지로 이동. qrCode 에 값 세팅해서 줌.
+                     MyQRPageActivity.qrCode = qrcode;
             		 Intent intent2 = new Intent(ScanQRPageActivity.this, Main_TabsActivity.class);
          	        startActivity(intent2);
          	        finish();

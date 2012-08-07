@@ -39,12 +39,10 @@ public class MyQRPageActivity extends Activity {
 	Handler handler = new Handler(){
     	@Override
     	public void handleMessage(Message msg){
-    		Log.w("MyQRPageActivity", "hey1");
     		Bundle b = msg.getData();
     		int testData =  b.getInt("testData");		// 값을 넣지 않으면 0 을 꺼내었다.
     		if(testData==1234){
     			imgView.setImageBitmap(bmp);
-    			Log.w("MyQRPageActivity", "hey2");
     		}
     	}
     };
@@ -77,8 +75,8 @@ public class MyQRPageActivity extends Activity {
         		new Runnable(){
         			public void run(){
         				 bmp = downloadBitmap("http://chart.apis.google.com/chart?cht=qr&chs="+qrSize+"x"+qrSize+"&choe=UTF-8&chld=H&chl="+qrCode); 
-        				    Log.w("MyQRPageActivity", "bmp size getHeight" + bmp.getHeight()); 
-        					Log.w("MyQRPageActivity", "bmp size getWidth" + bmp.getWidth());  
+//        				    Log.w("MyQRPageActivity", "bmp size getHeight" + bmp.getHeight()); 
+//        					Log.w("MyQRPageActivity", "bmp size getWidth" + bmp.getWidth());  
         						Message message = handler.obtainMessage();
         						Bundle b = new Bundle();
         						b.putInt("testData", 1234);
@@ -88,20 +86,8 @@ public class MyQRPageActivity extends Activity {
         		}
         ).start();
 	    
-	    try {
-			CreateQR();
-		} catch (WriterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	    
 	}
-	
-
-	
-	
 	
 	/*
 	 * QR 이미지받기. url 사용하여 구글 웹에서 받아오기.
@@ -162,16 +148,13 @@ public class MyQRPageActivity extends Activity {
 							BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE,
 									100, 100);
 							
-							
 							// 방법 1. 변환 -> 변환 -> 디코딩  :: null pointer 에러 (팩토리에서 디코딩하면 null 이 나옴)
 //							String st =  bitMatrix.toString();
 //							byte[] data  = st.getBytes();
 //							Log.i("MyQRPageActivity", "lv4");
 //							ByteArrayInputStream in = new ByteArrayInputStream(data);
-							Log.i("MyQRPageActivity", "lv3");
 //							bmp2 = BitmapFactory.decodeStream(in); 
 							Log.i("MyQRPageActivity", "lv4");
-							
 							
 							// 방법 2.자체 메소드 호출 -> class not def 에러.
 //							try {
@@ -194,23 +177,14 @@ public class MyQRPageActivity extends Activity {
 					}
 				}
 		).start();
-
-
-        
 //        Bitmap bm=null; 
 //        BitmapDrawable bmd = new BitmapDrawable(in); 
 //        //	        	in.read(data);		// null pointer exception
-//        Log.i("MyQRPageActivity", "lv6");
 ////        Bitmap bitmap = BitmapFactory.decodeStream(in);  
 //        bm = bmd.getBitmap(); 
 ////        Log.i("MyQRPageActivity", "6-1"+bitmap.getHeight());
-//
-//        Log.i("MyQRPageActivity", "lv7");
-
 ////        MatrixToImageWriter.writeToFile(bitMatrix, "png", new File("qrcode.png"));	// cant find class exception
 	}
-	
-	
 	
 	/*
 	 *  닫기 버튼 2번 누르면 종료 됨.(non-Javadoc)
