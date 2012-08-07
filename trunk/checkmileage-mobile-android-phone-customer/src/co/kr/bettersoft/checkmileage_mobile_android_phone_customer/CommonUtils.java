@@ -23,19 +23,22 @@ public class CommonUtils extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if(callCode==1){	// 읽기 모드
+		if(callCode==1){	// 읽기 모드			// from main page
 			qrResult = readProps();
 			MainActivity.qrResult = qrResult;
-		}else if(callCode==2){ // 쓰기 모드
+		}else if(callCode==2){ // 쓰기 모드		// from main page (test)
 			qrResult = writeProps();
 			MainActivity.qrResult = qrResult;
-		}else if(callCode==3){	// 초기화 모드
+		}else if(callCode==3){	// 초기화 모드		// from main page (test)
 			writeQRstr="";
 			qrResult = writeProps();
 			MainActivity.qrResult = qrResult;
-		}else if(callCode==22){
+		}else if(callCode==22){				// from create qr page
 			qrResult = writeProps();
 			CreateQRPageActivity.qrResult = qrResult;
+		}else if(callCode==32){				// from scan qr page
+			qrResult = writeProps();
+			ScanQRPageActivity.qrResult = qrResult;
 		}
 		else{		// 그외. 비정상적인 호출.
 			Log.i("CommonUtils", "callCode:"+callCode);

@@ -68,7 +68,6 @@ public class CreateQRPageActivity extends Activity {
 	    				try{
 	    					Thread.sleep(1000);
 	    					Log.i("CreateQRPageActivity", "qrResult::"+qrResult);		// 읽기 결과 받음.
-
 	    					// 나의 QR 코드 보기로 이동.
 	    					Log.i("CreateQRPageActivity", "QR registered Success");
 	    					Intent intent2 = new Intent(CreateQRPageActivity.this, Main_TabsActivity.class);
