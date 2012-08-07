@@ -48,22 +48,22 @@ public class MainActivity extends Activity {
         setContentView(R.layout.intro);
         
         readQR();			// 일단 저장된 QR 값이 있는지부터 확인 한다.. 
-//        saveQR();			// QR 코드 저장소에 임시 값 저장. 테스트용. 
-//        initialQR();		// QR 코드 저장소에 값 초기화. 테스트용.
-//        Log.i("MainActivity", "qrResult::"+qrResult);		// 아직 결과 받기 전이기 때문에 여기서 확인 불가.. 아래 thread 내부에서 확인 가능.
+//        saveQR();			// QR 코드 저장소에 임시 값 저장. (테스트용.) 
+//        initialQR();		// QR 코드 저장소에 값 초기화. (테스트용.)
+////        Log.i("MainActivity", "qrResult::"+qrResult);		// 아직 결과 받기 전이기 때문에 여기서 확인 불가.. 아래 thread 내부에서 확인 가능.
         
         new Thread(
         		new Runnable(){
         			public void run(){
         				try{
-        					Thread.sleep(1000);
+        					Thread.sleep(300);
         					// 잠금기능 사용시 비번 입력 페이지로 이동..
         					     // 은 아직 미구현.
         					Log.i("MainActivity", "qrResult::"+qrResult);		// 읽기 결과 받음.
         					while(qrResult!=1){		// 최초 실행시 파일 읽기 실패함(파일없음에러. 에러코드:-3) --> 새로 생성한다.
         						Log.i("MainActivity", "there is no saved file detected.. generate new one.");	
         						initialQR();
-        						Thread.sleep(1000);
+        						Thread.sleep(300);
         					}
         					// QR 코드가 있다면 QR 화면으로 이동하고, QR 코드가 없다면 QR 등록 화면으로 이동한다.
         					if(myQR.length()>0){ // QR코드가 있는지 확인. 있으면 바로 내 QR 페이지로 이동.
@@ -79,7 +79,6 @@ public class MainActivity extends Activity {
         						 *  서버에도 QR 값이 없을 경우에는 2차 인증(인증번호 인증) 후에 QR 생성 선택 창으로 이동한다.
         						 *  1차 인증을 통해 서버에서 QR 값을 받아온 경우 인증 2단계인 [인증번호 확인] 절차를 생략하고 내 QR보기 화면으로 이동한다. 
         						 */
-        				        
         						//QR 생성 선택 창으로 이동.
         						Log.i("MainActivity", "There is no saved QR code.. Go get QR");
         						Intent intent = new Intent(MainActivity.this, No_QR_PageActivity.class);
