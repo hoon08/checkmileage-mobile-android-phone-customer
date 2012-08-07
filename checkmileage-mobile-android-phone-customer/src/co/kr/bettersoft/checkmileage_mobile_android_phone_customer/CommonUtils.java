@@ -54,10 +54,10 @@ public class CommonUtils extends Activity {
 			fos.close();
 			return 1;
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 			return -3;
 		} catch (IOException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 			return -2;
 		} catch(Exception e){
 			return -1;
@@ -84,13 +84,13 @@ public class CommonUtils extends Activity {
 			MyQRPageActivity.qrCode = tmpStr;
 			return 1;
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 			return -3;
 		} catch (IOException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 			return -2;
 		}catch(Exception e){		// 파일이 없는 경우
-			e.printStackTrace();
+//			e.printStackTrace();
 			return -1;
 		}
 //		TextView textView = new TextView(this);
