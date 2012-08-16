@@ -14,7 +14,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  -->
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
   <!-- Messages IDs -->
   <item type="id" name="auto_focus"/>
   <item type="id" name="decode"/>
@@ -26,4 +26,5 @@
   <item type="id" name="return_scan_result"/>
   <item type="id" name="search_book_contents_failed"/>
   <item type="id" name="search_book_contents_succeeded"/>
+  <item type="id" name="my_mileage_dynamic"/>
 </resources>
