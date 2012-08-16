@@ -88,5 +88,5 @@ public class CreateQRPageActivity extends Activity {
     	Intent saveQRintent = new Intent(CreateQRPageActivity.this, CommonUtils.class);			// »£√‚
     	startActivity(saveQRintent);
     }
-
+    
 }

@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 public class CommonUtils extends Activity {
     
-	static String writeQRstr = "abcd";
+	static String writeQRstr = "test1234";
 	static int callCode = 0;		// 호출 모드 . 읽기:1, 쓰기:2, 초기화:3
 	static int qrResult = 0;		// 처리 결과값. 성공:1, 실패:: 파일없음:-3,입출력오류:-2,그외:-1
 	@Override

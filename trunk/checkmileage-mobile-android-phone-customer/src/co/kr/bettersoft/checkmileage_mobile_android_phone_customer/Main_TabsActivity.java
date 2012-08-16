@@ -20,25 +20,26 @@ public class Main_TabsActivity extends TabActivity {
         TabHost tabhost = getTabHost();
         
         tabhost.addTab(tabhost.newTabSpec("tab_1")
-        		.setIndicator("ÅÇ1", getResources().getDrawable(R.drawable.tab01_indicator))
-//        		.setContent(R.id.first));
+        		.setIndicator("³»QRÄÚµå", getResources().getDrawable(R.drawable.tab01_indicator))
       .setContent(new Intent(this, MyQRPageActivity.class))); // Optimizer.class ¼Ò½º´Â tab_1 ÅÇ¿¡¿¡ ¼ÓÇÔ. Optimizer.java
 //         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
         
         
         tabhost.addTab(tabhost.newTabSpec("tab_2")
-        		.setIndicator("ÅÇ2", getResources().getDrawable(R.drawable.tab02_indicator))
-        		.setContent(R.id.second));
+        		.setIndicator("¸¶ÀÏ¸®Áö", getResources().getDrawable(R.drawable.tab02_indicator))
+    			.setContent(new Intent(this, MyMileagePageActivity.class)));  
         
         
         tabhost.addTab(tabhost.newTabSpec("tab_3")
-        		.setIndicator("ÅÇ3", getResources().getDrawable(R.drawable.tab03_indicator))
+        		.setIndicator("°¡¸ÍÁ¡", getResources().getDrawable(R.drawable.tab03_indicator))
         		.setContent(R.id.third));
         
-        
+        // ¼³Á¤
         tabhost.addTab(tabhost.newTabSpec("tab_4")
-        		.setIndicator("ÅÇ4", getResources().getDrawable(R.drawable.tab04_indicator))
-        		.setContent(R.id.fourth));
+//        		.setIndicator("ÅÇ4", getResources().getDrawable(R.drawable.tab04_indicator))
+//        		.setContent(R.id.fourth));
+        		.setIndicator("¼³Á¤", getResources().getDrawable(R.drawable.tab04_indicator))
+    			.setContent(new Intent(this, com.pref.PrefActivityFromResource.class)));  
         
 	}
 	
