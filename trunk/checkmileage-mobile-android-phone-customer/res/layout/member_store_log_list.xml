@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:orientation="horizontal" >
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/merchant_log_info2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:padding="3dp"
+                    android:textSize="20dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/merchant_log_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:padding="3dp"
+                    android:textSize="20dp" />
+
+                <TextView
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/merchant_log_mileage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:gravity="right"
+                    android:padding="3dp"
+                    android:textSize="20dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:orientation="horizontal" >
+
+                <TextView
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/merchant_log_time2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:gravity="right"
+                    android:padding="3dp"
+                    android:textSize="15dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+</LinearLayout>

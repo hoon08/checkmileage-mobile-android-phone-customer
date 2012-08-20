@@ -24,6 +24,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -54,12 +56,12 @@ public class MyMileagePageActivity extends Activity {
 	String methodName = "";
 	public List<CheckMileageMileage> entries;	// 1차적으로 조회한 결과. (가맹점 상세 정보 제외)
 	int returnYN = 0;		// 가맹점 상세정보 보고 리턴할지 여부 결정용도
-
+	int flag = 0;
 	private ArrayAdapter<String> m_adapter = null;
 	private ListView m_list = null;
 	ArrayAdapter<CheckMileageMileage> adapter = null;
 	List<CheckMileageMileage> entriesFn = null;
-	
+    float fImgSize = 0;
 	MyAdapter mAdapter;
 
 	// 핸들러
@@ -118,11 +120,16 @@ public class MyMileagePageActivity extends Activity {
 				convertView = Inflater.inflate(layoutId, parent, false);
 			}
 			ImageView leftImg = (ImageView)convertView.findViewById(R.id.merchantImage);		// 가맹점 이미지 넣고
-			leftImg.setImageBitmap(myDataArr.get(position).getMerchantImage());					
+			// set the Drawable on the ImageView
+			BitmapDrawable bmpResize = BitmapResizePrc(myDataArr.get(position).getMerchantImage(), fImgSize/2, fImgSize/2);  
+			leftImg.setImageDrawable(bmpResize);	
+//			leftImg.setImageBitmap(myDataArr.get(position).getMerchantImage());			
+			
 			TextView nameTv = (TextView)convertView.findViewById(R.id.merchantName);			// 가맹점 이름 넣고
 			nameTv.setText(myDataArr.get(position).getMerchantName());
 			TextView mileage = (TextView)convertView.findViewById(R.id.mileage);				// 가맹점에 대한 내 마일리지 넣고		.. 더 넣을거 있으면 아래에 추가, XML 파일에도 뷰 등록..
-			mileage.setText(myDataArr.get(position).getMileage());								
+			mileage.setText(myDataArr.get(position).getMileage());					
+			
 //			Button btn = (Button)convertView.findViewById(R.id.sendBtn);		// 하단 버튼 넣어서 클릭시 어쩌구..
 //			btn.setOnClickListener(new Button.OnClickListener()  {
 //				public void onClick(View v)  {
@@ -139,6 +146,18 @@ public class MyMileagePageActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		myQRcode = MyQRPageActivity.qrCode;			// 내 QR 코드. (확인용)
+		
+		// 크기 측정
+		float screenWidth = this.getResources().getDisplayMetrics().widthPixels;
+		Log.i("screenWidth : ", "" + screenWidth);
+		float screenHeight = this.getResources().getDisplayMetrics().heightPixels;
+		Log.i("screenHeight : ", "" + screenHeight);
+		if(screenWidth < screenHeight ){
+	    	fImgSize = screenWidth;
+	    }else{
+	    	fImgSize = screenHeight;
+	    }
+		
 		Log.e(TAG, myQRcode);
 		URL imageURL = null;							
 		URLConnection conn = null;
@@ -155,9 +174,11 @@ public class MyMileagePageActivity extends Activity {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
 		{
 			// 실행문
-			Toast.makeText(MyMileagePageActivity.this, "터치터치"+arg2+"이곳은:"+entriesFn.get(arg2).getCheckMileageMerchantsMerchantID(), Toast.LENGTH_SHORT).show();
+//			Toast.makeText(MyMileagePageActivity.this, "터치터치"+arg2+"이곳은:"+entriesFn.get(arg2).getCheckMileageMerchantsMerchantID(), Toast.LENGTH_SHORT).show();
 			Intent intent = new Intent(MyMileagePageActivity.this, MemberStoreInfoPage.class);
 			intent.putExtra("checkMileageMerchantsMerchantID", entriesFn.get(arg2).getCheckMileageMerchantsMerchantID());
+			intent.putExtra("idCheckMileageMileages", entriesFn.get(arg2).getIdCheckMileageMileages());
+			intent.putExtra("myMileage", entriesFn.get(arg2).getMileage());
 			startActivity(intent);
 		}
 	};
@@ -236,28 +257,36 @@ public class MyMileagePageActivity extends Activity {
 		Log.d(TAG,"수신::"+builder.toString());
 		String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다
 		// // // // // // // 바로 바로 화면에 add 하고 터치시 값 가져다가 상세 정보 보도록....
+		
+		JSONArray jsonArray2 = null;
+		try {
+			jsonArray2 = new JSONArray(tempstr);
+		} catch (JSONException e1) {
+			e1.printStackTrace();
+		}
+		int max = jsonArray2.length();
 		if(responseCode==200 || responseCode==204){
 			try {
-				JSONArray jsonArray2 = new JSONArray(tempstr);
-				int max = jsonArray2.length();
 				entries = new ArrayList<CheckMileageMileage>(max);
-				for ( int i = 0; i < max; i++ ){
-					JSONObject jsonObj = jsonArray2.getJSONObject(i).getJSONObject("checkMileageMileage");
-					//  idCheckMileageMileages,  mileage,  modifyDate,  checkMileageMembersCheckMileageID,  checkMileageMerchantsMerchantID
-					// 객체 만들고 값 받은거 넣어서 저장..  저장값: 인덱스번호, 수정날짜, 아이디, 가맹점아이디.
-					entries.add(new CheckMileageMileage(jsonObj.getString("idCheckMileageMileages"),
-							jsonObj.getString("mileage"),jsonObj.getString("modifyDate"),
-							jsonObj.getString("checkMileageMembersCheckMileageId"),jsonObj.getString("checkMileageMerchantsMerchantId")));
-				}
-				//    			 2차 작업. 가맹점 이름, 이미지 가져와서 추가로 넣음.
-				//    			 array 채로 넘기고 돌려받을수 있도록 한다..
 				if(max>0){
-					getMerchantInfo(entries,max);
+					for ( int i = 0; i < max; i++ ){
+						JSONObject jsonObj = jsonArray2.getJSONObject(i).getJSONObject("checkMileageMileage");
+						//  idCheckMileageMileages,  mileage,  modifyDate,  checkMileageMembersCheckMileageID,  checkMileageMerchantsMerchantID
+						// 객체 만들고 값 받은거 넣어서 저장..  저장값: 인덱스번호, 수정날짜, 아이디, 가맹점아이디.
+						entries.add(new CheckMileageMileage(jsonObj.getString("idCheckMileageMileages"),
+								jsonObj.getString("mileage"),jsonObj.getString("modifyDate"),
+								jsonObj.getString("checkMileageMembersCheckMileageId"),jsonObj.getString("checkMileageMerchantsMerchantId")));
+						
+					}
+					//    			 2차 작업. 가맹점 이름, 이미지 가져와서 추가로 넣음.
+					//    			 array 채로 넘기고 돌려받을수 있도록 한다..
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} 
+			}finally{
+				getMerchantInfo(entries,max);
+			}
 		}else{			// 요청 실패시	 토스트 띄우고 화면 유지.
 			Toast.makeText(MyMileagePageActivity.this, "오류가 발생하였습니다.\n잠시 후 다시 시도하여 주십시오.", Toast.LENGTH_SHORT).show();
 		}
@@ -377,6 +406,51 @@ public class MyMileagePageActivity extends Activity {
 	}
 
 
+	
+	
+	/*
+	 * Bitmap 이미지 리사이즈
+	 * Src : 원본 Bitmap
+	 * newHeight : 새로운 높이
+	 * newWidth : 새로운 넓이
+	 * 참고 소스 : http://skyswim42.egloos.com/3477279 ( webview 에서 capture 화면 resizing 하는 source 도 있음 )
+	 */
+	private BitmapDrawable BitmapResizePrc( Bitmap Src, float newHeight, float newWidth)
+	{
+		BitmapDrawable Result = null;
+		int width = Src.getWidth();
+		int height = Src.getHeight();
+
+		// calculate the scale - in this case = 0.4f
+		float scaleWidth = ((float) newWidth) / width;
+		float scaleHeight = ((float) newHeight) / height;
+
+		// createa matrix for the manipulation
+		Matrix matrix = new Matrix();
+
+		// resize the bit map
+		matrix.postScale(scaleWidth, scaleHeight);
+
+		// rotate the Bitmap 회전 시키려면 주석 해제!
+		//matrix.postRotate(45);
+
+		// recreate the new Bitmap
+		Bitmap resizedBitmap = Bitmap.createBitmap(Src, 0, 0, width, height, matrix, true);
+
+		// check
+		width = resizedBitmap.getWidth();
+		height = resizedBitmap.getHeight();
+		Log.i("ImageResize", "Image Resize Result : " + Boolean.toString((newHeight==height)&&(newWidth==width)) );
+
+		// make a Drawable from Bitmap to allow to set the BitMap
+		// to the ImageView, ImageButton or what ever
+		Result = new BitmapDrawable(resizedBitmap);
+		return Result;
+	}
+
+	
+	
+	
 	@Override
 	public void onResume(){
 		super.onResume();

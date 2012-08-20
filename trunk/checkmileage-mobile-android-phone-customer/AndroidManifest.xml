@@ -30,8 +30,9 @@
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="15" />
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /><application>
-	 
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<application>
+	 	<uses-library android:name="com.google.android.maps" />
 	    <activity android:name="CreateQRPageActivity"></activity>
 	    <activity android:name="Main_TabsActivity"></activity>
 	    <activity android:name="MainActivity">
@@ -106,6 +107,6 @@
         <service android:name=".GCMIntentService" />
         <activity android:name="CertificationStep1"></activity>
         <activity android:name="CertificationStep2"></activity>
-		
+        
 	</application>
 </manifest>
