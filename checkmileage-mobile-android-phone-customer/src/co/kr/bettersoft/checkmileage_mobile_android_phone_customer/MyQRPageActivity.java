@@ -75,6 +75,7 @@ public class MyQRPageActivity extends Activity {
         		new Runnable(){
         			public void run(){
         				 bmp = downloadBitmap("http://chart.apis.google.com/chart?cht=qr&chs="+qrSize+"x"+qrSize+"&choe=UTF-8&chld=H&chl="+qrCode); 
+//        				 bmp = downloadBitmap("http://chart.apis.google.com/chart?cht=qr&chs=500x500&choe=UTF-8&chld=H&chl=test1234"); 
 //        				    Log.w("MyQRPageActivity", "bmp size getHeight" + bmp.getHeight()); 
 //        					Log.w("MyQRPageActivity", "bmp size getWidth" + bmp.getWidth());  
         						Message message = handler.obtainMessage();
@@ -154,7 +155,6 @@ public class MyQRPageActivity extends Activity {
 //							Log.i("MyQRPageActivity", "lv4");
 //							ByteArrayInputStream in = new ByteArrayInputStream(data);
 //							bmp2 = BitmapFactory.decodeStream(in); 
-							Log.i("MyQRPageActivity", "lv4");
 							
 							// 방법 2.자체 메소드 호출 -> class not def 에러.
 //							try {

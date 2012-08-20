@@ -24,7 +24,7 @@ public class CheckMileageMerchants {
 	private String longtitude;							// 가맹점 좌표2
 	private String profileImageURL;						// 프로필 이미지 URL
 	private Bitmap merchantImage;						// 프로필 이미지
-	
+	private String prSentence;							// 가맹점 자랑
 	
 	public String getMerchantID() {
 		return merchantID;
@@ -79,6 +79,12 @@ public class CheckMileageMerchants {
 	}
 	public void setMerchantImage(Bitmap merchantImage) {
 		this.merchantImage = merchantImage;
+	}
+	public String getPrSentence() {
+		return prSentence;
+	}
+	public void setPrSentence(String prSentence) {
+		this.prSentence = prSentence;
 	}
 	
 	
