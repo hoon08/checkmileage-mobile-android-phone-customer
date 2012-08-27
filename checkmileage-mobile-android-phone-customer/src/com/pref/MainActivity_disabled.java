@@ -12,8 +12,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-
-public class MainActivity extends Activity {	
+/*
+ * 본 프로젝트에서 사용 안함
+ */
+public class MainActivity_disabled extends Activity {	
 
 	public static final int ID_MENU_PREFERENCES_XML = Menu.FIRST+1;
 	public static final int ID_MENU_PREFERENCES_INTENT = Menu.FIRST+2;
@@ -117,12 +119,10 @@ public class MainActivity extends Activity {
 //		Log.e("prefTest","2:"+strForLog);
 		//////////////////////////////////////////////////////////////////////////
 		
-		
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		// 값을 가져온다. 오른쪽 파라미터는 디폴트 값.
 		boolean check_value = pref.getBoolean("keycheck", false);
 		String list_value = pref.getString("keylist", "");
-		
 		
 	}
     

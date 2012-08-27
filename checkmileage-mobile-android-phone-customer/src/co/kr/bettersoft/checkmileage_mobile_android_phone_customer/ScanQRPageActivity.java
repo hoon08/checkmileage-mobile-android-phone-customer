@@ -2,15 +2,19 @@ package co.kr.bettersoft.checkmileage_mobile_android_phone_customer;
 // QR 스켄 페이지
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
 public class ScanQRPageActivity extends Activity {
+	SharedPreferences sharedPrefCustom;
+	
 	static int qrResult = 0;
 	public static final String TAG = ScanQRPageActivity.class.getSimpleName();
-
+	
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
 	 */
@@ -51,25 +55,33 @@ public class ScanQRPageActivity extends Activity {
 		}
 	}
 
-	// QR 코드 저장소에 QR 코드를 저장한다. 
-	public void saveQR(){		
-		CommonUtils.callCode = 32;		// 쓰기 모드
-		Intent saveQRintent = new Intent(ScanQRPageActivity.this, CommonUtils.class);			// 호출
-		startActivity(saveQRintent);
-	}
-
+	// QR 코드 저장소에 QR 코드를 저장한다.  --> 사용 안함
+//	public void saveQR(){		
+//		CommonUtils.callCode = 32;		// 쓰기 모드
+//		Intent saveQRintent = new Intent(ScanQRPageActivity.this, CommonUtils.class);			// 호출
+//		startActivity(saveQRintent);
+//	}
+	// pref 에 QR 저장 방식. 위에거 대신 쓸것.
+    public void saveQRforPref(String qrCode){
+    	sharedPrefCustom = getSharedPreferences("MyCustomePref",
+    			Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
+    	SharedPreferences.Editor saveQR = sharedPrefCustom.edit();
+    	saveQR.putString("qrcode", qrCode);
+    	saveQR.commit();
+    }
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, intent);
-
 		if(requestCode == 0) {
 			if(resultCode == RESULT_OK) {  // 성공시
 				String qrcode = intent.getStringExtra("SCAN_RESULT");
 				// 1. 로컬 파일에 QR 코드를 저장함
 				Log.i("ScanQRPageActivity", "save qrcode to file : "+qrcode);
-				CommonUtils.writeQRstr = qrcode;
-				saveQR();	
+//				CommonUtils.writeQRstr = qrcode;
+//				saveQR();	
+				saveQRforPref(qrcode);
 				// 2. 다음 페이지로 이동. qrCode 에 값 세팅해서 줌.
 				Log.i("ScanQRPageActivity", "load qrcode to img : "+qrcode);
 				MyQRPageActivity.qrCode = qrcode;

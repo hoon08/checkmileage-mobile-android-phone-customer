@@ -4,7 +4,9 @@ import java.io.IOException;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -31,13 +33,17 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.pref.PrefActivityFromResource;
 /* 
  * QR 을 생성하고 바로 다음단계인 나의 QR 코드 보기액티비티로 넘어간다.
  * 사용자에게 이 액티비티는 보여지지 않고 바로 나의 QR 코드보기 화면이 나타나게 된1다.
  */
 public class CreateQRPageActivity extends Activity {
+	SharedPreferences sharedPrefCustom;
+	
 	static int qrResult = 0;
-	String qrcode = "createdNewQRCodeOne";
+	String qrcode = "test1234";
+//	String qrcode = "createdNewQRCodeOne";
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -53,8 +59,12 @@ public class CreateQRPageActivity extends Activity {
 	     * QR 저장소 파일에 저장.
 	     */
 	    Log.i("CreateQRPageActivity", "save qrcode to file : "+qrcode);
-	    CommonUtils.writeQRstr = qrcode;
-	    saveQR();
+	    
+//	    CommonUtils.writeQRstr = qrcode;	// qr 저장소 사용안함.
+//	    saveQR();							// qr 저장소 사용 안함.
+	    saveQRforPref(qrcode);				// 설정 파일 사용함.
+	    
+	  
 	    
 	    /*
 	     * MyQR페이지에 생성된 QR로 QR이미지 받아서 보여줌.
@@ -88,5 +98,12 @@ public class CreateQRPageActivity extends Activity {
     	Intent saveQRintent = new Intent(CreateQRPageActivity.this, CommonUtils.class);			// 호출
     	startActivity(saveQRintent);
     }
-    
+    // pref 에 QR 저장 방식. 위에거 대신 쓸것.
+    public void saveQRforPref(String qrCode){
+    	sharedPrefCustom = getSharedPreferences("MyCustomePref",
+    			Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
+    	SharedPreferences.Editor saveQR = sharedPrefCustom.edit();
+    	saveQR.putString("qrcode", qrCode);
+    	saveQR.commit();
+    }
 }

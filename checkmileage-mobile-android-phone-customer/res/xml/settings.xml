@@ -3,53 +3,40 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:key="preference_root" >
 	
-	
 	<PreferenceCategory
 		android:key="category1"
 		android:title="사용자 설정"
 		android:summary="Category 1에 대한 자세한 설명: 표시 안됨"
-		android:enabled="false" ><CheckBoxPreference android:key="GreetingMsg" android:title="추가 인사말 표시" android:summary="Check하면 추가 인사말을 표시 합니다" android:defaultValue="true" android:summaryOff="오프염" android:summaryOn="온이염"/><EditTextPreference android:key="AdditionalMsg" android:title="추가 메시지 입력" android:summary="인사말 밑에 표시될 추가 메시지를 입력 합니다" />	
-		<ListPreference
-			android:key="TextColor"
-			android:title="텍스트 Color"
-			android:summary="인사말과 추가메시지의 글자 색을 지정합니다"
-			android:entries="@array/entries_color"
-			android:entryValues="@array/entryValues_color"
-			android:defaultValue="FFFFFFFF" />
-		<RingtonePreference
-			android:key="Ringtone"
-			android:title="Ringtone 설정"
-			android:showDefault="true"
-			android:showSilent="true"
-			android:ringtoneType="all"
-			android:summary="사용할 Ringtone을 설정 합니다" />
-		<PreferenceScreen android:key="preference_setting_pwd" android:title="잠금 설정"></PreferenceScreen><CheckBoxPreference android:summary="알림 수신 여부를 설정합니다." android:summaryOn="서버로부터 알림을 받습니다." android:key="preference_alarm_chk" android:summaryOff="서버로부터 알림을 받지 않습니다." android:title="알림 수신 설정" /><PreferenceScreen android:key="preference_sub_userinfo" android:title="개인정보 설정" android:summary="개인정보를 설정합니다.">
-			<ListPreference android:entryValues="@array/pref_user_sex2" android:entries="@array/pref_user_sex1" android:summary="성별을 선택합니다." android:title="성별" android:key="pref_user_sex"/>
-			<EditTextPreference android:summary="이메일을 등록합니다." android:key="pref_user_email" android:title="이메일 설정"/>
-			<EditTextPreference android:key="pref_user_birth" android:summary="생년월일을 입력해 주세요." android:title="생년월일"/>
-		</PreferenceScreen>
+		 >
 		
+		<PreferenceScreen android:key="preference_setting_pwd" android:title="잠금 설정">
+			    <CheckBoxPreference android:summary="어플 잠금 설정입니다." android:summaryOn="어플 실행시 비밀번호를 입력받습니다." 
+			    		android:key="preference_lock_chk" android:summaryOff="잠금 기능 사용 안함" android:title="어플 잠금 설정" />
+			    <Preference android:title="비밀번호 설정" android:key="preference_lock_password"/>
+		</PreferenceScreen>
+		<CheckBoxPreference android:summary="알림 수신 여부를 설정합니다." android:summaryOn="서버로부터 알림을 받습니다." 
+		    android:key="preference_alarm_chk" android:summaryOff="서버로부터 알림을 받지 않습니다." android:title="알림 수신 설정" 
+		    android:defaultValue ="true" />
+		<PreferenceScreen android:key="preference_sub_userinfo" android:title="개인정보 설정" android:summary="개인정보를 설정합니다.">
+			<ListPreference android:entryValues="@array/pref_user_sex2" android:entries="@array/pref_user_sex1" 
+			    android:summary="성별을 선택합니다." android:title="성별" android:key="pref_user_sex"/>
+			<EditTextPreference android:key="pref_user_email" android:title="이메일 설정" android:summary="이메일을 등록합니다." />
+			<Preference android:key="pref_user_birth" android:summary="생년월일을 입력해 주세요." android:title="생년월일"/>
+		</PreferenceScreen>
 		
 	</PreferenceCategory>
 	
 	<PreferenceCategory
 		android:key="category2"	
 		android:title="어플 정보" >
-		<PreferenceScreen
-			android:key="preference_sub"
-			android:title="Sub Preferences 가기"
-			android:summary="클릭하면 Sub Preferences가 호출 됩니다" >
-			<CheckBoxPreference 
-				android:key="sub_checkbox"
-				android:title="Sub CheckBox Preference"
-				android:summaryOn="Uncheck하면 Main Preference의 Category2 밑의 요소 비활성화"
-				android:summaryOff="Check하면 Main Preference의 Category2 밑의 요소 활성화"/>
+		
+			
 			<Preference android:title="자주 묻는 질문" android:key="pref_app_qna"/>
 			<Preference android:title="공지 사항" android:key="pref_app_notify"/>
 			<Preference android:title="이용 약관" android:key="pref_app_terms"/>
 			<Preference android:summary="탈퇴하시게요?" android:title="탈퇴 하기" android:key="pref_app_leave"/>
 			<Preference android:summary="이 앱의 정체는?" android:title="What is this App?" android:key="pref_app_what"/>
-		</PreferenceScreen>	
+		
 	</PreferenceCategory>
 	
 </PreferenceScreen>
