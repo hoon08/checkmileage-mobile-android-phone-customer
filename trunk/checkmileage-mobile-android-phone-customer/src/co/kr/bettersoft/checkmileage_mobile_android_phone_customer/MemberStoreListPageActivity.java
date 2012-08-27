@@ -1,5 +1,9 @@
 package co.kr.bettersoft.checkmileage_mobile_android_phone_customer;
-// °¡¸ÍÁ¡ ¸ñ·Ï
+/*
+ *  °¡¸ÍÁ¡ ¸ñ·Ï. (°Ë»ö?)
+ *  
+ *  
+ */
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -9,8 +13,7 @@ public class MemberStoreListPageActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-	
+        setContentView(R.layout.member_store_list);
 	    // TODO Auto-generated method stub
 	}
-
 }

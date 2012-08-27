@@ -27,12 +27,13 @@ import android.util.Log;
 
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.gcm.GCMRegistrar;
+import com.pref.DummyActivity;
 
 /**
  * IntentService responsible for handling GCM messages.
  */
 public class GCMIntentService extends GCMBaseIntentService {
-
+	
     @SuppressWarnings("hiding")
     private static final String TAG = "GCMIntentService";
 
@@ -67,12 +68,11 @@ public class GCMIntentService extends GCMBaseIntentService {
         
 //        String message = getString(R.string.gcm_message);
         String message = intent.getStringExtra("MESSAGE");
-        
         displayMessage(context, message);
-        // notifies user
-        generateNotification(context, message);
+        Log.i(TAG, "Received message:"+intent.getStringExtra("MESSAGE"));		// 동작함.
         
-        Log.i(TAG, "Received message:"+intent.getStringExtra("MESSAGE"));
+     // notifies user
+        generateNotification(context, message);	// 사용자에게 노티를 준닷
     }
 
     @Override
@@ -109,10 +109,17 @@ public class GCMIntentService extends GCMBaseIntentService {
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = new Notification(icon, message, when);
         String title = context.getString(R.string.app_name);
-        Intent notificationIntent = new Intent(context, MainActivity.class);
+        
+        Intent notificationIntent;
+        	
+//        	notificationIntent = new Intent(context, MainActivity.class);		// 이걸 띄워서 문제가 된다면..
+        notificationIntent = new Intent(context, DummyActivity.class);		
         // set intent so it does not start a new activity
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+              | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK 
+//                | Intent.FLAG_ACTIVITY_CLEAR_TOP 
+//                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent intent =
                 PendingIntent.getActivity(context, 0, notificationIntent, 0);
         notification.setLatestEventInfo(context, title, message, intent);

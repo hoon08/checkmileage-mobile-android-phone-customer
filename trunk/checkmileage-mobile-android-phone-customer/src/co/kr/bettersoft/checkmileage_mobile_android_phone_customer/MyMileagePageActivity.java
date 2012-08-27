@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import com.kr.bettersoft.domain.CheckMileageMileage;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -34,6 +35,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
@@ -64,21 +66,39 @@ public class MyMileagePageActivity extends Activity {
     float fImgSize = 0;
 	MyAdapter mAdapter;
 
+	int isRunning = 0;
+	
+	// 진행바
+	ProgressBar pb1;
+	
 	// 핸들러
 	Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg){
+			Bundle b = msg.getData();
 			try{
-				Bundle b = msg.getData();		// 받아온 마일리지 결과를 화면에 뿌려준다.
-				if(b.getInt("showYN")==1){
+				if(b.getInt("showYN")==1){		// 받아온 마일리지 결과를 화면에 뿌려준다.
 					// 최종 결과 배열은 entriesFn 에 저장되어 있다.. 
 					mAdapter = new MyAdapter(returnThis(), R.layout.my_mileage_list, (ArrayList<CheckMileageMileage>) entriesFn);		// entriesFn   dataArr
 					m_list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 					m_list.setAdapter(mAdapter);
-					
+					isRunning = isRunning -1;
+				}
+				if(b.getInt("order")==1){
+					// 러닝바 실행
+					if(pb1==null){
+						pb1=(ProgressBar) findViewById(R.id.ProgressBar01);
+					}
+					pb1.setVisibility(View.VISIBLE);
+				}else if(b.getInt("order")==2){
+					// 러닝바 종료
+					if(pb1==null){
+						pb1=(ProgressBar) findViewById(R.id.ProgressBar01);
+					}
+					pb1.setVisibility(View.INVISIBLE);
 				}
 			}catch(Exception e){
-				Toast.makeText(MyMileagePageActivity.this, "에러가 발생하였습니다."+entriesFn.size(), Toast.LENGTH_SHORT).show();
+//				Toast.makeText(MyMileagePageActivity.this, "에러가 발생하였습니다."+entriesFn.size(), Toast.LENGTH_SHORT).show();
 				e.printStackTrace();
 			}
 		}
@@ -145,6 +165,20 @@ public class MyMileagePageActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		pb1 = (ProgressBar) findViewById(R.id.ProgressBar01);
+//		final ProgressDialog dialog= ProgressDialog.show(MyMileagePageActivity.this, "타이틀","메시지",true);
+////		b. Dialog를 화면에서 제거하는 코드를 작성한다. 예를 들어 3초쯤 있다가 다이얼로그를 없애고 싶다면...
+//		new Thread(new Runnable() {
+//		public void run() {
+//		try { Thread.sleep(3000); } catch(Exception e) {}
+//		dialog.dismiss();
+//		}
+//		});
+
+		
+		
+		
 		myQRcode = MyQRPageActivity.qrCode;			// 내 QR 코드. (확인용)
 		
 		// 크기 측정
@@ -185,6 +219,30 @@ public class MyMileagePageActivity extends Activity {
 	
 
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	          
+	          
+	          
+	
+	
+	
+	
+	
+	
+	
+	
 	/*
 	 * 서버와 통신하여 내 마일리지 목록을 가져온다.
 	 * 그 결과를 List<CheckMileageMileage> Object 로 반환 한다.
@@ -203,6 +261,18 @@ public class MyMileagePageActivity extends Activity {
 		Log.i(TAG, "getMyMileageList");
 		controllerName = "checkMileageMileageController";
 		methodName = "selectMemberMerchantMileageList";
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Message message = handler.obtainMessage();
+						Bundle b = new Bundle();
+						b.putInt("order", 1);
+						message.setData(b);
+						handler.sendMessage(message);
+					}
+				}
+		).start();
+		
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -233,7 +303,21 @@ public class MyMileagePageActivity extends Activity {
 							theData1(in);
 						}catch(Exception e){ 
 							e.printStackTrace();
-						}  
+							// 에러니까 로딩바 없애고 다시 할수 있도록
+							new Thread(
+									new Runnable(){
+										public void run(){
+											Message message = handler.obtainMessage();
+											Bundle b = new Bundle();
+											b.putInt("order", 2);
+											message.setData(b);
+											handler.sendMessage(message);
+										}
+									}
+							).start();
+							isRunning = 0;
+							
+						}
 					}
 				}
 		).start();
@@ -369,6 +453,17 @@ public class MyMileagePageActivity extends Activity {
 					public void run(){
 						Message message = handler.obtainMessage();
 						Bundle b = new Bundle();
+						b.putInt("order", 2);
+						message.setData(b);
+						handler.sendMessage(message);
+					}
+				}
+		).start();
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Message message = handler.obtainMessage();
+						Bundle b = new Bundle();
 						b.putInt("showYN", 1);
 						message.setData(b);
 						handler.sendMessage(message);
@@ -454,16 +549,20 @@ public class MyMileagePageActivity extends Activity {
 	@Override
 	public void onResume(){
 		super.onResume();
-		try {
-			myQRcode = MyQRPageActivity.qrCode;
-			getMyMileageList();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(isRunning<1){
+			isRunning = isRunning+1;
+			try {
+				myQRcode = MyQRPageActivity.qrCode;
+				getMyMileageList();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else{
+			Log.e(TAG, "이미 실행중..");
 		}
 	}
-
 }

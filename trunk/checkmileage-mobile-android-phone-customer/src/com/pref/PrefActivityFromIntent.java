@@ -5,7 +5,9 @@
 // 이유와 해결 방법을 아시는 분은 꼭 연락 바랍니다.
 
 package com.pref;
-
+/*
+ * 에러나므로 사용하지 않음. 본 프로젝트에서 사용 안함
+ */
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;

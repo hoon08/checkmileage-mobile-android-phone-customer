@@ -34,7 +34,7 @@ public class MyQRPageActivity extends Activity {
 	static Bitmap bmp =null;
 	 static Bitmap bmp2 =null;
 	static ImageView imgView;
-	static String qrCode = "test1234";
+	public static String qrCode = "";
 	static // 핸들러 등록
 	Handler handler = new Handler(){
     	@Override
