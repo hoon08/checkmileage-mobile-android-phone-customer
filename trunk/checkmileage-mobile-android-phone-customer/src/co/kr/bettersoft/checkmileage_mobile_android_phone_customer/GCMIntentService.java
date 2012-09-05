@@ -45,14 +45,14 @@ public class GCMIntentService extends GCMBaseIntentService {
     protected void onRegistered(Context context, String registrationId) {
         Log.i(TAG, "Device registered: regId = " + registrationId);
         MainActivity.REGISTRATION_ID = registrationId;
-        displayMessage(context, getString(R.string.gcm_registered));
+//        displayMessage(context, getString(R.string.gcm_registered));			// 브로드 케스트로 보내줌.. 리시버가 잡음. (노티는 없음)
         ServerUtilities.register(context, registrationId);
     }
 
     @Override
     protected void onUnregistered(Context context, String registrationId) {
         Log.i(TAG, "Device unregistered");
-        displayMessage(context, getString(R.string.gcm_unregistered));
+//        displayMessage(context, getString(R.string.gcm_unregistered));
         if (GCMRegistrar.isRegisteredOnServer(context)) {
             ServerUtilities.unregister(context, registrationId);
         } else {
@@ -68,9 +68,8 @@ public class GCMIntentService extends GCMBaseIntentService {
         
 //        String message = getString(R.string.gcm_message);
         String message = intent.getStringExtra("MESSAGE");
-        displayMessage(context, message);
+//        displayMessage(context, message);
         Log.i(TAG, "Received message:"+intent.getStringExtra("MESSAGE"));		// 동작함.
-        
      // notifies user
         generateNotification(context, message);	// 사용자에게 노티를 준닷
     }
@@ -79,7 +78,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     protected void onDeletedMessages(Context context, int total) {
         Log.i(TAG, "Received deleted messages notification");
         String message = getString(R.string.gcm_deleted, total);
-        displayMessage(context, message);
+//        displayMessage(context, message);
         // notifies user
         generateNotification(context, message);
     }
@@ -87,15 +86,14 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Override
     public void onError(Context context, String errorId) {
         Log.i(TAG, "Received error: " + errorId);
-        displayMessage(context, getString(R.string.gcm_error, errorId));
+//        displayMessage(context, getString(R.string.gcm_error, errorId));
     }
 
     @Override
     protected boolean onRecoverableError(Context context, String errorId) {
         // log message
         Log.i(TAG, "Received recoverable error: " + errorId);
-        displayMessage(context, getString(R.string.gcm_recoverable_error,
-                errorId));
+//        displayMessage(context, getString(R.string.gcm_recoverable_error, errorId));
         return super.onRecoverableError(context, errorId);
     }
 

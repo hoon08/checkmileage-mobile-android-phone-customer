@@ -30,5 +30,8 @@
     <string name="stopService">서비스중지</string>
     <string name="sex_female">여성</string>
     <string name="sex_male">남성</string>
+    <string name="password_main">암호 입력</string>
     
+    
+    <string name="refresh">새로 고침</string>
 </resources>

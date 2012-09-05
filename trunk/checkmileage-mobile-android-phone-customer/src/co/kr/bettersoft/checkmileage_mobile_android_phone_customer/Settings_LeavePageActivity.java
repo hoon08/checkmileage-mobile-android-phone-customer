@@ -1,5 +1,5 @@
 package co.kr.bettersoft.checkmileage_mobile_android_phone_customer;
-// Å»Åð
+// Å»Åð - »ç¿ë ¾ÈÇÔ
 import android.app.Activity;
 import android.os.Bundle;
 

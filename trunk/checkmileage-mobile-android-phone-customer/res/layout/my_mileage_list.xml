@@ -34,7 +34,7 @@
                 android:id="@+id/mileage"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:padding="3dp"
+                android:padding="2dp"
                 android:textSize="20sp" />
 
             <TextView
@@ -42,16 +42,17 @@
                 android:id="@+id/merchantName"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:padding="3dp"
+                android:padding="2dp"
                 android:textSize="20sp" />
 
             <TextView
                 xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/merchantMessage"
+                android:id="@+id/merchantPhone"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:padding="3dp"
-                android:textSize="10sp" />
+                android:padding="2dp"
+                android:textSize="20sp" />
+            
         </LinearLayout>
             
         </LinearLayout>

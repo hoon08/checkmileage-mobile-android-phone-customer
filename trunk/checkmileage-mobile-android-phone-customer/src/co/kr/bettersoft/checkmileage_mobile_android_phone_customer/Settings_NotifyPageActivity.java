@@ -1,5 +1,5 @@
 package co.kr.bettersoft.checkmileage_mobile_android_phone_customer;
-// 알림 수신 설정
+// 알림 수신 설정 - 사용 안함
 import android.app.Activity;
 import android.os.Bundle;
 

@@ -26,6 +26,8 @@ public class CheckMileageMembers {
 	private String activateYn;
 	private String modifyDate;
 	
+	private String receiveNotificationYn;
+	
 	public String getCheckMileage() {
 		return checkMileage;
 	}
@@ -121,6 +123,12 @@ public class CheckMileageMembers {
 	}
 	public void setModifyDate(String modifyDate) {
 		this.modifyDate = modifyDate;
+	}
+	public String getReceiveNotificationYn() {
+		return receiveNotificationYn;
+	}
+	public void setReceiveNotificationYn(String receiveNotificationYn) {
+		this.receiveNotificationYn = receiveNotificationYn;
 	}
 	
 	

@@ -1,5 +1,11 @@
 package co.kr.bettersoft.checkmileage_mobile_android_phone_customer;
 // 내 마일리지 보기 화면
+
+
+/*
+ * 아답터를 꼬진거를 써서 페이지 올때마다 getView 한다.. 나중에 고쳐야 겠다..
+ * 
+ */
 import java.io.BufferedReader;
 
 import java.io.BufferedInputStream;
@@ -19,6 +25,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.kr.bettersoft.domain.CheckMileageMileage;
+import com.pref.DummyActivity;
+import com.utils.adapters.ImageAdapter;
+import com.utils.adapters.ImageAdapterList;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -32,6 +42,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -44,6 +55,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import java.util.ArrayList;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -51,6 +64,11 @@ import android.widget.Button;
 import android.widget.Toast;
 
 public class MyMileagePageActivity extends Activity {
+	int app_end = 0;	// 뒤로가기 버튼으로 닫을때 2번만에 닫히도록
+	
+	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
+	MainActivity mainActivity = (MainActivity)MainActivity.mainActivity;
+	
 	int responseCode = 0;
 	String TAG = "MyMileagePageActivity";
 	String myQRcode = "";
@@ -59,14 +77,20 @@ public class MyMileagePageActivity extends Activity {
 	public List<CheckMileageMileage> entries;	// 1차적으로 조회한 결과. (가맹점 상세 정보 제외)
 	int returnYN = 0;		// 가맹점 상세정보 보고 리턴할지 여부 결정용도
 	int flag = 0;
+	
+	
+	/*  구식 방법 사용 안함
 	private ArrayAdapter<String> m_adapter = null;
 	private ListView m_list = null;
 	ArrayAdapter<CheckMileageMileage> adapter = null;
-	List<CheckMileageMileage> entriesFn = null;
-    float fImgSize = 0;
 	MyAdapter mAdapter;
+*/ 
 
+	List<CheckMileageMileage> entriesFn = null;
+	float fImgSize = 0;
 	int isRunning = 0;
+	
+	View emptyView;
 	
 	// 진행바
 	ProgressBar pb1;
@@ -79,9 +103,24 @@ public class MyMileagePageActivity extends Activity {
 			try{
 				if(b.getInt("showYN")==1){		// 받아온 마일리지 결과를 화면에 뿌려준다.
 					// 최종 결과 배열은 entriesFn 에 저장되어 있다.. 
+					
+					if(entriesFn.size()>0){
+						setListing();
+					}else{
+						Log.e(TAG,"no data");
+						emptyView = findViewById(R.id.empty2);
+						listView  = (ListView)findViewById(R.id.listview);
+						listView.setEmptyView(emptyView);
+						listView.setVisibility(8);			//   0 visible   4 invisible   8 gone
+						emptyView.setVisibility(0);
+					}
+					
+					/* 구식 방법
 					mAdapter = new MyAdapter(returnThis(), R.layout.my_mileage_list, (ArrayList<CheckMileageMileage>) entriesFn);		// entriesFn   dataArr
 					m_list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 					m_list.setAdapter(mAdapter);
+					*/
+					
 					isRunning = isRunning -1;
 				}
 				if(b.getInt("order")==1){
@@ -104,11 +143,30 @@ public class MyMileagePageActivity extends Activity {
 		}
 	};
 
+	ListView listView;
+	
 	public Context returnThis(){
 		return this;
 	}
 
+	public void setListing(){
+		listView  = (ListView)findViewById(R.id.listview);
+		listView.setAdapter(new ImageAdapterList(this, entriesFn));
+		listView.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View v,
+					int position, long id) {
+				Intent intent = new Intent(MyMileagePageActivity.this, MemberStoreInfoPage.class);
+//				Log.i(TAG, "checkMileageMerchantsMerchantID::"+entriesFn.get(position).getCheckMileageMerchantsMerchantID());
+//				Log.i(TAG, "myMileage::"+entriesFn.get(position).getMileage());
+				intent.putExtra("checkMileageMerchantsMerchantID", entriesFn.get(position).getCheckMileageMerchantsMerchantID());		// 가맹점 아이디
+				intent.putExtra("idCheckMileageMileages", entriesFn.get(position).getIdCheckMileageMileages());		// 고유 식별 번호. (상세보기 조회용도)
+				intent.putExtra("myMileage", entriesFn.get(position).getMileage());									// 내 마일리지    // 가맹점에 대한 내 마일리지
+				startActivity(intent);
+			}
+		});
+	}
 	
+	/*   // 구식 방법을 사용하지 않음.
 	// 어댑터 클래스. 이곳에서 얻어온 데이터를 뷰 아이디를 통해 세팅한다.
 	class MyAdapter extends BaseAdapter{
 		Context context;
@@ -141,14 +199,20 @@ public class MyMileagePageActivity extends Activity {
 			}
 			ImageView leftImg = (ImageView)convertView.findViewById(R.id.merchantImage);		// 가맹점 이미지 넣고
 			// set the Drawable on the ImageView
-			BitmapDrawable bmpResize = BitmapResizePrc(myDataArr.get(position).getMerchantImage(), fImgSize/2, fImgSize/2);  
-			leftImg.setImageDrawable(bmpResize);	
+			if(myDataArr.get(position).getMerchantImage()!=null){
+				BitmapDrawable bmpResize = BitmapResizePrc(myDataArr.get(position).getMerchantImage(), fImgSize/2, fImgSize/2);  
+				leftImg.setImageDrawable(bmpResize);	
+			}
+				
 //			leftImg.setImageBitmap(myDataArr.get(position).getMerchantImage());			
 			
 			TextView nameTv = (TextView)convertView.findViewById(R.id.merchantName);			// 가맹점 이름 넣고
 			nameTv.setText(myDataArr.get(position).getMerchantName());
 			TextView mileage = (TextView)convertView.findViewById(R.id.mileage);				// 가맹점에 대한 내 마일리지 넣고		.. 더 넣을거 있으면 아래에 추가, XML 파일에도 뷰 등록..
-			mileage.setText(myDataArr.get(position).getMileage());					
+			mileage.setText(myDataArr.get(position).getMileage()+"점");					
+			
+			TextView workPhone = (TextView)convertView.findViewById(R.id.merchantPhone);				// 가맹점 전번.
+			workPhone.setText(myDataArr.get(position).getWorkPhoneNumber());		
 			
 //			Button btn = (Button)convertView.findViewById(R.id.sendBtn);		// 하단 버튼 넣어서 클릭시 어쩌구..
 //			btn.setOnClickListener(new Button.OnClickListener()  {
@@ -161,6 +225,9 @@ public class MyMileagePageActivity extends Activity {
 			return convertView;
 		}
 	}
+	*/
+	
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -176,9 +243,6 @@ public class MyMileagePageActivity extends Activity {
 //		}
 //		});
 
-		
-		
-		
 		myQRcode = MyQRPageActivity.qrCode;			// 내 QR 코드. (확인용)
 		
 		// 크기 측정
@@ -198,11 +262,32 @@ public class MyMileagePageActivity extends Activity {
 		InputStream is= null;
 		
 		setContentView(R.layout.my_mileage);
+		
+		/* 구식 방법
 		m_list = (ListView) findViewById(R.id.id_list);
 		m_list.setOnItemClickListener(onItemClick);
+		*/
 		
+		if(isRunning<1){
+			isRunning = isRunning+1;
+			try {
+				myQRcode = MyQRPageActivity.qrCode;
+				getMyMileageList();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else{
+			Log.e(TAG, "이미 실행중..");
+		}
 	}
 
+	
+	/* 구식 방법을 사용하지 않음
+	
 	AdapterView.OnItemClickListener onItemClick = new AdapterView.OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
@@ -210,15 +295,14 @@ public class MyMileagePageActivity extends Activity {
 			// 실행문
 //			Toast.makeText(MyMileagePageActivity.this, "터치터치"+arg2+"이곳은:"+entriesFn.get(arg2).getCheckMileageMerchantsMerchantID(), Toast.LENGTH_SHORT).show();
 			Intent intent = new Intent(MyMileagePageActivity.this, MemberStoreInfoPage.class);
-			intent.putExtra("checkMileageMerchantsMerchantID", entriesFn.get(arg2).getCheckMileageMerchantsMerchantID());
-			intent.putExtra("idCheckMileageMileages", entriesFn.get(arg2).getIdCheckMileageMileages());
-			intent.putExtra("myMileage", entriesFn.get(arg2).getMileage());
+			intent.putExtra("checkMileageMerchantsMerchantID", entriesFn.get(arg2).getCheckMileageMerchantsMerchantID());		// 가맹점 아이디
+			intent.putExtra("idCheckMileageMileages", entriesFn.get(arg2).getIdCheckMileageMileages());					// 고유 식별 번호
+			intent.putExtra("myMileage", entriesFn.get(arg2).getMileage());			// 가맹점에 대한 내 마일리지
 			startActivity(intent);
 		}
 	};
-	
 
-
+*/
 	
 	
 	
@@ -281,6 +365,8 @@ public class MyMileagePageActivity extends Activity {
 							// 자신의 아이디를 넣어서 조회
 							obj.put("activateYn", "Y");
 							obj.put("checkMileageMembersCheckMileageId", myQRcode);
+							Log.i(TAG, "myQRcode::"+myQRcode);
+							
 						}catch(Exception e){
 							e.printStackTrace();
 						}
@@ -331,6 +417,7 @@ public class MyMileagePageActivity extends Activity {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 		StringBuilder builder = new StringBuilder();
 		String line =null;
+		int doneCnt = 0;
 		try {
 			while((line=reader.readLine())!=null){
 				builder.append(line).append("\n");
@@ -354,22 +441,31 @@ public class MyMileagePageActivity extends Activity {
 				entries = new ArrayList<CheckMileageMileage>(max);
 				if(max>0){
 					for ( int i = 0; i < max; i++ ){
+						doneCnt++;
 						JSONObject jsonObj = jsonArray2.getJSONObject(i).getJSONObject("checkMileageMileage");
 						//  idCheckMileageMileages,  mileage,  modifyDate,  checkMileageMembersCheckMileageID,  checkMileageMerchantsMerchantID
 						// 객체 만들고 값 받은거 넣어서 저장..  저장값: 인덱스번호, 수정날짜, 아이디, 가맹점아이디.
 						entries.add(new CheckMileageMileage(jsonObj.getString("idCheckMileageMileages"),
 								jsonObj.getString("mileage"),jsonObj.getString("modifyDate"),
-								jsonObj.getString("checkMileageMembersCheckMileageId"),jsonObj.getString("checkMileageMerchantsMerchantId")));
+								jsonObj.getString("checkMileageMembersCheckMileageId"),jsonObj.getString("checkMileageMerchantsMerchantId")
+						));
 						
 					}
 					//    			 2차 작업. 가맹점 이름, 이미지 가져와서 추가로 넣음.
 					//    			 array 채로 넘기고 돌려받을수 있도록 한다..
 				}
 			} catch (JSONException e) {
+				doneCnt--;
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}finally{
-				getMerchantInfo(entries,max);
+				Log.e(TAG, ""+doneCnt);
+				if(doneCnt>0){
+					getMerchantInfo(entries,max);
+				}else{		// 데이터 없어도 로딩은 끝내쟈
+					entriesFn = entries;
+					showInfo();
+				}
 			}
 		}else{			// 요청 실패시	 토스트 띄우고 화면 유지.
 			Toast.makeText(MyMileagePageActivity.this, "오류가 발생하였습니다.\n잠시 후 다시 시도하여 주십시오.", Toast.LENGTH_SHORT).show();
@@ -396,6 +492,7 @@ public class MyMileagePageActivity extends Activity {
 								// 보낼 데이터 세팅
 								obj.put("activateYn", "Y");
 								obj.put("merchantId", merchantId2);
+								Log.i(TAG, "merchantId::"+merchantId2);
 							}catch(Exception e){
 								e.printStackTrace();
 							}
@@ -429,10 +526,23 @@ public class MyMileagePageActivity extends Activity {
 									jsonObject = new JSONObject(tempstr);
 									jsonObject2 = jsonObject.getJSONObject("checkMileageMerchant");
 									entries3.get(j).setMerchantName(jsonObject2.getString("companyName"));// 가맹점 정보를 받는다. 이름
-									entries3.get(j).setMerchantImg(jsonObject2.getString("profileImageUrl"));  // 가맹점 이미지 URL 저장한다.
+									if(jsonObject2.getString("workPhoneNumber")==null || jsonObject2.getString("workPhoneNumber").length()<1){	// 가맹점 정보를 받는다. 전번
+										entries3.get(j).setWorkPhoneNumber("");// 가맹점 정보를 받는다. 전번
+									}else{
+										entries3.get(j).setWorkPhoneNumber("(☎)"+jsonObject2.getString("workPhoneNumber"));
+									}
+									// 가맹점 이미지 URL 저장한다.
+									if(jsonObject2.getString("profileImageUrl").length()>0){
+										entries3.get(j).setMerchantImg(jsonObject2.getString("profileImageUrl"));
+									}else{
+										entries3.get(j).setMerchantImg("http://www.carsingh.com/img/noImage.jpg");		// 인터넷에서 퍼온 기본 이미지 url --> 나중에 안전한 url 또는 이미지파일로 변경할 것.
+									}
+									
 									// 가맹점 이미지 URL로부터 이미지 받아와서 도메인에 저장한다.
 									Bitmap bm = LoadImage(entries3.get(j).getMerchantImg());
-									entries3.get(j).setMerchantImage(bm);
+									// bm 이미지 크기 변환 .
+									BitmapDrawable bmpResize = BitmapResizePrc(bm, fImgSize/4, fImgSize/4);  
+									entries3.get(j).setMerchantImage(bmpResize.getBitmap());
 								}
 							}catch(Exception e){ 
 								e.printStackTrace();
@@ -459,6 +569,9 @@ public class MyMileagePageActivity extends Activity {
 					}
 				}
 		).start();
+		
+		
+		//  가져온 데이터 화면에 보여주기.
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -544,25 +657,77 @@ public class MyMileagePageActivity extends Activity {
 	}
 
 	
-	
-	
 	@Override
 	public void onResume(){
 		super.onResume();
-		if(isRunning<1){
-			isRunning = isRunning+1;
-			try {
-				myQRcode = MyQRPageActivity.qrCode;
-				getMyMileageList();
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		app_end = 0;
+	}
+	
+	/*
+	 *  닫기 버튼 2번 누르면 종료 됨.(non-Javadoc)
+	 * @see android.app.Activity#onBackPressed()
+	 */
+	@Override
+	public void onBackPressed() {
+		Log.i("MainTabActivity", "finish");		
+		if(app_end == 1){
+			Log.e(TAG,"kill all");
+			mainActivity.finish();
+			dummyActivity.finish();		// 더미도 종료
+			DummyActivity.count = 0;		// 개수 0으로 초기화 시켜준다. 다시 실행될수 있도록
+			finish();
 		}else{
-			Log.e(TAG, "이미 실행중..");
+			app_end = 1;
+			Toast.makeText(MyMileagePageActivity.this, "뒤로가기 버튼을 한번더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show();
 		}
 	}
+	
+	
+	////////////////////////   하드웨어 메뉴 버튼.  ////////////////
+	
+	 @Override
+	    public boolean onCreateOptionsMenu(Menu menu) {
+	        menu.add(Menu. NONE, Menu.FIRST+1, Menu.NONE, "새로 고침" );             // 신규등록 메뉴 추가.
+//	          getMenuInflater().inflate(R.menu.activity_main, menu);
+	        return (super .onCreateOptionsMenu(menu));
+	    }
+	   
+	    // 옵션 메뉴 특정 아이템 클릭시 필요한 일 처리
+	    @Override
+	    public boolean onOptionsItemSelected(MenuItem item){
+	      return (itemCallback(item)|| super.onOptionsItemSelected(item));
+	    }
+	   
+	    // 아이템 아이디 값 기준 필요한 일 처리
+	    public boolean itemCallback(MenuItem item){
+	      switch(item.getItemId()){
+	      case Menu. FIRST+1:
+//	    	  Toast.makeText(MyMileagePageActivity.this, "123123", Toast.LENGTH_SHORT).show();
+//	                Intent intent = new Intent(UserManagementActivity.this,AddUserActivity.class);        // example에서 이름
+//	            Intent intent = new Intent(MainActivity.this ,AddUserActivity.class);
+//	            startActivity(intent);
+	    	  if(isRunning<1){
+	  			isRunning = isRunning+1;
+	  			try {
+	  				myQRcode = MyQRPageActivity.qrCode;
+	  				getMyMileageList();
+	  			} catch (JSONException e) {
+	  				// TODO Auto-generated catch block
+	  				e.printStackTrace();
+	  			} catch (IOException e) {
+	  				// TODO Auto-generated catch block
+	  				e.printStackTrace();
+	  			}
+	  		}else{
+	  			Log.e(TAG, "이미 실행중..");
+	  		}
+	             return true ;
+	      }
+	      return false;
+	    }
+	
+	////////////////////////////////////////////////////////////
+	
+	
+	
 }
