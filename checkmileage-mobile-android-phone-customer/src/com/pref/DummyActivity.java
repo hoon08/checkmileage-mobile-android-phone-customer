@@ -64,4 +64,14 @@ public class DummyActivity extends Activity {
     		}
     	return isRunning;
     	}
+	
+	
+	
+	
+	// mainActivity.finish();		// 메인 종료 -> 리시버 종료
+	
+	
+	
+	
+	
 }

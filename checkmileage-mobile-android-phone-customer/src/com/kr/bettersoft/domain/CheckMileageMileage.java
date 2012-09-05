@@ -1,23 +1,31 @@
 package com.kr.bettersoft.domain;
 
-// 내 마일리지 목록 보기 용도. 가맹점 정보는 가져온 정보들 중에서 가맹점 ID를 통해 2차 검색을 하여 가져온다.
+/*
+ * 가맹점 정보, 해당 가맹점에 대한 마일리지가 있으므로 내 마일리지 목록에 사용된다.
+ * 
+ * 가맹점 이미지, 이름이 있으므로, 가맹점 목록 보기에서도 사용 된다.
+ * 
+ * 가맹점 이미지는 가맹점 정보를 받아오고 난 후에 그 중 가맹점 ID 를 통해 2차 검색을 하여 가져온다.
+ */
 
 import android.graphics.Bitmap;
 
 public class CheckMileageMileage {
-	private String idCheckMileageMileages;
-	private String mileage;
-	private String activateYN;
-	private String modifyDate;
-	private String registerDate;
-	private String checkMileageMembersCheckMileageID;
-	private String checkMileageMerchantsMerchantID;
+	private String idCheckMileageMileages;						// 고유식별 번호. key
+	private String mileage;										// 가맹점에 대한 마일리지
+	private String activateYN;									// Y 
+	private String modifyDate;									// 수정일
+	private String registerDate;								// 등록일
+	private String checkMileageMembersCheckMileageID;			// 사용자 ID 
+	private String checkMileageMerchantsMerchantID;				// 가맹점 ID
 	
-	private String merchantName;
-	private String merchantImg;
-	private Bitmap merchantImage;
+	private String workPhoneNumber;
 	
-	public String getIdCheckMileageMileages() {
+	private String merchantName;						// 가맹점 이름
+	private String merchantImg;							// 가맹점 이미지 URL
+	private Bitmap merchantImage;						// 가맹점 이미지
+	
+	public String getIdCheckMileageMileages() {			// 고유 식별 번호
 		return idCheckMileageMileages;
 	}
 	public void setIdCheckMileageMileages(String idCheckMileageMileages) {
@@ -62,6 +70,13 @@ public class CheckMileageMileage {
 		this.checkMileageMerchantsMerchantID = checkMileageMerchantsMerchantID;
 	}
 	
+	
+	public String getWorkPhoneNumber() {
+		return workPhoneNumber;
+	}
+	public void setWorkPhoneNumber(String workPhoneNumber) {
+		this.workPhoneNumber = workPhoneNumber;
+	}
 	public String getMerchantName() {
 		return merchantName;
 	}

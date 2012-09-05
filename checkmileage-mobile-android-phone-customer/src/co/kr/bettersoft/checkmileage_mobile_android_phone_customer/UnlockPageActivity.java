@@ -1,5 +1,5 @@
 package co.kr.bettersoft.checkmileage_mobile_android_phone_customer;
-// 암호 입력
+// 암호 입력 - 사용 안함
 import android.app.Activity;
 import android.os.Bundle;
 

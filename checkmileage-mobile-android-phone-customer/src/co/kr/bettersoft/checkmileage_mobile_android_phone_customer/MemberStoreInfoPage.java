@@ -25,8 +25,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.MyMileagePageActivity.MyAdapter;
-
 import com.kr.bettersoft.domain.CheckMileageMerchants;
 import com.kr.bettersoft.domain.CheckMileageMileage;
 
@@ -164,9 +162,12 @@ public class MemberStoreInfoPage extends Activity {
 	    }
 		
 		Intent rIntent = getIntent();
-		merchantId = rIntent.getStringExtra("checkMileageMerchantsMerchantID");
-		myMileage = rIntent.getStringExtra("myMileage");
-		idCheckMileageMileages = rIntent.getStringExtra("idCheckMileageMileages");
+		merchantId = rIntent.getStringExtra("checkMileageMerchantsMerchantID");			// 가맹점 아디
+		myMileage = rIntent.getStringExtra("myMileage");							// 가맹점에 대한 내 마일리지
+		if(myMileage==null||myMileage.length()<1){
+			myMileage = "0";
+		}
+		idCheckMileageMileages = rIntent.getStringExtra("idCheckMileageMileages");		// 내 아디
 		merchantData.setMerchantID(merchantId);
 		if(merchantId.length()>0){
 			try {
@@ -435,7 +436,7 @@ public class MemberStoreInfoPage extends Activity {
 		// check
 		width = resizedBitmap.getWidth();
 		height = resizedBitmap.getHeight();
-		Log.i("ImageResize", "Image Resize Result : " + Boolean.toString((newHeight==height)&&(newWidth==width)) );
+//		Log.i("ImageResize", "Image Resize Result : " + Boolean.toString((newHeight==height)&&(newWidth==width)) );
 
 		// make a Drawable from Bitmap to allow to set the BitMap
 		// to the ImageView, ImageButton or what ever

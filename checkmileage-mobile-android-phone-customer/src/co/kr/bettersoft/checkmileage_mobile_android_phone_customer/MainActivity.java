@@ -17,6 +17,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -39,6 +40,7 @@ import com.google.android.gcm.GCMRegistrar;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.pref.DummyActivity;
 import com.pref.Password;
 import com.pref.PrefActivityFromResource;
 
@@ -50,14 +52,24 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.app.Activity;
+import android.app.ListActivity;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.Toast;
 
 /* intro 화면
@@ -69,7 +81,13 @@ import android.widget.Toast;
  */
 
 public class MainActivity extends Activity {
+	public static Activity mainActivity;
+	
 	String TAG = "MainActivity";
+	
+	String controllerName = "";
+	String methodName = "";
+	
 	// 핸들러
 	Handler handler = new Handler(){
 		@Override
@@ -100,14 +118,89 @@ public class MainActivity extends Activity {
 
 
 	int waitEnd = 0;		// test GCM 대기용
+	int slow = 0;
+	
+	// 테이블 생성 쿼리.
+	private static final String Q_CREATE_TABLE = "CREATE TABLE user_info (" +
+	       "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+	       "key_of_data TEXT," +
+	       "value_of_data TEXT" +
+	       ");" ;
 
+	// 테이블 조회 쿼리
+	private final String Q_GET_LIST = "SELECT * FROM user_info"
+	             + " WHERE key_of_data = 'user_img'";
+    
+	
+	//----------------------- SQLite -----------------------//
+	SQLiteDatabase db = null;
+	public void initDB(){
+		Log.i(TAG,"initDB");
+		// db 관련 작업 초기화, DB 열어 SQLiteDatabase 인스턴스 생성          db 열거나 없으면 생성
+	     if(db== null ){
+	          db= openOrCreateDatabase( "sqlite_carrotDB.db",             
+	          SQLiteDatabase.CREATE_IF_NECESSARY ,null );
+	    }
+	     // 테이블에서 데이터 가져오기 전 테이블 생성 확인 없으면 생성.
+	      checkTableIsCreated(db);
+	}
+	public void checkTableIsCreated(SQLiteDatabase db){		// user_info 라는 이름의 테이블을 검색하고 없으면 생성.
+		Log.i(TAG, "checkTableIsCreated");
+		Cursor c = db.query( "sqlite_master" , new String[] { "count(*)"}, "name=?" , new String[] { "user_info"}, null ,null , null);
+	      Integer cnt=0;
+	      c.moveToFirst();                                 // 커서를 첫라인으로 옮김
+	       while(c.isAfterLast()== false ){                   // 마지막 라인이 될때까지 1씩 증가하면서 본다
+	            cnt=c.getInt(0);
+	            c.moveToNext();
+	      }
+	       //커서는 사용 직후 닫는다
+	      c.close();
+	       //테이블 없으면 생성
+	       if(cnt==0){
+	            db.execSQL(Q_CREATE_TABLE);
+	      }
+	}
+	public void getDBData(){
+		Log.i(TAG, "getDBData");
+		String data_key="";
+		String data_value="";
+		// 조회
+		Cursor c = db.rawQuery( Q_GET_LIST, null );
+//		Log.i(TAG, Integer.toString(c.getCount()));			// qr img
+		if(c.getCount()==0){
+			Log.i(TAG, "saved QR Image NotExist");
+//			ContentValues initialValues = new ContentValues(); 			// 데이터 넣어본거. 사용 안함. 없으면 없는거라...
+//			initialValues.put("key_of_data", "user_img"); 
+//			initialValues.put("key_of_value", "1234"); 
+//			db.insert("user_info", null, initialValues); 
+		}else{
+			Log.i(TAG, "saved QR Image Exist");				// 데이터 있으면 꺼내서 사용함.
+			 c.moveToFirst();                                 // 커서를 첫라인으로 옮김
+		       while(c.isAfterLast()== false ){                   // 마지막 라인이 될때까지 1씩 증가하면서 본다
+		    	   data_key = c.getString(1);	
+				   data_value = c.getString(2);	
+		            c.moveToNext();
+		       }
+//			Log.i(TAG, "key:"+data_key+"/value:"+data_value);		// idx / key / value
+			byte[] decodedString = Base64.decode(data_value, Base64.DEFAULT); 
+			Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+			MyQRPageActivity.savedBMP = decodedByte;
+			Log.i(TAG,"QR이미지전달");
+		}
+		 c.close();
+	}
+	////---------------------SQLite ----------------------////
+	
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		
 		Log.i("MainActivity", "Success Starting MainActivity");
+		mainActivity = MainActivity.this;		// 다른데서 여기 종료시키기 위함.
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.intro);
-		
+		initDB();
+		getDBData();
+		db.close();
 		// prefs
 		sharedPrefCustom = getSharedPreferences("MyCustomePref",
 				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
@@ -133,44 +226,70 @@ public class MainActivity extends Activity {
 		}else{
 //			Toast.makeText(MainActivity.this, "opened", Toast.LENGTH_SHORT).show();	
 			loginYN = false;		// 문단속. 다시 켰을때 또 뜨라고
+			
+			
 			nextProcessing();
 		}
 	}
 
 	public void nextProcessing(){
-		////////////////////////////////////////////GCM 세팅        ///////////////////////////////////////////////////////////////		
-		GCMRegistrar.checkDevice(this);
-		GCMRegistrar.checkManifest(this);
+		
+//		////////////////////////////////////////////GCM 세팅        ///////////////////////////////////////////////////////////////		
+//		GCMRegistrar.checkDevice(this);					// 임시 중지  ->해제
+//		GCMRegistrar.checkManifest(this);				
+//		Log.i(TAG, "registerReceiver1 ");
+//		final String regId = GCMRegistrar.getRegistrationId(this);
+//		final Context context = this;
+//		mRegisterTask = new AsyncTask<Void, Void, Void>() {
+//			@Override
+//			protected Void doInBackground(Void... params) {
+////				boolean registered =
+////					ServerUtilities.register(context, regId);
+////				if (!registered) {
+//				if(regId==null || regId.length()<1){		// 등록 되어있으면 재등록. --> 유지해봄.. 안되있으면?
+////					GCMRegistrar.unregister(context);
+//					reg();
+//				}else{
+//					Log.e(TAG,"already have a reg ID::"+regId);
+//					try {
+//						REGISTRATION_ID = regId;
+//						updateMyGCMtoServer();
+//						testGCM(REGISTRATION_ID);				
+//					} catch (JSONException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					} catch (IOException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				}
+//				return null;
+//			}
+//			@Override
+//			protected void onPostExecute(Void result) {
+//				mRegisterTask = null;
+//			}
+//		};
+//		mRegisterTask.execute(null, null, null);
+//		try{
+////			reg();
+//			registerReceiver(mHandleMessageReceiver, new IntentFilter(DISPLAY_MESSAGE_ACTION));			// 리시버 등록.
+//			
+//		}catch(Exception e){
+//			e.printStackTrace();
+//		}
 
-		Log.e(TAG, "registerReceiver1 ");
-		final String regId = GCMRegistrar.getRegistrationId(this);
-		final Context context = this;
-		mRegisterTask = new AsyncTask<Void, Void, Void>() {
-			@Override
-			protected Void doInBackground(Void... params) {
-				boolean registered =
-					ServerUtilities.register(context, regId);
-				if (!registered) {
-					GCMRegistrar.unregister(context);
-				}
-				return null;
-			}
-			@Override
-			protected void onPostExecute(Void result) {
-				mRegisterTask = null;
-			}
-		};
-		mRegisterTask.execute(null, null, null);
-		try{
-			registerReceiver(mHandleMessageReceiver, new IntentFilter(DISPLAY_MESSAGE_ACTION));			// 리시버 등록.
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-
-		GCMRegistrar.register(this, SENDER_ID);
-		reg();		// 천천히 등록한다. (GCM 서버에 등록할 시간이 필요..)
+//		if((!(ServerUtilities.register(context, regId))) || (regId.length()<1)){
+//			GCMRegistrar.register(this, SENDER_ID);		// 하다보면 하게 되서..
+//			reg();		// 천천히 등록한다. (GCM 서버에 등록할 시간이 필요..)
+//		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////        
 
+			// 임시 중지 해제 //
+		
+		
+		
+		
 		// 설정 파일 통해 QR 등 설정 정보 얻기... 추후 설정 때 사용.
 		//readQRFromPref();
 
@@ -206,6 +325,7 @@ public class MainActivity extends Activity {
 								Log.i("MainActivity", "QR code checked success, Go Main Pages::"+myQR);
 								
 								Intent intent = new Intent(MainActivity.this, Main_TabsActivity.class);
+								intent.putExtra("myQR", myQR);
 								startActivity(intent);
 								finish();		// 다른 액티비티를 호출하고 자신은 종료. 
 							}else {				// QR 코드가 없으면 설치후 최초 실행하는 사람. 
@@ -306,7 +426,7 @@ public class MainActivity extends Activity {
 				new Runnable(){
 					public void run(){
 						try {
-							Thread.sleep(100);
+							Thread.sleep(2000);
 						} catch (InterruptedException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -336,13 +456,16 @@ public class MainActivity extends Activity {
 	@Override			// 이 액티비티(인트로)가 종료될때 실행. (액티비티가 넘어갈때 종료됨)
 	protected void onDestroy() {
 		super.onDestroy();
-		if (mRegisterTask != null) {
-			mRegisterTask.cancel(true);
-		}
-		try{
-			unregisterReceiver(mHandleMessageReceiver);		// 리시버 해제
-			Log.e(TAG, "unregisterReceiver ");
-		}catch (Exception e){}
+		// 임시 중지 -> 해제
+//		if (mRegisterTask != null) {
+//			mRegisterTask.cancel(true);
+//		}
+//		try{
+//			unregisterReceiver(mHandleMessageReceiver);		// 리시버 해제
+////			unreg();			// 리시버 언레지 -> 잘 동작함 -> reg id 가 null 이 되서 다음 실행이 안됨.
+//			Log.e(TAG, "unregisterReceiver ");
+//		}catch (Exception e){}
+		 // 임시 중지 해제 //
 		//        registerReceiver(mHandleMessageReceiver, new IntentFilter(DISPLAY_MESSAGE_ACTION));			// 리시버 등록.
 		//        Log.e(TAG, "registerReceiver and bye");		
 		//        GCMRegistrar.onDestroy(this);
@@ -363,7 +486,7 @@ public class MainActivity extends Activity {
 		public void onReceive(Context context, Intent intent) {
 			//            String newMessage = intent.getExtras().getString(EXTRA_MESSAGE);
 			//            mDisplay.append(newMessage + "\n");
-//			        	Toast.makeText(MainActivity.this, "(테스트)메시지가 도착하였습니다.", Toast.LENGTH_SHORT).show();		// 동작 됨..
+			        	Toast.makeText(MainActivity.this, "(테스트)메시지가 도착하였습니다."+intent.getExtras().getString(EXTRA_MESSAGE), Toast.LENGTH_SHORT).show();		// 동작 됨..
 		}
 	};
 	public void testGCM(String registrationId) throws JSONException, IOException {
@@ -371,7 +494,7 @@ public class MainActivity extends Activity {
 		JSONObject jsonMember = new JSONObject();
 		jsonMember.put("registrationId", registrationId);
 		String jsonString = "{\"checkMileageMember\":" + jsonMember.toString() + "}";
-		Log.i("testGCM", "jsonMember : " + jsonString);
+//		Log.i("testGCM", "jsonMember : " + jsonString);
 		try {
 			URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/checkMileageMemberController/testGCM");
 			HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
@@ -392,37 +515,137 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	
 	public void checkDoneAndDoGCM(){
-		REGISTRATION_ID = GCMRegistrar.getRegistrationId(this);
-		if(REGISTRATION_ID.length()<1){
+		slow = slow +1;
+		if(slow==3){
+			slow = 0;
+			slowingReg();
+		}
 			new Thread(
 					new Runnable(){
 						public void run(){
 							try {
-								Log.i("testGCM", "wait..");
-								Thread.sleep(1000);
-								checkDoneAndDoGCM();
+								Thread.sleep(2000);
 							} catch (InterruptedException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
+							}finally{
+								REGISTRATION_ID = GCMRegistrar.getRegistrationId(getThis());	
+								if(REGISTRATION_ID.length()<1){
+									Log.i("testGCM", "wait..");
+									checkDoneAndDoGCM();
+								}else{
+									Log.i("testGCM", "now go with : "+REGISTRATION_ID);
+									try {
+										updateMyGCMtoServer();
+										testGCM(REGISTRATION_ID);
+									} catch (JSONException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									} catch (IOException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
 							}
 						}
 					}
+					}
 			).start();
-		}else{
-			Log.i("testGCM", "now go with : "+REGISTRATION_ID);
-//			try {
-//				testGCM(REGISTRATION_ID);
-//			} catch (JSONException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-		}
 	}
 
+	public Context getThis(){
+		return this;
+	}
+	
+	public void slowingReg(){
+		GCMRegistrar.register(this, SENDER_ID);
+	}
+	
+	
+	// 서버에 GCM 아이디 업뎃한다.
+	public void updateMyGCMtoServer(){
+		Log.i(TAG, "updateMyGCMtoServer");
+		controllerName = "checkMileageMemberController";
+		methodName = "updateRegistrationId";
+		// 서버 통신부
+		new Thread(
+				new Runnable(){
+					public void run(){
+						JSONObject obj = new JSONObject();
+						try{
+							obj.put("activateYn", "Y");
+							obj.put("checkMileageId", myQR);			  
+							obj.put("registrationId", REGISTRATION_ID);							
+							obj.put("modifyDate", getNow());			
+							
+							Log.e(TAG, "checkMileageId:"+myQR);
+							Log.e(TAG, "registrationId:"+REGISTRATION_ID);
+							Log.e(TAG, "modifyDate:"+getNow());
+							
+							/*
+							 * checkMileageId
+								registerationId
+								activateYn
+								modifyDate
+							 */
+							//  checkMileageMember  CheckMileageMember
+						}catch(Exception e){
+							e.printStackTrace();
+						}
+						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
+						try{
+							URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+							connection2.setDoOutput(true);
+							connection2.setInstanceFollowRedirects(false);
+							connection2.setRequestMethod("POST");
+							connection2.setRequestProperty("Content-Type", "application/json");
+							OutputStream os2 = connection2.getOutputStream();
+							os2.write(jsonString.getBytes());
+							os2.flush();
+							System.out.println("postUrl      : " + postUrl2);
+							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+							int responseCode = connection2.getResponseCode();
+							if(responseCode==200||responseCode==204){
+								Log.i(TAG, "S to update GCM ID to server");
+								// 조회한 결과를 처리.
+							}else{
+								Log.i(TAG, "F to update GCM ID to server");
+							}
+						}catch(Exception e){ 
+							e.printStackTrace();
+						}
+					}
+				}
+		).start();
+	}
+	
+	
+	
+	public String getNow(){
+		// 일단 오늘.
+		Calendar c = Calendar.getInstance();
+		int todayYear = c.get(Calendar.YEAR);
+		int todayMonth = c.get(Calendar.MONTH)+1;			// 꺼내면 0부터 시작이니까 +1 해준다.
+		int todayDay = c.get(Calendar.DATE);
+		int todayHour = c.get(Calendar.HOUR_OF_DAY);
+		int todayMinute = c.get(Calendar.MINUTE);
+		
+		String tempMonth = Integer.toString(todayMonth);
+		String tempDay = Integer.toString(todayDay);
+		String tempHour = Integer.toString(todayHour);
+		String tempMinute = Integer.toString(todayMinute);
+		
+		if(tempMonth.length()==1) tempMonth = "0"+tempMonth;
+		if(tempDay.length()==1) tempDay = "0"+tempDay;
+		if(tempHour.length()==1) tempHour = "0"+tempHour;
+		if(tempMinute.length()==1) tempMinute = "0"+tempMinute;
+		
+		String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute;
+		return nowTime;
+//		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
+	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////   
 
@@ -458,10 +681,8 @@ public class MainActivity extends Activity {
 						HttpClient client = new DefaultHttpClient(); 
 						HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000); 
 						HttpResponse response = null; 
-						Log.e(TAG, "1");
 						JSONObject obj = new JSONObject();
 						try{
-							Log.e(TAG, "2");
 							obj.put("merchantId", "a1b2");
 							obj.put("checkMileageId", "11");
 							obj.put("registerDate", "2012-08-08");
@@ -515,6 +736,5 @@ public class MainActivity extends Activity {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
 
 
-
-
+	
 }

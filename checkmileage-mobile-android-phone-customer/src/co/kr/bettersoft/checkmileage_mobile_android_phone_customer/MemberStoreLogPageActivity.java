@@ -14,8 +14,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.MyMileagePageActivity.MyAdapter;
-
 import com.kr.bettersoft.domain.CheckMileageMemberMileageLogs;
 import com.kr.bettersoft.domain.CheckMileageMileage;
 
@@ -169,7 +167,7 @@ public class MemberStoreLogPageActivity extends Activity {
 	 * ------------------------------------
 	 */
 	public void getMyMileageList() throws JSONException, IOException {
-		Log.i(TAG, "getMyMileageList:::"+idCheckMileageMileages);
+		Log.i(TAG, "getMyMileageList:::"+idCheckMileageMileages);		// ÀÎµ¦½º ¹øÈ£..
 		controllerName = "checkMileageMemberMileageLogController";
 		methodName = "selectMemberMileageLogList";
 		new Thread(

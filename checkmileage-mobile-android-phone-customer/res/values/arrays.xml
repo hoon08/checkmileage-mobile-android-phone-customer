@@ -14,11 +14,11 @@
 	<string-array name="pref_user_sex1">
 		<item>남성</item>
 		<item>여성</item>
+		<item>비공개</item>
 	</string-array>
 	<string-array name="pref_user_sex2">
 		<item>남성</item>
 		<item>여성</item>
+		<item>비공개</item>
 	</string-array>
-	
-	
 </resources>

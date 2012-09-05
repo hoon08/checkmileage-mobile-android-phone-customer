@@ -163,4 +163,5 @@ public class MemberStoreMapPageActivity extends MapActivity {
 			return items.size();
 		}
 	}
+	
 }

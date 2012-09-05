@@ -36,22 +36,22 @@
 	     android:label="@string/app_name"
 	    >
 	 	<uses-library android:name="com.google.android.maps" />
-	    <activity android:name="CreateQRPageActivity" android:screenOrientation="portrait"></activity>
-	    <activity android:name="Main_TabsActivity" android:screenOrientation="portrait"></activity>
-	    <activity android:name="MainActivity" android:screenOrientation="portrait" >
+	    <activity android:name="CreateQRPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+	    <activity android:name="Main_TabsActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+	    <activity android:name="MainActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light"  >
 	    </activity>
-	    <activity android:name="MemberStoreInfoPage" android:screenOrientation="portrait"></activity>
-	    <activity android:name="MemberStoreListPageActivity" android:screenOrientation="portrait"></activity>
-	    <activity android:name="MemberStoreLogPageActivity" android:screenOrientation="portrait"></activity>
-	    <activity android:name="MemberStoreMapPageActivity" android:screenOrientation="portrait"></activity>
-	    <activity android:name="MyMileagePageActivity" android:screenOrientation="portrait"></activity>
-	    <activity android:name="MyQRPageActivity" android:screenOrientation="portrait"></activity>
-	    <activity android:name="No_QR_PageActivity" android:screenOrientation="portrait"></activity>
+	    <activity android:name="MemberStoreInfoPage" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+	    <activity android:name="MemberStoreListPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+	    <activity android:name="MemberStoreLogPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+	    <activity android:name="MemberStoreMapPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+	    <activity android:name="MyMileagePageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+	    <activity android:name="MyQRPageActivity" android:screenOrientation="portrait"  android:theme="@android:style/Theme.Light" ></activity>
+	    <activity android:name="No_QR_PageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
 	    <activity android:name="ScanQRPageActivity"
 				  android:theme="@android:style/Theme.Light.NoTitleBar"
                   android:label="@string/app_name"
                   android:configChanges="orientation"
-                  android:screenOrientation="portrait">
+                  android:screenOrientation="portrait" >
 	        <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -67,24 +67,24 @@
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
-	    <activity android:name="Settings_AboutPageActivity" android:screenOrientation="portrait"></activity>
-	    <activity android:name="Settings_FAQPageActivity" android:screenOrientation="portrait"></activity>
-	    <activity android:name="Settings_NotifyPageActivity" android:screenOrientation="portrait"></activity>
-		<activity android:name="Settings_MyInfoPageActivity" android:screenOrientation="portrait"></activity>
-		<activity android:name="Settings_InfoPageActivity" android:screenOrientation="portrait"></activity>
-		<activity android:name="Settings_TermsPageActivity" android:screenOrientation="portrait"></activity>
-		<activity android:name="Settings_LeavePageActivity" android:screenOrientation="portrait"></activity>
-		<activity android:name="SettingsPageActivity" android:screenOrientation="portrait"></activity>
-		<activity android:name="Settings_PasswordPageActivity" android:screenOrientation="portrait"></activity>
-		<activity android:name="UnlockPageActivity" android:screenOrientation="portrait"></activity>
+	    <activity android:name="Settings_AboutPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+	    <activity android:name="Settings_FAQPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+	    <activity android:name="Settings_NotifyPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="Settings_MyInfoPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="Settings_InfoPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="Settings_TermsPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="Settings_LeavePageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="SettingsPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="Settings_PasswordPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="UnlockPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
 		<activity android:name="CommonUtils"></activity>
 		
 		
-		<activity android:name="com.pref.MainActivity_disabled" android:screenOrientation="portrait"></activity>
-		<activity android:name="com.pref.Password" android:windowSoftInputMode="stateAlwaysVisible"  android:screenOrientation="portrait"></activity>
-		<activity android:name="com.pref.Profile" android:screenOrientation="portrait"></activity>
-		<activity android:name="com.pref.PrefActivityFromResource" android:screenOrientation="portrait"></activity>
-		<activity android:name="PrefActivityFromIntent" android:screenOrientation="portrait"></activity>
+		<activity android:name="com.pref.MainActivity_disabled" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="com.pref.Password" android:windowSoftInputMode="stateAlwaysVisible"  android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="com.pref.Profile" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="com.pref.PrefActivityFromResource" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="PrefActivityFromIntent" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
 		
 		<receiver
             android:name="com.google.android.gcm.GCMBroadcastReceiver"
@@ -106,16 +106,17 @@
           application uses a custom BroadcastReceiver that redefines its name.
         -->
         <service android:name=".GCMIntentService" />
-        <activity android:name="CertificationStep1" android:screenOrientation="portrait"></activity>
-        <activity android:name="CertificationStep2" android:screenOrientation="portrait"></activity>
-        <activity android:name="myWebView" android:screenOrientation="portrait"></activity>
+        <activity android:name="CertificationStep1" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+        <activity android:name="CertificationStep2" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+        <activity android:name="myWebView" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
         
-        <activity android:name="com.pref.DummyActivity" >
+        <activity android:name="com.pref.DummyActivity"   >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="UpdateLocationToServerActivity"  ></activity>
         
         
 	</application>

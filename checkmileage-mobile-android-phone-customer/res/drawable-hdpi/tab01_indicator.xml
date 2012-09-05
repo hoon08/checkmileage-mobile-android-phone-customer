@@ -5,7 +5,7 @@
     <item android:state_selected="false" android:drawable="@drawable/tab01" />
  
     <item android:state_selected="true" android:drawable="@drawable/tab01ov" />
- 
+
     <item android:drawable="@drawable/tab01" />
  
 </selector>

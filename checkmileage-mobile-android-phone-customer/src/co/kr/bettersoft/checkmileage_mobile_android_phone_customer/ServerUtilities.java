@@ -67,12 +67,12 @@ public final class ServerUtilities {
 //                post(serverUrl, params);
 			GCMRegistrar.setRegisteredOnServer(context, true);
 			String message = context.getString(R.string.server_registered);
-			CommonUtilities.displayMessage(context, message);
+//			CommonUtilities.displayMessage(context, message);
 			return true;
         }
         String message = context.getString(R.string.server_register_error,
                 MAX_ATTEMPTS);
-        CommonUtilities.displayMessage(context, message);
+//        CommonUtilities.displayMessage(context, message);
         return false;
     }
 
