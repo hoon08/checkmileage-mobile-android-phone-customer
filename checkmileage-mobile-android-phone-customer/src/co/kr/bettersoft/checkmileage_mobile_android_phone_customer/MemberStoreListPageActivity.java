@@ -135,7 +135,9 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 						gridView.setVisibility(8);			//   0 visible   4 invisible   8 gone
 						emptyView.setVisibility(0);
 					}
-					isRunning = isRunning -1;		// 진행중이지 않음. - 추가 조작으로 새 조회 가능.
+					isRunning = 0;		// 진행중이지 않음. - 이후 추가 조작으로 새 조회 가능.
+					searchSpinnerArea.setEnabled(true);
+					searchSpinnerType.setEnabled(true);
 				}
 				if(b.getInt("order")==1){
 					// 프로그래스바 실행
@@ -291,40 +293,61 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 					}
 				}
 		).start();
-		// 서버 통신부
-		new Thread(
-				new Runnable(){
-					public void run(){
-						JSONObject obj = new JSONObject();
-						try{
-							obj.put("activateYn", "Y");
-							obj.put("businessArea01", searchWordArea);		// 지역		  
-							obj.put("businessKind03", searchWordType);		// 업종					// 고유 번호 얻으려면, 내 아이디도 필요...
-							obj.put("checkMileageId", myQRcode);			// 내 아이디
-							Log.e(TAG,"myQRcode::"+myQRcode);
-						}catch(Exception e){
-							e.printStackTrace();
-						}
-						String jsonString = "{\"checkMileageMerchant\":" + obj.toString() + "}";
-						try{
-							URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
-							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
-							connection2.setDoOutput(true);
-							connection2.setInstanceFollowRedirects(false);
-							connection2.setRequestMethod("POST");
-							connection2.setRequestProperty("Content-Type", "application/json");
-							OutputStream os2 = connection2.getOutputStream();
-							os2.write(jsonString.getBytes());
-							os2.flush();
-							System.out.println("postUrl      : " + postUrl2);
-							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
-							responseCode = connection2.getResponseCode();
-							if(responseCode==200||responseCode==204){
-								InputStream in =  connection2.getInputStream();
-								// 조회한 결과를 처리.
-								theData1(in);
-							}else{
-								// 에러나면 로딩바 없애고 다시 할수 있도록
+		
+		if(isRunning==0){		// 진행중에 다른 조작 사절
+			isRunning=1;
+			searchSpinnerArea.setEnabled(false);
+			searchSpinnerType.setEnabled(false);
+			// 서버 통신부
+			new Thread(
+					new Runnable(){
+						public void run(){
+							JSONObject obj = new JSONObject();
+							try{
+								obj.put("activateYn", "Y");
+								obj.put("businessArea01", searchWordArea);		// 지역		  
+								obj.put("businessKind03", searchWordType);		// 업종					// 고유 번호 얻으려면, 내 아이디도 필요...
+								obj.put("checkMileageId", myQRcode);			// 내 아이디
+								Log.e(TAG,"myQRcode::"+myQRcode);
+							}catch(Exception e){
+								e.printStackTrace();
+							}
+							String jsonString = "{\"checkMileageMerchant\":" + obj.toString() + "}";
+							try{
+								URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+								HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+								connection2.setDoOutput(true);
+								connection2.setInstanceFollowRedirects(false);
+								connection2.setRequestMethod("POST");
+								connection2.setRequestProperty("Content-Type", "application/json");
+								OutputStream os2 = connection2.getOutputStream();
+								os2.write(jsonString.getBytes());
+								os2.flush();
+								System.out.println("postUrl      : " + postUrl2);
+								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+								responseCode = connection2.getResponseCode();
+								if(responseCode==200||responseCode==204){
+									InputStream in =  connection2.getInputStream();
+									// 조회한 결과를 처리.
+									theData1(in);
+								}else{
+									// 결과가 에러면 로딩바 없애고 다시 할수 있도록
+									new Thread(
+											new Runnable(){
+												public void run(){
+													Message message = handler.obtainMessage();
+													Bundle b = new Bundle();
+													b.putInt("order", 2);
+													message.setData(b);
+													handler.sendMessage(message);
+												}
+											}
+									).start();
+									isRunning = 0;
+								}
+							}catch(Exception e){ 
+								e.printStackTrace();
+								// 실행중 에러나면 로딩바 없애고 다시 할수 있도록
 								new Thread(
 										new Runnable(){
 											public void run(){
@@ -337,27 +360,18 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 										}
 								).start();
 								isRunning = 0;
+								
 							}
-						}catch(Exception e){ 
-							e.printStackTrace();
-							// 에러나면 로딩바 없애고 다시 할수 있도록
-							new Thread(
-									new Runnable(){
-										public void run(){
-											Message message = handler.obtainMessage();
-											Bundle b = new Bundle();
-											b.putInt("order", 2);
-											message.setData(b);
-											handler.sendMessage(message);
-										}
-									}
-							).start();
-							isRunning = 0;
-							
 						}
 					}
-				}
-		).start();
+			).start();
+		}else{
+			Log.e(TAG,"이미 실행중입니다.");
+		}
+		
+		
+		
+		
 	}
 
 	/*
