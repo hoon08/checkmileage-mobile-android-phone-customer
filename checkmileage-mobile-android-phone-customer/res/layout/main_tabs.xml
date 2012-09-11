@@ -68,7 +68,7 @@
 	        android:background="#000000"
 	        android:textSize="20dp"
 	        android:textColor="@android:color/white"
-	        android:text="내QR코드"
+	        android:text="QR"
 	        android:clickable="true"
 	        android:focusableInTouchMode="true"
 	        />

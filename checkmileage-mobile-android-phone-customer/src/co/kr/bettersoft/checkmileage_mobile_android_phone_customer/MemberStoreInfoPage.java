@@ -60,6 +60,8 @@ public class MemberStoreInfoPage extends Activity {
 	String latatude = "";
 	String longitude = "";
 	
+	int error=0;
+	
 	float fImgSize = 0;
 	// 핸들러
 	Handler handler = new Handler(){
@@ -243,28 +245,57 @@ public class MemberStoreInfoPage extends Activity {
 							e.printStackTrace();
 						}
 						String jsonString = "{\"checkMileageMerchant\":" + obj.toString() + "}";
+						URL postUrl2 = null;
+						HttpURLConnection connection2 = null;
+						InputStream in = null;
 						try{
-							URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
-							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+							error = 1;
+							postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+							connection2 = (HttpURLConnection) postUrl2.openConnection();
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
+//							connection2.connect();		// ???
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes());
 							os2.flush();
-							System.out.println("postUrl      : " + postUrl2);
-							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+//							Thread.sleep(500);	
+							// 200 , 204 : 정상
 							responseCode = connection2.getResponseCode();
-							InputStream in =  connection2.getInputStream();
+							in =  connection2.getInputStream();
 							// 조회한 결과를 처리.
 							theData1(in);
+							error = 0;
 						}catch(Exception e){ 
-							e.printStackTrace();
+//							e.printStackTrace();
+							while(error==1){			// 에러 발생시 다시 정보를 가져온다. 될때까지 반복..
+								try{
+									System.out.println("errored");
+									postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+									connection2 = (HttpURLConnection) postUrl2.openConnection();
+									connection2.setDoOutput(true);
+									connection2.setInstanceFollowRedirects(false);
+									connection2.setRequestMethod("POST");
+									connection2.setRequestProperty("Content-Type", "application/json");
+//									System.out.println("postUrl      : " + postUrl2);
+//									connection2.connect();
+									OutputStream os2 = connection2.getOutputStream();
+									os2.write(jsonString.getBytes());
+									os2.flush();
+									Thread.sleep(500);
+									System.out.println("responseCode : " + connection2.getResponseCode());
+									error=0;
+									responseCode = connection2.getResponseCode();
+									in =  connection2.getInputStream();
+									// 조회한 결과를 처리.
+									theData1(in);
+								}catch(Exception e2){}
 						}  
 					}
 				}
-		).start();
+					
+				}).start();
 	}
 
 	/*
@@ -463,4 +494,11 @@ public class MemberStoreInfoPage extends Activity {
 		});
 	}
 
+	
+	@Override			// 이 액티비티가 종료될때 실행. 
+	protected void onDestroy() {
+		super.onDestroy();
+		// 서버 무한 접속 중이라면 종료 시켜야 하기때문..
+		error = 0;
+	}
 }

@@ -10,11 +10,13 @@ package co.kr.bettersoft.checkmileage_mobile_android_phone_customer;
  */
 
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -35,12 +37,15 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.kr.bettersoft.domain.CheckMileageMemberSettings;
 import com.pref.DummyActivity;
+import com.pref.PrefActivityFromResource;
 
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -52,6 +57,7 @@ import android.net.http.AndroidHttpClient;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.CheckBoxPreference;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
@@ -69,6 +75,11 @@ public class MyQRPageActivity extends Activity {
 	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
 	MainActivity mainActivity = (MainActivity)MainActivity.mainActivity;
 	
+	
+	SharedPreferences sharedPrefCustom;
+	
+	// 설정 정보 저장할 도메인.
+	CheckMileageMemberSettings settings;
 	
 	//	MyLocationOverlay2 mLocation;
 	int myLat = 0;
@@ -108,9 +119,9 @@ public class MyQRPageActivity extends Activity {
 		Log.i("screenHeight : ", "" + screenHeight);
 	    float fqrSize = 0;
 	    if(screenWidth < screenHeight ){
-	    	fqrSize = screenWidth;
+	    	fqrSize = (float) (screenWidth * 1.0);
 	    }else{
-	    	fqrSize = screenHeight;
+	    	fqrSize = (float) (screenHeight * 1.0);
 	    }
 		final int qrSize = (int) fqrSize;		// 작은 쪽을 선택
 		
@@ -144,6 +155,8 @@ public class MyQRPageActivity extends Activity {
         			}
         		}
         ).start();
+	    
+	    getUserSettingsFromServer();
 	}
 	
 	// 생성한 QR코드 이미지를 DB에 저장한다.
@@ -438,5 +451,169 @@ public class MyQRPageActivity extends Activity {
 	
 	
 	
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/*
+	 *    인증 기능 보류로 인해 그 이후 기능을 먼저 구현함..
+	 *     이 기능은 인증 기능 구현 이후 인증2 페이지로 이동한다.
+	 *     
+	 *     인증 성공. 이전 사용자일 경우 서버로부터 사용자 설정 정보를 가져와서 모바일의 설정 정보에 대입시킨다..
+	 *     비번의 경우 분실시 어플 삭제후 재설치.. 재 인증 받는다. 그럼 비번 초기화.
+	 *      (분실시 답이 없으므로) 서버에 별도 저장은 안하는게 좋을 듯 함..
+	 *     
+	 *     checkMileageMemberController selectMemberInformation 
+	 *     
+	 * 		checkMileageId activateYn  // checkMileageMember
+	 *     CheckMileageMember
+	 *     
+	 *     받아서 설정 도메인 같은곳에 저장해두면 좋겠지
+	 */
+	public void getUserSettingsFromServer(){		// 서버로부터 설정 정보를 받는다.  아이디를 사용.모든데이터.  CheckMileageMember
+		Log.i(TAG, "getUserSettingsFromServer");
+		controllerName = "checkMileageMemberController";
+		methodName = "selectMemberInformation";
+
+		new Thread(
+				new Runnable(){
+					public void run(){
+						JSONObject obj = new JSONObject();
+						try{
+							// 자신의 아이디를 넣어서 조회
+							obj.put("checkMileageId", qrCode);		// 자신의 아이디 사용할 것.. 이전 사용자이다
+							obj.put("activateYn", "Y");
+						}catch(Exception e){
+							e.printStackTrace();
+						}
+						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
+						try{
+							URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+							connection2.setDoOutput(true);
+							connection2.setInstanceFollowRedirects(false);
+							connection2.setRequestMethod("POST");
+							connection2.setRequestProperty("Content-Type", "application/json");
+							OutputStream os2 = connection2.getOutputStream();
+							os2.write(jsonString.getBytes());
+							os2.flush();
+							//								System.out.println("postUrl      : " + postUrl2);
+							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+							responseCode = connection2.getResponseCode();
+							InputStream in =  connection2.getInputStream();
+							if(responseCode==200 || responseCode==204){
+								// 조회한 결과를 처리.
+								theData1(in);
+								//		//	//		//	//			theData1(in);  // 성공시 -> 도메인에 담아서 어쩌구.. 호출
+								//									Log.e(TAG,"S");
+							}else{
+//								Toast.makeText(MemberStoreInfoPage.this, "오류가 발생하였습니다.\n잠시 후 다시 시도하여 주십시오.", Toast.LENGTH_SHORT).show();
+							}
+						}catch(Exception e){ 
+							e.printStackTrace();
+						}
+					}
+				}
+		).start();
+	}
+	
+	public void theData1(InputStream in){
+		Log.d(TAG,"theData1");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		StringBuilder builder = new StringBuilder();
+		String line =null;
+		JSONObject jsonObject;
+		settings = new CheckMileageMemberSettings(); // 객체 생성
+		try {
+			while((line=reader.readLine())!=null){
+				builder.append(line).append("\n");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		/*
+		 * checkMileageMember":{"merchantId":"m1","password":"m1","name":"내가짱","companyName":"우수기업",
+		 * "profileImageUrl":"http:\/\/imgshop.daum-img.net\/image\/content\/set\/A_ds_view\/daum_B0_20120814172515_9723.jpg",
+		 * "email":"m1@m1.net","country":"ko","workPhoneNumber":"02-123-1231","address01":"아지트 에티서","businessType":"qwer",
+		 * "businessRegistrationNumber01":1123,"businessRegistrationNumber02":4433,"businessKind01":"mm",
+		 * "decreaseMileage":0,"prSentence":1,"restrictionYn":"N","activateYn":"Y","modifyDate":"2012-08-10","registerDate":"2012-08-10"}}
+		 */
+		Log.d(TAG,"내 설정 상세정보::"+builder.toString());
+		String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다
+		// // // // // // // 바로 바로 화면에 add 하고 터치시 값 가져다가 상세 정보 보도록....
+			try {
+				jsonObject = new JSONObject(tempstr);
+				JSONObject jsonobj2 = jsonObject.getJSONObject("checkMileageMember");
+				// 데이터를 전역 변수 도메인에 저장하고  설정에 저장..
+				try{
+					settings.setEmail(jsonobj2.getString("email"));				
+				}catch(Exception e){
+					settings.setEmail("");
+				}
+				try{
+					settings.setBirthday(jsonobj2.getString("birthday"));				
+				}catch(Exception e){
+					settings.setBirthday("");
+				}
+				try{
+					settings.setGender(jsonobj2.getString("gender"));				
+				}catch(Exception e){
+					settings.setGender("");
+				}
+				try{
+					settings.setReceive_notification_yn(jsonobj2.getString("receive_notification_yn"));				
+				}catch(Exception e){
+					settings.setReceive_notification_yn("");
+				}
+//				showInfo();
+				setUserSettingsToPrefs();		// 설정에 전달 및 저장
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} 
+
+	}
+	
+	/*
+	 * 서버에서 받은 설정 정보를 모바일 내 설정 정보에 저장한다.
+	 * 
+	 * 설정 도메인에넣어서 설정 페이지로 전달해주고 함수 호출해주면 좋겠지
+	 * 
+	 * 아마도 모든 정보.
+	 * CHECKMILEAGE_ID  PASSWORD  PHONE_NUMBER  EMAIL  BIRTHDAY
+	 * GENDER  LATITUDE  LONGITUDE  DEVICE_TYPE  REGISTRATION_ID
+	 * RECEIVE_NOTIFICATION_YN   ACTIVATE_YN  MODIFY_DATE  REGISTER_DATE
+	 * 
+	 * 이중 사용할 정보
+	 *   EMAIL  // BIRTHDAY //  GENDER // RECEIVE_NOTIFICATION_YN
+	 *   4가지. -> 를 설정 도메인에 저장한 후 설정에서 세팅해준다..
+	 */
+	public void setUserSettingsToPrefs(){
+		sharedPrefCustom = getSharedPreferences("MyCustomePref",
+				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
+		SharedPreferences.Editor saveUpdateYn = sharedPrefCustom.edit();		// 공용으로 비번도 저장해 준다.
+		
+//		saveUpdateYn.putString("updateYN", "y");
+		
+//		saveUpdateYn.putString("server_birthday", settings.getBirthday());
+//		saveUpdateYn.putString("server_email", settings.getEmail());
+//		saveUpdateYn.putString("server_gender", settings.getGender());
+//		saveUpdateYn.putString("server_receive_notification_yn", settings.getReceive_notification_yn());
+
+//		saveUpdateYn.putString("server_birthday", "1999-02-12");
+//		saveUpdateYn.putString("server_email", "a1@b.c");
+//		saveUpdateYn.putString("server_gender", "여성");
+//		saveUpdateYn.putBoolean("server_receive_notification_yn", false);
+		
+//		saveUpdateYn.commit();
+		
+		
+		
+//		PrefActivityFromResource.mySettings = settings;
+//		PrefActivityFromResource.saveServerSettingsToPrefs(); // db에 저장해야 하나? 설정탭으로 갈때? 업뎃 필요 여부 체크? 
+		// 공용 셰어드에 저장을 해두고, 공용 셰여드에 여부 저장도 해두고, 해당 설정 들어갔을때 여부 저장 값을 읽어서 y이면 나머지 값 4개를 읽어서 자체에 저장하고, 아님말고.
+		// ...
+	}
+	
+	
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }

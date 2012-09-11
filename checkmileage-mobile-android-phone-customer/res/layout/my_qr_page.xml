@@ -18,7 +18,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="가맹점에 있는 QR스케너에 코드를 스켄해 주세요." />
+                    android:text="가맹점에 있는 QR스케너에 코드를 스켄해 주세요.\n자동으로 마일리지가 적립됩니다." />
                 
             </LinearLayout>
 </RelativeLayout>

@@ -14,6 +14,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -30,6 +31,7 @@ import com.utils.adapters.ImageAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.MergeCursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -56,6 +58,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
+import android.os.AsyncTask;
+
 import android.app.ListActivity;
 
 public class MemberStoreListPageActivity extends Activity implements OnItemSelectedListener {
@@ -66,27 +70,42 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
 	MainActivity mainActivity = (MainActivity)MainActivity.mainActivity;
 	
-	int dontTwice = 1;
+	int dontTwice = 1;				// 스피너 리스너로 인한 초기 2회 조회 방지. 
 	
-	String myQRcode = "";
+	String myQRcode = "";			// 내 아이디
 	
-	int responseCode = 0;
-	String controllerName = "";
-	String methodName = "";
-	String searchWordArea = "";
-	String searchWordType = "";
+	int responseCode = 0;			// 서버 조회 결과 코드
+	String controllerName = "";		// 서버 조회시 컨트롤러 이름
+	String methodName = "";			// 서버 조회시 메서드 이름
+	String searchWordArea = "";		// 서버 조회시 지역명
+	String searchWordType = "";		// 서버 조회시 업종명
 	
-	Spinner searchSpinnerArea;
-	Spinner searchSpinnerType;
 	
-	public List<CheckMileageMerchants> entries;	// 1차적으로 조회한 결과. (가맹점 상세 정보 제외)
-	List<CheckMileageMerchants> entriesFn = null;			// 최종 산출물
 	
-	int returnYN = 0;		// 가맹점 상세정보 보고 리턴할지 여부 결정용도
 	
-	float fImgSize = 0;
-	int isRunning = 0;			// 연속 실행 방지. 실행 중에 다시 실행 요청이 들어올 경우, 무시한다.
-	View emptyView;
+	
+	Spinner searchSpinnerArea;		// 상단 지역 목록
+	Spinner searchSpinnerType;		// 상단 업종 목록
+	
+	int indexDataFirst = 0;			// 부분 검색 위한 인덱스. 시작점
+	int indexDataLast = 0;			// 부분 검색 위한 인덱스. 끝점
+	int indexDataTotal = 0;			// 부분 검색 위한 인덱스. 전체 개수
+	
+	Boolean mIsLast = false;			// 끝까지 갔음. true 라면 더이상의 추가 없음. 새 조회시 false 로 초기화
+	Boolean adding = false;			// 데이터 더하기 진행 중임.
+	Boolean newSearch = false; 		// 새로운 조회인지 여부. 새로운 조회라면 기존 데이터는 지우고 새로 검색한 데이터만 사용. 새로운 조회가 아니라면 기존 데이터에 추가 데이터를 추가.
+	
+	private ImageAdapter imgAdapter;
+	
+	public ArrayList<CheckMileageMerchants> entries1 = new ArrayList<CheckMileageMerchants>();	// 1차적으로 조회한 결과. (가맹점 상세 정보 제외)   // 저장용.
+	ArrayList<CheckMileageMerchants> entries2 = new ArrayList<CheckMileageMerchants>();			// 잘라서 더하는 부분.
+	List<CheckMileageMerchants> entriesFn = new ArrayList<CheckMileageMerchants>();			// 최종 산출물
+	
+	
+	float fImgSize = 0;			// 이미지 사이즈 저장변수.
+	int isRunning = 0;			// 연속 실행 방지. 실행 중에 다른 실행 요청이 들어올 경우, 무시한다.
+	View emptyView;				// 데이터 없음 뷰
+
 	// 진행바
 	ProgressBar pb1;
 	
@@ -97,9 +116,18 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			Bundle b = msg.getData();
 			try{
 				if(b.getInt("showYN")==1){		// 받아온 마일리지 결과를 화면에 뿌려준다.
-					// 최종 결과 배열은 entriesFn 에 저장되어 있다.. 		여기 리스트 레이아웃.
+					// 최종 결과 배열은 entriesFn 에 저장되어 있다.. 여기 리스트 레이아웃.
 					if(entriesFn.size()>0){
-						setGriding();
+						Log.e(TAG,"indexDataFirst::"+indexDataFirst);
+						if(newSearch){		// 새로운 검색일 경우 새로 설정, 추가일 경우 알림만 하기 위함.
+							setGriding();
+							newSearch = false;		// 다시 돌려놓는다. 이제는 최초 검색이 아님.
+						}else{
+							Log.e(TAG,"notifyDataSetChanged");
+							Log.e(TAG,"size:"+entriesFn.size());
+							imgAdapter.notifyDataSetChanged();		// 알림 -> 변경사항이 화면상에 업데이트 되도록함.
+						}
+						adding = false;		// 추가 끝났음. 다른거 조회시 또 추가 가능.. (스크롤 리스너를 다룰때 사용)
 					}else{
 						Log.e(TAG,"no data");
 						emptyView = findViewById(R.id.empty1);		// 데이터 없으면 '빈 페이지'(데이터 없음 메시지)표시
@@ -107,7 +135,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 						gridView.setVisibility(8);			//   0 visible   4 invisible   8 gone
 						emptyView.setVisibility(0);
 					}
-					isRunning = isRunning -1;
+					isRunning = isRunning -1;		// 진행중이지 않음. - 추가 조작으로 새 조회 가능.
 				}
 				if(b.getInt("order")==1){
 					// 프로그래스바 실행
@@ -131,22 +159,21 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 
 	
 	// ListView에 뿌릴 Data 를 위한 스피너 데이터들. --> 나중에 서버 통신하여 처음에 가져와서 만들어 지도록 한다.
-	String[] areas = {"전지역", "강변", "안산", "종로"};			// 나중에 조회 해 올 것..
+	String[] areas = {"전지역", "홍대", "신촌", "영등포", "신림", "강남", "종로", "건대", "노원", "대학로", "여의도"};			// 나중에 조회 해 올 것..
 	String[] jobs = {"모든 업종", "PX", "매점" , "식당"};
 	
 	GridView gridView;
-	static final String[] MOBILE_OS = new String[] { 
-		"Android", "iOS","Windows", "Blackberry" };
 	
 	@Override
 	protected void onCreate(Bundle icicle) {
-		
-		
 		super.onCreate(icicle);
 		setContentView(R.layout.member_store_list);
 		
 		// 내 QR 코드. 
 		myQRcode = MyQRPageActivity.qrCode;		
+		
+		entriesFn = new ArrayList<CheckMileageMerchants>();
+		
 		// 크기 측정
 		float screenWidth = this.getResources().getDisplayMetrics().widthPixels;
 		Log.i("screenWidth : ", "" + screenWidth);
@@ -165,11 +192,10 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		// spinner
 		searchSpinnerArea = (Spinner)findViewById(R.id.searchSpinnerArea);
 		searchSpinnerType = (Spinner)findViewById(R.id.searchSpinnerType);
-		
+		// spinner listener
 		searchSpinnerArea.setOnItemSelectedListener(this);
 		searchSpinnerType.setOnItemSelectedListener(this);
-		
-		// 데이터 세팅. 리스너 못달았음.
+		// 데이터 세팅. 
 		ArrayAdapter<String> aa1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areas);
 		aa1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		searchSpinnerArea.setAdapter(aa1);
@@ -178,14 +204,17 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		 searchSpinnerType.setAdapter(aa2);
 	}
     
+	
+	// 데이터를 화면에 세팅
 	public void setGriding(){
+		imgAdapter = new ImageAdapter(this, entriesFn);
 		gridView  = (GridView)findViewById(R.id.gridview);
-		gridView.setAdapter(new ImageAdapter(this, entriesFn));
+		gridView.setAdapter(imgAdapter);
+		// 클릭시 상세보기 페이지로
 		gridView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
 				//					Toast.makeText(getApplicationContext(),((TextView) v.findViewById(R.id.label)).getText(), Toast.LENGTH_SHORT).show();
-
 				Intent intent = new Intent(MemberStoreListPageActivity.this, MemberStoreInfoPage.class);
 				Log.i(TAG, "checkMileageMerchantsMerchantID::"+entriesFn.get(position).getMerchantID());
 				//					Log.i(TAG, "idCheckMileageMileages::"+myQRcode);
@@ -194,69 +223,39 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 				intent.putExtra("idCheckMileageMileages", entriesFn.get(position).getIdCheckMileageMileages());		// 고유 식별 번호. (상세보기 조회용도)
 				intent.putExtra("myMileage", entriesFn.get(position).getMileage());									// 내 마일리지
 				startActivity(intent);
-				/*
-				 * 대략 다음과 같은 작업이 필요하다.
-				 * Intent intent = new Intent(MyMileagePageActivity.this, MemberStoreInfoPage.class);		//MemberStoreListPageActivity
-						intent.putExtra("checkMileageMerchantsMerchantID", entriesFn.get(arg2).getCheckMileageMerchantsMerchantID());
-						intent.putExtra("idCheckMileageMileages", entriesFn.get(arg2).getIdCheckMileageMileages());
-						intent.putExtra("myMileage", entriesFn.get(arg2).getMileage());
-						startActivity(intent);
-				 */
 			}
 		});
-		gridView.setOnScrollListener(listScrollListener);
-//			  @Override
-//			  public void onScrollStateChanged(AbsListView view, int scrollState){}
-//			  
-//			 @Override
-//			  public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount){
-//			  if(totalItemCount>0 && firstVisibleItem + visibleItemCount ==totalItemCount){
-//			    // 데이터 처리
-//				  Log.e(TAG, "onScroll event Occured.");
-//			  }
-//			 }
-//		});
+		gridView.setOnScrollListener(listScrollListener);		// 리스너 등록. 스크롤시 하단에 도착하면 추가 데이터 조회하도록.
 	}
 	
+	
+	
+	// 온 스크롤 이벤트. 
 	private OnScrollListener listScrollListener = new OnScrollListener(){
+		// 건들기만 하면 주르륵 뜬다.  쓸수 있긴 한데 너무 막떠서.... boolean 으로 조절한다.
 		  @Override
 		  public void onScroll(AbsListView view, int firstVisibleItem,
 		    int visibleItemCount, int totalItemCount) {
 		   // TODO Auto-generated method stub
-			  Log.e(TAG, "onScroll event Occured.");
+//			  if(indexDataFirst==indexDataLast){		// 시작이 더 크면 문제 있는거
+//				  mIsLast = true;
+//			  }
+			  
+			  // 리스트 가장 하단에 도달했을 경우.
+			  if(firstVisibleItem+visibleItemCount==totalItemCount &&(!adding)&&(!mIsLast)){
+				  Log.e(TAG, "onScroll event Occured."+"//view::"+view+"//firstVisibleItem::"+firstVisibleItem+"//visibleItemCount:"+visibleItemCount+"//totalItemCount::"+totalItemCount);
+				  adding = true;
+				  new backgroundGetMerchantInfo().execute();		// 비동기 실행
+			  }
 		  }
+		  // 스크롤 시작, 끝, 스크롤 중.. 이라는 사실을 알수 있다. 사실 필요 없음.. 
 		  @Override
-		  public void onScrollStateChanged(AbsListView view, int scrollState) {
-//		   if(mIsLoding==true)
-//		    return;
-			  
-//		   int totalcount = mListItems.size();
-			  
-//		   if(totalcount==0)
-//		    return;
-			  
-//		   if (scrollState == OnScrollListener.SCROLL_STATE_IDLE ) 
-//		   {
-//			   
-//		    if( view.getLastVisiblePosition()==(totalcount-1)){
-//		    	
-//		     if(offset>mTotalRow){
-//		      mIsLoding = false;
-//		      
-//		         return;
-//		     }
-//		     
-////		         ListAppend();//직접함수 호출 또는 스레드 사용
-//		        //ListAppendThread thread = new ListAppendThread(0);
-//		        //thread.start();
-//		    }
-//		   }
-		  }
+		  public void onScrollStateChanged(AbsListView view, int scrollState) {}
 		 };
      
 	
 	/*
-	 * 서버와 통신하여   가맹점 목록을 가져온다.
+	 * 서버와 통신하여   가맹점 목록을 가져온다. 새로 조회.
 	 * 그 결과를 List<CheckMileageMerchant> Object 로 반환 한다.  
 	 * 
 	 *  호출 대상 :: 
@@ -270,15 +269,16 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	 * 
 	 *  터치하면 가맹점 상세정보로 가야하기 때문에 키도 필요하다..  merchantId 같은거..
 	 *  
-	 * -----------------------------------
-	 * |[이미지 상]  [가맹점 이름]  [내 포인트] |
-	 * |[이미지 하]	[ 가 맹 점 이 용 시 각 ]    |
-	 * ------------------------------------
 	 */
 	public void getMemberStoreList() throws JSONException, IOException {
 		Log.i(TAG, "getMemberStoreList");
 		controllerName = "checkMileageMerchantController";
 		methodName = "selectSearchMerchantList";
+		indexDataFirst = 0; // 화면 첫 값 인덱스. 초기화.. 다시 0부터
+		indexDataLast = 0;	// 화면에 보여지는 끝값 인덱스. 함께 초기화.. 0부터
+		entriesFn.clear();		// 이것도 초기화 해보자. 화면에 보여지는 데이터 리스트.
+		newSearch = true;			// 새로운 검색임. true 라면 기존 데이터는 지워야함.
+		mIsLast = false;		// 초기화. 끝이 아니므로 추가 가능.
 		// 로딩중입니다..  
 		new Thread(	
 				new Runnable(){
@@ -302,8 +302,6 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 							obj.put("businessKind03", searchWordType);		// 업종					// 고유 번호 얻으려면, 내 아이디도 필요...
 							obj.put("checkMileageId", myQRcode);			// 내 아이디
 							Log.e(TAG,"myQRcode::"+myQRcode);
-							
-							
 						}catch(Exception e){
 							e.printStackTrace();
 						}
@@ -363,7 +361,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	}
 
 	/*
-	 * 일단 마일리지 목록 결과를 받음. (가맹점 정보는 없이 아이디만 들어있는 상태)
+	 * 가맹점 정보 1차 데이터 받음. entries 도메인에 저장. 이후 url 정보를 꺼내 이미지를 받아오는 함수를 호출한다.
 	 */
 	public void theData1(InputStream in){
 		Log.d(TAG,"theData");
@@ -388,35 +386,16 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			e1.printStackTrace();
 		}
 		int max = jsonArray2.length();
+		indexDataTotal = max;
 //		Log.e(TAG,"max::"+max);
 		try {
-			entries = new ArrayList<CheckMileageMerchants>(max);
+			entries1 = new ArrayList<CheckMileageMerchants>(max);
 			if(max>0){
 				for ( int i = 0; i < max; i++ ){
 					JSONObject jsonObj = jsonArray2.getJSONObject(i).getJSONObject("checkMileageMerchant");		// 대소문자 주의
-//					Log.e(TAG, "merchantId::"+jsonObj.getString("merchantId"));
-//					Log.e(TAG, "companyName::"+jsonObj.getString("companyName"));
-//					Log.e(TAG, "profileImageUrl::"+jsonObj.getString("profileImageUrl"));
 					/*
-					 * 수신::[
-					 * 			{"checkMileageMerchant":
-					 * 				{"merchantId":"memberstore_1",   "companyName":"파리바게트",   "profileImageUrl":"http:\/\/static.naver.net\/www\/u\/2012\/0828\/nmms_21442393.jpg",
-					 * 					"workPhoneNumber":"02456789","zipCode01":"082","address01":"서울","address02":"송파구","latitude":5581265,"longitude":5578525}
-					 * 				},
-					 * 			{"checkMileageMerchant":
-					 * 				{"merchantId":"memberstore_2","companyName":"농림수산부","profileImageUrl":"http:\/\/static.naver.net\/www\/u\/2012\/0828\/nmms_21443510.jpg",
-					 * 					"workPhoneNumber":"026547897","zipCode01":"082","address01":"서울","address02":"강북구","latitude":5581265,"longitude":5578525}
-					 * 			},
-					 * 			{"checkMileageMerchant":
-					 * 				{"merchantId":"memberstore_3","companyName":"지구방위대","profileImageUrl":"http:\/\/static.naver.net\/www\/u\/2012\/0828\/nmms_164411297c.jpg",
-					 * 					"workPhoneNumber":"027896542","zipCode01":"082","address01":"인천","address02":"봉황시","latitude":5581265,"longitude":5578525}
-					 * 			},
-					 * 			{"checkMileageMerchant":{"merchantId":"memberstore_4","companyName":"무한재도","profileImageUrl":"http:\/\/static.naver.net\/www\/u\/2012\/0823\/nmms_14348250c.jpg","workPhoneNumber":"021236548","zipCode01":"082","address01":"경기","address02":"안산","latitude":5581265,"longitude":5578525}},{"checkMileageMerchant":{"merchantId":"memberstore_5","companyName":"애벌랜드","profileImageUrl":"http:\/\/static.naver.net\/www\/u\/2012\/0828\/nmms_1845524c.jpg","workPhoneNumber":"024569872","zipCode01":"082","address01":"경기","address02":"구미","latitude":5581265,"longitude":5578525}}]
 					 *
-					 *			이 중 필요한 것. 가맹점 ID, 가맹점 이름, 가맹점 URL(이미지 보여주기 용도)
-					 *
-					 *
-					 *
+					 * 가맹점 ID, 가맹점 이름, 가맹점 URL(이미지 보여주기 용도)
 					 *
 					private String idCheckMileageMileages;					// 고유 식별 번호.!!	
 					private String mileage;											
@@ -438,15 +417,13 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 					 *	intent.putExtra("myMileage", entriesFn.get(arg2).getMileage());														가맹점에 대한 내 마일리지 - 조회 필요.. 수정할것. 
 					 *
 					 */
-					
 					//  merchantId,  companyName,  profileImageUrl,  
 					// 객체 만들고 값 받은거 넣어서 저장..  저장값:  가맹점아이디. 가맹점 이름, 프로필 URL
-					entries.add(
+					entries1.add(
 							new CheckMileageMerchants(
 									jsonObj.getString("merchantId"),
 									jsonObj.getString("companyName"),
 									jsonObj.getString("profileImageUrl"),
-//									""															// 아직 이거. 나중에 아래거.
 									jsonObj.getString("idCheckMileageMileages"),
 									jsonObj.getString("mileage")
 							)
@@ -454,30 +431,49 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 				}
 			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
-			getMerchantInfo(entries,max);
+			new backgroundGetMerchantInfo().execute();	// getMerchantInfo(entries1); 를 비동기로 실행
 		}
 	}
 
-	// 가맹점 URL로 이미지 가져오기.
-	public void getMerchantInfo(final List<CheckMileageMerchants> entries3, int max){
+	
+	// 가맹점 URL로 이미지 가져오기.가맹점 이미지 URL로부터 이미지 받아와서 도메인에 저장한다. + 결과물에 더하기
+	public void getMerchantInfo(){
 		Log.i(TAG, "merchantInfoGet");
-		final ArrayList<CheckMileageMerchants> entries2 = new ArrayList<CheckMileageMerchants>(max);
-		final int max2 = max;
-		Log.e(TAG,"max2::"+entries3.size());
-		// 각각에 대해서 돌린다.
-		for (int j = 0; j < max2; j++ ){
-			if((entries3.get(j).getProfileImageURL()).length()<1){
-				entries3.get(j).setProfileImageURL("http://www.carsingh.com/img/noImage.jpg");	
+		// 마지막 인덱스+10개가 전체 개수보다 커지면 전체 개수 까지만.
+		if(indexDataLast+10>=indexDataTotal){
+			indexDataLast = indexDataTotal;
+			mIsLast = true;
+		}else{		// 전체 개수보다 작다면 10개. 추가 가능.
+			indexDataLast = indexDataLast + 10;
+		}
+		Log.i(TAG,"indexDataFirst::"+indexDataFirst+"//indexDataLast::"+indexDataLast+"//indexDataTotal::"+indexDataTotal);
+		Log.e(TAG,"indexDataTotal::"+indexDataTotal);
+		
+		for(int i=indexDataFirst; i<indexDataLast; i++){
+			Log.i(TAG,"I::"+i);
+			String a= new String(entries1.get(i).getMerchantId()+"");
+			String b= new String(entries1.get(i).getCompanyName()+"");
+			String c= new String(entries1.get(i).getProfileImageURL()+"");
+			if(c.length()<1){
+				c="http://www.carsingh.com/img/noImage.jpg";	
 			}
-			//					 가맹점 이미지 URL로부터 이미지 받아와서 도메인에 저장한다.
-			Bitmap bm = LoadImage(entries3.get(j).getProfileImageURL());
-			entries3.get(j).setMerchantImage(BitmapResizePrc(bm, (float)(fImgSize*0.3), (float)(fImgSize*0.4) ).getBitmap());		// 세로 가로
-		}		// for문 종료
+			String d= new String(entries1.get(i).getIdCheckMileageMileages()+"");
+			String e= new String(entries1.get(i).getMileage()+"");
+			CheckMileageMerchants tempMerch = new CheckMileageMerchants(a, b, c, d, e);
+			Bitmap bm = null;
+			bm = LoadImage(tempMerch.getProfileImageURL());
+			tempMerch.setMerchantImage(BitmapResizePrc(bm, (float)(fImgSize*0.3), (float)(fImgSize*0.4) ).getBitmap());
+			entriesFn.add(tempMerch);
+		}
+		
+		if(indexDataFirst+10>indexDataLast){	// 마지막까지 도달했다면 마지막번호.
+			indexDataFirst = indexDataLast;
+		}else{									// 마지막까지 도달하지 않았다면 +10
+			indexDataFirst = indexDataFirst + 10;
+		}
 		Log.d(TAG,"가맹점 정보 수신 완료. ");
-		entriesFn = entries3;
 		showInfo();
 	}
 
@@ -514,7 +510,6 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		return bm;
 	}
 	private InputStream OpenHttpConnection(String $imagePath) {
-		// TODO Auto-generated method stub
 		InputStream stream = null ;
 		try {
 			URL url = new URL( $imagePath ) ;
@@ -525,16 +520,13 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 				stream = urlConnection.getInputStream() ;
 			}
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return stream ;
 	}
 
-	
 	/*
 	 * Bitmap 이미지 리사이즈
 	 * Src : 원본 Bitmap
@@ -544,7 +536,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	 */
 	private BitmapDrawable BitmapResizePrc( Bitmap Src, float newHeight, float newWidth)
 	{
-		Log.e(TAG,"BitmapResizePrc");
+//		Log.e(TAG,"BitmapResizePrc");
 
 		BitmapDrawable Result = null;
 		int width = Src.getWidth();
@@ -569,7 +561,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		// check
 		width = resizedBitmap.getWidth();
 		height = resizedBitmap.getHeight();
-		Log.i("ImageResize", "Image Resize Result : " + Boolean.toString((newHeight==height)&&(newWidth==width)) );
+//		Log.i("ImageResize", "Image Resize Result : " + Boolean.toString((newHeight==height)&&(newWidth==width)) );
 
 		// make a Drawable from Bitmap to allow to set the BitMap
 		// to the ImageView, ImageButton or what ever
@@ -607,7 +599,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 
 	
 	/*
-	 * 스피너. 아이템 선택시, 또는 변화 없을 시에 대한 이벤트. 
+	 * 스피너. 다른 아이템 선택시, 또는 기존 아이템 선택시에 대한 이벤트. 
 	 * 다른거 선택하면 서버 통신하여 조회해온다. 변화 없을시 변화 없음.
 	 * (non-Javadoc)
 	 * @see android.widget.AdapterView.OnItemSelectedListener#onItemSelected(android.widget.AdapterView, android.view.View, int, long)
@@ -639,10 +631,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			try {
 				getMemberStoreList();
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -650,7 +640,33 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {
 		// TODO Auto-generated method stub			// 안바꾸면 마는거지
-		
 	}
 	
+	
+	
+	
+	
+	public class backgroundGetMerchantInfo extends  AsyncTask<Void, Void, Void> { 
+		@Override protected void onPostExecute(Void result) {  
+			// TODO Auto-generated method stub  
+			//			setListAdapter(new MyCustomAdapter(AndroidList.this, R.layout.row, month));  
+			//			Toast.makeText(AndroidList.this,    "onPostExecute \n: setListAdapter after bitmap preloaded",    Toast.LENGTH_LONG).show(); 
+		} 
+		@Override protected void onPreExecute() {  
+			// TODO Auto-generated method stub  
+			//			Toast.makeText(AndroidList.this,    "onPreExecute \n: preload bitmap in AsyncTask",    Toast.LENGTH_LONG).show(); 
+		} 
+		@Override protected Void doInBackground(Void... params) {  
+			// TODO Auto-generated method stub  
+//			preLoadSrcBitmap();  
+			
+//			for(int i=0; i<entries1.size(); i++){
+//				Log.e(TAG,"entries1.get("+i+").getProfileImageURL()"+entries1.get(i).getProfileImageURL());
+//			}
+			
+			getMerchantInfo();
+			return null; 
+		}
+	}
+
 }
