@@ -27,7 +27,7 @@ public class CheckMileageMerchants {
 	private String latitude;							// 가맹점 좌표1
 	private String longtitude;							// 가맹점 좌표2
 	
-	private String profileImageUrl;						// 프로필 이미지 URL
+	private String profileImageURL;						// 프로필 이미지 URL
 	private Bitmap merchantImage;						// 프로필 이미지
 	
 	private String prSentence;							// 가맹점 자랑
@@ -43,14 +43,26 @@ public class CheckMileageMerchants {
 	// 가맹점 상세보기로 갈때 내 마일리지, 내 마일리지에 대한 고유 아이디가 필요하다.(내아디-가맹점아디-마일리지 매핑 정보의 인덱스값)  mileage  idCheckMileageMileages
 	private String idCheckMileageMileages;				// 고유 식별 번호
 	
-	public CheckMileageMerchants(String merchantId, String companyName, String profileImageUrl, String idCheckMileageMileages, String mileage) 
+	public CheckMileageMerchants(String merchantId, String companyName, String profileImageURL, String idCheckMileageMileages, String mileage) 
 	{
 		this.merchantId = merchantId;		// 키 값 --> 로그볼때 필요
 		this.companyName = companyName;										// 마일리지
-		this.profileImageUrl = profileImageUrl;	
+		this.profileImageURL = profileImageURL;	
 		this.idCheckMileageMileages = idCheckMileageMileages;
 		this.mileage = mileage;
 	}
+	
+	public CheckMileageMerchants(String merchantId, String companyName, String profileImageURL, String idCheckMileageMileages, String mileage, Bitmap merchantImage) 
+	{
+		this.merchantId = merchantId;		// 키 값 --> 로그볼때 필요
+		this.companyName = companyName;										// 마일리지
+		this.profileImageURL = profileImageURL;	
+		this.idCheckMileageMileages = idCheckMileageMileages;
+		this.mileage = mileage;
+		this.merchantImage = merchantImage;
+	}
+	
+	
 	public CheckMileageMerchants() {
 		// TODO Auto-generated constructor stub
 	}
@@ -103,10 +115,10 @@ public class CheckMileageMerchants {
 		this.longtitude = longtitude;
 	}
 	public String getProfileImageURL() {
-		return profileImageUrl;
+		return profileImageURL;
 	}
 	public void setProfileImageURL(String profileImageURL) {
-		this.profileImageUrl = profileImageURL;
+		this.profileImageURL = profileImageURL;
 	}
 	public Bitmap getMerchantImage() {
 		return merchantImage;
@@ -156,12 +168,6 @@ public class CheckMileageMerchants {
 	}
 	public void setMerchantId(String merchantId) {
 		this.merchantId = merchantId;
-	}
-	public String getProfileImageUrl() {
-		return profileImageUrl;
-	}
-	public void setProfileImageUrl(String profileImageUrl) {
-		this.profileImageUrl = profileImageUrl;
 	}
 	public String getIdCheckMileageMileages() {
 		return idCheckMileageMileages;

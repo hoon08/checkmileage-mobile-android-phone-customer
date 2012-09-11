@@ -39,30 +39,46 @@ public class ImageAdapterList extends BaseAdapter {
 			// get layout from mobile.xml
 			listView = inflater.inflate(R.layout.my_mileage_list, null);
  
-			// set value into textview
-			TextView textViewMileage = (TextView) listView
-					.findViewById(R.id.mileage);
-			textViewMileage.setText(((CheckMileageMileage)entries.get(position)).getMileage());
- 
-			// set value into textview
-			TextView textViewMerchantName = (TextView) listView
-					.findViewById(R.id.merchantName);
-			textViewMerchantName.setText(((CheckMileageMileage)entries.get(position)).getMerchantName());
-			
-			// set value into textview
-			TextView textViewMerchantPhone = (TextView) listView
-					.findViewById(R.id.merchantPhone);
-			textViewMerchantPhone.setText(((CheckMileageMileage)entries.get(position)).getWorkPhoneNumber());
-			
-			// set image based on selected text
-			ImageView imageView = (ImageView) listView
-					.findViewById(R.id.merchantImage);
-			imageView.setImageBitmap(((CheckMileageMileage)entries.get(position)).getMerchantImage());
+			// ** 반복 문제 해결을 위해 아래로 옮김.
+//			// set value into textview
+//			TextView textViewMileage = (TextView) listView
+//					.findViewById(R.id.mileage);
+//			textViewMileage.setText(((CheckMileageMileage)entries.get(position)).getMileage());
+//			// set value into textview
+//			TextView textViewMerchantName = (TextView) listView
+//					.findViewById(R.id.merchantName);
+//			textViewMerchantName.setText(((CheckMileageMileage)entries.get(position)).getMerchantName());
+//			// set value into textview
+//			TextView textViewMerchantPhone = (TextView) listView
+//					.findViewById(R.id.merchantPhone);
+//			textViewMerchantPhone.setText(((CheckMileageMileage)entries.get(position)).getWorkPhoneNumber());
+//			// set image based on selected text
+//			ImageView imageView = (ImageView) listView
+//					.findViewById(R.id.merchantImage);
+//			imageView.setImageBitmap(((CheckMileageMileage)entries.get(position)).getMerchantImage());
  
 		} else {
 			listView = (View) convertView;
 		}
  
+		// ** 반복 문제 해결을 위해 여기로 옮김
+		// set value into textview
+		TextView textViewMileage = (TextView) listView
+				.findViewById(R.id.mileage);
+		textViewMileage.setText(((CheckMileageMileage)entries.get(position)).getMileage());
+		// set value into textview
+		TextView textViewMerchantName = (TextView) listView
+				.findViewById(R.id.merchantName);
+		textViewMerchantName.setText(((CheckMileageMileage)entries.get(position)).getMerchantName());
+		// set value into textview
+		TextView textViewMerchantPhone = (TextView) listView
+				.findViewById(R.id.merchantPhone);
+		textViewMerchantPhone.setText(((CheckMileageMileage)entries.get(position)).getWorkPhoneNumber());
+		// set image based on selected text
+		ImageView imageView = (ImageView) listView
+				.findViewById(R.id.merchantImage);
+		imageView.setImageBitmap(((CheckMileageMileage)entries.get(position)).getMerchantImage());
+		
 		return listView;
 	}
  

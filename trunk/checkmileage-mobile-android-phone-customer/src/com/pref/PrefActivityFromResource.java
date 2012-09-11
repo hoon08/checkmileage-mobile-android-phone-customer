@@ -47,6 +47,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.EditTextPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
@@ -78,7 +80,9 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 //	PreferenceCategory category1;			// 설정의 카테고리째로 비활성 시킬수 있다. 본 프로젝트에서 사용 안함
 	WebView mWeb;							// 도움말, 공지 등 볼때 사용하는 웹뷰
 	
-	SharedPreferences thePrefs;				// 어플 내 자체 프리퍼런스.  Resume 때 이곳에 연결하여 사용(탈퇴때 초기화 용도)
+	SharedPreferences thePrefs;				// 어플 내 자체 프리퍼런스.  Resume 때 이곳에 연결하여 사용(탈퇴때 초기화 용도)-- 이건 사실 위에거랑 같음.. 삽질했음.
+	
+	SharedPreferences defaultPref;			// default --  이것이 자체 프리퍼런스!!. 
 	
 	Calendar c = Calendar.getInstance();
 	
@@ -173,6 +177,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 				
 			}
 		});
+		
 	}
 
 	public void getNow(){
@@ -208,6 +213,12 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		// prefs 	// 어플 잠금 설정. 공용으로 쓸것도 필요하다. 
 		sharedPrefCustom = getSharedPreferences("MyCustomePref",
 				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
+		sharedPrefCustom.registerOnSharedPreferenceChangeListener(this);			// 여기에도 등록해놔야 리시버가 제대로 반응한다.
+		
+		
+		// default 도 한번 테스트
+	   defaultPref = PreferenceManager.getDefaultSharedPreferences(this);
+	   defaultPref.registerOnSharedPreferenceChangeListener(this);			// test 용.. 혹시나..
 		
 //		category1 = (PreferenceCategory)findPreference("category1");
 		Preference passwordCheck = findPreference("preference_lock_chk");
@@ -230,6 +241,9 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			Log.d(TAG,"Need Update one more time");
 			updateToServer();
 		}
+		
+		
+		updateServerSettingsToPrefs();				// 서버 설정 자체 설정으로 저장 - 테스트
 	}
 
 	@Override 
@@ -307,7 +321,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			startActivity(passwordIntent);
 		}
 		
-
 		// 알림 수신 설정 여부.
 		if(preference.equals((CheckBoxPreference)findPreference("preference_alarm_chk"))){
 			//	Toast.makeText(PrefActivityFromResource.this, "preference_lock_password", Toast.LENGTH_SHORT).show();
@@ -322,7 +335,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 					updateGCMToServer(yn);
 				}
 			}
-			
 		}
 		
 		// 개인정보 변경 - 생년월일 pref_user_birth
@@ -331,7 +343,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			birthYear = sharedPrefCustom.getInt("birthYear", todayYear);		
 			birthMonth = sharedPrefCustom.getInt("birthMonth", todayMonth)-1;		// 저장할때 1 더해서 넣었으니 꺼낼때는 1 빼서..	
 			birthDay = sharedPrefCustom.getInt("birthDay", todayDay);
-
+//			Log.e(TAG, "preference .. birthYear::"+birthYear+"//birthMonth::"+birthMonth+"//birthDay::"+birthDay);
 			DatePickerDialog DatePickerDialog2 = new DatePickerDialog(this, mDateSetListener, birthYear, birthMonth, birthDay);
 			DatePickerDialog2.setTitle("생년월일 설정");		// 달력 타이틀 설정
 			DatePickerDialog2.show();
@@ -831,6 +843,8 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
 		
+		Log.e(TAG, "onSharedPreferenceChanged");
+		
 		if(key.equals("pref_app_leave")){		// resume 에서 넣은 것과 이름 일치해야 동작한다.
 //			Toast.makeText(PrefActivityFromResource.this, "???"+key, Toast.LENGTH_SHORT).show();
 			/*  // 테스트용
@@ -848,7 +862,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 				Log.e(TAG, iikey+"//"+obj);	
 			}
 			*/		// 테스트용(확인용)
-			
 			thePrefs = sharedPreferences;
 		}
 	}
@@ -883,11 +896,143 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	}
 	
 	
-	/*
-	 * 서버로 변경된 설정 업데이트 결과를 받아서 처리하는 부분. 안해.. 에러나면 로그나..
-	 * 
+	/**
+	 *  공용설정에서 업뎃 여부 확인 이후, y 이면 자체 설정에 업뎃 친다. 아니면 말고.  설정은 먹는데 재접 이후 먹는다..
+	 *  
 	 */
-	// ...
+	public void updateServerSettingsToPrefs(){
+		String updateYN = sharedPrefCustom.getString("updateYN", "n");
+		if(updateYN.equals("y")){
+			Log.e(TAG,"업뎃 필요 o");
+			String server_birthday = sharedPrefCustom.getString("server_birthday", "");
+			String server_email = sharedPrefCustom.getString("server_email", "");
+			String server_gender = sharedPrefCustom.getString("server_gender", "");
+			Boolean server_receive_notification_yn = sharedPrefCustom.getBoolean("server_receive_notification_yn", true);
+			
+			if(server_birthday.length()>8){		// 2012-08-25		0123 4x 56 7x 89
+				String server_birth_year = server_birthday.substring(0,4);
+			    String server_birth_month = server_birthday.substring(5,7);
+			    String server_birth_day = server_birthday.substring(8,10);
+			    Log.e(TAG,"server_birth_year::"+server_birth_year+"//server_birth_month::"+server_birth_month+"//server_birth_day::"+server_birth_day);
+			    int int_server_birth_year = Integer.parseInt(server_birth_year);
+				int int_server_birth_month = Integer.parseInt(server_birth_month);
+				int int_server_birth_day = Integer.parseInt(server_birth_day);
+				
+				SharedPreferences.Editor birthDate = sharedPrefCustom.edit();
+				birthDate.putInt("birthYear", int_server_birth_year);
+				birthDate.putInt("birthMonth", int_server_birth_month);
+				birthDate.putInt("birthDay", int_server_birth_day);
+				Log.e(TAG,"birthYear::"+int_server_birth_year+"//birthMonth::"+int_server_birth_month+"//birthDay::"+int_server_birth_day);
+				birthDate.commit();
+			}else{
+				Log.e(TAG,"server_birthday.length()");
+			}
+			
+			SharedPreferences.Editor updateDone =   sharedPrefCustom.edit();
+			updateDone.putString("updateYN", "n");
+			updateDone.commit();
+			Log.i(TAG,"update settings to mobile done");
+			
+//			birthYear = sharedPrefCustom.getInt("birthYear", todayYear);		
+//			birthMonth = sharedPrefCustom.getInt("birthMonth", todayMonth)-1;		// 저장할때 1 더해서 넣었으니 꺼낼때는 1 빼서..	
+//			birthDay = sharedPrefCustom.getInt("birthDay", todayDay);
+//			DatePickerDialog DatePickerDialog2 = new DatePickerDialog(this, mDateSetListener, birthYear, birthMonth, birthDay);
+//			DatePickerDialog2.setTitle("생년월일 설정");		// 달력 타이틀 설정
+//			DatePickerDialog2.show();
+			
+			SharedPreferences.Editor sets = defaultPref.edit();
+			if(!server_receive_notification_yn){
+				sets.putBoolean("preference_alarm_chk", false);	
+				CheckBoxPreference preference_alarm_chk = (CheckBoxPreference)findPreference("preference_alarm_chk");
+				preference_alarm_chk.setChecked(false);
+			}
+			if(server_gender.length()>0){
+				Log.e(TAG,server_gender);
+				ListPreference pref_user_sex = (ListPreference)findPreference("pref_user_sex");
+				pref_user_sex.setValue(server_gender);
+				sets.putString("pref_user_sex", server_gender);
+			}
+			if(server_email.length()>0){
+				Log.e(TAG,server_email);
+				EditTextPreference pref_user_email = (EditTextPreference)findPreference("pref_user_email");
+				pref_user_email.setText(server_email);
+				sets.putString("pref_user_email", server_email);
+			}
+			sets.commit();		// 자체 설정도 바꾸고 화면상에서도 바꿔준다.
+			
+//			(Preference)findPreference("preference_alarm_chk").
+			
+//			if(sharedPrefCustom!=null){		// 뭐있는지좀 보자..		 어째 같은 설정 느낌이 든다..
+//				Map<String, ?> map = sharedPrefCustom.getAll();
+//				Log.e(TAG, "map.size"+map.size());	
+//				Set set  = map.keySet();
+//				Iterator ii = set.iterator();
+//				String iikey="";
+//				String iivalue="";
+//				Object obj = null;
+//				while(ii.hasNext()){
+//					iikey =( String)ii.next();
+//					obj = (Object) map.get(iikey);
+////					iivalue  = (String)obj;
+//					Log.e(TAG, iikey+"//"+obj);	
+//				}
+//			}
+			/*
+			 * birthday//2012-09-05     birthYear//2012     pref_app_leave//1   appLocked//true
+			 *  receive_notification_yn//   birthMonth//9  birthDay//5  gcmReceive//true  password//1234
+			 *  email//dg@vb.com    qrcode//test1234   gender//여성   updateYN//y
+			 *  
+			 */
+//			if(thePrefs!=null){		// 뭐있는지좀 보자..		 어째 같은 설정 느낌이 든다..
+//				Map<String, ?> map = thePrefs.getAll();
+//				Log.e(TAG, "map.size"+map.size());	
+//				Set set  = map.keySet();
+//				Iterator ii = set.iterator();
+//				String iikey="";
+//				String iivalue="";
+//				Object obj = null;
+//				while(ii.hasNext()){
+//					iikey =( String)ii.next();
+//					obj = (Object) map.get(iikey);
+////					iivalue  = (String)obj;
+//					Log.e(TAG, iikey+"//"+obj);	
+//				}
+//			}
+			
+			// defaultPref
+			
+			
+//			 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+//			if("ShowContactPhotosCheckBoxPref_Appendix".equals(key)){
+//			    boolean isChecked =    prefs.getBoolean("ShowContactPhotosCheckBoxPref_Appendix", false);
+//			    if (isChecked != prefs.getBoolean("ShowContactPhotosCheckBoxPref", false)){
+//			        CheckBoxPreference showContact = (CheckBoxPreference)findPreference("ShowContactPhotosCheckBoxPref");
+//			        showContact.setChecked(isChecked);
+//			    }      
+//			}
+			
+			
+			
+			if(defaultPref!=null){		// 자체 설정. 
+				Map<String, ?> map = defaultPref.getAll();
+				Log.e(TAG, "map.size"+map.size());	
+				Set set  = map.keySet();
+				Iterator ii = set.iterator();
+				String iikey="";
+				String iivalue="";
+				Object obj = null;
+				while(ii.hasNext()){
+					iikey =( String)ii.next();
+					obj = (Object) map.get(iikey);
+//					iivalue  = (String)obj;
+					Log.e(TAG, iikey+"//"+obj);	
+				}
+			}
+			
+		}else{
+			Log.e(TAG,"업뎃 필요 x");
+		}
+	}
 	
 	
 	/**
