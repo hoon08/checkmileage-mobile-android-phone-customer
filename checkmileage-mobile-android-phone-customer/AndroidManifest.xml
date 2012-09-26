@@ -27,6 +27,7 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="15" />
@@ -83,7 +84,7 @@
 		<activity android:name="com.pref.MainActivity_disabled" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
 		<activity android:name="com.pref.Password" android:windowSoftInputMode="stateAlwaysVisible"  android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
 		<activity android:name="com.pref.Profile" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-		<activity android:name="com.pref.PrefActivityFromResource" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="com.pref.PrefActivityFromResource" android:screenOrientation="portrait"  android:theme="@android:style/Theme.Light" ></activity>
 		<activity android:name="PrefActivityFromIntent" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
 		
 		<receiver
@@ -117,6 +118,8 @@
             </intent-filter>
         </activity>
         <activity android:name="UpdateLocationToServerActivity"  ></activity>
+        <activity android:name="PushList" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+        <activity android:name="PushDetail" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
         
         
 	</application>

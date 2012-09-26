@@ -7,31 +7,45 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:gravity="center"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:scrollbars="none" >
 
+        <TextView
+            android:id="@+id/member_store_title"
+                    android:layout_width="fill_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:textSize="17dp"
+                    android:background="#393939"
+                    android:textColor="@android:color/white"
+                    />
+        
+        
         <FrameLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" >
-            
+
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:orientation="vertical" >
+
                 <ImageView
                     android:id="@+id/prImage"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/app_name" />
+
                 <TextView
                     android:id="@+id/merchantName2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
+
                 <TextView
                     android:id="@+id/name"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content" />
 
-                
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -40,13 +54,16 @@
 
                     <TextView
                         android:id="@+id/phone"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_width="240dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="left" />
+
                     <Button
                         android:id="@+id/callBtn"
-                        android:layout_width="wrap_content"
+                        android:layout_width="80dp"
                         android:layout_height="wrap_content"
-                        android:text="전화걸기" />
+                        android:gravity="center"
+                        android:text="@string/calling" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -56,40 +73,49 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                    android:id="@+id/addr"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                        android:id="@+id/addr"
+                        android:layout_width="240dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="left" />
 
                     <Button
                         android:id="@+id/mapBtn"
-                        android:layout_width="wrap_content"
+                        android:layout_width="80dp"
                         android:layout_height="wrap_content"
-                        android:text="지도보기" />
+                        android:gravity="center"
+                        android:text="@string/viewmap" />
                 </LinearLayout>
 
                 <TextView
                     android:id="@+id/pr"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="70dp" />
+
                 <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="bottom"
+                    android:orientation="horizontal" >
+
+                    <Button
                         android:id="@+id/logListBtn"
-                        android:layout_width="wrap_content"
+                        android:layout_width="80dp"
                         android:layout_height="wrap_content"
-                        android:text="내역보기" />
-                <Button
+                        android:gravity="center"
+                        android:text="@string/showlog" />
+
+                    <Button
                         android:id="@+id/serviceListBtn"
-                        android:layout_width="wrap_content"
+                        android:layout_width="160dp"
                         android:layout_height="wrap_content"
-                        android:text="서비스/메뉴보기" />
-                <Button
+                        android:text="@string/showservicemenu" />
+
+                    <Button
                         android:id="@+id/closeBtn"
-                        android:layout_width="wrap_content"
+                        android:layout_width="80dp"
                         android:layout_height="wrap_content"
-                        android:text="닫기" />
+                        android:gravity="center"
+                        android:text="@string/closebtn" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -104,7 +130,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="50dp"
                     android:layout_marginTop="5dp" />
-				
+
                 <TextView
                     android:id="@+id/type"
                     android:layout_width="wrap_content"
@@ -113,6 +139,11 @@
                     android:layout_marginTop="50dp" />
             </LinearLayout>
         </FrameLayout>
+        
+        
+        
+        
+        
     </LinearLayout>
 
 </RelativeLayout>

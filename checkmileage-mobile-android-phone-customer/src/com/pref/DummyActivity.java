@@ -4,6 +4,8 @@ import java.util.List;
 
 import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.GCMIntentService;
 import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.MainActivity;
+import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.Main_TabsActivity;
+import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.MyMileagePageActivity;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -11,6 +13,8 @@ import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Window;
 import android.widget.Toast;
 /*
  * 어플 시작시 가장 먼저 실행됨.
@@ -25,22 +29,65 @@ public class DummyActivity extends Activity {
 	RunningAppProcessInfo runningappprocessinfo = new RunningAppProcessInfo();
 	public static int count = 0;
 	public static Activity dummyActivity;
+	
+	String TAG = "DummyActivity";
+	String RunMode = "";
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		
 	    super.onCreate(savedInstanceState);
 	    
 	    dummyActivity = DummyActivity.this;
 	    // TODO Auto-generated method stub
 	   
+	    Intent receiveIntent = getIntent();
+	    RunMode = receiveIntent.getStringExtra("RunMode");					// TEST  MILEAGE  MARKETING  NORMAL
+		 if(RunMode!=null && RunMode.length()>0){		// 데이터 전달이 가능하다.
+			 Log.d(TAG, RunMode);
+		 }else{
+			 Log.d(TAG, "NORMAL");	
+			 RunMode = "NORMAL";
+		 }
+	    
+	    
+	    
 	    // 결과는 true 가 나온다.
 	    isRunningProcess(this, "co.kr.bettersoft.checkmileage_mobile_android_phone_customer");
-	    if(count==1){
+	    if(count==1){		// 최초 실행.(나밖에없음)	
+	    	// 테스트 및 노멀은 같다. 그냥 실행. 마일리지 변경사항도 의미가 없다. 어차피 조회.
 	    	Intent intent = new Intent(DummyActivity.this, MainActivity.class);
+	    	if(RunMode.equals("MILEAGE")){
+	    		intent.putExtra("RunMode", "MILEAGE");
+	    	}else if(RunMode.equals("MARKETING")){		// 이벤트 푸쉬일 경우 해당 이벤트 화면을 보여줘야 한다. 새 인텐트로 액티비티를 실행해주면 된다. 문제는 순서. 위에거 하고나서 해준다.
+	    		intent.putExtra("RunMode", "MARKETING");
+	    		// 이벤트 화면이 가장 위에 올라와야 인정.
+	    		// ... 인텐트 작성해서 실행시켜준다.
+	    	}//  그 외에는 동작 하지 않는다.
 		    startActivity(intent);
+		    
+		    
+
 		    finish();
-	    }else{
+
+	    }else{				// 이미 실행중.
 	    	count = 0;		// 초기화 해준다. 종료하고 다시 실행할 수 있게..
+	    	
+	    	//// 테스트
+	    	if(RunMode.equals("TEST")){			// 그냥 테스트용. 나중에 지울것.
+	    		MyMileagePageActivity.searched = false;		// 그냥 테스트용. 나중에 지울것.
+	    		Main_TabsActivity.tabhost.setCurrentTab(2);
+	    	}
+	    	//// 테스트
+	    	
+	    	if(RunMode.equals("MILEAGE")){			// 마일리지일 경우에는 내 마일리지 목록 재 조회 되도록 변수 값을 설정해준다.	
+	    		MyMileagePageActivity.searched = false;		// ...		// 내 마일리지 목록 조회 변수 값 설정 해줄 것..
+	    		Main_TabsActivity.tabhost.setCurrentTab(1);				// 하는 김에 내 마일리지 탭으로 이동시켜준다.
+	    	}else if(RunMode.equals("MARKETING")){		// 이벤트 푸쉬일 경우 해당 이벤트 화면을 보여줘야 한다. 이미 실행중이니까 새 인텐트로 액티비티만 실행해주면 된다.
+	    		// ... 인텐트 작성해서 실행시켜준다.
+	    	}//  그 외에는 동작 하지 않는다.
+	    	
 	    	finish();
 	    }
 //	    }
@@ -65,13 +112,6 @@ public class DummyActivity extends Activity {
     	return isRunning;
     	}
 	
-	
-	
-	
 	// mainActivity.finish();		// 메인 종료 -> 리시버 종료
-	
-	
-	
-	
 	
 }

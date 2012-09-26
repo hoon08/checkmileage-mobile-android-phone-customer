@@ -95,11 +95,18 @@ public class CheckMileageMileage {
 	public void setMerchantImage(Bitmap merchantImage) {
 		this.merchantImage = merchantImage;
 	}
-	public CheckMileageMileage(String idCheckMileageMileages, String mileage, String modifyDate, String checkMileageMembersCheckMileageID, String checkMileageMerchantsMerchantID){
+	public CheckMileageMileage(String idCheckMileageMileages, String mileage, String modifyDate, 
+			String checkMileageMembersCheckMileageID, String checkMileageMerchantsMerchantID
+			,String companyName,String workPhoneNumber, String profileThumbnailImageUrl, Bitmap merchantImage){
 		this.idCheckMileageMileages = idCheckMileageMileages;		// 키 값 --> 로그볼때 필요
 		this.mileage = mileage;										// 마일리지
 		this.modifyDate = modifyDate;								// 수정일
 		this.checkMileageMembersCheckMileageID = checkMileageMembersCheckMileageID;	// 내 아이디
 		this.checkMileageMerchantsMerchantID = checkMileageMerchantsMerchantID;		// 가맹점 아이디.
+		
+		this.merchantName = companyName;
+		this.workPhoneNumber = workPhoneNumber;
+		this.merchantImg = profileThumbnailImageUrl;
+		this.merchantImage = merchantImage;
 	}
 }

@@ -2,8 +2,10 @@ package com.utils.adapters;
 
 import java.util.List;
 
+import com.kr.bettersoft.domain.CheckMileageMemberMileageLogs;
 import com.kr.bettersoft.domain.CheckMileageMerchants;
 
+import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.MemberStoreLogPageActivity;
 import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,13 +15,13 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 /*
- * 가맹점 검색용 아답터. 가맹점 목록 --> 그리드 뷰로 화면에 보여줌. 1줄에 두개. 정렬 되있음.
+ * 마일리지 로그용 아답터
  */
-public class ImageAdapter extends BaseAdapter {
+public class MileageLogAdapter extends BaseAdapter {
 	private Context context;
-	private final List<CheckMileageMerchants> entries;
+	private final List<CheckMileageMemberMileageLogs> entries;
  
-	public ImageAdapter(Context context, List<CheckMileageMerchants> entriesFn) {		
+	public MileageLogAdapter(Context context, List<CheckMileageMemberMileageLogs> entriesFn) {		
 		this.context = context;
 		this.entries = entriesFn;
 	}
@@ -28,14 +30,13 @@ public class ImageAdapter extends BaseAdapter {
  
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
  
-		View gridView;
+		View listView;
  
 		if (convertView == null) {
  
-			gridView = new View(context);
+			listView = new View(context);
  
-			// get layout from mobile.xml
-			gridView = inflater.inflate(R.layout.member_store_list_viewwrapper_row, null);
+			listView = inflater.inflate(R.layout.member_store_log_list, null);
  
 			// ** 이 소스를 여기에 두면 한 화면의 이미지가 반복 된다. 아래쪽 return 위로 옮겨주면 이미지 반복 현상이 없다. 
 //			// set value into textview
@@ -48,21 +49,28 @@ public class ImageAdapter extends BaseAdapter {
 ////			String mobile = entries[position];
 //			imageView.setImageBitmap(((CheckMileageMerchants)entries.get(position)).getMerchantImage());
 		} else {
-			gridView = (View) convertView;
+			listView = (View) convertView;
 		}
  
 		// ** 이미지 반복 현상을 없애기 위해 위쪽의 소스를 여기로 옮겨준다. --> 문제 해결 됨.
 		// set value into textview
-		TextView textView = (TextView) gridView
-				.findViewById(R.id.label);
-		textView.setText(((CheckMileageMerchants)entries.get(position)).getCompanyName());
-		// set image based on selected text
-		ImageView imageView = (ImageView) gridView
-				.findViewById(R.id.icon);
-//		String mobile = entries[position];
-		imageView.setImageBitmap(((CheckMileageMerchants)entries.get(position)).getMerchantImage());
-		
-		return gridView;
+		TextView textView1 = (TextView) listView
+		.findViewById(R.id.merchant_log_info2);
+		textView1.setText(MemberStoreLogPageActivity.storeName);
+
+		TextView textView2 = (TextView) listView
+		.findViewById(R.id.merchant_log_content);
+		textView2.setText(((CheckMileageMemberMileageLogs)entries.get(position)).getContent());
+
+		TextView textView3 = (TextView) listView
+		.findViewById(R.id.merchant_log_mileage);
+		textView3.setText("(★"+((CheckMileageMemberMileageLogs)entries.get(position)).getMileage()+")");
+
+		TextView textView4 = (TextView) listView
+		.findViewById(R.id.merchant_log_time2);
+		textView4.setText(((CheckMileageMemberMileageLogs)entries.get(position)).getModifyDate());
+
+		return listView;
 	}
  
 	@Override

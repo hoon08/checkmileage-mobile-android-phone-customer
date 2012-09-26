@@ -43,6 +43,10 @@ public class CertificationStep2 extends Activity {
 	String TAG = "CertificationStep2";
 	String registerDate = "";
 	int responseCode = 0;
+	
+	String controllerName = "";		// 서버 조회시 컨트롤러 이름
+	String methodName = "";			// 서버 조회시 메서드 이름
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -52,8 +56,9 @@ public class CertificationStep2 extends Activity {
 	    button2 = (Button) findViewById(R.id.certi_btn2);
 	    txt2 = (TextView)findViewById(R.id.certi_text2);
 	    
-	    
-		button2.setText("인증 하기");
+//		button2.setText("인증확인");
+		button2.setText(R.string.certi_step2_btn1);
+		
 		button2.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -68,43 +73,44 @@ public class CertificationStep2 extends Activity {
 				}
 			}
 		});
-	   
 	}
 	
 	/*
 	 * 서버와 통신하여 인증2단계 수행.
 	 */
 	public void certificationStep2() throws JSONException, IOException {
-    	Log.i(TAG, "certificationStep1");
+    	Log.i(TAG, "certificationStep2");
+    	
+    	controllerName = "checkMileageCertificationController";		// 서버 조회시 컨트롤러 이름
+    	methodName = "selectCertificationNumber";			// 서버 조회시 메서드 이름
+    	
     	new Thread(
     			new Runnable(){
     				public void run(){
     					 // 전달 데이터
 						JSONObject obj = new JSONObject();
-						
     					// 가입일시
     					Date today = new Date();
 //    				    registerDate = today.toString();
-    				    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+//    				    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+    				    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     				    registerDate = sf.format(today);
     				    // 승인 번호
-						certificationNumber = (String) button2.getText();
+						certificationNumber = (String) txt2.getText();
 						try{
-//							obj.put("phoneNumber", phoneNum);
+//							obj.put("phoneNumber", phoneNum);					// 실사용.
 //							obj.put("certificationNumber", certificationNumber);
 //							obj.put("registerDate", registerDate);
-
 							// 테스트용 하드코딩
 							obj.put("phoneNumber", "01022173645");
-							obj.put("certificationNumber", "1234");
+							obj.put("certificationNumber", "1122");
 							obj.put("registerDate", registerDate);
-							
 						}catch(Exception e){
 							e.printStackTrace();
 						}
 						String jsonString = "{\"checkMileageCertification\":" + obj.toString() + "}";
 						try{
-							  URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/checkMileageCertificationController/selectCertificationNumber");
+							  URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
 					  		  HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
 					  		  connection2.setDoOutput(true);
 					  		  connection2.setInstanceFollowRedirects(false);
@@ -140,7 +146,7 @@ public class CertificationStep2 extends Activity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-    	Log.d(TAG,"수신::"+builder.toString());
+    	Log.d(TAG,"get ::"+builder.toString());
     	String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다... 용도에 맞게 구현할 것.
 //    	try{
 //    		String result = "";
@@ -159,6 +165,7 @@ public class CertificationStep2 extends Activity {
     							Thread.sleep(1000);
     							// 나의 QR 코드 보기로 이동.
     							Intent intent2 = new Intent(CertificationStep2.this, No_QR_PageActivity.class);
+    							intent2.putExtra("phoneNumber", phoneNum);
     							startActivity(intent2);
     							finish();		// 다른 액티비티를 호출하고 자신은 종료.
     						}catch(InterruptedException ie){
@@ -168,7 +175,7 @@ public class CertificationStep2 extends Activity {
     				}
     		).start();
     	}else{			// 인증 실패시	 토스트 띄우고 인증 1단계로 돌아감.
-    		Toast.makeText(CertificationStep2.this, "오류가 발생하여 인증이 실패하였습니다.\n잠시 후 다시 시도하여 주십시오.", Toast.LENGTH_SHORT).show();
+    		Toast.makeText(CertificationStep2.this, R.string.certi_fail_msg, Toast.LENGTH_SHORT).show();
     		new Thread(
     				new Runnable(){
     					public void run(){

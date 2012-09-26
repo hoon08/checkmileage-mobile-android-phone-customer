@@ -5,10 +5,26 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
+    <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:text="@string/my_mileage_title" 
+                    android:textSize="17dp"
+                    android:background="#393939"
+                    android:textColor="@android:color/white"
+                    />
+    
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
 
+        <ListView
+            android:id="@+id/listview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+        
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -20,19 +36,15 @@
                 android:layout_height="wrap_content"
                 android:visibility="invisible" />
         </LinearLayout>
-		
-        <ListView
-            android:id="@+id/listview"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+        
+        
         <TextView
          android:id="@+id/empty2"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_gravity="center"
         android:visibility="gone"
-        android:text="마일리지 정보가 없습니다." />
+        android:text="@string/no_mileage_info" />
     </FrameLayout>
   
 </LinearLayout>

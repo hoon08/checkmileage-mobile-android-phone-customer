@@ -8,9 +8,13 @@ import java.io.DataInputStream;
 import java.io.FileOutputStream;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
@@ -20,6 +24,9 @@ public class CommonUtils extends Activity {
 	static String writeQRstr = "test1234";
 	static int callCode = 0;		// 호출 모드 . 읽기:1, 쓰기:2, 초기화:3
 	static int qrResult = 0;		// 처리 결과값. 성공:1, 실패:: 파일없음:-3,입출력오류:-2,그외:-1
+	
+	static String imgDomain = "http://domainNames/upload/thumb/"; 	
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -100,4 +107,5 @@ public class CommonUtils extends Activity {
 //		textView.setText(strBuffer);
 //		setContentView(textView);
 	}
+	
 }

@@ -28,24 +28,35 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical" >
+            
+            <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal" >
+					<TextView
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/merchantName"
+                        android:layout_width="170dp"
+                        android:layout_height="wrap_content"
+                        android:padding="2dp"
+                        android:textSize="20sp"
+                        android:gravity="left" />
+					
+					
+                    <TextView
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/mileage"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:padding="2dp"
+                        android:textSize="20sp"
+                        android:gravity="right" />
 
-            <TextView
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/mileage"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:padding="2dp"
-                android:textSize="20sp" />
-
-            <TextView
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/merchantName"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:padding="2dp"
-                android:textSize="20sp" />
-
-            <TextView
+                    
+                </LinearLayout>
+            
+				<TextView
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/merchantPhone"
                 android:layout_width="fill_parent"

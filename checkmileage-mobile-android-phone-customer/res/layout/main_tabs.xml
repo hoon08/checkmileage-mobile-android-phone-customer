@@ -16,37 +16,7 @@
             android:layout_width="fill_parent"
             android:layout_height="313dp"
             android:layout_weight="0.22" >
-            <LinearLayout
-                android:id="@+id/first"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:orientation="vertical" >
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/second"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:orientation="vertical" >
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/third"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:orientation="vertical" >
-            </LinearLayout>
             
-            <LinearLayout
-                android:id="@+id/fourth"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:orientation="vertical" >
-            </LinearLayout>
         </FrameLayout>
 
 		<TabWidget
@@ -58,63 +28,4 @@
 		    android:tabStripEnabled="false" >
         </TabWidget>
     </LinearLayout>
-    <TextView
-		    android:id="@+id/tabText1"
-	        android:layout_width="80dp"
-	        android:layout_height="50dp"
-	        android:layout_centerHorizontal="true"
-	        android:layout_centerVertical="true"
-	        android:gravity="center"
-	        android:background="#000000"
-	        android:textSize="20dp"
-	        android:textColor="@android:color/white"
-	        android:text="QR"
-	        android:clickable="true"
-	        android:focusableInTouchMode="true"
-	        />
-            <TextView
-		    android:id="@+id/tabText2"
-	        android:layout_width="80dp"
-	        android:layout_height="50dp"
-	        android:layout_centerHorizontal="true"
-	        android:layout_centerVertical="true"
-	        android:gravity="center"
-	        android:background="#000000"
-	        android:textSize="20dp"
-	        android:textColor="@android:color/white"
-	        android:text="마일리지"
-	        android:clickable="true"
-	        android:focusableInTouchMode="true"
-	        android:layout_weight="10"
-	        />
-            <TextView
-		    android:id="@+id/tabText3"
-	        android:layout_width="80dp"
-	        android:layout_height="50dp"
-	        android:layout_centerHorizontal="true"
-	        android:layout_centerVertical="true"
-	        android:gravity="center"
-	        android:background="#000000"
-	        android:textSize="20dp"
-	        android:textColor="@android:color/white"
-	        android:text="가맹점"
-	        android:clickable="true"
-	        android:focusableInTouchMode="true"
-	        android:layout_weight="10"
-	        />
-            <TextView
-		    android:id="@+id/tabText4"
-	        android:layout_width="80dp"
-	        android:layout_height="50dp"
-	        android:layout_centerHorizontal="true"
-	        android:layout_centerVertical="true"
-	        android:gravity="center"
-	        android:background="#000000"
-	        android:textSize="20dp"
-	        android:textColor="@android:color/white"
-	        android:text="설 정"
-	        android:clickable="true"
-	        android:focusableInTouchMode="true"
-	        android:layout_weight="10"
-	        />
 </TabHost>

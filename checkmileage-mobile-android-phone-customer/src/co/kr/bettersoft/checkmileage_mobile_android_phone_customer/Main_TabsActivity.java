@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,8 +19,12 @@ import com.pref.DummyActivity;
 
 import android.R.drawable;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.TabActivity;
+import android.app.ActivityManager.RunningAppProcessInfo;
+import android.app.ActivityManager.RunningTaskInfo;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -35,21 +40,23 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.Window;
 import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 import android.widget.Button;
 import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Main_TabsActivity extends TabActivity {
+public class Main_TabsActivity extends TabActivity implements OnTabChangeListener {
 	String TAG ="Main_TabsActivity";
 	public static Activity main_TabsActivity;
-
+	
 	String controllerName = "";
 	String methodName = "";
 
-	String myQR = "";
+	static String myQR = "";
 
 	/*
 	 * // 각 페이지에서 제거하는게 확실하므로..주석처리함. 
@@ -60,196 +67,104 @@ public class Main_TabsActivity extends TabActivity {
 	 */
 
 	static String barCode = "";
-	TabHost tabhost;
+	public static TabHost tabhost;
 
 	///////////////////////////////  // GCM 
 	AsyncTask<Void, Void, Void> mRegisterTask;
 	public static String REGISTRATION_ID = "";		// 등록아이디
-
+	
 	int waitEnd = 0;		// test GCM 대기용
 	int slow = 0;
-
+	
+	String RunMode = "";		// push 통한 실행을 위한 조치
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-
+		requestWindowFeature( Window.FEATURE_NO_TITLE );		// no title
+//		requestWindowFeature(Window.FEATURE_LEFT_ICON);		// 왼쪽에 아이콘 넣기- 안됨.			FEATURE_NO_TITLE 됨   FEATURE_RIGHT_ICON ..
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_tabs);
 		main_TabsActivity = Main_TabsActivity.this;		// 다른데서 여기 종료시키기 위함.
-		//        tabhost = getTabHost();
-
+		
 		Intent receiveIntent = getIntent();
-		myQR = receiveIntent.getStringExtra("myQR");
+		if(myQR.length()<1){
+			myQR = receiveIntent.getStringExtra("myQR");
+		}
+		
+		RunMode = receiveIntent.getStringExtra("RunMode");	
+		if(RunMode==null){
+			RunMode="";
+		}
 		nextProcessing();
 
-		tabhost = (TabHost) findViewById(android.R.id.tabhost);
-		//            setupTab(new TextView(this), "Tab 1");
-		//            setupTab(new TextView(this), "Tab 2");
-		//            setupTab(new TextView(this), "Tab 3");
-		//            setupTab(new TextView(this), "Tab 4");
-
-
-		//         Drawable d1 = getResources().getDrawable(R.drawable.tab01_indicator);
-		//        View tapParent = findViewById(R.id.tapParent);
-		final View tvTab1 = findViewById(R.id.tabText1); 
-		((ViewGroup)tvTab1.getParent()).removeView(tvTab1); 
-		final View tvTab2 = findViewById(R.id.tabText2); 
-		((ViewGroup)tvTab2.getParent()).removeView(tvTab2); 
-		final View tvTab3 = findViewById(R.id.tabText3); 
-		((ViewGroup)tvTab3.getParent()).removeView(tvTab3); 
-		final View tvTab4 = findViewById(R.id.tabText4); 
-		((ViewGroup)tvTab4.getParent()).removeView(tvTab4); 
-
-		tvTab1.setBackgroundColor(Color.GRAY);		// 시작 색
+//		tabhost = (TabHost) findViewById(android.R.id.tabhost);
+		tabhost = getTabHost();
+		
+		tabhost.setOnTabChangedListener(this);		// 이걸 해줘야 체인지 효과가..
+		
 
 		
-//		tvTab1.setOnClickListener((new OnClickListener(){			// 안먹음
-//			@Override
-//			public void onClick(View v) {
-//				// TODO Auto-generated method stub
-//				tvTab1.setBackgroundColor(Color.GRAY);
-//				tvTab2.setBackgroundColor(Color.BLACK);
-//				tvTab3.setBackgroundColor(Color.BLACK);
-//				tvTab4.setBackgroundColor(Color.BLACK);
-//			}
-//		}));
-//		tvTab2.setOnClickListener((new OnClickListener(){
-//			@Override
-//			public void onClick(View v) {
-//				// TODO Auto-generated method stub
-//				tvTab1.setBackgroundColor(Color.BLACK);
-//				tvTab2.setBackgroundColor(Color.GRAY);
-//				tvTab3.setBackgroundColor(Color.BLACK);
-//				tvTab4.setBackgroundColor(Color.BLACK);
-//			}
-//		}));
-//		tvTab3.setOnClickListener((new OnClickListener(){
-//			@Override
-//			public void onClick(View v) {
-//				// TODO Auto-generated method stub
-//				tvTab1.setBackgroundColor(Color.BLACK);
-//				tvTab2.setBackgroundColor(Color.BLACK);
-//				tvTab3.setBackgroundColor(Color.GRAY);
-//				tvTab4.setBackgroundColor(Color.BLACK);
-//			}
-//		}));
-//		tvTab4.setOnClickListener((new OnClickListener(){
-//			@Override
-//			public void onClick(View v) {
-//				// TODO Auto-generated method stub
-//				tvTab1.setBackgroundColor(Color.BLACK);
-//				tvTab2.setBackgroundColor(Color.BLACK);
-//				tvTab3.setBackgroundColor(Color.BLACK);
-//				tvTab4.setBackgroundColor(Color.GRAY);
-//			}
-//		}));
-		tvTab1.setOnTouchListener((new OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				// TODO Auto-generated method stub
-				//				Toast.makeText(Main_TabsActivity.this, "strr33",Toast.LENGTH_SHORT).show();
-				tvTab1.setBackgroundColor(Color.GRAY);
-				tvTab2.setBackgroundColor(Color.BLACK);
-				tvTab3.setBackgroundColor(Color.BLACK);
-				tvTab4.setBackgroundColor(Color.BLACK);
-				return false;
-			}
-		}));
-		tvTab2.setOnTouchListener((new OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				// TODO Auto-generated method stub
-				//				Toast.makeText(Main_TabsActivity.this, "strr33",Toast.LENGTH_SHORT).show();
-				tvTab1.setBackgroundColor(Color.BLACK);
-				tvTab2.setBackgroundColor(Color.GRAY);
-				tvTab3.setBackgroundColor(Color.BLACK);
-				tvTab4.setBackgroundColor(Color.BLACK);
-				return false;
-			}
-		}));
-		tvTab3.setOnTouchListener((new OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				// TODO Auto-generated method stub
-				//				Toast.makeText(Main_TabsActivity.this, "strr33",Toast.LENGTH_SHORT).show();
-				tvTab1.setBackgroundColor(Color.BLACK);
-				tvTab2.setBackgroundColor(Color.BLACK);
-				tvTab3.setBackgroundColor(Color.GRAY);
-				tvTab4.setBackgroundColor(Color.BLACK);
-				return false;
-			}
-		}));
-		tvTab4.setOnTouchListener((new OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				// TODO Auto-generated method stub
-				//				Toast.makeText(Main_TabsActivity.this, "strr33",Toast.LENGTH_SHORT).show();
-				tvTab1.setBackgroundColor(Color.BLACK);
-				tvTab2.setBackgroundColor(Color.BLACK);
-				tvTab3.setBackgroundColor(Color.BLACK);
-				tvTab4.setBackgroundColor(Color.GRAY);
-				return false;
-			}
-		}));
-
-		//Toast.makeText(Main_TabsActivity.this, "strr33",Toast.LENGTH_SHORT).show();
-
-		//        TextView tvTab1 = (TextView) findViewById(R.id.tabText1); 
-		//        tvTab1.setOnClickListener(new Button.OnClickListener()  {
-		//			public void onClick(View v)  {
-		//				tabhost.setCurrentTab(0);
-		//				
-		//				
-		////				Intent myqrIntent = new Intent(Main_TabsActivity.this, MyQRPageActivity.class);
-		////				startActivity(myqrIntent);
-		//			}
-		//		});
-		//        ViewParent parentview =  tvTab1.getParent();
+		
+		// 설정
 		tabhost.addTab(
 				tabhost.newTabSpec("tab_1")
 				//        		.setIndicator("내QR코드", getResources().getDrawable(R.drawable.tab01_indicator))
-				.setIndicator((View)tvTab1)
+//				.setIndicator((View)tvTab1)
+				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu1))			// 하단 버튼을 이미지 사용함.
 				.setContent(new Intent(this, MyQRPageActivity.class)));
 		// Optimizer.class 소스는 tab_1 탭에에 속함. Optimizer.java
 		//         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
-
 		tabhost.addTab(tabhost.newTabSpec("tab_2")
-				//        		.setIndicator("마일리지", getResources().getDrawable(R.drawable.tab02_indicator))
-				//        		.setIndicator("마일리지")
-				.setIndicator((View)tvTab2)
+//				.setIndicator((View)tvTab2)
+				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu2))
 				.setContent(new Intent(this, MyMileagePageActivity.class)));  
 		tabhost.addTab(tabhost.newTabSpec("tab_3")
-				//        		.setIndicator("가맹점", getResources().getDrawable(R.drawable.tab03_indicator))
-				//        		.setIndicator("가맹점")
-				.setIndicator((View)tvTab3)
+//				.setIndicator((View)tvTab3)
+				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu3))
 				.setContent(new Intent(this, MemberStoreListPageActivity.class)));
-
-		// 설정
+		
 		tabhost.addTab(tabhost.newTabSpec("tab_4")
-				//        		.setIndicator("탭4", getResources().getDrawable(R.drawable.tab04_indicator))
-				//        		.setContent(R.id.fourth));
-				//        		.setIndicator("설정", getResources().getDrawable(R.drawable.tab04_indicator))
-				//        		.setIndicator("설정")
-				.setIndicator((View)tvTab4)
+//				.setIndicator((View)tvTab4)
+				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu4))
 				.setContent(new Intent(this, com.pref.PrefActivityFromResource.class)));  
+		
+		
+		
+		
+		
+		// Tab에 색 지정
+        for(int i = 0; i < tabhost.getTabWidget().getChildCount(); i++) {
+         tabhost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#393939"));
+        }
+        tabhost.getTabWidget().setCurrentTab(0);
+        tabhost.getTabWidget().getChildAt(0).setBackgroundColor(Color.parseColor("#595959"));
+        
+        
+     // 마일리지 통한 실행시에 대한 조치 사항
+		if(RunMode.length()>0){
+			if(RunMode.equals("MILEAGE")){
+				tabhost.setCurrentTab(1);		// 시작 탭 설정을 원할 경우..
+			}
+		}
 	}
 
 
-	//	private void setupTab(final View view, final String tag) {
-	//	    View tabview = createTabView(tabhost.getContext(), tag);
-	//	        TabSpec setContent = tabhost.newTabSpec(tag).setIndicator(tabview).setContent(new TabContentFactory() {
-	//	        public View createTabContent(String tag) {return view;}
-	//	    });
-	//	        tabhost.addTab(setContent);
-	//	}
-	//
-	//	private static View createTabView(final Context context, final String text) {
-	//	    View view = LayoutInflater.from(context).inflate(R.layout.tabs_bg, null);
-	//	    TextView tv = (TextView) view.findViewById(R.id.tabsText);
-	//	    tv.setText(text);
-	//	    return view;
-	//	}
-
+	@Override
+	public void onTabChanged(String tabId) {
+//		Log.d(TAG, "onTabChanged");
+		// TODO Auto-generated method stub
+//		String strMsg;
+//        strMsg = "onTabChanged : " + tabId;
+//        Toast.makeText( this, strMsg, Toast.LENGTH_SHORT ).show();
+		
+		// tab 색상 변경
+		for(int i=0; i<tabhost.getTabWidget().getChildCount(); i++){
+			tabhost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#393939"));
+		}
+		tabhost.getTabWidget().getChildAt(tabhost.getCurrentTab()).setBackgroundColor(Color.parseColor("#595959"));
+		
+	}
 
 	////////////////////////////////////////////GCM 세팅        ///////////////////////////////////////////////////////////////		
 	public void nextProcessing(){
@@ -262,23 +177,17 @@ public class Main_TabsActivity extends TabActivity {
 		mRegisterTask = new AsyncTask<Void, Void, Void>() {
 			@Override
 			protected Void doInBackground(Void... params) {
-				//boolean registered =
-				//ServerUtilities.register(context, regId);
-				//if (!registered) {
 				if(regId==null || regId.length()<1){		// 등록 되어있으면 재등록. --> 유지해봄.. 안되있으면?
-					//GCMRegistrar.unregister(context);
 					reg();
 				}else{
-					Log.e(TAG,"already have a reg ID::"+regId);
+					Log.d(TAG,"already have a reg ID::"+regId);
 					try {
 						REGISTRATION_ID = regId;
 						updateMyGCMtoServer();
 						testGCM(REGISTRATION_ID);				
 					} catch (JSONException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -290,20 +199,12 @@ public class Main_TabsActivity extends TabActivity {
 			}
 		};
 		mRegisterTask.execute(null, null, null);
-		try{
-			//reg();
-			registerReceiver(mHandleMessageReceiver, new IntentFilter(DISPLAY_MESSAGE_ACTION));			// 리시버 등록.
-
-		}catch(Exception e){
-			e.printStackTrace();
-		}
 	}
 
 
 	///////////////////////////////////////// GCM 등록 메소드 ///////////////////////////////////////    
 	//GCM 등록
 	public void reg(){
-		//    	REGISTRATION_ID = GCMRegistrar.getRegistrationId(this);
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -319,27 +220,10 @@ public class Main_TabsActivity extends TabActivity {
 				}
 		).start();
 	}
-	//등록 해제
-	public void unreg(){
-		GCMRegistrar.unregister(this);			// delete from server for re reg
-	}
 
 	///////////////////////////////////////// GCM 등록 위한 메소드들 //////////////////////////////////    
-	private void checkNotNull(Object reference, String name) {
-		if (reference == null) {
-			throw new NullPointerException(
-					getString(R.string.error_config, name));
-		}
-	}
-	private final BroadcastReceiver mHandleMessageReceiver =
-		new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			//            String newMessage = intent.getExtras().getString(EXTRA_MESSAGE);
-			//            mDisplay.append(newMessage + "\n");
-			Toast.makeText(Main_TabsActivity.this, "(테스트)메시지가 도착하였습니다."+intent.getExtras().getString(EXTRA_MESSAGE), Toast.LENGTH_SHORT).show();		// 동작 됨..
-		}
-	};
+	
+	
 	public void testGCM(String registrationId) throws JSONException, IOException {
 		Log.i("testGCM", "testGCM");
 		JSONObject jsonMember = new JSONObject();
@@ -358,10 +242,7 @@ public class Main_TabsActivity extends TabActivity {
 			os2.flush();
 			System.out.println("postUrl      : " + postUrl2);
 			System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
-			//    		  connection2.getInputStream()  -> buffered reader 에 넣고 읽는다.  str 을 jsonobject 에 넣고 도메인 이름으로 꺼낸다..
 		} catch (Exception e) {
-			// TODO: handle exception
-			//   resultGatheringMessage.setResult("FAIL");
 			Log.e("testGCM", "Fail to register category.");
 		}
 	}
@@ -430,17 +311,10 @@ public class Main_TabsActivity extends TabActivity {
 							obj.put("registrationId", REGISTRATION_ID);							
 							obj.put("modifyDate", getNow());			
 
-							Log.e(TAG, "checkMileageId:"+myQR);
-							Log.e(TAG, "registrationId:"+REGISTRATION_ID);
-							Log.e(TAG, "modifyDate:"+getNow());
+							Log.d(TAG, "checkMileageId:"+myQR);
+							Log.d(TAG, "registrationId:"+REGISTRATION_ID);
+							Log.d(TAG, "modifyDate:"+getNow());
 
-							/*
-							 * checkMileageId
-registerationId
-activateYn
-modifyDate
-							 */
-							//  checkMileageMember  CheckMileageMember
 						}catch(Exception e){
 							e.printStackTrace();
 						}
@@ -496,18 +370,29 @@ modifyDate
 		//Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
 	}
 
-	@Override			// 이 액티비티(인트로)가 종료될때 실행. (액티비티가 넘어갈때 종료됨)
-	protected void onDestroy() {
-		super.onDestroy();
-		/* 
-		 * 각페이지에서 하는게 확실하므로.. 설명은 위에..
-		 * //		Log.e("Main_TabsActivity","kill all");
-//		mainActivity.finish();
-//		dummyActivity.finish();		// 더미도 종료
-//		DummyActivity.count = 0;		// 개수 0으로 초기화 시켜준다. 다시 실행될수 있도록
-		 * 
-		 */
+	
+	// 리시버 등록, 해제하여 시작시 나오는 리시버 해제했냐는 질문 로그가 나오지 않도록 한다. 실제 푸시 받는것은 서비스단에서..
+	BroadcastReceiver mMyBroadcastReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Log.w(TAG,"intent.getExtras().getString(EXTRA_MESSAGE):"+intent.getStringExtra("MESSAGE"));
+			//		if(intent.getAction().equals(DISPLAY_MESSAGE_ACTION)) {
+			// Broadcast를 들으면 할 일
+			//			Toast.makeText(Main_TabsActivity.this, "(테스트)메시지가 도착하였습니다."+intent.getExtras().getString(EXTRA_MESSAGE), Toast.LENGTH_SHORT).show();
+			//		}
+		}
+	};
+	@Override
+	protected void onResume() {
+//		Log.i(TAG, "onResume");
+//		registerReceiver(mMyBroadcastReceiver, new IntentFilter("receive받을 이름"));
+		registerReceiver(mMyBroadcastReceiver, new IntentFilter(DISPLAY_MESSAGE_ACTION));
+		super.onResume();
+	};
 
+	@Override
+	protected void onPause() {
+		unregisterReceiver(mMyBroadcastReceiver);
+		super.onPause();
 	}
-
 }

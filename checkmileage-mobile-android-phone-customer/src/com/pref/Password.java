@@ -99,14 +99,14 @@ public class Password extends Activity {
     		
     		// 4개짜리
     		if( passwordString.equals(pwForms) ){		// 입력한  비번이 일치함. (기존 비번과)
-    			textMessage.setText("바꿀 비밀번호를 입력해 주십시오.");
+    			textMessage.setText(R.string.password_input_new);
     			pwpart4.setFocusableInTouchMode(false);
     	    	pwpart1.setFocusableInTouchMode(true);
     	    	pwpart1.requestFocus();
     			goToNextPhase();
     		}else{																// 입력한  비번이 일치하지 않음.
     			password_linear1.startAnimation(shakeAni);
-                textMessage.setText("입력하신 비밀번호가 일치하지 않습니다.");				// 4자리 초기화하고.. 어쩌고..필요하다.
+                textMessage.setText(R.string.password_not_equals);				// 4자리 초기화하고.. 어쩌고..필요하다.		
                 pwpart4.setFocusableInTouchMode(false);
     	    	pwpart1.setFocusableInTouchMode(true);
     	    	pwpart1.requestFocus();
@@ -114,7 +114,7 @@ public class Password extends Activity {
     		break;
     	case PHASE_INPUT_PASSWORD:		// 새 비번 입력 1								// 새 비번1 입력한 상태. 비번 2를 받아야 한다.
     		Log.i("Password", "checkPassword--PHASE_INPUT_PASSWORD");
-    		textMessage.setText("확인을 위해 다시한번 비밀번호를 입력해 주십시오.");
+    		textMessage.setText(R.string.password_input_again);
     		goToNextPhase();
     		break;
     	case PHASE_CONFIRM_PASSWORD:	// 새 비번 확인 2 및 로그인 확인
@@ -143,7 +143,7 @@ public class Password extends Activity {
         			goToNextPhase();
         		}else{																// 틀려요
         			password_linear1.startAnimation(shakeAni);
-        			textMessage.setText("입력하신 비밀번호가 일치하지 않습니다.");
+        			textMessage.setText(R.string.password_not_equals);
         			pwpart4.setFocusableInTouchMode(false);
         			pwpart1.setFocusableInTouchMode(true);
         			pwpart1.requestFocus();
@@ -153,7 +153,7 @@ public class Password extends Activity {
         			goToNextPhase();
         		}else{																// 틀려요
         			password_linear2.startAnimation(shakeAni);
-        			textMessage.setText("입력하신 비밀번호가 일치하지 않습니다.");
+        			textMessage.setText(R.string.password_not_equals);
         			pw_cnfrmpart4.setFocusableInTouchMode(false);
         			pw_cnfrmpart1.setFocusableInTouchMode(true);
         			pw_cnfrmpart1.requestFocus();
@@ -216,7 +216,7 @@ public class Password extends Activity {
     			 PrefActivityFromResource.updateLv = PrefActivityFromResource.updateLv+1;
     			 
 //    			 PrefActivityFromResource.updateToServer();		// resume 같은데서 검사해서 처리 하도록 시켜.. *** 
-        		 Toast.makeText(Password.this, "새 비밀번호가 설정되었습니다.", Toast.LENGTH_SHORT).show();
+        		 Toast.makeText(Password.this, R.string.password_set_success, Toast.LENGTH_SHORT).show();
     		}
     		finish();
         	break;
@@ -261,14 +261,13 @@ public class Password extends Activity {
         
         if(passwordString.length()>0){		// 비번 변경 모드.  & 로그인 모드.
         	if(loginYN){
-        		textMessage.setText("비밀번호를 입력해 주십시오.");
+        		textMessage.setText(R.string.password_input_pw);
         	}else{
-        		textMessage.setText("이전 비밀번호를 입력해 주십시오.");
+        		textMessage.setText(R.string.password_input_old);
         	}
         }else{								// 최초 비번 입력 모드
-        	textMessage.setText("새 비밀번호를 입력해 주십시오.");
+        	textMessage.setText(R.string.password_input_new);
         }
-        
         
         // 비번 입력 중 체크하기  -- 1칸용
 //        passwordForm.addTextChangedListener(new TextWatcher() {
@@ -304,7 +303,7 @@ public class Password extends Activity {
         pwpart1.setOnKeyListener(new OnKeyListener() {                  
         	@Override 
         	public boolean onKey(View v, int keyCode, KeyEvent event) { 
-        		Log.e(TAG,"pwpart1");
+//        		Log.e(TAG,"pwpart1");
         		//You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_ 
         		if(keyCode == KeyEvent.KEYCODE_DEL){   
         			if(dontTwice==1){
@@ -430,7 +429,7 @@ public class Password extends Activity {
        	    	tempStr4 = pwpart4.getText()+"";
        	    	// 비번 4개 다받았다..
        	    	pwForms = tempStr1+tempStr2+tempStr3+tempStr4;
-       	    	Log.e(TAG, "비번4개 다받음. "+pwForms);
+//       	    	Log.d(TAG, "비번4개 다받음. "+pwForms);
             		Handler passwordHandler = new Handler();
             		passwordHandler.postDelayed(passwordRunnable, 200);
        	    }
@@ -446,7 +445,7 @@ public class Password extends Activity {
         pw_cnfrmpart1.setOnKeyListener(new OnKeyListener() {                  
         	@Override 
         	public boolean onKey(View v, int keyCode, KeyEvent event) { 
-        		Log.e(TAG,"pw_cnfrmpart1");
+        		Log.d(TAG,"pw_cnfrmpart1");
         		//You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_ 
         		if(keyCode == KeyEvent.KEYCODE_DEL){   
         			if(dontTwice==1){
@@ -572,7 +571,7 @@ public class Password extends Activity {
        	    	tempStr4 = pw_cnfrmpart4.getText()+"";
        	    	// 비번 4개 다받았다..
        	    	pw_cnfrmForms = tempStr1 + tempStr2 + tempStr3 + tempStr4;
-       	    	Log.e(TAG, "비번4개 다받음2. "+pw_cnfrmForms);
+       	    	Log.i(TAG, "pw all get(4th) 2. "+pw_cnfrmForms);
             		Handler passwordHandler = new Handler();
             		passwordHandler.postDelayed(passwordRunnable, 200);
        	    }

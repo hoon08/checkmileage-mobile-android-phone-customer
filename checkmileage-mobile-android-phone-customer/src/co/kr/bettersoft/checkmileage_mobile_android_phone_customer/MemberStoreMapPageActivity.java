@@ -47,7 +47,7 @@ public class MemberStoreMapPageActivity extends MapActivity {
 			storeLat = Integer.parseInt(latatude);
 			storeLon = Integer.parseInt(longitude);
 		}else{
-			Toast.makeText(MemberStoreMapPageActivity.this, "저장된 가맹점 정보가 없습니다.", Toast.LENGTH_SHORT).show();
+			Toast.makeText(MemberStoreMapPageActivity.this, R.string.no_saved_shop_info, Toast.LENGTH_SHORT).show();
 			finish();
 		}
 
@@ -112,7 +112,7 @@ public class MemberStoreMapPageActivity extends MapActivity {
 			super(context,mapView);
 		}
 		protected boolean dispatchTap(){	// 안에있어야 동작. 터치시 토스트. 
-			Toast.makeText(MemberStoreMapPageActivity.this, "사용자위치입니다.", Toast.LENGTH_SHORT).show();
+			Toast.makeText(MemberStoreMapPageActivity.this, R.string.its_user_location, Toast.LENGTH_SHORT).show();
 //			Toast.makeText(MemberStoreMapPageActivity.this, "여기가 사용자위치입니다:"+myLat+","+myLon, Toast.LENGTH_SHORT).show();
 			return false;
 		}
@@ -125,7 +125,8 @@ public class MemberStoreMapPageActivity extends MapActivity {
 		public SitesOverlay(Drawable marker) {
 			super(marker);
 			this.marker = marker;
-			items.add(new OverlayItem(new GeoPoint(storeLat,storeLon), "Store", "가맹점 위치입니다."));
+			String shop_loc_msg = getString(R.string.its_shop_location);
+			items.add(new OverlayItem(new GeoPoint(storeLat,storeLon), "Store", shop_loc_msg));
 //			items.add(new OverlayItem(getPoint(40.748963847316034,-73.96807193756104), "UN", "United Nations"));
 //			items.add(new OverlayItem(getPoint(40.76866299974387,-73.98268461227417), "Lincoln Center","Home of Jazz at Lincoln Center"));
 //			items.add(new OverlayItem(getPoint(40.765136435316755,-73.97989511489868), "Carnegie Hall","Where you go with practice, practice, practice"));
