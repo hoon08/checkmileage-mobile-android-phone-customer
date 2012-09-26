@@ -65,7 +65,10 @@ public class CertificationStep1 extends Activity {
 		// TODO Auto-generated method stub
 		phoneNum = telManager.getLine1Number();
 		txt1.setText(phoneNum);
-		button1.setText("인증번호 요청");
+		
+//		button1.setText("인증번호 요청하기);				// 하드코딩
+		button1.setText(R.string.certi_step1_btn1);			// 다국어 지원.
+
 			// 안내문.: 임시 인증 번호가 SMS로 발송 됩니다. 새로운 인증 번호를 요청하실 경우 이전 인증 번호는 사용할 수 없습니다.
 		button1.setOnClickListener(new OnClickListener() {
 			@Override
@@ -162,7 +165,7 @@ public class CertificationStep1 extends Activity {
     		    			public void run(){
     		    				try{
     		    					Thread.sleep(1000);
-    		    					// 받은 정보로 나의 QR 코드 보기로 이동.
+    		    					// 받은 정보로 나의 QR 코드 보기로 이동..  전번으로 인증했으니 별도 업뎃은 없음
     		    					Intent intent2 = new Intent(CertificationStep1.this, Main_TabsActivity.class);
     		    					startActivity(intent2);
     		    					finish();		// 다른 액티비티를 호출하고 자신은 종료.
@@ -190,7 +193,7 @@ public class CertificationStep1 extends Activity {
     		    ).start();
     		}
     	}else{			// 인증 실패시	 토스트 띄우고 화면 유지.
-    		Toast.makeText(CertificationStep1.this, "오류가 발생하여 인증이 실패하였습니다.\n잠시 후 다시 시도하여 주십시오.", Toast.LENGTH_SHORT).show();
+    		Toast.makeText(CertificationStep1.this, R.string.certi_fail_msg, Toast.LENGTH_SHORT).show();
     	}
     }
 }

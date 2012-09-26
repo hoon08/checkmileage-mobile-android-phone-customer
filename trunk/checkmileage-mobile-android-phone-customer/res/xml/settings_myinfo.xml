@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#FFFFFFFF"
+    android:key="preference_sub_userinfo"
+    android:summary="@string/preference_sub_userinfo_summary"
+    android:title="@string/preference_sub_userinfo_title" >
+
+    <ListPreference
+        android:entries="@array/pref_user_sex1"
+        android:entryValues="@array/pref_user_sex2"
+        android:key="pref_user_sex"
+        android:summary="@string/pref_user_sex_summary"
+        android:title="@string/pref_user_sex_title" />
+
+    <EditTextPreference
+        android:inputType="textEmailAddress"
+        android:key="pref_user_email"
+        android:summary="@string/pref_user_email_summary"
+        android:title="@string/pref_user_email_title" />	
+
+    <Preference
+        android:key="pref_user_birth"
+        android:summary="@string/pref_user_birth_summary"	
+        android:title="@string/pref_user_birth_title" />
+
+</PreferenceScreen>

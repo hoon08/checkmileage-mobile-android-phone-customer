@@ -29,13 +29,17 @@ import com.pref.DummyActivity;
 import com.utils.adapters.ImageAdapter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.MergeCursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -71,7 +75,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	MainActivity mainActivity = (MainActivity)MainActivity.mainActivity;
 	
 	int dontTwice = 1;				// 스피너 리스너로 인한 초기 2회 조회 방지. 
-	
+	public boolean connected = false;  // 인터넷 연결상태
 	String myQRcode = "";			// 내 아이디
 	
 	int responseCode = 0;			// 서버 조회 결과 코드
@@ -80,9 +84,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	String searchWordArea = "";		// 서버 조회시 지역명
 	String searchWordType = "";		// 서버 조회시 업종명
 	
-	
-	
-	
+	String imgDomain = CommonUtils.imgDomain; 					// Img 가져올때 파일명만 있을 경우 앞에 붙일 도메인.   뒤에는 .jpg 를 하드코딩으로 붙임
 	
 	Spinner searchSpinnerArea;		// 상단 지역 목록
 	Spinner searchSpinnerType;		// 상단 업종 목록
@@ -94,6 +96,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	Boolean mIsLast = false;			// 끝까지 갔음. true 라면 더이상의 추가 없음. 새 조회시 false 로 초기화
 	Boolean adding = false;			// 데이터 더하기 진행 중임.
 	Boolean newSearch = false; 		// 새로운 조회인지 여부. 새로운 조회라면 기존 데이터는 지우고 새로 검색한 데이터만 사용. 새로운 조회가 아니라면 기존 데이터에 추가 데이터를 추가.
+	
+	int reTry = 5;
 	
 	private ImageAdapter imgAdapter;
 	
@@ -107,7 +111,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	View emptyView;				// 데이터 없음 뷰
 
 	// 진행바
-	ProgressBar pb1;
+	ProgressBar pb1;		// 중단 로딩 진행바
+	ProgressBar pb2;		// 하단 추가 진행바
 	
 	// 핸들러
 	Handler handler = new Handler(){
@@ -116,20 +121,25 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			Bundle b = msg.getData();
 			try{
 				if(b.getInt("showYN")==1){		// 받아온 마일리지 결과를 화면에 뿌려준다.
+					Log.d(TAG,"showYN");
 					// 최종 결과 배열은 entriesFn 에 저장되어 있다.. 여기 리스트 레이아웃.
 					if(entriesFn.size()>0){
-						Log.e(TAG,"indexDataFirst::"+indexDataFirst);
+//						Log.e(TAG,"indexDataFirst::"+indexDataFirst);
 						if(newSearch){		// 새로운 검색일 경우 새로 설정, 추가일 경우 알림만 하기 위함.
 							setGriding();
 							newSearch = false;		// 다시 돌려놓는다. 이제는 최초 검색이 아님.
 						}else{
-							Log.e(TAG,"notifyDataSetChanged");
-							Log.e(TAG,"size:"+entriesFn.size());
+//							Log.e(TAG,"notifyDataSetChanged");
 							imgAdapter.notifyDataSetChanged();		// 알림 -> 변경사항이 화면상에 업데이트 되도록함.
 						}
-						adding = false;		// 추가 끝났음. 다른거 조회시 또 추가 가능.. (스크롤 리스너를 다룰때 사용)
+						adding = false;		// 조회 및 추가 끝났음. 다른거 조회시 또 추가 가능.. (스크롤 리스너를 다룰때 사용)
+						
+						gridView.setEnabled(true);			// 그리드 뷰 허용함.
+						
+						// 하단 로딩바를 숨긴다.
+						hidePb2();
 					}else{
-						Log.e(TAG,"no data");
+						Log.d(TAG,"no data");
 						emptyView = findViewById(R.id.empty1);		// 데이터 없으면 '빈 페이지'(데이터 없음 메시지)표시
 						gridView.setEmptyView(emptyView);
 						gridView.setVisibility(8);			//   0 visible   4 invisible   8 gone
@@ -152,6 +162,21 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 					}
 					pb1.setVisibility(View.INVISIBLE);
 				}
+				
+				if(b.getInt("order")==3){
+					// 하단 프로그래스바 실행
+					if(pb2==null){
+						pb2=(ProgressBar) findViewById(R.id.memberstore_list_ProgressBar02);
+					}
+					pb2.setVisibility(View.VISIBLE);
+				}else if(b.getInt("order")==4){
+					// 하단 프로그래스바  종료
+					if(pb2==null){
+						pb2=(ProgressBar) findViewById(R.id.memberstore_list_ProgressBar02);
+					}
+					pb2.setVisibility(View.INVISIBLE);
+				}
+				
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -189,7 +214,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		InputStream is= null;
 		
 		// progress bar
-		pb1 = (ProgressBar) findViewById(R.id.memberstore_list_ProgressBar01);
+		pb1 = (ProgressBar) findViewById(R.id.memberstore_list_ProgressBar01);		// 로딩(중앙)
+		pb2 = (ProgressBar) findViewById(R.id.memberstore_list_ProgressBar02);		// 로딩(하단)
 		
 		// spinner
 		searchSpinnerArea = (Spinner)findViewById(R.id.searchSpinnerArea);
@@ -197,7 +223,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		// spinner listener
 		searchSpinnerArea.setOnItemSelectedListener(this);
 		searchSpinnerType.setOnItemSelectedListener(this);
-		// 데이터 세팅. 
+		// 스피너 데이터 세팅. 
 		ArrayAdapter<String> aa1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areas);
 		aa1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		searchSpinnerArea.setAdapter(aa1);
@@ -235,29 +261,58 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	// 온 스크롤 이벤트. 
 	private OnScrollListener listScrollListener = new OnScrollListener(){
 		// 건들기만 하면 주르륵 뜬다.  쓸수 있긴 한데 너무 막떠서.... boolean 으로 조절한다.
-		  @Override
-		  public void onScroll(AbsListView view, int firstVisibleItem,
-		    int visibleItemCount, int totalItemCount) {
-		   // TODO Auto-generated method stub
-//			  if(indexDataFirst==indexDataLast){		// 시작이 더 크면 문제 있는거
-//				  mIsLast = true;
-//			  }
-			  
-			  // 리스트 가장 하단에 도달했을 경우.
-			  if(firstVisibleItem+visibleItemCount==totalItemCount &&(!adding)&&(!mIsLast)){
-				  Log.e(TAG, "onScroll event Occured."+"//view::"+view+"//firstVisibleItem::"+firstVisibleItem+"//visibleItemCount:"+visibleItemCount+"//totalItemCount::"+totalItemCount);
-				  adding = true;
-				  new backgroundGetMerchantInfo().execute();		// 비동기 실행
-			  }
-		  }
-		  // 스크롤 시작, 끝, 스크롤 중.. 이라는 사실을 알수 있다. 사실 필요 없음.. 
-		  @Override
-		  public void onScrollStateChanged(AbsListView view, int scrollState) {}
-		 };
-     
+		@Override
+		public void onScroll(AbsListView view, int firstVisibleItem,
+				int visibleItemCount, int totalItemCount) {
+			// TODO Auto-generated method stub
+			//			  if(indexDataFirst==indexDataLast){		// 시작이 더 크면 문제 있는거
+			//				  mIsLast = true;
+			//			  }
+			// 리스트 가장 하단에 도달했을 경우.. 
+//			if(firstVisibleItem+visibleItemCount==totalItemCount &&(!adding)&&(!mIsLast)){			// 가장 하단.
+			if(firstVisibleItem+visibleItemCount>=(totalItemCount-2) &&(!adding)&&(!mIsLast)){		// 가장 하단 -2일때 미리동작? - 좀더 나은듯.
+//				Log.e(TAG, "onScroll event Occured."+"//view::"+view+"//firstVisibleItem::"+firstVisibleItem+"//visibleItemCount:"+visibleItemCount+"//totalItemCount::"+totalItemCount);
+				showPb2();
+				adding = true;
+				new backgroundGetMerchantInfo().execute();		// 비동기 실행
+			}
+		}
+		// 스크롤 시작, 끝, 스크롤 중.. 이라는 사실을 알수 있다. 사실 필요 없음.. 
+		@Override
+		public void onScrollStateChanged(AbsListView view, int scrollState) {}
+	};
 	
+	
+	// 하단 프로그래스바 보임, 숨김
+	public void showPb2(){
+		new Thread( 
+				new Runnable(){
+					public void run(){
+						Message message = handler .obtainMessage();
+						Bundle b = new Bundle();
+						b.putInt( "order" , 3);
+						message.setData(b);
+						handler .sendMessage(message);
+					}
+				}
+		).start();
+	}
+	public void hidePb2(){
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Message message = handler .obtainMessage();
+						Bundle b = new Bundle();
+						b.putInt( "order" , 4);
+						message.setData(b);
+						handler .sendMessage(message);
+					}
+				}
+		).start();
+	}
+     
 	/*
-	 * 서버와 통신하여   가맹점 목록을 가져온다. 새로 조회.
+	 * 서버와 통신하여   가맹점 목록을 가져온다. 새로 조회.			 조회 1.
 	 * 그 결과를 List<CheckMileageMerchant> Object 로 반환 한다.  
 	 * 
 	 *  호출 대상 :: 
@@ -273,65 +328,83 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	 *  
 	 */
 	public void getMemberStoreList() throws JSONException, IOException {
-		Log.i(TAG, "getMemberStoreList");
-		controllerName = "checkMileageMerchantController";
-		methodName = "selectSearchMerchantList";
-		indexDataFirst = 0; // 화면 첫 값 인덱스. 초기화.. 다시 0부터
-		indexDataLast = 0;	// 화면에 보여지는 끝값 인덱스. 함께 초기화.. 0부터
-		entriesFn.clear();		// 이것도 초기화 해보자. 화면에 보여지는 데이터 리스트.
-		newSearch = true;			// 새로운 검색임. true 라면 기존 데이터는 지워야함.
-		mIsLast = false;		// 초기화. 끝이 아니므로 추가 가능.
-		// 로딩중입니다..  
-		new Thread(	
-				new Runnable(){
-					public void run(){
-						Message message = handler.obtainMessage();
-						Bundle b = new Bundle();
-						b.putInt("order", 1);
-						message.setData(b);
-						handler.sendMessage(message);
-					}
-				}
-		).start();
-		
-		if(isRunning==0){		// 진행중에 다른 조작 사절
-			isRunning=1;
-			searchSpinnerArea.setEnabled(false);
-			searchSpinnerType.setEnabled(false);
-			// 서버 통신부
-			new Thread(
+		CheckNetwork();
+		if(connected){
+			Log.i(TAG, "getMemberStoreList");
+			controllerName = "checkMileageMerchantController";
+			methodName = "selectSearchMerchantList";
+			indexDataFirst = 0; // 화면 첫 값 인덱스. 초기화.. 다시 0부터
+			indexDataLast = 0;	// 화면에 보여지는 끝값 인덱스. 함께 초기화.. 0부터
+			entriesFn.clear();		// 이것도 초기화 해보자. 화면에 보여지는 데이터 리스트.
+			newSearch = true;			// 새로운 검색임. true 라면 기존 데이터는 지워야함.
+			mIsLast = false;		// 초기화. 끝이 아니므로 추가 가능.
+			// 로딩중입니다..  
+			new Thread(	
 					new Runnable(){
 						public void run(){
-							JSONObject obj = new JSONObject();
-							try{
-								obj.put("activateYn", "Y");
-								obj.put("businessArea01", searchWordArea);		// 지역		  
-								obj.put("businessKind03", searchWordType);		// 업종					// 고유 번호 얻으려면, 내 아이디도 필요...
-								obj.put("checkMileageId", myQRcode);			// 내 아이디
-								Log.e(TAG,"myQRcode::"+myQRcode);
-							}catch(Exception e){
-								e.printStackTrace();
-							}
-							String jsonString = "{\"checkMileageMerchant\":" + obj.toString() + "}";
-							try{
-								URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
-								HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
-								connection2.setDoOutput(true);
-								connection2.setInstanceFollowRedirects(false);
-								connection2.setRequestMethod("POST");
-								connection2.setRequestProperty("Content-Type", "application/json");
-								OutputStream os2 = connection2.getOutputStream();
-								os2.write(jsonString.getBytes());
-								os2.flush();
-								System.out.println("postUrl      : " + postUrl2);
-								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
-								responseCode = connection2.getResponseCode();
-								if(responseCode==200||responseCode==204){
-									InputStream in =  connection2.getInputStream();
-									// 조회한 결과를 처리.
-									theData1(in);
-								}else{
-									// 결과가 에러면 로딩바 없애고 다시 할수 있도록
+							Message message = handler.obtainMessage();
+							Bundle b = new Bundle();
+							b.putInt("order", 1);
+							message.setData(b);
+							handler.sendMessage(message);
+						}
+					}
+			).start();
+			
+			if(isRunning==0){		// 진행중에 다른 조작 사절
+				isRunning=1;
+				searchSpinnerArea.setEnabled(false);
+				searchSpinnerType.setEnabled(false);
+				// 서버 통신부
+				new Thread(
+						new Runnable(){
+							public void run(){
+								JSONObject obj = new JSONObject();
+								try{
+									obj.put("activateYn", "Y");
+									obj.put("businessArea01", searchWordArea);		// 지역		  
+									obj.put("businessKind03", searchWordType);		// 업종					// 고유 번호 얻으려면, 내 아이디도 필요...
+									obj.put("checkMileageId", myQRcode);			// 내 아이디
+									Log.w(TAG,"myQRcode::"+myQRcode);
+								}catch(Exception e){
+									e.printStackTrace();
+								}
+								String jsonString = "{\"checkMileageMerchant\":" + obj.toString() + "}";
+								try{
+									URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+									HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+									connection2.setDoOutput(true);
+									connection2.setInstanceFollowRedirects(false);
+									connection2.setRequestMethod("POST");
+									connection2.setRequestProperty("Content-Type", "application/json");
+									OutputStream os2 = connection2.getOutputStream();
+									os2.write(jsonString.getBytes());
+									os2.flush();
+	//								System.out.println("postUrl      : " + postUrl2);
+									System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+									responseCode = connection2.getResponseCode();
+									if(responseCode==200||responseCode==204){
+										InputStream in =  connection2.getInputStream();
+										// 조회한 결과를 처리.
+										theData1(in);
+									}else{
+										// 결과가 에러면 로딩바 없애고 다시 할수 있도록
+										new Thread(
+												new Runnable(){
+													public void run(){
+														Message message = handler.obtainMessage();
+														Bundle b = new Bundle();
+														b.putInt("order", 2);
+														message.setData(b);
+														handler.sendMessage(message);
+													}
+												}
+										).start();
+										isRunning = 0;
+									}
+								}catch(Exception e){ 
+									e.printStackTrace();
+									// 실행중 에러나면 로딩바 없애고 다시 할수 있도록
 									new Thread(
 											new Runnable(){
 												public void run(){
@@ -344,34 +417,26 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 											}
 									).start();
 									isRunning = 0;
+									if(reTry>0){
+										try{
+											Log.w(TAG,"failed, retry all again. remain retry : "+reTry);
+											reTry = reTry -1;
+											Thread.sleep(500);		// 재시도?
+											getMemberStoreList();
+										}catch(Exception e2){}
+									}else{
+										Log.w(TAG,"reTry failed. -- init reTry");
+										reTry = 5;			
+									}
+									
 								}
-							}catch(Exception e){ 
-								e.printStackTrace();
-								// 실행중 에러나면 로딩바 없애고 다시 할수 있도록
-								new Thread(
-										new Runnable(){
-											public void run(){
-												Message message = handler.obtainMessage();
-												Bundle b = new Bundle();
-												b.putInt("order", 2);
-												message.setData(b);
-												handler.sendMessage(message);
-											}
-										}
-								).start();
-								isRunning = 0;
-								
 							}
 						}
-					}
-			).start();
-		}else{
-			Log.e(TAG,"이미 실행중입니다.");
+				).start();
+			}else{
+				Log.w(TAG,"already running..");
+			}
 		}
-		
-		
-		
-		
 	}
 
 	/*
@@ -382,6 +447,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 		StringBuilder builder = new StringBuilder();
 		String line =null;
+		reTry = 5;			
 		try {
 			while((line=reader.readLine())!=null){
 				builder.append(line).append("\n");
@@ -389,7 +455,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		Log.d(TAG,"수신::"+builder.toString());
+//		Log.d(TAG,"수신::"+builder.toString());
 		String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다
 		// // // // // // // 바로 바로 화면에 add 하고 터치시 값 가져다가 상세 정보 보도록....
 		
@@ -437,7 +503,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 							new CheckMileageMerchants(
 									jsonObj.getString("merchantId"),
 									jsonObj.getString("companyName"),
-									jsonObj.getString("profileImageUrl"),
+									jsonObj.getString("profileThumbnailImageUrl"),		//profileImageUrl--> profileThumbnailImageUrl
 									jsonObj.getString("idCheckMileageMileages"),
 									jsonObj.getString("mileage")
 							)
@@ -452,47 +518,91 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	}
 
 	
-	// 가맹점 URL로 이미지 가져오기.가맹점 이미지 URL로부터 이미지 받아와서 도메인에 저장한다. + 결과물에 더하기
+	// 가맹점 URL로 이미지 가져오기.가맹점 이미지 URL로부터 이미지 받아와서 도메인에 저장한다. + 결과물에 더하기			-- 2차 검색
 	public void getMerchantInfo(){
-		Log.i(TAG, "merchantInfoGet");
-		// 마지막 인덱스+10개가 전체 개수보다 커지면 전체 개수 까지만.
-		if(indexDataLast+10>=indexDataTotal){
-			indexDataLast = indexDataTotal;
-			mIsLast = true;
-		}else{		// 전체 개수보다 작다면 10개. 추가 가능.
-			indexDataLast = indexDataLast + 10;
-		}
-		Log.i(TAG,"indexDataFirst::"+indexDataFirst+"//indexDataLast::"+indexDataLast+"//indexDataTotal::"+indexDataTotal);
-		Log.e(TAG,"indexDataTotal::"+indexDataTotal);
-		
-		for(int i=indexDataFirst; i<indexDataLast; i++){
-			Log.i(TAG,"I::"+i);
-			String a= new String(entries1.get(i).getMerchantId()+"");
-			String b= new String(entries1.get(i).getCompanyName()+"");
-			String c= new String(entries1.get(i).getProfileImageURL()+"");
-			if(c.length()<1){
-				c="http://www.carsingh.com/img/noImage.jpg";	
+		try{
+			Log.i(TAG, "merchantInfoGet");
+			// 마지막 인덱스+10개가 전체 개수보다 커지면 전체 개수 까지만.
+			if(indexDataLast+10>=indexDataTotal){
+				indexDataLast = indexDataTotal;
+				mIsLast = true;
+			}else{		// 전체 개수보다 작다면 10개. 추가 가능.
+				indexDataLast = indexDataLast + 10;
 			}
-			String d= new String(entries1.get(i).getIdCheckMileageMileages()+"");
-			String e= new String(entries1.get(i).getMileage()+"");
-			CheckMileageMerchants tempMerch = new CheckMileageMerchants(a, b, c, d, e);
-			Bitmap bm = null;
-			bm = LoadImage(tempMerch.getProfileImageURL());
-			tempMerch.setMerchantImage(BitmapResizePrc(bm, (float)(fImgSize*0.3), (float)(fImgSize*0.4) ).getBitmap());
-			entriesFn.add(tempMerch);
-		}
+			Log.i(TAG,"indexDataFirst::"+indexDataFirst+"//indexDataLast::"+indexDataLast+"//indexDataTotal::"+indexDataTotal);
 		
-		if(indexDataFirst+10>indexDataLast){	// 마지막까지 도달했다면 마지막번호.
-			indexDataFirst = indexDataLast;
-		}else{									// 마지막까지 도달하지 않았다면 +10
-			indexDataFirst = indexDataFirst + 10;
+			for(int i=indexDataFirst; i<indexDataLast; i++){
+				try{
+					String a= new String(entries1.get(i).getMerchantId()+"");
+					String b= new String(entries1.get(i).getCompanyName()+"");
+					String c= new String(entries1.get(i).getProfileImageURL()+"");
+					String d= new String(entries1.get(i).getIdCheckMileageMileages()+"");
+					String e= new String(entries1.get(i).getMileage()+"");
+					CheckMileageMerchants tempMerch = new CheckMileageMerchants(a, b, c, d, e);
+					Bitmap bm = null;
+					if(tempMerch.getProfileImageURL()!=null && tempMerch.getProfileImageURL().length()>0){
+						if(tempMerch.getProfileImageURL().contains("http")){
+							try{
+								bm = LoadImage(tempMerch.getProfileImageURL());				 
+							}catch(Exception e2){
+								Log.w(TAG,"LoadImage failed();"+tempMerch.getProfileImageURL());
+								try{
+									Thread.sleep(300);
+									bm = LoadImage(tempMerch.getProfileImageURL());		
+								}catch(Exception e3){
+									Log.w(TAG,"LoadImage failed again();"+tempMerch.getProfileImageURL());
+									BitmapDrawable dw = (BitmapDrawable) this.getResources().getDrawable(R.drawable.no_image);
+									bm = dw.getBitmap();
+								}
+							}
+						}else{
+							try{
+								bm = LoadImage(imgDomain+tempMerch.getProfileImageURL()+".jpg");				 
+							}catch(Exception e3){
+//								e3.printStackTrace();
+								Log.w(TAG, imgDomain+tempMerch.getProfileImageURL()+".jpg -- fail");
+								try{
+									BitmapDrawable dw = (BitmapDrawable) this.getResources().getDrawable(R.drawable.no_image);
+									bm = dw.getBitmap();
+								}catch(Exception e4){}
+							}
+						}
+					}else{
+						try{
+							BitmapDrawable dw = (BitmapDrawable) this.getResources().getDrawable(R.drawable.no_image);
+							bm = dw.getBitmap();
+						}catch(Exception e3){}
+					}
+					if(bm==null){
+						BitmapDrawable dw = (BitmapDrawable) this.getResources().getDrawable(R.drawable.no_image);
+						bm = dw.getBitmap();
+					}
+					
+					tempMerch.setMerchantImage(BitmapResizePrc(bm, (float)(fImgSize*0.3), (float)(fImgSize*0.4) ).getBitmap());
+					entriesFn.add(tempMerch);
+				}catch(Exception e){
+					e.printStackTrace();
+					Log.e(TAG,"The I is .."+i);
+				}
+			}
+			
+			if(indexDataFirst+10>indexDataLast){	// 마지막까지 도달했다면 마지막번호.
+				indexDataFirst = indexDataLast;
+			}else{									// 마지막까지 도달하지 않았다면 +10
+				indexDataFirst = indexDataFirst + 10;
+			}
+//			Log.d(TAG,"가맹점 정보 수신 완료. ");
+			showInfo();
+		}catch(Exception e){
+			e.printStackTrace();
+			hidePb2();
+			adding = false;
 		}
-		Log.d(TAG,"가맹점 정보 수신 완료. ");
-		showInfo();
 	}
 
 	// entries3 를 전역에 저장후 스레드 이용하여 돌린다. 화면에 보여준다.
 	public void showInfo(){
+		Log.d(TAG, "showInfo");
 		new Thread(
 				new Runnable(){		// 러닝바 끝
 					public void run(){
@@ -534,9 +644,9 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 				stream = urlConnection.getInputStream() ;
 			}
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			Log.w(TAG,"MalformedURLException");
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.w(TAG,"IOException");
 		}
 		return stream ;
 	}
@@ -601,13 +711,13 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		Log.i("MainTabActivity", "finish");		
 		if(app_end == 1){
 			Log.e(TAG,"kill all");
-			mainActivity.finish();
+//			mainActivity.finish();
 			dummyActivity.finish();		// 더미도 종료
 			DummyActivity.count = 0;		// 개수 0으로 초기화 시켜준다. 다시 실행될수 있도록
 			finish();
 		}else{
 			app_end = 1;
-			Toast.makeText(MemberStoreListPageActivity.this, "뒤로가기 버튼을 한번더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show();
+			Toast.makeText(MemberStoreListPageActivity.this, R.string.noti_back_finish, Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -622,20 +732,24 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
 			long arg3) {
 		if(dontTwice>0){
-			Log.e(TAG,"dontTwice");		
+			Log.i(TAG,"dontTwice");		
 			dontTwice = dontTwice - 1;
 		}else{
+			
+			gridView  = (GridView)findViewById(R.id.gridview);
+			gridView.setEnabled(false);					// 그리드 뷰 허용 안함. 검색 도중 이전 검색 리스트를 스크롤하면 어플 강제 종료됨. -- 인덱스 문제 때문.
+			
 			// TODO Auto-generated method stub
 //			Log.e(TAG,arg0+"//"+arg1+"//"+arg2+"//"+arg3);						// areas jobs
 			if(searchSpinnerArea==arg0){		// 지역 변경한 경우 .	// 정상 동작. arg2 는 몇번째 거인지.. areas[arg2]
-				Log.e(TAG,"searchSpinnerArea//"+areas[arg2]);	
+				Log.i(TAG,"searchSpinnerArea//"+areas[arg2]);	
 				if(arg2==0){
 					searchWordArea = "";  
 				}else{
 					searchWordArea = areas[arg2];
 				}
 			}else{								// 업종 변경한 경우 .	// 정상 동작.	areas[jobs]		// 0 은 전체니까 비워서 검색, 0이 아닐 경우 해당 값으로 검색.
-				Log.e(TAG,"searchSpinnerJobs//"+jobs[arg2]);
+				Log.i(TAG,"searchSpinnerJobs//"+jobs[arg2]);
 				if(arg2==0){
 					searchWordType = "";
 				}else{
@@ -657,17 +771,12 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	}
 	
 	
-	
-	
-	
 	public class backgroundGetMerchantInfo extends  AsyncTask<Void, Void, Void> { 
 		@Override protected void onPostExecute(Void result) {  
-			// TODO Auto-generated method stub  
 			//			setListAdapter(new MyCustomAdapter(AndroidList.this, R.layout.row, month));  
 			//			Toast.makeText(AndroidList.this,    "onPostExecute \n: setListAdapter after bitmap preloaded",    Toast.LENGTH_LONG).show(); 
 		} 
 		@Override protected void onPreExecute() {  
-			// TODO Auto-generated method stub  
 			//			Toast.makeText(AndroidList.this,    "onPreExecute \n: preload bitmap in AsyncTask",    Toast.LENGTH_LONG).show(); 
 		} 
 		@Override protected Void doInBackground(Void... params) {  
@@ -678,9 +787,65 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 //				Log.e(TAG,"entries1.get("+i+").getProfileImageURL()"+entries1.get(i).getProfileImageURL());
 //			}
 			
-			getMerchantInfo();
+			if(!((indexDataTotal<indexDataFirst)||(indexDataTotal<indexDataLast))){		// 하극상 아닌 경우
+				getMerchantInfo();
+			}else{
+				Log.e(TAG, "indexDataTotal::"+indexDataTotal+"//indexDataFirst::"+indexDataFirst+"//indexDataLast::"+indexDataLast);
+			}
 			return null; 
 		}
 	}
 
+	
+	/*
+	 * 네트워크 상태 감지
+	 * 
+	 */
+	public void CheckNetwork(){
+		ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo ni = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		boolean isWifiAvailable = ni.isAvailable();
+		boolean isWifiConn = ni.isConnected();
+		ni = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+		boolean isMobileAvail = ni.isAvailable();
+		boolean isMobileConn = ni.isConnected();
+		
+		String status = "WiFi Avail="+isWifiAvailable+"//Conn="+isWifiConn
+		+"//Mobile Avail="+isMobileAvail
+		+"//Conn="+isMobileConn;
+		if(!(isWifiConn||isMobileConn)){
+			Log.w(TAG,status);
+//			AlertShow("Wifi 혹은 3G 망이 연결되지 않았거나 원할하지 않습니다. 네트워크 확인 후 다시 접속해 주세요.");
+			AlertShow_networkErr();
+		}else{
+			connected = true;
+		}
+	}
+	public void AlertShow_networkErr(){
+		AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
+		alert_internet_status.setTitle("Warning");
+		alert_internet_status.setMessage(R.string.network_error);
+		alert_internet_status.setPositiveButton(R.string.closebtn, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+//				finish();
+			}
+		});
+		alert_internet_status.show();
+	}
+	
+//	public void AlertShow(String msg){
+//		AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
+//		alert_internet_status.setTitle("Warning");
+//		alert_internet_status.setMessage(msg);
+//		alert_internet_status.setPositiveButton("닫기", new DialogInterface.OnClickListener() {
+//			@Override
+//			public void onClick(DialogInterface dialog, int which) {
+//				dialog.dismiss();
+////				finish();
+//			}
+//		});
+//		alert_internet_status.show();
+//	}
 }

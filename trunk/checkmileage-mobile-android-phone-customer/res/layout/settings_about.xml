@@ -4,11 +4,13 @@
     android:layout_height="match_parent" >
 
     <TextView
+        android:id = "@+id/settings_about_text1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:text="이 앱은 마일리지를 쌓는 어플입니다."
+        android:text="@string/settings_about_content"
+        android:gravity="center"
         tools:context=".MainActivity" />
 
 </RelativeLayout>

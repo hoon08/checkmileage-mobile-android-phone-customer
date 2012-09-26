@@ -24,10 +24,12 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.gcm.GCMRegistrar;
 import com.pref.DummyActivity;
+import com.pref.Password;
 
 /**
  * IntentService responsible for handling GCM messages.
@@ -69,9 +71,24 @@ public class GCMIntentService extends GCMBaseIntentService {
 //        String message = getString(R.string.gcm_message);
         String message = intent.getStringExtra("MESSAGE");
 //        displayMessage(context, message);
-        Log.i(TAG, "Received message:"+intent.getStringExtra("MESSAGE"));		// 동작함.
-     // notifies user
-        generateNotification(context, message);	// 사용자에게 노티를 준닷
+        Log.i(TAG, "Received message of onMessage():"+intent.getStringExtra("MESSAGE"));		// 동작함.
+//        Toast.makeText(GCMIntentService.this, "(테스트)메시지가 도착하였습니다."+intent.getStringExtra("MESSAGE"), Toast.LENGTH_SHORT).show();
+//        if(intent.getStringExtra("MESSAGE").equals("Check Mileage 로 부터 새로운 메시지가 도착했습니다.")){
+//        	// ...Log.i(TAG, "112233");		// 동작함.
+//        }
+        /*
+         * MILEAGE : 새로운 마일리지가 등록되거나 기존 마일리지가 업데이트되었다.
+         * MARKETING : 가맹점이나 서비스에서 마케팅정보나 기타 알림메시지가 수신되었다.
+         * Check Mileage 로 부터 새로운 메시지가 도착했습니다. : test 메시지..
+         */
+//        if(intent.getStringExtra("MESSAGE").contains("MILEAGE")){
+        	// noti 는 필요 없고.. 내 마일리지 목록 갔을때 재 조회 되도록 변수 값만 변경해준다. -- 아직 미구현 상태이다..
+        	// --> noti 해줘야 한다. 어플 종료한 상태일수도 있기 때문..(리시버는 어플 종료해도 동작)
+//        }else{
+        	// notifies user
+        	generateNotification(context, message);	// 사용자에게 노티를 준닷
+//        }
+     
     }
 
     @Override
@@ -109,20 +126,68 @@ public class GCMIntentService extends GCMBaseIntentService {
         String title = context.getString(R.string.app_name);
         
         Intent notificationIntent;
-        	
+        /*
+         * MILEAGE : 새로운 마일리지가 등록되거나 기존 마일리지가 업데이트되었다.
+         * MARKETING : 가맹점이나 서비스에서 마케팅정보나 기타 알림메시지가 수신되었다.
+         * Check Mileage 로 부터 새로운 메시지가 도착했습니다. : test 메시지..
+         * 
+         * <string name="gcm_new_msgkkk">새로운 메시지</string>
+         */
+        String new_msg = "새로운 메시지";
+        if(message.contains(new_msg)){
+        	Log.d(TAG,"new msg - test");
 //        	notificationIntent = new Intent(context, MainActivity.class);		// 이걸 띄워서 문제가 된다면..
-        notificationIntent = new Intent(context, DummyActivity.class);		
-        // set intent so it does not start a new activity
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-              | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK 
-//                | Intent.FLAG_ACTIVITY_CLEAR_TOP 
-//                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent intent =
-                PendingIntent.getActivity(context, 0, notificationIntent, 0);
-        notification.setLatestEventInfo(context, title, message, intent);
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
-        notificationManager.notify(0, notification);
+//            notificationIntent = new Intent(context, PushDetail.class);	// 데이터 전달이 가능하므로 직접 부르지 않아도 되려나..
+            notificationIntent = new Intent(context, DummyActivity.class);	
+//            notificationIntent.putExtra("RunMode", "TEST");						// 데이터 전달이 가능하다. 이것을 통해.. 원하는 액티비티를 실행시켜줄수 있다..
+            notificationIntent.putExtra("RunMode", "MILEAGE");						// 테스트용..
+            
+            // set intent so it does not start a new activity
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                  | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//            notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK 
+//                    | Intent.FLAG_ACTIVITY_CLEAR_TOP 
+//                    | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            PendingIntent intent =
+                    PendingIntent.getActivity(context, 0, notificationIntent, 0);
+            notification.setLatestEventInfo(context, title, message, intent);
+            notification.flags |= Notification.FLAG_AUTO_CANCEL;
+            notificationManager.notify(0, notification);
+        }else if(message.contains("MILEAGE")){
+        	Log.d(TAG,"update mileage");
+        	MyMileagePageActivity.searched = false;
+//        	notificationIntent = new Intent(context, MainActivity.class);		// 이걸 띄워서 문제가 된다면..
+            notificationIntent = new Intent(context, DummyActivity.class);	
+            notificationIntent.putExtra("RunMode", "MILEAGE");
+            
+            // set intent so it does not start a new activity
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                  | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//            notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK 
+//                    | Intent.FLAG_ACTIVITY_CLEAR_TOP 
+//                    | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            PendingIntent intent =
+                    PendingIntent.getActivity(context, 0, notificationIntent, 0);
+            notification.setLatestEventInfo(context, title, message, intent);
+            notification.flags |= Notification.FLAG_AUTO_CANCEL;
+            notificationManager.notify(0, notification);
+        }else if(message.contains("MARKETING")){
+        	Log.d(TAG,"noti event push");
+//        	notificationIntent = new Intent(context, MainActivity.class);		// 이걸 띄워서 문제가 된다면..
+            notificationIntent = new Intent(context, DummyActivity.class);	
+            notificationIntent.putExtra("RunMode", "MARKETING");
+            
+            // set intent so it does not start a new activity
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                  | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//            notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK 
+//                    | Intent.FLAG_ACTIVITY_CLEAR_TOP 
+//                    | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            PendingIntent intent =
+                    PendingIntent.getActivity(context, 0, notificationIntent, 0);
+            notification.setLatestEventInfo(context, title, message, intent);
+            notification.flags |= Notification.FLAG_AUTO_CANCEL;
+            notificationManager.notify(0, notification);
+        }
     }
-
 }

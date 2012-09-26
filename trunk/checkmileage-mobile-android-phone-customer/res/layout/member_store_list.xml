@@ -2,8 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:gravity="center"
     android:orientation="vertical" >
 
+    <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:text="@string/member_store_list_title" 
+                    android:textSize="17dp"
+                    android:background="#393939"
+                    android:textColor="@android:color/white"
+                    />
+    
     <LinearLayout
         android:id="@+id/LinearLayout123"
         android:layout_width="fill_parent"
@@ -38,25 +49,11 @@
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
-
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:gravity="center_vertical|center_horizontal"
-            android:orientation="vertical" >
+            android:orientation="horizontal" >
 
-            <ProgressBar
-                android:id="@+id/memberstore_list_ProgressBar01"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="invisible" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="horizontal" 
-            >
             <GridView
                 android:id="@+id/gridview"
                 android:layout_width="wrap_content"
@@ -66,16 +63,46 @@
                 android:numColumns="2"
                 android:stretchMode="columnWidth" >
             </GridView>
+
             <TextView
-		        android:id="@+id/empty1"
-		        android:layout_width="fill_parent"
-		        android:layout_height="fill_parent"
-		        android:layout_gravity="center"
-		        android:visibility="gone"
-		        android:text="가맹점 정보가 없습니다." />
+                android:id="@+id/empty1"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:text="@string/no_shop_info"
+                android:visibility="gone" />
+        </LinearLayout>
+        
+		<LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center_vertical|center_horizontal"
+            android:orientation="vertical" 
+            >
+
+            <ProgressBar
+                android:id="@+id/memberstore_list_ProgressBar01"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible" 
+                />
+        </LinearLayout>
+        
+        
+        
+        
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="bottom|center"
+            android:orientation="horizontal" >
+
+            <ProgressBar
+                android:id="@+id/memberstore_list_ProgressBar02"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible" />
         </LinearLayout>
     </FrameLayout>
-
-    
 
 </LinearLayout>

@@ -41,7 +41,7 @@ public class myWebView extends Activity {
 		if(loadingURL.length()>0){
 			mWeb.loadUrl(loadingURL);		// url
 		}else{
-			Toast.makeText(myWebView.this, "요청하신 주소를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
+			Toast.makeText(myWebView.this, R.string.cant_find_url, Toast.LENGTH_SHORT).show();
 		}
 		
 	}

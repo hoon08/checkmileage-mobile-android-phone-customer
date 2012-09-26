@@ -14,7 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 /*
- * 가맹점 목록보기에 나오는 아답터. 가맹점 목록 --> 그리드 뷰로 화면에 보여줌. 1줄에 두개. 정렬 되있음.
+ * 마일리지 목록 용 아답터.
  */
 public class ImageAdapterList extends BaseAdapter {
 	private Context context;
@@ -73,7 +73,7 @@ public class ImageAdapterList extends BaseAdapter {
 		// set value into textview
 		TextView textViewMerchantPhone = (TextView) listView
 				.findViewById(R.id.merchantPhone);
-		textViewMerchantPhone.setText(((CheckMileageMileage)entries.get(position)).getWorkPhoneNumber());
+		textViewMerchantPhone.setText(((CheckMileageMileage)entries.get(position)).getModifyDate());		// 처음엔 전번이었으나 실제 값은 마지막 이용 일시로 한다.
 		// set image based on selected text
 		ImageView imageView = (ImageView) listView
 				.findViewById(R.id.merchantImage);

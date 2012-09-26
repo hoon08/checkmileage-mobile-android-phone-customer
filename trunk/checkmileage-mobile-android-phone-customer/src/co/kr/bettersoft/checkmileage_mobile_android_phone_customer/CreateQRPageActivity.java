@@ -53,7 +53,7 @@ public class CreateQRPageActivity extends Activity {
 	static int qrResult = 0;
 	String qrcode = "test1234";
 //	String qrcode = "createdNewQRCodeOne";
-
+	String phoneNumber = "";
 	
 	// 시간 관련
 	Calendar c = Calendar.getInstance();
@@ -74,6 +74,8 @@ public class CreateQRPageActivity extends Activity {
 	    String timeID = Long.toString( c.getTimeInMillis());
 	    Log.e(TAG, "Now to millis : "+ timeID);
 	    
+	    Intent rIntent = getIntent();
+        phoneNumber = rIntent.getStringExtra("phoneNumber");
 
 //	    qrcode = timeID;			// 이 줄을  주석 처리하면 기본 값 test1234 사용, 주석 풀면 새로 만든 시간 아이디 사용.
 	    
@@ -101,6 +103,7 @@ public class CreateQRPageActivity extends Activity {
 	     */
 	    Log.i("CreateQRPageActivity", "load qrcode to img : "+qrcode);
 	    MyQRPageActivity.qrCode = qrcode;
+	    Main_TabsActivity.myQR = qrcode;
 
 	    new Thread(
 	    		new Runnable(){
@@ -159,7 +162,7 @@ public class CreateQRPageActivity extends Activity {
 						try{
 							obj.put("checkMileageId", qrcode);			  
 							obj.put("password", "");				
-							obj.put("phoneNumber", "");			
+							obj.put("phoneNumber", phoneNumber);			
 							obj.put("email", "");			
 							obj.put("birthday", "");			
 							obj.put("gender", "");			

@@ -16,6 +16,8 @@ import org.json.JSONObject;
 
 import com.kr.bettersoft.domain.CheckMileageMemberMileageLogs;
 import com.kr.bettersoft.domain.CheckMileageMileage;
+import com.utils.adapters.ImageAdapter;
+import com.utils.adapters.MileageLogAdapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -28,16 +30,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class MemberStoreLogPageActivity extends Activity {
 	String idCheckMileageMileages ="";
-	String storeName = "";
+	public static String storeName = "";
 	
 	int responseCode = 0;
 	String TAG = "MemberStoreLogPageActivity";
@@ -46,39 +51,48 @@ public class MemberStoreLogPageActivity extends Activity {
 	String methodName = "";
 	
 	public List<CheckMileageMemberMileageLogs> entries;	// 1차적으로 조회한 결과.(리스트)
-//	int returnYN = 0;		// 리턴할지 여부 결정용도
-//	int flag = 0;
-//	private ArrayAdapter<String> m_adapter = null;
 	
 	private ListView m_list = null;											// 리스트 뷰
-//	ArrayAdapter<CheckMileageMemberMileageLogs> adapter = null;				// 어레이 어댑터. 들어갈 녀석들은 마일리지 로그 도메인 리스트.
 	List<CheckMileageMemberMileageLogs> entriesFn = null;					// 리스트. 최종적으로 들어갈 녀석들. 마일리지 로그 리스트.
-//    float fImgSize = 0;
-	MyAdapter mAdapter;								// 아답터 하나 만듬. 하나씩 실제로 대입용도.?
 
+	private MileageLogAdapter logAdapter;			// 성능 좋은 아답터.
+	TextView emptyText = null;				// 데이터 없음 텍스트.
+	
 	// 핸들러
 	Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg){
 			try{
 				Bundle b = msg.getData();		// 받아온 결과를 화면에 뿌려준다.
-				if(b.getInt("showYN")==1){			// 화면에 보여줘도 좋다는 메시지.
-					// (최종 결과 배열은 entriesFn 에 저장되어 있다.. )
-					
-					
-					mAdapter = new MyAdapter(returnThis(), R.layout.member_store_log_list, (ArrayList<CheckMileageMemberMileageLogs>) entriesFn);		// 아답터를 통해 마일리지 로그 도메인 리스트(데이터)를 화면에세팅
-					m_list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-					m_list.setAdapter(mAdapter);					// 리스트뷰에 아답터 적용.
+				if(b.getInt("showYN")==1){		// 화면에 보여줘도 좋다는 메시지. 받아온 마일리지 결과를 화면에 뿌려준다.
+					// 최종 결과 배열은 entriesFn 에 저장되어 있다.. 여기 리스트 레이아웃.
+					if(entriesFn.size()>0){
+						emptyText.setText("");
+							setListing();
+					}else{
+						Log.d(TAG,"no data");
+						emptyText.setText(R.string.no_used_logs);
+					}
 				}
 			}catch(Exception e){
-				Toast.makeText(MemberStoreLogPageActivity.this, "에러가 발생하였습니다."+entriesFn.size(), Toast.LENGTH_SHORT).show();
+				String tmpstr = getString(R.string.error_occured);
+				Toast.makeText(MemberStoreLogPageActivity.this, tmpstr+entriesFn.size(), Toast.LENGTH_SHORT).show();
 				e.printStackTrace();
 			}
+			
 		}
 	};
 	// 핸들러에서 컨텍스트 받기 위해 사용.
 	public Context returnThis(){	
 		return this;
+	}
+	
+	// 데이터를 화면에 세팅
+	public void setListing(){
+		logAdapter = new MileageLogAdapter(this, entriesFn);
+		m_list  = (ListView)findViewById(R.id.memberstore_log_list);
+		m_list.setAdapter(logAdapter);
+//		gridView.setOnScrollListener(listScrollListener);		// 리스너 등록. 스크롤시 하단에 도착하면 추가 데이터 조회하도록.
 	}
 	
 	/** Called when the activity is first created. */
@@ -92,65 +106,13 @@ public class MemberStoreLogPageActivity extends Activity {
 	    try {
 			getMyMileageList();
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		m_list = (ListView) findViewById(R.id.memberstore_log_list);
+		emptyText = (TextView) findViewById(R.id.memberstore_log_list_empty);
 	}
-
-
-	// 어댑터 클래스. 이곳에서 얻어온 데이터를 뷰 아이디를 통해 세팅한다.
-	class MyAdapter extends BaseAdapter{
-		Context context;
-		int layoutId;
-		ArrayList<CheckMileageMemberMileageLogs> myDataArr;			// 마일리지 로그 도메인 클래스에 대한 리스트 만들기.
-		LayoutInflater Inflater;
-		MyAdapter(Context _context, int _layoutId, ArrayList<CheckMileageMemberMileageLogs> _myDataArr){
-			context = _context;
-			layoutId = _layoutId;
-			myDataArr = _myDataArr;
-			Inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		}
-		@Override
-		public int getCount() {				// 개수 세기
-			return myDataArr.size();
-		}
-		@Override
-		public String getItem(int position) {
-			return myDataArr.get(position).getCheckMileageMileagesIdCheckMileageMileages();			// 키값 꺼냄..
-		}
-		@Override
-		public long getItemId(int position) {			// 그냥 포지션 리턴.
-			return position;
-		}
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {			// 하나씩 뷰에 넣기..
-			final int pos = position;
-			if (convertView == null)  {
-				convertView = Inflater.inflate(layoutId, parent, false);
-			}
-			
-			// 리스트 만들기 위한 뷰를 읽어와서 데이터 하나씩 대입한다. 이후 아답터를 통해 하나씩 화면에 추가해준다.
-
-			TextView merchant_log_info = (TextView)convertView.findViewById(R.id.merchant_log_info2);					// 나니아(홍대점)   <--   / +"에서 적립"
-			TextView merchant_log_content = (TextView)convertView.findViewById(R.id.merchant_log_content);				//  김밥.
-			
-			TextView merchant_log_mileage = (TextView)convertView.findViewById(R.id.merchant_log_mileage);				// +"x"  +   3  <--
-			TextView merchant_log_time = (TextView)convertView.findViewById(R.id.merchant_log_time2);					// 2012-08-12 13:52
-		
-			Log.i(TAG, "myDataArr22:::"+myDataArr.size()+"??"+position);
-			merchant_log_content.setText(myDataArr.get(position).getContent());
-			merchant_log_info.setText(storeName);							// 가맹점 이름 / 업종? 위치? 는 앞페이지에서 받는걸로.. (조회 정보에 없음)
-			merchant_log_mileage.setText("("+myDataArr.get(position).getMileage()+"점)");
-			merchant_log_time.setText(myDataArr.get(position).getModifyDate());
-			Log.i(TAG, "merchant_log_time:::"+myDataArr.get(position).getModifyDate());
-			return convertView;
-		}
-	}
-	
 
 	/*
 	 * 서버와 통신하여 가맹점 이용 내역 로그를 가져온다.
@@ -200,6 +162,12 @@ public class MemberStoreLogPageActivity extends Activity {
 							theData1(in);
 						}catch(Exception e){ 
 							e.printStackTrace();
+							try{
+								Thread.sleep(500);		// 쉬었다가 다시
+								getMyMileageList();
+							}catch(Exception e1){
+								e1.printStackTrace();
+							}
 						}  
 					}
 				}
@@ -210,7 +178,7 @@ public class MemberStoreLogPageActivity extends Activity {
 	 * 조회한 로그 리스트를 받음.
 	 */
 	public void theData1(InputStream in){
-		Log.d(TAG,"theData");
+//		Log.d(TAG,"theData");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 		StringBuilder builder = new StringBuilder();
 		String line =null;
@@ -221,7 +189,7 @@ public class MemberStoreLogPageActivity extends Activity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		Log.d(TAG,"수신::"+builder.toString());
+//		Log.d(TAG,"수신::"+builder.toString());
 		String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다
 		// // // // // // // 바로 바로 화면에 add 하고 터치시 값 가져다가 상세 정보 보도록....
 		
@@ -236,35 +204,23 @@ public class MemberStoreLogPageActivity extends Activity {
 			try {
 				entries = new ArrayList<CheckMileageMemberMileageLogs>(max);
 				if(max>0){
-
 					/*
 					 * 수신::[
 					 * 		{"checkMileageMemberMileageLog":
 					 * 				{"idCheckMileageMemberMileageLogs":1,"checkMileageId":"test1234","merchantId":"m1","content":"김밥",
 					 * 				  "mileage":1,"activateYn":"Y","modifyDate":"2012-08-17","registerDate":"2012-08-17","checkMileageMileagesIdCheckMileageMileages":1}
 					 * 		},
-					 * 
-					 * 		{"checkMileageMemberMileageLog":
-					 * 				{"idCheckMileageMemberMileageLogs":2,"checkMileageId":"test1234","merchantId":"m1","content":"떡볶이",
-					 * 				"mileage":1,"activateYn":"Y","modifyDate":"2012-08-17","registerDate":"2012-08-17","checkMileageMileagesIdCheckMileageMileages":1}
-					 * 		},
-					 * 
-					 * 		{"checkMileageMemberMileageLog":
-					 * 				{"idCheckMileageMemberMileageLogs":3,"checkMileageId":"test1234","merchantId":"m1","content":"라면",
-					 * 				"mileage":1,"activateYn":"Y","modifyDate":"2012-08-17","registerDate":"2012-08-17","checkMileageMileagesIdCheckMileageMileages":1}
-					 * 		}
+					 * 		...
 					 * 		]
 					 */
-					
 					for ( int i = 0; i < max; i++ ){
 						JSONObject jsonObj = jsonArray2.getJSONObject(i).getJSONObject("checkMileageMemberMileageLog");
 						//  idCheckMileageMileages,  mileage,  modifyDate,  checkMileageMembersCheckMileageID,  checkMileageMerchantsMerchantID
 						// 객체 만들고 값 받은거 넣어서 저장..  저장값: 인덱스번호, 수정날짜, 아이디, 가맹점아이디.
-						
-						Log.d(TAG,"수신 checkMileageMileagesIdCheckMileageMileages::"+jsonObj.getString("checkMileageMileagesIdCheckMileageMileages"));
-						Log.d(TAG,"수신 content::"+jsonObj.getString("content"));
-						Log.d(TAG,"수신 mileage::"+jsonObj.getString("mileage"));
-						Log.d(TAG,"수신 modifyDate::"+jsonObj.getString("modifyDate"));
+//						Log.d(TAG,"수신 checkMileageMileagesIdCheckMileageMileages::"+jsonObj.getString("checkMileageMileagesIdCheckMileageMileages"));
+//						Log.d(TAG,"수신 content::"+jsonObj.getString("content"));
+//						Log.d(TAG,"수신 mileage::"+jsonObj.getString("mileage"));
+//						Log.d(TAG,"수신 modifyDate::"+jsonObj.getString("modifyDate"));
 						
 						entries.add(new CheckMileageMemberMileageLogs(jsonObj.getString("checkMileageMileagesIdCheckMileageMileages"),			
 								jsonObj.getString("content"),
@@ -280,11 +236,11 @@ public class MemberStoreLogPageActivity extends Activity {
 //				getMerchantInfo(entries,max);
 				
 				entriesFn = entries;		// 처리 결과를 밖으로 뺀다.
-				Log.d(TAG,"수신 entriesFn::"+entriesFn.size());
+//				Log.d(TAG,"수신 entriesFn::"+entriesFn.size());
 				showInfo();					// 밖으로 뺀 결과를 가지고 화면에 뿌려주는 작업을 한다.
 			}
 		}else{			// 요청 실패시	 토스트 띄우고 화면 유지.
-			Toast.makeText(MemberStoreLogPageActivity.this, "오류가 발생하였습니다.\n잠시 후 다시 시도하여 주십시오.", Toast.LENGTH_SHORT).show();
+			Toast.makeText(MemberStoreLogPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 		}
 	}
 	
@@ -302,7 +258,5 @@ public class MemberStoreLogPageActivity extends Activity {
 				}
 		).start();
 	}
-	
-	
 	
 }

@@ -75,6 +75,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	
 	static String TAG = "PrefActivityFromResource";
 	
+	public Boolean resumeCalled = false;
 	
 	SharedPreferences sharedPrefCustom;	// 공용 프립스		 잠금 및 QR (잠금은 메인과 공유  위의 것(default,this)은 메인과 공유되지 않아 이 sharedPref 도 사용한다.)		
 //	PreferenceCategory category1;			// 설정의 카테고리째로 비활성 시킬수 있다. 본 프로젝트에서 사용 안함
@@ -97,8 +98,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	int birthDay = 0;
 	
 	int sharePrefsFlag = 1;					// 어플내 자체 프립스를 얻기 위한 미끼. 1,-1 값을 바꿔가며 저장하면 리스너가 낚인다.
-	
-	String password = "";					// 비번.
 	
 	static String controllerName = "";		// JSON 서버 통신명 컨트롤러 명
 	static String methodName = "";			// JSON 서버 통신용 메소드 명
@@ -132,52 +131,43 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		memberInfo = new CheckMileageMembers();
 		getUserInfo();
 		
-		/*
-		 * 성별 변경시 리스너 달아서 서버에 업뎃
-		 */
-		Preference pref_user_sex = (Preference)findPreference("pref_user_sex");
-		pref_user_sex.setPersistent(true);
-		pref_user_sex.setOnPreferenceChangeListener(new OnPreferenceChangeListener()  {
-			@Override
-			public boolean onPreferenceChange(Preference arg0, Object arg1) {		// 성별 성별을 선택합니다 // 남성  여성
-				// TODO Auto-generated method stub
-//				Log.e(TAG, "arg0::"+arg0+",,arg1::"+arg1);		// 변경된 값을 받아옴.
-				memberInfo.setGender((String) arg1);
-				if(updateLv<2){		// 0또는 1일경우. 1 증가. (최대 2까지)
-					updateLv = updateLv+1;
-					if(updateLv==1){
-						updateToServer();
-					}
-				}
-				return true;		// 자체 설정도 먹도록 해줌. false 일땐 자체 설정이 먹지 않음.
-			}
-		});
-		/*
-		 * 메일 변경시. 서버에 업뎃.
-		 */
-		Preference pref_user_email = (Preference)findPreference("pref_user_email");
-		pref_user_email.setOnPreferenceChangeListener(new OnPreferenceChangeListener()  {
-			@Override
-			public boolean onPreferenceChange(Preference arg0, Object arg1) {		// 메일 정보 변경.  사용자 입력 값
-				// TODO Auto-generated method stub
-				Log.e(TAG, "arg0::"+arg0+",,arg1::"+arg1);		// 변경된 값을 받아옴.
-				if(isValidEmail((String) arg1)){
-					memberInfo.setEmail((String) arg1);
-					if(updateLv<2){		// 0또는 1일경우. 1 증가. (최대 2까지)
-						updateLv = updateLv+1;
-						if(updateLv==1){
-							updateToServer();
-						}
-					}
-					return true;
-				}else{
-					Toast.makeText(PrefActivityFromResource.this, "유효하지 않은 이메일 주소입니다.", Toast.LENGTH_SHORT).show();
-					return false;
-				}
-				
-			}
-		});
 		
+		
+		if(!resumeCalled){			// 한번만 하자.. 느리니까
+			getPreferenceScreen().getSharedPreferences() 
+			.registerOnSharedPreferenceChangeListener(this); 
+
+			/*
+			 *  비번 잠금 설정은 비번이 있을 경우에만 해준다.	(비번이 없다면 잠금 체크 설정을 사용할 수 없다.)		
+			 *  비번 설정의 경우 리쥼에 넣지 않으면 한번밖에 안읽어서 변경시 적용되지 않는다. (어플 재기동해야 적용)
+			 */
+			// prefs 	// 어플 잠금 설정. 공용으로 쓸것도 필요하다. 
+			sharedPrefCustom = getSharedPreferences("MyCustomePref",
+					Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
+			sharedPrefCustom.registerOnSharedPreferenceChangeListener(this);			// 여기에도 등록해놔야 리시버가 제대로 반응한다.
+
+			// default 도 한번 테스트
+			defaultPref = PreferenceManager.getDefaultSharedPreferences(this);
+			defaultPref.registerOnSharedPreferenceChangeListener(this);			// test 용.. 혹시나..
+
+			//		category1 = (PreferenceCategory)findPreference("category1");
+			Preference passwordCheck = findPreference("preference_lock_chk");
+
+			SharedPreferences.Editor init2 = sharedPrefCustom.edit();		// 강제 호출용도  .. 단어명은 의미없다.
+			int someNum = sharedPrefCustom.getInt("pref_app_hi", sharePrefsFlag);	// 이전 값과 같을수 있으므로..
+			someNum = someNum * -1;													// 매번 다른 값이 들어가야 제대로 호출이 된다. 같은 값들어가면 변화 없다고 호출 안됨.			
+			init2.putInt("pref_app_hi", someNum); 		// 프리퍼런스 값 넣어 업데이트 시키면 강제로 리스너 호출.
+			init2.commit();			
+			// 자체 프리퍼를 지목할 수 있게 됨. 탈퇴 메소드때 초기값 세팅해준다.
+
+			// password 변경하고 온 경우 업뎃 한번 쳐주기.
+			if(updateLv>0){		// 2였던 경우. (업뎃중 또 변경된 경우 한번더)
+				Log.d(TAG,"Need Update one more time");
+				updateToServer();
+			}
+			updateServerSettingsToPrefs();				// 서버 설정 자체 설정으로 저장 - 테스트
+			resumeCalled = true;
+		}
 	}
 
 	public void getNow(){
@@ -204,46 +194,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		app_end = 0;
 //		Log.i(TAG, "onResume");		// yyyyMMdd
 		    // Set up a listener whenever a key changes 
-		    getPreferenceScreen().getSharedPreferences() 
-		            .registerOnSharedPreferenceChangeListener(this); 
-		/*
-		 *  비번 잠금 설정은 비번이 있을 경우에만 해준다.	(비번이 없다면 잠금 체크 설정을 사용할 수 없다.)		
-		 *  비번 설정의 경우 리쥼에 넣지 않으면 한번밖에 안읽어서 변경시 적용되지 않는다. (어플 재기동해야 적용)
-		 */
-		// prefs 	// 어플 잠금 설정. 공용으로 쓸것도 필요하다. 
-		sharedPrefCustom = getSharedPreferences("MyCustomePref",
-				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
-		sharedPrefCustom.registerOnSharedPreferenceChangeListener(this);			// 여기에도 등록해놔야 리시버가 제대로 반응한다.
-		
-		
-		// default 도 한번 테스트
-	   defaultPref = PreferenceManager.getDefaultSharedPreferences(this);
-	   defaultPref.registerOnSharedPreferenceChangeListener(this);			// test 용.. 혹시나..
-		
-//		category1 = (PreferenceCategory)findPreference("category1");
-		Preference passwordCheck = findPreference("preference_lock_chk");
-		password = sharedPrefCustom.getString("password", "");
-		if(password.length()<1){				// 비번이 없다면 잠금 기능을 사용할 수 없다.  --> 비번 설정 이후 풀린다.
-			passwordCheck.setEnabled(false);
-		}else{
-			passwordCheck.setEnabled(true);		// 비번이 있다면 잠금 기능을 사용할 수 있다.
-		}
-		
-		SharedPreferences.Editor init2 = sharedPrefCustom.edit();		// 강제 호출용도  .. 단어명은 의미없다.
-		int someNum = sharedPrefCustom.getInt("pref_app_leave", sharePrefsFlag);	// 이전 값과 같을수 있으므로..
-		someNum = someNum * -1;													// 매번 다른 값이 들어가야 제대로 호출이 된다. 같은 값들어가면 변화 없다고 호출 안됨.			
-		init2.putInt("pref_app_leave", someNum); 		// 프리퍼런스 값 넣어 업데이트 시키면 강제로 리스너 호출.
-		init2.commit();			
-		// 자체 프리퍼를 지목할 수 있게 됨. 탈퇴 메소드때 초기값 세팅해준다.
-		
-		// password 변경하고 온 경우 업뎃 한번 쳐주기.
-		if(updateLv>0){		// 2였던 경우. (업뎃중 또 변경된 경우 한번더)
-			Log.d(TAG,"Need Update one more time");
-			updateToServer();
-		}
-		
-		
-		updateServerSettingsToPrefs();				// 서버 설정 자체 설정으로 저장 - 테스트
 	}
 
 	@Override 
@@ -253,7 +203,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	    getPreferenceScreen().getSharedPreferences() 
 	            .unregisterOnSharedPreferenceChangeListener(this); 
 	} 
-	 
 
 	// Preference에서 클릭 발생시 호출되는 call back
 	// Parameters:
@@ -296,31 +245,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
  */
 		
 		
-		// 잠금 체크 또는 해제시 이벤트 발생. 공용에도 저장시켜준다. (자체 저장은 기본 제공)
-		if(preference.equals((CheckBoxPreference)findPreference("preference_lock_chk"))) {
-//				 Toast.makeText(PrefActivityFromResource.this, "잠금 설정 변경", Toast.LENGTH_SHORT).show();
-				 SharedPreferences.Editor saveLockCustom = sharedPrefCustom.edit();		// 공용으로 비번도 저장해 준다.
-				 saveLockCustom.putBoolean("appLocked", ((CheckBoxPreference)findPreference("preference_lock_chk")).isChecked());
-				 saveLockCustom. commit();
-		}
-
-		// 잠금 설정 - 비번 변경 preference_lock_password
-		if(preference.equals(findPreference("preference_lock_password"))){
-			//						Toast.makeText(PrefActivityFromResource.this, "preference_lock_password", Toast.LENGTH_SHORT).show();
-			Intent passwordIntent = new Intent(PrefActivityFromResource.this, com.pref.Password.class);
-			if(password.length()>0){		// 비번이 있는 경우 변경을 해야 한다. 3회 입력. (기존, 새, 확인)
-				passwordIntent.putExtra(Password.PASSWORD, password);		// 기존 비번을 보내준다.확인해야 하니까
-				passwordIntent.putExtra(Password.MODE, Password.MODE_CHANGE_PASSWORD);	// 비번 변경 모드
-			}else{							// 비번이 없는 경우 변경 대신 신규 생성을 해야 한다. 2회 입력 (새, 확인)
-				passwordIntent.putExtra(Password.PASSWORD, password);
-				passwordIntent.putExtra(Password.MODE, Password.MODE_INIT_PASSWORD);	// 신규 비번 모드
-			}
-			// 참고로 확인 모드일 경우 
-			// passwordIntent.putExtra(Password.MODE, Password.MODE_CHECK_PASSWORD);
-			passwordIntent.putExtra(Password.NEXT_ACTIVITY, "com.pref.Profile");		// 다음 화면
-			startActivity(passwordIntent);
-		}
-		
 		// 알림 수신 설정 여부.
 		if(preference.equals((CheckBoxPreference)findPreference("preference_alarm_chk"))){
 			//	Toast.makeText(PrefActivityFromResource.this, "preference_lock_password", Toast.LENGTH_SHORT).show();
@@ -337,17 +261,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			}
 		}
 		
-		// 개인정보 변경 - 생년월일 pref_user_birth
-		if(preference.equals(findPreference("pref_user_birth"))){
-			// 꺼내서 없으면 오늘.
-			birthYear = sharedPrefCustom.getInt("birthYear", todayYear);		
-			birthMonth = sharedPrefCustom.getInt("birthMonth", todayMonth)-1;		// 저장할때 1 더해서 넣었으니 꺼낼때는 1 빼서..	
-			birthDay = sharedPrefCustom.getInt("birthDay", todayDay);
-//			Log.e(TAG, "preference .. birthYear::"+birthYear+"//birthMonth::"+birthMonth+"//birthDay::"+birthDay);
-			DatePickerDialog DatePickerDialog2 = new DatePickerDialog(this, mDateSetListener, birthYear, birthMonth, birthDay);
-			DatePickerDialog2.setTitle("생년월일 설정");		// 달력 타이틀 설정
-			DatePickerDialog2.show();
-		}
 
 		// 자주 묻는 질문 등의 경우 인텐트로 웹뷰 실시
 		if(preference.equals(findPreference("pref_app_qna"))){
@@ -373,46 +286,52 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			startActivity(webIntent);
 		}
 
-		// 탈퇴.  pref_app_leave
-		if(preference.equals(findPreference("pref_app_leave"))){
-			//			Toast.makeText(PrefActivityFromResource.this, "웹뷰 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
-			new AlertDialog.Builder(this)
-			.setTitle("회원 탈퇴")
-			.setMessage("탈퇴 시 기존 마일리지가 소멸됩니다.\n정말로 탈퇴하시겠습니까?")
-			.setIcon(android.R.drawable.ic_dialog_alert)
-			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					memberInfo.setActivateYn("N");	// 서버에 비활성화 시킨다.
-					memberDeactivation();
-					// 모바일 내에서도 QR코드,비번 설정 등을 날려 버린다. 그 외 정보들은 인증 받으면서 서버에서 받은걸로 업뎃 해준다....
-					SharedPreferences.Editor init = sharedPrefCustom.edit();
-					init.putString("qrcode", "");		init.putBoolean("appLocked", false);	
-					init.putString("password", "");
-					init.commit();
-					goodBye(thePrefs);
-					// db 의 사용자 테이블 드랍.
-					try{
-						SQLiteDatabase db = null;
-						db= openOrCreateDatabase( "sqlite_carrotDB.db",             
-						          SQLiteDatabase.CREATE_IF_NECESSARY ,null );
-						db.execSQL("DROP TABLE user_info");
-						db.close();
-					}catch(Exception e){
-						e.printStackTrace();
-					}
-					
-					
-					Toast.makeText(PrefActivityFromResource.this, "이용해 주셔서 감사합니다.", Toast.LENGTH_SHORT).show(); 
-					finish();
-				}
-			})
-			.setNegativeButton(android.R.string.no, null).show();
+//		// 탈퇴.  pref_app_leave
+//		if(preference.equals(findPreference("pref_app_leave"))){
+//		//	//		//	Toast.makeText(PrefActivityFromResource.this, R.string.leave_toast_message, Toast.LENGTH_SHORT).show();
+//			new AlertDialog.Builder(this)
+//			.setTitle("회원 탈퇴")
+//			.setMessage("탈퇴 시 기존 마일리지가 소멸됩니다.\n정말로 탈퇴하시겠습니까?")
+//			.setIcon(android.R.drawable.ic_dialog_alert)
+//			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//				public void onClick(DialogInterface dialog, int whichButton) {
+//					memberInfo.setActivateYn("N");	// 서버에 비활성화 시킨다.
+//					memberDeactivation();
+//					// 모바일 내에서도 QR코드,비번 설정 등을 날려 버린다. 그 외 정보들은 인증 받으면서 서버에서 받은걸로 업뎃 해준다....
+//					SharedPreferences.Editor init = sharedPrefCustom.edit();
+//					init.putString("qrcode", "");		init.putBoolean("appLocked", false);	
+//					init.putString("password", "");
+//					init.commit();
+//					goodBye(thePrefs);
+//					// db 의 사용자 테이블 드랍.
+//					try{
+//						SQLiteDatabase db = null;
+//						db= openOrCreateDatabase( "sqlite_carrotDB.db",             
+//						          SQLiteDatabase.CREATE_IF_NECESSARY ,null );
+//						db.execSQL("DROP TABLE user_info");
+//						db.close();
+//					}catch(Exception e){
+//						e.printStackTrace();
+//					}
+//					Toast.makeText(PrefActivityFromResource.this, "이용해 주셔서 감사합니다.", Toast.LENGTH_SHORT).show(); 
+//					finish();
+//				}
+//			})
+//			.setNegativeButton(android.R.string.no, null).show();
 
 			//			Intent webIntent = new Intent(PrefActivityFromResource.this, myWebView.class);
 			//			webIntent.putExtra("loadingURL", "http://m.naver.com");
 			//			startActivity(webIntent);
-		}
+//		}
 
+		
+		
+		// 이벤트 알림  pref_push_list
+		if(preference.equals(findPreference("pref_push_list"))){
+			Intent PushListIntent = new Intent(PrefActivityFromResource.this, co.kr.bettersoft.checkmileage_mobile_android_phone_customer.PushList.class);
+			startActivity(PushListIntent);
+		}
+		
 		// 이 앱은 ? pref_app_what
 		if(preference.equals(findPreference("pref_app_what"))){
 			//			Toast.makeText(PrefActivityFromResource.this, "웹뷰 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
@@ -424,44 +343,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		return super.onPreferenceTreeClick(preferenceScreen, preference);
 	}	
 
-	// 개인정보 - 날짜 선택시 프리퍼런스에 저장.
-	DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener()
-	{
-		public void onDateSet(DatePicker view, int year, int monthOfYear,
-				int dayOfMonth)
-		{
-			///실제적으로 선택된 날짜를 Set하는 등의 명령
-//			Toast.makeText(PrefActivityFromResource.this, year+"."+(monthOfYear+1)+"."+dayOfMonth, Toast.LENGTH_SHORT).show();
-			SharedPreferences.Editor birthDate = sharedPrefCustom.edit();
-			birthDate.putInt("birthYear", year);
-			birthDate.putInt("birthMonth", monthOfYear+1);
-			birthDate.putInt("birthDay", dayOfMonth);
-			birthDate.commit();
-			
-			// 도메인의 birthday 를 업데이트.
-//			String birthday = Integer.toString(year) + Integer.toString(monthOfYear+1) + Integer.toString(dayOfMonth);
-			String tempMonth = Integer.toString(monthOfYear+1);
-			String tempDay = Integer.toString(dayOfMonth);
-			if(tempMonth.length()==1){
-				tempMonth = "0"+tempMonth;
-			}
-			if(tempDay.length()==1){
-				tempDay = "0"+tempDay;
-			}
-			String birthday = Integer.toString(year)+ "-" + tempMonth + "-" + tempDay;
-			Log.i(TAG, "birthday::"+birthday);		// yyyyMMdd
-			Log.i(TAG, "act::"+memberInfo.getActivateYn());		
-			memberInfo.setBirthday(birthday);
-			if(updateLv<2){		// 0또는 1일경우. 1 증가. (최대 2까지)
-				updateLv = updateLv+1;
-				if(updateLv==1){
-					updateToServer();
-				}
-			}
-		}
-	};
-
-	
 	/*
 	 *  서버로부터 개인 정보를 받아와서 도메인에 저장해 둔다. 나중에 업데이트 할때 사용해야하니까.
 	 *  checkMileageMemberController 컨/ selectMemberInformation  메/ checkMileageMember 도/ 
@@ -495,7 +376,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes());
 							os2.flush();
-							System.out.println("postUrl      : " + postUrl2);
+//							System.out.println("postUrl      : " + postUrl2);
 							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 							responseCode = connection2.getResponseCode();
 							InputStream in =  connection2.getInputStream();
@@ -579,7 +460,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 										updateToServer();
 									}
 								}else{
-									Log.e(TAG,"업뎃 실패");
+									Log.e(TAG,"fail to update");
 								}
 							}catch(Exception e){ 
 								e.printStackTrace();
@@ -590,7 +471,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		}
 		// ...
 	}
-	
 	
 	/*
 	 *  서버로 알림 수신 설정 업뎃.
@@ -672,7 +552,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 										updateGCMToServer(yn);
 									}
 								}else{
-									Log.e(TAG,"업뎃 실패");
+									Log.e(TAG,"fail to update");
 								}
 							}catch(Exception e){ 
 								e.printStackTrace();
@@ -742,7 +622,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								//									theData1(in);		// 서버 결과 가지고 재 세팅하면안됨 <- 는 멤버 정보 받아서 처리하는 녀석임 호출 금지
 								// ... 할거 없음. 탈퇴 성공했는데 무슨..
 							}else{
-								Log.e(TAG,"탈퇴 실패");
+								Log.e(TAG,"fail to update");
 							}
 						}catch(Exception e){ 
 							e.printStackTrace();
@@ -777,7 +657,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		 *   업데이트 할 것들.  도메인에 저장.
 		 *  checkMileageId /password /phoneNumber /email /birthday /gender /latitude /longitude /deviceType /registrationId /activateYn /modifyDate /
 		 */
-		Log.d(TAG,"서버에서 받은 고객 상세정보::"+builder.toString());
+//		Log.d(TAG,"서버에서 받은 고객 상세정보::"+builder.toString());
 		String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다
 		// // // // // // // 바로 바로 화면에 add 하고 터치시 값 가져다가 상세 정보 보도록....
 		if(responseCode==200 || responseCode==204){
@@ -787,7 +667,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 //				Bitmap bm = null;
 				// 데이터를 전역 변수 도메인에 저장하고 핸들러를 통해 도메인-> 화면에 보여준다..
 				try{  // 아이디
-					Log.i(TAG, "checkMileageId:::"+jsonobj2.getString("checkMileageId"));
+//					Log.i(TAG, "checkMileageId:::"+jsonobj2.getString("checkMileageId"));
 					memberInfo.setCheckMileageId(jsonobj2.getString("checkMileageId"));				
 				}catch(Exception e){ memberInfo.setCheckMileageId(""); }
 				try{  // 비번
@@ -832,7 +712,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 				e.printStackTrace();
 			} 
 		}else{			// 요청 실패시	 토스트 띄우고 화면 유지.
-			Toast.makeText(PrefActivityFromResource.this, "오류가 발생하였습니다.\n잠시 후 다시 시도하여 주십시오.", Toast.LENGTH_SHORT).show();
+			Toast.makeText(PrefActivityFromResource.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 		}
 	}
 	// ...
@@ -842,10 +722,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		
-		Log.e(TAG, "onSharedPreferenceChanged");
-		
-		if(key.equals("pref_app_leave")){		// resume 에서 넣은 것과 이름 일치해야 동작한다.
+		if(key.equals("pref_app_hi")){		// resume 에서 넣은 것과 이름 일치해야 동작한다.
 //			Toast.makeText(PrefActivityFromResource.this, "???"+key, Toast.LENGTH_SHORT).show();
 			/*  // 테스트용
 			Map<String, ?> map = sharedPreferences.getAll();
@@ -897,13 +774,13 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	
 	
 	/**
-	 *  공용설정에서 업뎃 여부 확인 이후, y 이면 자체 설정에 업뎃 친다. 아니면 말고.  설정은 먹는데 재접 이후 먹는다..
+	 *  공용설정에서 업뎃 여부 확인 이후, y 이면 자체 설정에 업뎃 친다. 아니면 말고.  비번은 해당사항 없다.
 	 *  
 	 */
 	public void updateServerSettingsToPrefs(){
 		String updateYN = sharedPrefCustom.getString("updateYN", "n");
 		if(updateYN.equals("y")){
-			Log.e(TAG,"업뎃 필요 o");
+			Log.w(TAG,"need update o");
 			String server_birthday = sharedPrefCustom.getString("server_birthday", "");
 			String server_email = sharedPrefCustom.getString("server_email", "");
 			String server_gender = sharedPrefCustom.getString("server_gender", "");
@@ -917,7 +794,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			    int int_server_birth_year = Integer.parseInt(server_birth_year);
 				int int_server_birth_month = Integer.parseInt(server_birth_month);
 				int int_server_birth_day = Integer.parseInt(server_birth_day);
-				
 				SharedPreferences.Editor birthDate = sharedPrefCustom.edit();
 				birthDate.putInt("birthYear", int_server_birth_year);
 				birthDate.putInt("birthMonth", int_server_birth_month);
@@ -948,70 +824,19 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			}
 			if(server_gender.length()>0){
 				Log.e(TAG,server_gender);
-				ListPreference pref_user_sex = (ListPreference)findPreference("pref_user_sex");
-				pref_user_sex.setValue(server_gender);
+//				ListPreference pref_user_sex = (ListPreference)findPreference("pref_user_sex");
+//				pref_user_sex.setValue(server_gender);
 				sets.putString("pref_user_sex", server_gender);
 			}
 			if(server_email.length()>0){
 				Log.e(TAG,server_email);
-				EditTextPreference pref_user_email = (EditTextPreference)findPreference("pref_user_email");
-				pref_user_email.setText(server_email);
+//				EditTextPreference pref_user_email = (EditTextPreference)findPreference("pref_user_email");
+//				pref_user_email.setText(server_email);
 				sets.putString("pref_user_email", server_email);
 			}
 			sets.commit();		// 자체 설정도 바꾸고 화면상에서도 바꿔준다.
 			
 //			(Preference)findPreference("preference_alarm_chk").
-			
-//			if(sharedPrefCustom!=null){		// 뭐있는지좀 보자..		 어째 같은 설정 느낌이 든다..
-//				Map<String, ?> map = sharedPrefCustom.getAll();
-//				Log.e(TAG, "map.size"+map.size());	
-//				Set set  = map.keySet();
-//				Iterator ii = set.iterator();
-//				String iikey="";
-//				String iivalue="";
-//				Object obj = null;
-//				while(ii.hasNext()){
-//					iikey =( String)ii.next();
-//					obj = (Object) map.get(iikey);
-////					iivalue  = (String)obj;
-//					Log.e(TAG, iikey+"//"+obj);	
-//				}
-//			}
-			/*
-			 * birthday//2012-09-05     birthYear//2012     pref_app_leave//1   appLocked//true
-			 *  receive_notification_yn//   birthMonth//9  birthDay//5  gcmReceive//true  password//1234
-			 *  email//dg@vb.com    qrcode//test1234   gender//여성   updateYN//y
-			 *  
-			 */
-//			if(thePrefs!=null){		// 뭐있는지좀 보자..		 어째 같은 설정 느낌이 든다..
-//				Map<String, ?> map = thePrefs.getAll();
-//				Log.e(TAG, "map.size"+map.size());	
-//				Set set  = map.keySet();
-//				Iterator ii = set.iterator();
-//				String iikey="";
-//				String iivalue="";
-//				Object obj = null;
-//				while(ii.hasNext()){
-//					iikey =( String)ii.next();
-//					obj = (Object) map.get(iikey);
-////					iivalue  = (String)obj;
-//					Log.e(TAG, iikey+"//"+obj);	
-//				}
-//			}
-			
-			// defaultPref
-			
-			
-//			 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-//			if("ShowContactPhotosCheckBoxPref_Appendix".equals(key)){
-//			    boolean isChecked =    prefs.getBoolean("ShowContactPhotosCheckBoxPref_Appendix", false);
-//			    if (isChecked != prefs.getBoolean("ShowContactPhotosCheckBoxPref", false)){
-//			        CheckBoxPreference showContact = (CheckBoxPreference)findPreference("ShowContactPhotosCheckBoxPref");
-//			        showContact.setChecked(isChecked);
-//			    }      
-//			}
-			
-			
 			
 			if(defaultPref!=null){		// 자체 설정. 
 				Map<String, ?> map = defaultPref.getAll();
@@ -1030,25 +855,9 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			}
 			
 		}else{
-			Log.e(TAG,"업뎃 필요 x");
+//			Log.e(TAG,"업뎃 필요 x");
 		}
 	}
-	
-	
-	/**
-     * 이메일주소 유효검사
-     * 
-     * @author   Sehwan Noh <sehnoh@gmail.com>
-     * @version  1.0 - 2006. 08. 22
-     * @since    JDK 1.4
-     */
-    public static boolean isValidEmail(String email) {
-        Pattern p = Pattern.compile("^(?:\\w+\\.?)*\\w+@(?:\\w+\\.)+\\w+$");
-        Matcher m = p.matcher(email);
-        return m.matches();
-    }
-
-	
 	
 	
 	/*
@@ -1066,7 +875,14 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			finish();
 		}else{
 			app_end = 1;
-			Toast.makeText(PrefActivityFromResource.this, "뒤로가기 버튼을 한번더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show();
+			Toast.makeText(PrefActivityFromResource.this, R.string.noti_back_finish, Toast.LENGTH_SHORT).show();
 		}
+	}
+	
+	
+	@Override			// 이 액티비티가 종료될때 실행. 
+	protected void onDestroy() {
+		resumeCalled = false;
+		super.onDestroy();
 	}
 }

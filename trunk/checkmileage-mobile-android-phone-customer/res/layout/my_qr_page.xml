@@ -2,6 +2,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
+    
+    <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical" >
+                
+        		<TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:text="@string/my_qr_title" 
+                    android:textSize="17dp"
+                    android:background="#393939"
+                    android:textColor="@android:color/white"
+                    />
+    
     			<LinearLayout
                 android:id="@+id/first"
                 android:layout_width="fill_parent"
@@ -18,7 +35,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="가맹점에 있는 QR스케너에 코드를 스켄해 주세요.\n자동으로 마일리지가 적립됩니다." />
+                    android:text="@string/my_qr_help1" />
                 
             </LinearLayout>
+    </LinearLayout>
 </RelativeLayout>

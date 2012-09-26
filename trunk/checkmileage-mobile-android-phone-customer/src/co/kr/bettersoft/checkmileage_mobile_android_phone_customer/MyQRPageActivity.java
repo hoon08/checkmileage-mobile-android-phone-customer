@@ -21,14 +21,18 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.MemberStoreListPageActivity.backgroundGetMerchantInfo;
 
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
@@ -38,6 +42,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.kr.bettersoft.domain.CheckMileageMemberSettings;
+import com.kr.bettersoft.domain.CheckMileageMerchants;
 import com.pref.DummyActivity;
 import com.pref.PrefActivityFromResource;
 
@@ -60,6 +65,7 @@ import android.os.Message;
 import android.preference.CheckBoxPreference;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -126,9 +132,9 @@ public class MyQRPageActivity extends Activity {
 		final int qrSize = (int) fqrSize;		// 작은 쪽을 선택
 		
 		if(savedBMP==null){
-			Log.e(TAG,"savedBMP is null");
+			Log.d(TAG,"savedBMP is null");
 		}else{
-			Log.e(TAG,"savedBMP is not null");
+			Log.d(TAG,"savedBMP is not null");
 		}
 		
 		/*
@@ -291,6 +297,9 @@ public class MyQRPageActivity extends Activity {
 		super.onResume();
 		app_end = 0;
 		myLocationIs();
+		
+		
+//		test1();		// 가맹점 리스트 오는지 테스트용
 	}
 	
 	/*
@@ -299,7 +308,7 @@ public class MyQRPageActivity extends Activity {
 	 */
 	@Override
 	public void onBackPressed() {
-		Log.i("MainTabActivity", "MyQRPage finish");		
+		Log.d("MainTabActivity", "MyQRPage finish");		
 		if(app_end == 1){
 			Log.e(TAG,"kill all");
 			mainActivity.finish();
@@ -308,7 +317,7 @@ public class MyQRPageActivity extends Activity {
 			finish();
 		}else{
 			app_end = 1;
-			Toast.makeText(MyQRPageActivity.this, "뒤로가기 버튼을 한번더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show();
+			Toast.makeText(MyQRPageActivity.this, R.string.noti_back_finish, Toast.LENGTH_SHORT).show();
 		}
 	}
 	
@@ -334,7 +343,7 @@ public class MyQRPageActivity extends Activity {
 			if(location!=null){
 				myLat = (int) (location.getLatitude()*1000000);				// 현위치의 좌표 획득 *** 로그용
 				myLon = (int) (location.getLongitude()*1000000);	
-				Log.e("runOnFirstFix", "location1:"+myLat+", "+myLon);			// 37529466 126921069
+				Log.d(TAG, "runOnFirstFix// location1:"+myLat+", "+myLon);			// 37529466 126921069
 				updateLocationToServer(Integer.toString(myLat), Integer.toString(myLon));
 			}else{
 				location =  lm.getLastKnownLocation(provider);
@@ -348,7 +357,7 @@ public class MyQRPageActivity extends Activity {
 				}
 			}
 		}catch(Exception e){
-			e.printStackTrace();
+			Log.w(TAG,"fail to update my location to server");
 		}
 	}
 	
@@ -439,7 +448,7 @@ public class MyQRPageActivity extends Activity {
 					}
 			).start();
 		}else{
-			Log.e(TAG,"이미 업데이트 중..");
+			Log.w(TAG,"already updating..");
 		}
 	}
 	
@@ -470,7 +479,7 @@ public class MyQRPageActivity extends Activity {
 	 *     받아서 설정 도메인 같은곳에 저장해두면 좋겠지
 	 */
 	public void getUserSettingsFromServer(){		// 서버로부터 설정 정보를 받는다.  아이디를 사용.모든데이터.  CheckMileageMember
-		Log.i(TAG, "getUserSettingsFromServer");
+		Log.d(TAG, "getUserSettingsFromServer");
 		controllerName = "checkMileageMemberController";
 		methodName = "selectMemberInformation";
 
@@ -537,7 +546,7 @@ public class MyQRPageActivity extends Activity {
 		 * "businessRegistrationNumber01":1123,"businessRegistrationNumber02":4433,"businessKind01":"mm",
 		 * "decreaseMileage":0,"prSentence":1,"restrictionYn":"N","activateYn":"Y","modifyDate":"2012-08-10","registerDate":"2012-08-10"}}
 		 */
-		Log.d(TAG,"내 설정 상세정보::"+builder.toString());
+//		Log.d(TAG,"내 설정 상세정보::"+builder.toString());
 		String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다
 		// // // // // // // 바로 바로 화면에 add 하고 터치시 값 가져다가 상세 정보 보도록....
 			try {
@@ -569,7 +578,6 @@ public class MyQRPageActivity extends Activity {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			} 
-
 	}
 	
 	/*
@@ -616,4 +624,174 @@ public class MyQRPageActivity extends Activity {
 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	
+	
+	
+	
+	/*
+	 * 가맹점 전체 목록 날라오는지 테스트용.  --  사용 x
+	 * http://checkmileage.onemobileservice.com/checkMileageMerchant/selectMerchantList
+	 * 
+	 */
+	public void test1(){		// 서버로부터 설정 정보를 받는다.  아이디를 사용.모든데이터.  CheckMileageMember
+		Log.d(TAG, "test1");
+		controllerName = "checkMileageMerchantController";
+		methodName = "selectMerchantList";
+		new Thread(
+				new Runnable(){
+					public void run(){
+						JSONObject obj = new JSONObject();
+						try{
+							obj.put("activateYn", "Y");
+						}catch(Exception e){
+							e.printStackTrace();
+						}
+						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
+						try{
+//							URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/checkMileageMerchant/selectMerchantList");
+							URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+							connection2.setDoOutput(true);
+							connection2.setInstanceFollowRedirects(false);
+							connection2.setRequestMethod("POST");
+							connection2.setRequestProperty("Content-Type", "application/json");
+							OutputStream os2 = connection2.getOutputStream();
+							os2.write(jsonString.getBytes());
+							os2.flush();
+							//								System.out.println("postUrl      : " + postUrl2);
+							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+							responseCode = connection2.getResponseCode();
+							InputStream in =  connection2.getInputStream();
+							if(responseCode==200 || responseCode==204){
+								// 조회한 결과를 처리.
+								theData2(in);
+								//		//	//		//	//			theData1(in);  // 성공시 -> 도메인에 담아서 어쩌구.. 호출
+								//									Log.e(TAG,"S");
+							}else{
+//								Toast.makeText(MemberStoreInfoPage.this, "오류가 발생하였습니다.\n잠시 후 다시 시도하여 주십시오.", Toast.LENGTH_SHORT).show();
+								
+							
+							}
+						}catch(Exception e){ 
+							e.printStackTrace();
+						}
+					}
+				}
+		).start();
+	}
+	public void theData2(InputStream in){
+		Log.d(TAG,"theData1");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		StringBuilder builder = new StringBuilder();
+		String line =null;
+		JSONObject jsonObject;
+		settings = new CheckMileageMemberSettings(); // 객체 생성
+		try {
+			while((line=reader.readLine())!=null){
+				builder.append(line).append("\n");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		/*
+		 * checkMileageMember":{"merchantId":"m1","password":"m1","name":"내가짱","companyName":"우수기업",
+		 * "profileImageUrl":"http:\/\/imgshop.daum-img.net\/image\/content\/set\/A_ds_view\/daum_B0_20120814172515_9723.jpg",
+		 * "email":"m1@m1.net","country":"ko","workPhoneNumber":"02-123-1231","address01":"아지트 에티서","businessType":"qwer",
+		 * "businessRegistrationNumber01":1123,"businessRegistrationNumber02":4433,"businessKind01":"mm",
+		 * "decreaseMileage":0,"prSentence":1,"restrictionYn":"N","activateYn":"Y","modifyDate":"2012-08-10","registerDate":"2012-08-10"}}
+		 */
+		Log.e(TAG,"get data ::"+builder.toString());
+		
+		String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다
+		// // // // // // // 바로 바로 화면에 add 하고 터치시 값 가져다가 상세 정보 보도록....
+		
+		JSONArray jsonArray2 = null;
+		try {
+			jsonArray2 = new JSONArray(tempstr);
+		} catch (JSONException e1) {
+			e1.printStackTrace();
+		}
+		int max = jsonArray2.length();
+		Log.e(TAG,"max::"+max);
+//		try {
+//			entries1 = new ArrayList<CheckMileageMerchants>(max);
+//			if(max>0){
+//				for ( int i = 0; i < max; i++ ){
+//					JSONObject jsonObj = jsonArray2.getJSONObject(i).getJSONObject("checkMileageMerchant");		// 대소문자 주의
+//					/*
+//					 *
+//					 * 가맹점 ID, 가맹점 이름, 가맹점 URL(이미지 보여주기 용도)
+//					 *
+//					private String idCheckMileageMileages;					// 고유 식별 번호.!!	
+//					private String mileage;											
+//					private String activateYN;
+//					private String modifyDate;
+//					private String registerDate;
+//					private String checkMileageMembersCheckMileageID;		
+//					private String checkMileageMerchantsMerchantID;			merchantId
+//					private String merchantName;							companyName
+//					private String merchantImg;								profileImageUrl
+//					private Bitmap merchantImage;
+//					 *
+//					 *  workPhoneNumber  zipCode01  address01  address02
+//					 *   latitude  longitude								다음페이지로 갈때 따로 조회 안하도록 가지고 있으면?..어차피 조회 해야 하는듯.
+//					 *
+//					 * 가맹점 정보로 갈때 필요한 것들.
+//					 * intent.putExtra("checkMileageMerchantsMerchantID", entriesFn.get(arg2).getCheckMileageMerchantsMerchantID());		merchantId
+//					 *	intent.putExtra("idCheckMileageMileages", entriesFn.get(arg2).getIdCheckMileageMileages());							상세 내역보기 위해 필요.. - 조회 필요.. 수정? 내아디
+//					 *	intent.putExtra("myMileage", entriesFn.get(arg2).getMileage());														가맹점에 대한 내 마일리지 - 조회 필요.. 수정할것. 
+//					 *
+//					 */
+//					//  merchantId,  companyName,  profileImageUrl,  
+//					// 객체 만들고 값 받은거 넣어서 저장..  저장값:  가맹점아이디. 가맹점 이름, 프로필 URL
+//					entries1.add(
+//							new CheckMileageMerchants(
+//									jsonObj.getString("merchantId"),
+//									jsonObj.getString("companyName"),
+//									jsonObj.getString("profileImageUrl"),
+//									jsonObj.getString("idCheckMileageMileages"),
+//									jsonObj.getString("mileage")
+//							)
+//					);
+//				}
+//			}
+//		} catch (JSONException e) {
+//			e.printStackTrace();
+//		}finally{
+//			new backgroundGetMerchantInfo().execute();	// getMerchantInfo(entries1); 를 비동기로 실행
+//		}
+		
+		
+//		String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다
+//		// // // // // // // 바로 바로 화면에 add 하고 터치시 값 가져다가 상세 정보 보도록....
+//			try {
+//				jsonObject = new JSONObject(tempstr);
+//				JSONObject jsonobj2 = jsonObject.getJSONObject("checkMileageMember");
+//				// 데이터를 전역 변수 도메인에 저장하고  설정에 저장..
+//				try{
+//					settings.setEmail(jsonobj2.getString("email"));				
+//				}catch(Exception e){
+//					settings.setEmail("");
+//				}
+//				try{
+//					settings.setBirthday(jsonobj2.getString("birthday"));				
+//				}catch(Exception e){
+//					settings.setBirthday("");
+//				}
+//				try{
+//					settings.setGender(jsonobj2.getString("gender"));				
+//				}catch(Exception e){
+//					settings.setGender("");
+//				}
+//				try{
+//					settings.setReceive_notification_yn(jsonobj2.getString("receive_notification_yn"));				
+//				}catch(Exception e){
+//					settings.setReceive_notification_yn("");
+//				}
+////				showInfo();
+//				setUserSettingsToPrefs();		// 설정에 전달 및 저장
+//			} catch (JSONException e) {
+//				e.printStackTrace();
+//			} 
+	}
 }
