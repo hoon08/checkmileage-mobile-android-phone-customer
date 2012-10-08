@@ -179,7 +179,7 @@ public class MemberStoreLogPageActivity extends Activity {
 	 */
 	public void theData1(InputStream in){
 //		Log.d(TAG,"theData");
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);
 		StringBuilder builder = new StringBuilder();
 		String line =null;
 		try {

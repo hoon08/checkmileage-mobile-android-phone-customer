@@ -266,7 +266,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		if(preference.equals(findPreference("pref_app_qna"))){
 			//			Toast.makeText(PrefActivityFromResource.this, "웹뷰 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
 			Intent webIntent = new Intent(PrefActivityFromResource.this, myWebView.class);
-			webIntent.putExtra("loadingURL", "http://dayve.co.kr/browsercheck.do");
+			webIntent.putExtra("loadingURL", "http://www.mcarrot.net/mFaq.do");
 			startActivity(webIntent);
 		}
 
@@ -274,7 +274,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		if(preference.equals(findPreference("pref_app_notify"))){
 			//			Toast.makeText(PrefActivityFromResource.this, "웹뷰 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
 			Intent webIntent = new Intent(PrefActivityFromResource.this, myWebView.class);
-			webIntent.putExtra("loadingURL", "http://dayve.co.kr/browsercheck.do");
+			webIntent.putExtra("loadingURL", "http://www.mcarrot.net/mNoticeBoardList.do");
 			startActivity(webIntent);
 		}
 
@@ -282,7 +282,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		if(preference.equals(findPreference("pref_app_terms"))){
 			//			Toast.makeText(PrefActivityFromResource.this, "웹뷰 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
 			Intent webIntent = new Intent(PrefActivityFromResource.this, myWebView.class);
-			webIntent.putExtra("loadingURL", "http://m.naver.com");
+			webIntent.putExtra("loadingURL", "http://www.mcarrot.net/mTerms.do");
 			startActivity(webIntent);
 		}
 
@@ -460,7 +460,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 										updateToServer();
 									}
 								}else{
-									Log.e(TAG,"fail to update");
+									Log.w(TAG,"fail to update");
 								}
 							}catch(Exception e){ 
 								e.printStackTrace();
@@ -545,14 +545,14 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								// 조회한 결과를 처리.
 								if(responseCode==200 || responseCode == 204){	// 성공이라 딱히..
 //									theData1(in);		// 서버 결과 가지고 재 세팅하면안됨 <- 는 멤버 정보 받아서 처리하는 녀석임 호출 금지
-									Log.e(TAG, "S to receive GCM option update");
+									Log.d(TAG, "S to receive GCM option update");
 									updateLv = updateLv-1;
 									if(updateLv>0){		// 2였던 경우. (업뎃중 또 변경된 경우 한번더)
 										Log.d(TAG,"Need Update one more time");
 										updateGCMToServer(yn);
 									}
 								}else{
-									Log.e(TAG,"fail to update");
+									Log.w(TAG,"fail to update");
 								}
 							}catch(Exception e){ 
 								e.printStackTrace();
@@ -622,7 +622,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								//									theData1(in);		// 서버 결과 가지고 재 세팅하면안됨 <- 는 멤버 정보 받아서 처리하는 녀석임 호출 금지
 								// ... 할거 없음. 탈퇴 성공했는데 무슨..
 							}else{
-								Log.e(TAG,"fail to update");
+								Log.w(TAG,"fail to update");
 							}
 						}catch(Exception e){ 
 							e.printStackTrace();
@@ -790,7 +790,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 				String server_birth_year = server_birthday.substring(0,4);
 			    String server_birth_month = server_birthday.substring(5,7);
 			    String server_birth_day = server_birthday.substring(8,10);
-			    Log.e(TAG,"server_birth_year::"+server_birth_year+"//server_birth_month::"+server_birth_month+"//server_birth_day::"+server_birth_day);
+			    Log.d(TAG,"server_birth_year::"+server_birth_year+"//server_birth_month::"+server_birth_month+"//server_birth_day::"+server_birth_day);
 			    int int_server_birth_year = Integer.parseInt(server_birth_year);
 				int int_server_birth_month = Integer.parseInt(server_birth_month);
 				int int_server_birth_day = Integer.parseInt(server_birth_day);
@@ -798,10 +798,10 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 				birthDate.putInt("birthYear", int_server_birth_year);
 				birthDate.putInt("birthMonth", int_server_birth_month);
 				birthDate.putInt("birthDay", int_server_birth_day);
-				Log.e(TAG,"birthYear::"+int_server_birth_year+"//birthMonth::"+int_server_birth_month+"//birthDay::"+int_server_birth_day);
+				Log.d(TAG,"birthYear::"+int_server_birth_year+"//birthMonth::"+int_server_birth_month+"//birthDay::"+int_server_birth_day);
 				birthDate.commit();
 			}else{
-				Log.e(TAG,"server_birthday.length()");
+				Log.d(TAG,"server_birthday.length()");
 			}
 			
 			SharedPreferences.Editor updateDone =   sharedPrefCustom.edit();
@@ -823,13 +823,13 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 				preference_alarm_chk.setChecked(false);
 			}
 			if(server_gender.length()>0){
-				Log.e(TAG,server_gender);
+				Log.d(TAG,server_gender);
 //				ListPreference pref_user_sex = (ListPreference)findPreference("pref_user_sex");
 //				pref_user_sex.setValue(server_gender);
 				sets.putString("pref_user_sex", server_gender);
 			}
 			if(server_email.length()>0){
-				Log.e(TAG,server_email);
+				Log.d(TAG,server_email);
 //				EditTextPreference pref_user_email = (EditTextPreference)findPreference("pref_user_email");
 //				pref_user_email.setText(server_email);
 				sets.putString("pref_user_email", server_email);
@@ -840,7 +840,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			
 			if(defaultPref!=null){		// 자체 설정. 
 				Map<String, ?> map = defaultPref.getAll();
-				Log.e(TAG, "map.size"+map.size());	
+				Log.d(TAG, "map.size"+map.size());	
 				Set set  = map.keySet();
 				Iterator ii = set.iterator();
 				String iikey="";
@@ -850,7 +850,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 					iikey =( String)ii.next();
 					obj = (Object) map.get(iikey);
 //					iivalue  = (String)obj;
-					Log.e(TAG, iikey+"//"+obj);	
+					Log.d(TAG, iikey+"//"+obj);	
 				}
 			}
 			
@@ -868,7 +868,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	public void onBackPressed() {
 		Log.i("MainTabActivity", "finish");		
 		if(app_end == 1){
-			Log.e(TAG,"kill all");
+			Log.d(TAG,"kill all");
 			mainActivity.finish();
 			dummyActivity.finish();		// 더미도 종료
 			DummyActivity.count = 0;		// 개수 0으로 초기화 시켜준다. 다시 실행될수 있도록

@@ -43,22 +43,28 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -66,7 +72,7 @@ import android.os.AsyncTask;
 
 import android.app.ListActivity;
 
-public class MemberStoreListPageActivity extends Activity implements OnItemSelectedListener {
+public class MemberStoreListPageActivity extends Activity implements OnItemSelectedListener, OnEditorActionListener{
 	
 	String TAG = "MemberStoreListPageActivity";
 	int app_end = 0;	// 뒤로가기 버튼으로 닫을때 2번만에 닫히도록	// 처음 두번 자동 실행  되는거.
@@ -74,7 +80,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
 	MainActivity mainActivity = (MainActivity)MainActivity.mainActivity;
 	
-	int dontTwice = 1;				// 스피너 리스너로 인한 초기 2회 조회 방지. 
+//	int dontTwice = 1;				// 스피너 리스너로 인한 초기 2회 조회 방지. 
 	public boolean connected = false;  // 인터넷 연결상태
 	String myQRcode = "";			// 내 아이디
 	
@@ -84,11 +90,14 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	String searchWordArea = "";		// 서버 조회시 지역명
 	String searchWordType = "";		// 서버 조회시 업종명
 	
-	String imgDomain = CommonUtils.imgDomain; 					// Img 가져올때 파일명만 있을 경우 앞에 붙일 도메인.   뒤에는 .jpg 를 하드코딩으로 붙임
+	String imgthumbDomain = CommonUtils.imgthumbDomain; 					// Img 가져올때 파일명만 있을 경우 앞에 붙일 도메인. 
 	
-	Spinner searchSpinnerArea;		// 상단 지역 목록
+//	Spinner searchSpinnerArea;		// 상단 지역 목록
 	Spinner searchSpinnerType;		// 상단 업종 목록
 	
+	TextView searchText;			//검색어
+	Button searchBtn;				//검색버튼
+	InputMethodManager imm;
 	int indexDataFirst = 0;			// 부분 검색 위한 인덱스. 시작점
 	int indexDataLast = 0;			// 부분 검색 위한 인덱스. 끝점
 	int indexDataTotal = 0;			// 부분 검색 위한 인덱스. 전체 개수
@@ -96,7 +105,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	Boolean mIsLast = false;			// 끝까지 갔음. true 라면 더이상의 추가 없음. 새 조회시 false 로 초기화
 	Boolean adding = false;			// 데이터 더하기 진행 중임.
 	Boolean newSearch = false; 		// 새로운 조회인지 여부. 새로운 조회라면 기존 데이터는 지우고 새로 검색한 데이터만 사용. 새로운 조회가 아니라면 기존 데이터에 추가 데이터를 추가.
-	
+	Bitmap bm = null;
 	int reTry = 5;
 	
 	private ImageAdapter imgAdapter;
@@ -144,10 +153,13 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 						gridView.setEmptyView(emptyView);
 						gridView.setVisibility(8);			//   0 visible   4 invisible   8 gone
 						emptyView.setVisibility(0);
+						hidePb2();
 					}
 					isRunning = 0;		// 진행중이지 않음. - 이후 추가 조작으로 새 조회 가능.
-					searchSpinnerArea.setEnabled(true);
+//					searchSpinnerArea.setEnabled(true);
 					searchSpinnerType.setEnabled(true);
+					searchText.setEnabled(true); 
+					searchBtn.setEnabled(true);
 				}
 				if(b.getInt("order")==1){
 					// 프로그래스바 실행
@@ -176,7 +188,9 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 					}
 					pb2.setVisibility(View.INVISIBLE);
 				}
-				
+				if(b.getInt("showErrToast")==1){
+					Toast.makeText(MemberStoreListPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+				}
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -201,6 +215,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		
 		entriesFn = new ArrayList<CheckMileageMerchants>();
 		
+		imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE); 	// 가상키보드 닫기위함
+		
 		// 크기 측정
 		float screenWidth = this.getResources().getDisplayMetrics().widthPixels;
 		Log.i("screenWidth : ", "" + screenWidth);
@@ -217,16 +233,30 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		pb1 = (ProgressBar) findViewById(R.id.memberstore_list_ProgressBar01);		// 로딩(중앙)
 		pb2 = (ProgressBar) findViewById(R.id.memberstore_list_ProgressBar02);		// 로딩(하단)
 		
+		searchText = (TextView) findViewById(R.id.store_search_text);			//검색어
+		searchBtn = (Button) findViewById(R.id.store_search_btn);				//검색버튼
+		searchText.setOnEditorActionListener(this);  
+		searchText.addTextChangedListener(textWatcherInput);  
+
+//		searchBtn.hasFocus();
+//		searchBtn.isFocused()
+		searchBtn.setOnClickListener(new Button.OnClickListener()  {
+			public void onClick(View v)  {
+				goSearch();		 // 검색 ㄱㄱ 
+			}
+		});
+		
+
 		// spinner
-		searchSpinnerArea = (Spinner)findViewById(R.id.searchSpinnerArea);
+//		searchSpinnerArea = (Spinner)findViewById(R.id.searchSpinnerArea);
 		searchSpinnerType = (Spinner)findViewById(R.id.searchSpinnerType);
 		// spinner listener
-		searchSpinnerArea.setOnItemSelectedListener(this);
+//		searchSpinnerArea.setOnItemSelectedListener(this);
 		searchSpinnerType.setOnItemSelectedListener(this);
 		// 스피너 데이터 세팅. 
-		ArrayAdapter<String> aa1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areas);
-		aa1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		searchSpinnerArea.setAdapter(aa1);
+//		ArrayAdapter<String> aa1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areas);
+//		aa1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//		searchSpinnerArea.setAdapter(aa1);
 		 ArrayAdapter<String> aa2 =  new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, jobs);
 		 aa2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		 searchSpinnerType.setAdapter(aa2);
@@ -264,6 +294,14 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		@Override
 		public void onScroll(AbsListView view, int firstVisibleItem,
 				int visibleItemCount, int totalItemCount) {
+//			Log.d(TAG,"indexDataFirst:"+indexDataFirst+"/indexDataLast:"+indexDataLast+"/indexDataTotal:"+indexDataTotal);
+			if((indexDataFirst + indexDataLast < indexDataTotal)||(indexDataLast!=indexDataTotal)){	// 아직 남음 또는 끝에 도달하지 않음.
+				mIsLast = false;
+			}
+			if((totalItemCount<10) ||(indexDataLast==indexDataTotal)){		// 10개 이하(이미다 보여줌) 또는 마지막=전체 (끝에 도달)
+				mIsLast = true;
+			}
+//			Log.d(TAG,"adding:"+adding+",mIsLast:"+mIsLast);
 			// TODO Auto-generated method stub
 			//			  if(indexDataFirst==indexDataLast){		// 시작이 더 크면 문제 있는거
 			//				  mIsLast = true;
@@ -273,13 +311,27 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			if(firstVisibleItem+visibleItemCount>=(totalItemCount-2) &&(!adding)&&(!mIsLast)){		// 가장 하단 -2일때 미리동작? - 좀더 나은듯.
 //				Log.e(TAG, "onScroll event Occured."+"//view::"+view+"//firstVisibleItem::"+firstVisibleItem+"//visibleItemCount:"+visibleItemCount+"//totalItemCount::"+totalItemCount);
 				showPb2();
-				adding = true;
+				indexDataTotal = entries1.size();
+				Log.d(TAG,"onScroll indexDataTotal:"+indexDataTotal);
 				new backgroundGetMerchantInfo().execute();		// 비동기 실행
 			}
 		}
-		// 스크롤 시작, 끝, 스크롤 중.. 이라는 사실을 알수 있다. 사실 필요 없음.. 
+		// 스크롤 시작, 끝, 스크롤 중.. 이라는 사실을 알수 있다. 사실 필요 없음..  --> 필요해짐.. 스크롤중 조회시 에러가 발생하기 때문에 스크롤 중에는 조회가 되지 않도록 한다.. 
 		@Override
-		public void onScrollStateChanged(AbsListView view, int scrollState) {}
+		public void onScrollStateChanged(AbsListView view, int scrollState) {			// status0 : stop  / status1 : touch / status2 : scrolling
+//			Log.d(TAG,"status:"+scrollState);
+			if(scrollState==SCROLL_STATE_IDLE){
+				searchSpinnerType.setEnabled(true);
+				searchText.setEnabled(true); 
+				searchBtn.setEnabled(true);
+			}else{
+				searchSpinnerType.setEnabled(false);
+				searchText.setEnabled(false); 
+				searchBtn.setEnabled(false);
+			}
+			
+			
+		}
 	};
 	
 	
@@ -310,7 +362,19 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 				}
 		).start();
 	}
-     
+	public void showMSG(){			// 화면에 error 토스트 띄움..
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Message message = handler.obtainMessage();				
+						Bundle b = new Bundle();
+						b.putInt("showErrToast", 1);
+						message.setData(b);
+						handler.sendMessage(message);
+					}
+				}
+		).start();
+	} 
 	/*
 	 * 서버와 통신하여   가맹점 목록을 가져온다. 새로 조회.			 조회 1.
 	 * 그 결과를 List<CheckMileageMerchant> Object 로 반환 한다.  
@@ -328,8 +392,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	 *  
 	 */
 	public void getMemberStoreList() throws JSONException, IOException {
-		CheckNetwork();
-		if(connected){
+		if(CheckNetwork()){
 			Log.i(TAG, "getMemberStoreList");
 			controllerName = "checkMileageMerchantController";
 			methodName = "selectSearchMerchantList";
@@ -337,7 +400,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			indexDataLast = 0;	// 화면에 보여지는 끝값 인덱스. 함께 초기화.. 0부터
 			entriesFn.clear();		// 이것도 초기화 해보자. 화면에 보여지는 데이터 리스트.
 			newSearch = true;			// 새로운 검색임. true 라면 기존 데이터는 지워야함.
-			mIsLast = false;		// 초기화. 끝이 아니므로 추가 가능.
+//			mIsLast = false;		// 초기화. 끝이 아니므로 추가 가능.
 			// 로딩중입니다..  
 			new Thread(	
 					new Runnable(){
@@ -353,8 +416,10 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			
 			if(isRunning==0){		// 진행중에 다른 조작 사절
 				isRunning=1;
-				searchSpinnerArea.setEnabled(false);
+//				searchSpinnerArea.setEnabled(false);
 				searchSpinnerType.setEnabled(false);
+				searchText.setEnabled(false); 
+				searchBtn.setEnabled(false);
 				// 서버 통신부
 				new Thread(
 						new Runnable(){
@@ -362,10 +427,12 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 								JSONObject obj = new JSONObject();
 								try{
 									obj.put("activateYn", "Y");
-									obj.put("businessArea01", searchWordArea);		// 지역		  
+//									obj.put("businessArea01", searchWordArea);		// 지역		  
 									obj.put("businessKind03", searchWordType);		// 업종					// 고유 번호 얻으려면, 내 아이디도 필요...
 									obj.put("checkMileageId", myQRcode);			// 내 아이디
-									Log.w(TAG,"myQRcode::"+myQRcode);
+									obj.put("companyName", searchText.getText());			// 내 아이디
+									
+									Log.w(TAG,"myQRcode::"+myQRcode+",searchWordArea:"+searchWordArea+",searchWordType:"+searchWordType+",companyName:"+searchText.getText());
 								}catch(Exception e){
 									e.printStackTrace();
 								}
@@ -427,6 +494,11 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 									}else{
 										Log.w(TAG,"reTry failed. -- init reTry");
 										reTry = 5;			
+										searchSpinnerType.setEnabled(true);
+										searchText.setEnabled(true); 
+										searchBtn.setEnabled(true);
+										showMSG();
+//										Toast.makeText(MemberStoreListPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 									}
 									
 								}
@@ -444,7 +516,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	 */
 	public void theData1(InputStream in){
 		Log.d(TAG,"theData");
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);
 		StringBuilder builder = new StringBuilder();
 		String line =null;
 		reTry = 5;			
@@ -467,7 +539,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		}
 		int max = jsonArray2.length();
 		indexDataTotal = max;
-//		Log.e(TAG,"max::"+max);
+		Log.w(TAG,"indexDataTotal=max::"+max);
 		try {
 			entries1 = new ArrayList<CheckMileageMerchants>(max);
 			if(max>0){
@@ -521,16 +593,16 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	// 가맹점 URL로 이미지 가져오기.가맹점 이미지 URL로부터 이미지 받아와서 도메인에 저장한다. + 결과물에 더하기			-- 2차 검색
 	public void getMerchantInfo(){
 		try{
-			Log.i(TAG, "merchantInfoGet");
+			Log.i(TAG, "merchantInfoGet   indexDataLast:"+indexDataLast+",indexDataTotal:"+indexDataTotal);
 			// 마지막 인덱스+10개가 전체 개수보다 커지면 전체 개수 까지만.
 			if(indexDataLast+10>=indexDataTotal){
 				indexDataLast = indexDataTotal;
-				mIsLast = true;
+//				mIsLast = true;
+				Log.d(TAG,"indexDataLast:"+indexDataLast+",indexDataTotal:"+indexDataTotal );
 			}else{		// 전체 개수보다 작다면 10개. 추가 가능.
 				indexDataLast = indexDataLast + 10;
 			}
 			Log.i(TAG,"indexDataFirst::"+indexDataFirst+"//indexDataLast::"+indexDataLast+"//indexDataTotal::"+indexDataTotal);
-		
 			for(int i=indexDataFirst; i<indexDataLast; i++){
 				try{
 					String a= new String(entries1.get(i).getMerchantId()+"");
@@ -539,11 +611,11 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 					String d= new String(entries1.get(i).getIdCheckMileageMileages()+"");
 					String e= new String(entries1.get(i).getMileage()+"");
 					CheckMileageMerchants tempMerch = new CheckMileageMerchants(a, b, c, d, e);
-					Bitmap bm = null;
+					
 					if(tempMerch.getProfileImageURL()!=null && tempMerch.getProfileImageURL().length()>0){
 						if(tempMerch.getProfileImageURL().contains("http")){
 							try{
-								bm = LoadImage(tempMerch.getProfileImageURL());				 
+								bm = LoadImage(tempMerch.getProfileImageURL());	
 							}catch(Exception e2){
 								Log.w(TAG,"LoadImage failed();"+tempMerch.getProfileImageURL());
 								try{
@@ -551,38 +623,38 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 									bm = LoadImage(tempMerch.getProfileImageURL());		
 								}catch(Exception e3){
 									Log.w(TAG,"LoadImage failed again();"+tempMerch.getProfileImageURL());
-									BitmapDrawable dw = (BitmapDrawable) this.getResources().getDrawable(R.drawable.no_image);
+									BitmapDrawable dw = (BitmapDrawable) this.getResources().getDrawable(R.drawable.empty_140_140);
 									bm = dw.getBitmap();
 								}
 							}
 						}else{
 							try{
-								bm = LoadImage(imgDomain+tempMerch.getProfileImageURL()+".jpg");				 
+								bm = LoadImage(imgthumbDomain+tempMerch.getProfileImageURL());		
+								
 							}catch(Exception e3){
 //								e3.printStackTrace();
-								Log.w(TAG, imgDomain+tempMerch.getProfileImageURL()+".jpg -- fail");
+								Log.w(TAG, imgthumbDomain+tempMerch.getProfileImageURL()+" -- fail");
 								try{
-									BitmapDrawable dw = (BitmapDrawable) this.getResources().getDrawable(R.drawable.no_image);
+									BitmapDrawable dw = (BitmapDrawable) this.getResources().getDrawable(R.drawable.empty_140_140);
 									bm = dw.getBitmap();
 								}catch(Exception e4){}
 							}
 						}
 					}else{
-						try{
-							BitmapDrawable dw = (BitmapDrawable) this.getResources().getDrawable(R.drawable.no_image);
+							BitmapDrawable dw = (BitmapDrawable) this.getResources().getDrawable(R.drawable.empty_140_140);
 							bm = dw.getBitmap();
-						}catch(Exception e3){}
 					}
 					if(bm==null){
-						BitmapDrawable dw = (BitmapDrawable) this.getResources().getDrawable(R.drawable.no_image);
+						BitmapDrawable dw = (BitmapDrawable) this.getResources().getDrawable(R.drawable.empty_140_140);
 						bm = dw.getBitmap();
 					}
-					
-					tempMerch.setMerchantImage(BitmapResizePrc(bm, (float)(fImgSize*0.3), (float)(fImgSize*0.4) ).getBitmap());
+//					tempMerch.setMerchantImage(BitmapResizePrc(bm, (float)(fImgSize*0.4), (float)(fImgSize*0.4) ).getBitmap());
+					tempMerch.setMerchantImage(bm);
 					entriesFn.add(tempMerch);
 				}catch(Exception e){
 					e.printStackTrace();
-					Log.e(TAG,"The I is .."+i);
+					Log.w(TAG,"The I is .."+i);
+					hidePb2();
 				}
 			}
 			
@@ -710,7 +782,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	public void onBackPressed() {
 		Log.i("MainTabActivity", "finish");		
 		if(app_end == 1){
-			Log.e(TAG,"kill all");
+			Log.d(TAG,"kill all");
 //			mainActivity.finish();
 			dummyActivity.finish();		// 더미도 종료
 			DummyActivity.count = 0;		// 개수 0으로 초기화 시켜준다. 다시 실행될수 있도록
@@ -731,31 +803,36 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	@Override
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
 			long arg3) {
-		if(dontTwice>0){
-			Log.i(TAG,"dontTwice");		
-			dontTwice = dontTwice - 1;
-		}else{
-			
+//		if(dontTwice>0){				// ( dont 2
+//			Log.i(TAG,"dontTwice");		
+//			dontTwice = dontTwice - 1;
+//		}else{
 			gridView  = (GridView)findViewById(R.id.gridview);
 			gridView.setEnabled(false);					// 그리드 뷰 허용 안함. 검색 도중 이전 검색 리스트를 스크롤하면 어플 강제 종료됨. -- 인덱스 문제 때문.
-			
-			// TODO Auto-generated method stub
-//			Log.e(TAG,arg0+"//"+arg1+"//"+arg2+"//"+arg3);						// areas jobs
-			if(searchSpinnerArea==arg0){		// 지역 변경한 경우 .	// 정상 동작. arg2 는 몇번째 거인지.. areas[arg2]
-				Log.i(TAG,"searchSpinnerArea//"+areas[arg2]);	
-				if(arg2==0){
-					searchWordArea = "";  
-				}else{
-					searchWordArea = areas[arg2];
-				}
-			}else{								// 업종 변경한 경우 .	// 정상 동작.	areas[jobs]		// 0 은 전체니까 비워서 검색, 0이 아닐 경우 해당 값으로 검색.
-				Log.i(TAG,"searchSpinnerJobs//"+jobs[arg2]);
-				if(arg2==0){
-					searchWordType = "";
-				}else{
-					searchWordType = jobs[arg2];
-				}
+			Log.i(TAG,"searchSpinnerJobs//"+jobs[arg2]);
+			if(arg2==0){
+				searchWordType = "";
+			}else{
+				searchWordType = jobs[arg2];
 			}
+			// TODO Auto-generated method stub
+//			Log.e(TAG,arg0+"//"+arg1+"//"+arg2+"//"+arg3);	
+			// areas jobs
+//			if(searchSpinnerArea==arg0){		// 지역 변경한 경우 .	// 정상 동작. arg2 는 몇번째 거인지.. areas[arg2]
+//				Log.i(TAG,"searchSpinnerArea//"+areas[arg2]);	
+//				if(arg2==0){
+//					searchWordArea = "";  
+//				}else{
+//					searchWordArea = areas[arg2];
+//				}
+//			}else{								// 업종 변경한 경우 .	// 정상 동작.	areas[jobs]		// 0 은 전체니까 비워서 검색, 0이 아닐 경우 해당 값으로 검색.
+//				Log.i(TAG,"searchSpinnerJobs//"+jobs[arg2]);
+//				if(arg2==0){
+//					searchWordType = "";
+//				}else{
+//					searchWordType = jobs[arg2];
+//				}
+//			}
 			try {
 				getMemberStoreList();
 			} catch (JSONException e) {
@@ -763,13 +840,12 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
+//		}		// dont 2 )
 	}
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {
 		// TODO Auto-generated method stub			// 안바꾸면 마는거지
 	}
-	
 	
 	public class backgroundGetMerchantInfo extends  AsyncTask<Void, Void, Void> { 
 		@Override protected void onPostExecute(Void result) {  
@@ -788,9 +864,13 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 //			}
 			
 			if(!((indexDataTotal<indexDataFirst)||(indexDataTotal<indexDataLast))){		// 하극상 아닌 경우
-				getMerchantInfo();
+				if(!adding){
+					adding = true;
+					getMerchantInfo();
+				}
 			}else{
-				Log.e(TAG, "indexDataTotal::"+indexDataTotal+"//indexDataFirst::"+indexDataFirst+"//indexDataLast::"+indexDataLast);
+				indexDataLast = indexDataTotal;
+				Log.w(TAG, "indexDataTotal::"+indexDataTotal+"//indexDataFirst::"+indexDataFirst+"//indexDataLast::"+indexDataLast);
 			}
 			return null; 
 		}
@@ -801,7 +881,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	 * 네트워크 상태 감지
 	 * 
 	 */
-	public void CheckNetwork(){
+	public Boolean CheckNetwork(){
 		ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo ni = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 		boolean isWifiAvailable = ni.isAvailable();
@@ -816,12 +896,22 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		if(!(isWifiConn||isMobileConn)){
 			Log.w(TAG,status);
 //			AlertShow("Wifi 혹은 3G 망이 연결되지 않았거나 원할하지 않습니다. 네트워크 확인 후 다시 접속해 주세요.");
+			Log.d(TAG,"1");
+			gridView.setEnabled(true);
+			searchSpinnerType.setEnabled(true);
+			searchText.setEnabled(true); 
+			searchBtn.setEnabled(true);
 			AlertShow_networkErr();
+			Log.d(TAG,"2");
+			// 상태 복원. 검색 가능하도록. 
+			connected = false;
 		}else{
 			connected = true;
 		}
+		return connected;
 	}
 	public void AlertShow_networkErr(){
+		Log.i(TAG,"AlertShow_networkErr");
 		AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
 		alert_internet_status.setTitle("Warning");
 		alert_internet_status.setMessage(R.string.network_error);
@@ -835,6 +925,66 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		alert_internet_status.show();
 	}
 	
+	@Override
+	public void onPause(){
+		super.onPause();
+			searchText.setText("");
+			imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0); 		//가상키보드 끄기
+	}
+
+
+	public void goSearch(){		// 단어 검색 ㄱㄱ
+		imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0); 		//가상키보드 끄기
+		gridView  = (GridView)findViewById(R.id.gridview);
+		gridView.setEnabled(false);
+		try {
+			indexDataTotal =0;
+			getMemberStoreList();		
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+		 switch(v.getId())  
+		         {  
+		         case R.id.store_search_text:  
+		         {  
+		             if(event.getAction() == KeyEvent.ACTION_DOWN)  		// 엔터시에도 검색 ㄱㄱ
+		             {  
+		            	 String searchTxt =  searchText.getText()+"";
+//		            	 searchTxt = searchTxt.substring(0, searchTxt.length()-1);	// 엔터 잘라?
+		            	 searchText.setText(searchTxt);
+		            	 goSearch();
+		            	 return true;
+		             }  
+		             break;  
+		         }  
+		         }  
+		         return false;  
+	}
+	TextWatcher textWatcherInput = new TextWatcher() {  
+		        @Override  
+		        public void onTextChanged(CharSequence s, int start, int before, int count) {  
+		            // TODO Auto-generated method stub  
+//		            Log.i("onTextChanged", s.toString());             
+		        }  
+		        @Override  
+		        public void beforeTextChanged(CharSequence s, int start, int count,  
+		                int after) {  
+		            // TODO Auto-generated method stub  
+//		            Log.i("beforeTextChanged", s.toString());         
+		        }  
+		        @Override  
+		        public void afterTextChanged(Editable s) {  
+		            // TODO Auto-generated method stub  
+//		            Log.i("afterTextChanged", s.toString());  
+		        }
+		    };    
+
 //	public void AlertShow(String msg){
 //		AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
 //		alert_internet_status.setTitle("Warning");

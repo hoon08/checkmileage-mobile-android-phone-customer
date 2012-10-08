@@ -1,18 +1,24 @@
 package co.kr.bettersoft.checkmileage_mobile_android_phone_customer;
 // QR 스켄 페이지
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -34,7 +40,7 @@ public class ScanQRPageActivity extends Activity {
 	int todayHour = 0;
 	int todayMinute = 0;
 	
-	
+	String idExist = "";
 	static int qrResult = 0;
 	public static final String TAG = ScanQRPageActivity.class.getSimpleName();
 	
@@ -108,14 +114,13 @@ public class ScanQRPageActivity extends Activity {
 //				CommonUtils.writeQRstr = qrcode;
 //				saveQR();	
 				saveQRforPref(qrcode);		// 설정에 qr 저장
-				saveQRtoServer();			// 서버에 업뎃
+				checkAlreadyExistID();		// 서버에 아이디 있는지 확인해서 없으면 업데이트 해줌.
+//				saveQRtoServer();			// 서버에 업뎃			// 디버그 모드.  나중에 수정 필요. 이미 있는 경우, 없는 경우. ***  --> 위의 함수로 공용 처리.
 				
 				// 2. 다음 페이지로 이동. qrCode 에 값 세팅해서 줌.
 				Log.i("ScanQRPageActivity", "load qrcode to img : "+qrcode);
 				MyQRPageActivity.qrCode = qrcode;
 
-				
-				
 				new Thread(
 						new Runnable(){
 							public void run(){
@@ -143,7 +148,107 @@ public class ScanQRPageActivity extends Activity {
 		}
 	}
 
-
+	
+	/*
+	 * 기존 사용자인지 확인.
+	 *  아이디로 서버에 조회해서 이미 등록된 아이디인지 확인한다.
+	 *    이미 등록된 아이디인 경우 추가 등록할 필요가 없다.
+	 */
+	public void checkAlreadyExistID(){
+		Log.i(TAG, "checkAlreadyExistID");
+		controllerName = "checkMileageMemberController";
+		methodName = "selectMemberExist";
+		
+		// 서버 통신부
+		new Thread(
+				new Runnable(){
+					public void run(){
+						JSONObject obj = new JSONObject();
+						try{
+							obj.put("checkMileageId", qrcode);			  
+							obj.put("activateYn", "Y");			
+							Log.e(TAG,"myQRcode::"+qrcode);
+						}catch(Exception e){
+							e.printStackTrace();
+						}
+						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
+						try{
+							URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+							connection2.setDoOutput(true);
+							connection2.setInstanceFollowRedirects(false);
+							connection2.setRequestMethod("POST");
+							connection2.setRequestProperty("Content-Type", "application/json");
+							OutputStream os2 = connection2.getOutputStream();
+							os2.write(jsonString.getBytes());
+							os2.flush();
+							System.out.println("postUrl      : " + postUrl2);
+							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+							int responseCode = connection2.getResponseCode();
+							if(responseCode==200||responseCode==204){
+								InputStream in =  connection2.getInputStream();
+								// 조회한 결과를 처리.
+								checkUserID(in);
+							}else{
+								 Toast.makeText(ScanQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+								 Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
+								 startActivity(backToNoQRIntent);
+								 finish();
+							}
+						}catch(Exception e){ 
+							e.printStackTrace();
+							 Toast.makeText(ScanQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+							 Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
+							 startActivity(backToNoQRIntent);
+							 finish();
+						}
+					}
+				}
+		).start();
+	}
+	
+	public void checkUserID(InputStream in){
+		Log.d(TAG,"alalyzeData");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);
+		StringBuilder builder = new StringBuilder();
+		String line =null;
+		JSONObject jsonObject;
+		try {
+			while((line=reader.readLine())!=null){
+				builder.append(line).append("\n");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		/*
+		 * checkMileageMerchant":{"merchantId":"m1","password":"m1","name":"내가짱","companyName":"우수기업",		///// CheckMileageMember
+		 * "profileImageUrl":"http:\/\/imgshop.daum-img.net\/image\/content\/set\/A_ds_view\/daum_B0_20120814172515_9723.jpg",
+		 * "email":"m1@m1.net","country":"ko","workPhoneNumber":"02-123-1231","address01":"아지트 에티서","businessType":"qwer",
+		 * "businessRegistrationNumber01":1123,"businessRegistrationNumber02":4433,"businessKind01":"mm",
+		 * "decreaseMileage":0,"prSentence":1,"restrictionYn":"N","activateYn":"Y","modifyDate":"2012-08-10","registerDate":"2012-08-10"}}
+		 */
+		Log.d(TAG,"get data ::"+builder.toString());
+		String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다
+		// // // // // // // 바로 바로 화면에 add 하고 터치시 값 가져다가 상세 정보 보도록....
+			try {
+				jsonObject = new JSONObject(tempstr);
+				JSONObject jsonobj2 = jsonObject.getJSONObject("checkMileageMember");
+				try{
+					idExist = jsonobj2.getString("totalCount");				// 아이디가 있으면1 없으면 0
+				}catch(Exception e){
+					e.printStackTrace();
+					idExist = "1";
+				}
+				if(idExist.equals("0")){		// 서버에 아이디가 없으면 업데이트 해준다. 있으면 업데이트 하지 않는다.
+					saveQRtoServer();		
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} 
+	}
+	
+	
+	
 	 /*
      *  서버에 생성한 QR 저장.
      *  checkMileageMemberController registerMember 
@@ -216,9 +321,17 @@ public class ScanQRPageActivity extends Activity {
 								Log.e(TAG, "register user S");
 							}else{
 								Log.e(TAG, "register user F");
+								Toast.makeText(ScanQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+								 Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
+								 startActivity(backToNoQRIntent);
+								 finish();
 							}
 						}catch(Exception e){ 
 							e.printStackTrace();
+							 Toast.makeText(ScanQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+							 Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
+							 startActivity(backToNoQRIntent);
+							 finish();
 						}
 					}
 				}

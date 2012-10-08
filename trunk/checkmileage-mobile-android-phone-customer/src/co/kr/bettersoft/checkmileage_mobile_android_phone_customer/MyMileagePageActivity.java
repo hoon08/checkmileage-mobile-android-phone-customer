@@ -81,7 +81,7 @@ public class MyMileagePageActivity extends Activity {
 	String controllerName = "";
 	String methodName = "";
 	
-	String imgDomain = CommonUtils.imgDomain; 					// Img 가져올때 파일명만 있을 경우 앞에 붙일 도메인.   뒤에는 .jpg 를 하드코딩으로 붙임
+	String imgthumbDomain = CommonUtils.imgthumbDomain; 					// Img 가져올때 파일명만 있을 경우 앞에 붙일 도메인.   
 	public List<CheckMileageMileage> entries;	// 1차적으로 조회한 결과. (가맹점 상세 정보 제외)
 	
 	public static Boolean searched = false;		// 조회 했는가?
@@ -129,13 +129,11 @@ public class MyMileagePageActivity extends Activity {
 						listView.setVisibility(8);			//   0 visible   4 invisible   8 gone
 						emptyView.setVisibility(0);
 					}
-					
 					/* 구식 방법
 					mAdapter = new MyAdapter(returnThis(), R.layout.my_mileage_list, (ArrayList<CheckMileageMileage>) entriesFn);		// entriesFn   dataArr
 					m_list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 					m_list.setAdapter(mAdapter);
 					*/
-					
 					isRunning = isRunning -1;
 				}
 				if(b.getInt("order")==1){
@@ -151,8 +149,10 @@ public class MyMileagePageActivity extends Activity {
 					}
 					pb1.setVisibility(View.INVISIBLE);
 				}
+				if(b.getInt("showErrToast")==1){
+					Toast.makeText(MyMileagePageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+				}
 			}catch(Exception e){
-//				Toast.makeText(MyMileagePageActivity.this, "에러가 발생하였습니다."+entriesFn.size(), Toast.LENGTH_SHORT).show();
 				e.printStackTrace();
 			}
 		}
@@ -164,6 +164,47 @@ public class MyMileagePageActivity extends Activity {
 		return this;
 	}
 
+	public void showPb(){
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Message message = handler.obtainMessage();
+						Bundle b = new Bundle();
+						b.putInt("order", 1);
+						message.setData(b);
+						handler.sendMessage(message);
+					}
+				}
+		).start();
+	}
+	public void hidePb(){
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Message message = handler.obtainMessage();
+						Bundle b = new Bundle();
+						b.putInt("order", 2);
+						message.setData(b);
+						handler.sendMessage(message);
+					}
+				}
+		).start();
+	}
+	public void showMSG(){			// 화면에 토스트 띄움..
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Message message = handler.obtainMessage();				
+						Bundle b = new Bundle();
+						b.putInt("showErrToast", 1);
+						message.setData(b);
+						handler.sendMessage(message);
+					}
+				}
+		).start();
+	}
+	
+	
 	public void setListing(){
 		listView  = (ListView)findViewById(R.id.listview);
 		listView.setAdapter(new ImageAdapterList(this, entriesFn));
@@ -360,21 +401,10 @@ public class MyMileagePageActivity extends Activity {
 	 */
 	public void getMyMileageList() throws JSONException, IOException {
 //		Log.i(TAG, "getMyMileageList");
-		CheckNetwork();
-		if(connected){
+		if(CheckNetwork()){
 			controllerName = "checkMileageMileageController";
 			methodName = "selectMemberMerchantMileageList";
-			new Thread(
-					new Runnable(){
-						public void run(){
-							Message message = handler.obtainMessage();
-							Bundle b = new Bundle();
-							b.putInt("order", 1);
-							message.setData(b);
-							handler.sendMessage(message);
-						}
-					}
-			).start();
+			showPb();
 			
 			new Thread(
 					new Runnable(){
@@ -421,17 +451,7 @@ public class MyMileagePageActivity extends Activity {
 									Log.w(TAG,"reTry failed - init reTry");
 									//e.printStackTrace();
 									reTry = 5;
-									new Thread(
-											new Runnable(){
-												public void run(){
-													Message message = handler.obtainMessage();
-													Bundle b = new Bundle();
-													b.putInt("order", 2);
-													message.setData(b);
-													handler.sendMessage(message);
-												}
-											}
-									).start();
+									hidePb();
 									isRunning = isRunning-1;
 								}
 								
@@ -462,7 +482,7 @@ public class MyMileagePageActivity extends Activity {
 	 */
 	public void theData1(InputStream in){
 		Log.d(TAG,"theData");
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);
 		StringBuilder builder = new StringBuilder();
 		String line =null;
 		int doneCnt = 0;
@@ -495,8 +515,10 @@ public class MyMileagePageActivity extends Activity {
 				String tmp_checkMileageMembersCheckMileageId = "";
 				String tmp_checkMileageMerchantsMerchantId = "";
 				String tmp_companyName = "";
+				String tmp_introduction = "";		//prstr = jsonobj2.getString("introduction");		// prSentence --> introduction
 				String tmp_workPhoneNumber = "";
 				String tmp_profileThumbnailImageUrl = "";
+				String tmp_profileImageUrl = "";
 				String tmp_ = "";
 				Bitmap bm = null;
 				Bitmap bm2 = null;
@@ -534,6 +556,11 @@ public class MyMileagePageActivity extends Activity {
 						}catch(Exception e){
 							tmp_checkMileageMerchantsMerchantId = "";
 						}
+						try{  
+							tmp_introduction = jsonObj.getString("introduction");
+						}catch(Exception e){
+							tmp_introduction = "";
+						}
 						try{
 							tmp_companyName = jsonObj.getString("companyName");
 						}catch(Exception e){
@@ -549,41 +576,38 @@ public class MyMileagePageActivity extends Activity {
 						}catch(Exception e){
 							tmp_profileThumbnailImageUrl = "";
 						}
+//						try{
+//							tmp_profileImageUrl = jsonObj.getString("profileImageUrl");
+//						}catch(Exception e){
+//							tmp_profileImageUrl = "";
+//						}
+						
 						// tmp_profileThumbnailImageUrl 있을때.
 						if(tmp_profileThumbnailImageUrl!=null && tmp_profileThumbnailImageUrl.length()>0){
 							if(tmp_profileThumbnailImageUrl.contains("http")){		// url 포함한 경우
 								try{
 									bm = LoadImage(tmp_profileThumbnailImageUrl);				 
-								}catch(Exception e3){
-									try{
-										BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.no_image);
-										bm = dw.getBitmap();
-									}catch(Exception e4){e4.printStackTrace();}
-								}
+								}catch(Exception e3){}
 							}else{		// url 포함하지 않으면 붙여준다.
 								try{
-									bm = LoadImage(imgDomain+tmp_profileThumbnailImageUrl+".jpg");				 
+									bm = LoadImage(imgthumbDomain+tmp_profileThumbnailImageUrl);				 
 								}catch(Exception e3){
-									Log.w(TAG, imgDomain+tmp_profileThumbnailImageUrl+".jpg -- fail");
-									BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.no_image);
-									bm = dw.getBitmap();
-								}
+									Log.w(TAG, imgthumbDomain+tmp_profileThumbnailImageUrl+" -- fail");
+									}
 							}
-						}else{			// 없을때
-							try{				// 새로 생성
-								BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.no_image);
-								bm = dw.getBitmap();
-							}catch(Exception e3){e3.printStackTrace();}
+						}else{
+							BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.empty_60_60);
+							bm = dw.getBitmap();
 						}
-						if(bm==null){		// 마지막까지 없을때.. 
-							BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.no_image);
+						if(bm==null){		//  없을때.. 
+							BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.empty_60_60);
 							bm = dw.getBitmap();
 						}
 						// 가맹점 이미지 URL로부터 이미지 받아와서 도메인에 저장한다.
 //						Bitmap bm = LoadImage(entries3.get(j).getMerchantImg());
 						// bm 이미지 크기 변환 .
-						BitmapDrawable bmpResize = BitmapResizePrc(bm, fImgSize/4, fImgSize/4);  
-						bm2 = (bmpResize.getBitmap());
+//						BitmapDrawable bmpResize = BitmapResizePrc(bm, fImgSize/5, fImgSize/5);  
+//						bm2 = (bmpResize.getBitmap());
 						
 						entries.add(new CheckMileageMileage(tmp_idCheckMileageMileages,
 								tmp_mileage,
@@ -591,9 +615,11 @@ public class MyMileagePageActivity extends Activity {
 								tmp_checkMileageMembersCheckMileageId,
 								tmp_checkMileageMerchantsMerchantId,
 								tmp_companyName,
+								tmp_introduction,
 								tmp_workPhoneNumber,
 								tmp_profileThumbnailImageUrl,
-								bm2
+//								bm2
+								bm
 								// 그 외 섬네일 이미지, 가맹점 이름
 						));
 						
@@ -618,7 +644,8 @@ public class MyMileagePageActivity extends Activity {
 				showInfo();
 			}
 		}else{			// 요청 실패시	 토스트 띄우고 화면 유지.
-			Toast.makeText(MyMileagePageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+			showMSG();
+//			Toast.makeText(MyMileagePageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -663,7 +690,7 @@ public class MyMileagePageActivity extends Activity {
 								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 								InputStream in =  connection2.getInputStream();
 								// 가맹점 아이디로 가맹점 정보를 가져온걸 처리..저장값: 인덱스번호, 수정날짜, 아이디, 가맹점아이디. + 가맹점 이름, 가맹점 이미지 URL
-								BufferedReader reader = new BufferedReader(new InputStreamReader(in));	
+								BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);	
 								StringBuilder builder = new StringBuilder();
 								String line =null;
 								while((line=reader.readLine())!=null){
@@ -705,36 +732,28 @@ public class MyMileagePageActivity extends Activity {
 										if(entries3.get(j).getMerchantImg().contains("http")){
 											try{
 												bm = LoadImage(entries3.get(j).getMerchantImg());				 
-											}catch(Exception e3){
-												try{
-													BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.no_image);
-													bm = dw.getBitmap();
-												}catch(Exception e4){e4.printStackTrace();}
-											}
+											}catch(Exception e3){}
 										}else{
 											try{
-												bm = LoadImage(imgDomain+entries3.get(j).getMerchantImg()+".jpg");				 
+												bm = LoadImage(imgthumbDomain+entries3.get(j).getMerchantImg());				 
 											}catch(Exception e3){
-												Log.w(TAG, imgDomain+entries3.get(j).getMerchantImg()+".jpg -- fail");
-												BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.no_image);
-												bm = dw.getBitmap();
+												Log.w(TAG, imgthumbDomain+entries3.get(j).getMerchantImg()+" -- fail");
 											}
 										}
 									}else{
-										try{
-											BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.no_image);
-											bm = dw.getBitmap();
-										}catch(Exception e3){e3.printStackTrace();}
+										BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.empty_60_60);
+										bm = dw.getBitmap();
 									}
 									if(bm==null){
-										BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.no_image);
+										BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.empty_60_60);
 										bm = dw.getBitmap();
 									}
 									// 가맹점 이미지 URL로부터 이미지 받아와서 도메인에 저장한다.
 //									Bitmap bm = LoadImage(entries3.get(j).getMerchantImg());
 									// bm 이미지 크기 변환 .
-									BitmapDrawable bmpResize = BitmapResizePrc(bm, fImgSize/4, fImgSize/4);  
-									entries3.get(j).setMerchantImage(bmpResize.getBitmap());
+//									BitmapDrawable bmpResize = BitmapResizePrc(bm, fImgSize/4, fImgSize/4);  
+//									entries3.get(j).setMerchantImage(bmpResize.getBitmap());
+									entries3.get(j).setMerchantImage(bm);
 								}
 							}catch(Exception e){ 
 								// Re Try
@@ -742,7 +761,7 @@ public class MyMileagePageActivity extends Activity {
 									Log.w(TAG,"failed, retry all again remain retry : "+reTry);
 									reTry = reTry -1;
 									try{
-										Thread.sleep(400);
+										Thread.sleep(300);
 										getMerchantInfo(entries3, max);		// 재시도?
 									}catch(Exception e2){}
 								}else{
@@ -761,17 +780,7 @@ public class MyMileagePageActivity extends Activity {
 
 	// entries3 를 전역에 저장후 스레드 이용하여 돌린다. 화면에 보여준다.		-- 2차 처리.
 	public void showInfo(){
-		new Thread(
-				new Runnable(){
-					public void run(){
-						Message message = handler.obtainMessage();
-						Bundle b = new Bundle();
-						b.putInt("order", 2);
-						message.setData(b);
-						handler.sendMessage(message);
-					}
-				}
-		).start();
+		hidePb();
 		
 		//  가져온 데이터 화면에 보여주기.
 		new Thread(
@@ -953,7 +962,7 @@ public class MyMileagePageActivity extends Activity {
 		 * 네트워크 상태 감지
 		 * 
 		 */
-		public void CheckNetwork(){
+		public Boolean CheckNetwork(){
 			ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo ni = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 			boolean isWifiAvailable = ni.isAvailable();
@@ -969,9 +978,13 @@ public class MyMileagePageActivity extends Activity {
 				Log.w(TAG,status);
 //				AlertShow("Wifi 혹은 3G 망이 연결되지 않았거나 원할하지 않습니다. 네트워크 확인 후 다시 접속해 주세요.");
 				AlertShow_networkErr();
+				hidePb();
+				isRunning = 0;
+				connected = false;
 			}else{
 				connected = true;
 			}
+			return connected;
 		}
 		public void AlertShow_networkErr(){		//R.string.network_error
 			AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);

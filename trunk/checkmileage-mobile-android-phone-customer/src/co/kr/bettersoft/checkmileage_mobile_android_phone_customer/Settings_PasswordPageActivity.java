@@ -38,6 +38,9 @@ public class Settings_PasswordPageActivity extends PreferenceActivity implements
 	
 	static int updateLv=0;							// 서버에 업뎃 칠지 여부 검사용도. 0이면 안하고, 1이면 한다, 2면 두번한다(업뎃중 값이 바뀐 경우임)
 	
+	public boolean getprefYN = false;
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.w(TAG, "onCreate");
@@ -60,15 +63,17 @@ public class Settings_PasswordPageActivity extends PreferenceActivity implements
 			sharedPrefCustom = getSharedPreferences("MyCustomePref",
 					Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
 			sharedPrefCustom.registerOnSharedPreferenceChangeListener(this);			// 여기에도 등록해놔야 리시버가 제대로 반응한다.
-			Log.w(TAG, "onResume2");
-			Preference passwordCheck = findPreference("preference_lock_chk");
-			password = sharedPrefCustom.getString("password", "");
-			if(password.length()<1){				// 비번이 없다면 잠금 기능을 사용할 수 없다.  --> 비번 설정 이후 풀린다.
-				passwordCheck.setEnabled(false);
-			}else{
-				passwordCheck.setEnabled(true);		// 비번이 있다면 잠금 기능을 사용할 수 있다.
-			}
 
+//			Log.w(TAG, "onResume2");
+//			Preference passwordCheck = findPreference("preference_lock_chk");
+//			password = sharedPrefCustom.getString("password", "");
+//			if(password.length()<1){				// 비번이 없다면 잠금 기능을 사용할 수 없다.  --> 비번 설정 이후 풀린다.
+//				passwordCheck.setEnabled(false);
+//			}else{
+//				passwordCheck.setEnabled(true);		// 비번이 있다면 잠금 기능을 사용할 수 있다.
+//			}
+			
+			
 			SharedPreferences.Editor init2 = sharedPrefCustom.edit();		// 강제 호출용도  .. 단어명은 의미없다.
 			int someNum = sharedPrefCustom.getInt("pref_app_leave", sharePrefsFlag);	// 이전 값과 같을수 있으므로..
 			someNum = someNum * -1;													// 매번 다른 값이 들어가야 제대로 호출이 된다. 같은 값들어가면 변화 없다고 호출 안됨.			
@@ -96,6 +101,15 @@ public class Settings_PasswordPageActivity extends PreferenceActivity implements
 	public void onResume(){		
 		Log.w(TAG, "onResume");
 		super.onResume();
+		sharedPrefCustom = getSharedPreferences("MyCustomePref",
+				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
+		Preference passwordCheck = findPreference("preference_lock_chk");
+		password = sharedPrefCustom.getString("password", "");
+		if(password.length()<1){				// 비번이 없다면 잠금 기능을 사용할 수 없다.  --> 비번 설정 이후 풀린다.
+			passwordCheck.setEnabled(false);
+		}else{
+			passwordCheck.setEnabled(true);		// 비번이 있다면 잠금 기능을 사용할 수 있다.
+		}
 	}
 
 	@Override 
@@ -139,7 +153,6 @@ public class Settings_PasswordPageActivity extends PreferenceActivity implements
 			passwordIntent.putExtra(Password.NEXT_ACTIVITY, "com.pref.Profile");		// 다음 화면
 			startActivity(passwordIntent);
 		}
-		
 		return super.onPreferenceTreeClick(preferenceScreen, preference);
 	}	
 
@@ -148,9 +161,12 @@ public class Settings_PasswordPageActivity extends PreferenceActivity implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		Log.w(TAG, "onSharedPreferenceChanged");
-		if(key.equals("pref_app_leave")){		// resume 에서 넣은 것과 이름 일치해야 동작한다.
-			thePrefs = sharedPreferences;
+		if(!getprefYN){				 // 나중에 제대로 저장 안되는거 같을 경우 이곳을 확인 할 것.   리소스상 한번만 실행시키려고 정리한것.
+			Log.w(TAG, "onSharedPreferenceChanged");
+			if(key.equals("pref_app_leave")){		// resume 에서 넣은 것과 이름 일치해야 동작한다.
+				thePrefs = sharedPreferences;
+			}
+			getprefYN = true;				
 		}
 	}
 	

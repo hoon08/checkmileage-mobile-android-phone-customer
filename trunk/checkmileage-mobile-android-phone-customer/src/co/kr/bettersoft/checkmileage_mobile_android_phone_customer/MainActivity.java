@@ -8,12 +8,16 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.pref.DummyActivity;
 import com.pref.Password;
 
 import android.os.AsyncTask;
@@ -21,6 +25,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningTaskInfo;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -49,7 +56,7 @@ public class MainActivity extends Activity {
 	String controllerName = "";
 	String methodName = "";
 	
-	
+	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
 	
     
     
@@ -234,7 +241,9 @@ public class MainActivity extends Activity {
 								Intent intent = new Intent(MainActivity.this, Main_TabsActivity.class);
 								intent.putExtra("RunMode", RunMode);
 								intent.putExtra("myQR", myQR);
-								startActivity(intent);
+								if(DummyActivity.count>0){		// 강제 종료하면 다음 액티비티도 없다.
+									startActivity(intent);
+								}
 								finish();		// 다른 액티비티를 호출하고 자신은 종료. 
 							}else {				// QR 코드가 없으면 설치후 최초 실행하는 사람. 
 								/*
@@ -259,7 +268,9 @@ public class MainActivity extends Activity {
 								// test 용 설정 화면으로..-test 용도
 								//Log.i("MainActivity", "test -> pref..");
 								//Intent intent = new Intent(MainActivity.this, com.pref.MainActivity.class);
-								startActivity(intent);
+								if(DummyActivity.count>0){			// 강제 종료하면 다음 액티비티도 없다.
+									startActivity(intent);
+								}
 								finish();		// 다른 액티비티를 호출하고 자신은 종료.
 							}
 						}catch(InterruptedException ie){
@@ -378,5 +389,33 @@ public class MainActivity extends Activity {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
 
 
+	@Override
+	protected void onPause() {
+		super.onPause();
+		 // 홈버튼 눌렀을때 종료 여부..
+      if(!isForeGround()){
+            Log.d(TAG,"go home, bye");
+            dummyActivity.finish();		// 더미도 종료
+			DummyActivity.count = 0;		// 개수 0으로 초기화 시켜준다. 다시 실행될수 있도록
+            finish();
+      }
+	}
 	
+	/*
+     * 프로세스가 최상위로 실행중인지 검사.
+     * @return true = 최상위
+     */
+     public Boolean isForeGround(){
+          ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE );
+          List<RunningTaskInfo> list = am.getRunningTasks(1);
+          ComponentName cn = list.get(0). topActivity;
+          String name = cn.getPackageName();
+          Boolean rtn = false;
+           if(name.indexOf(getPackageName()) > -1){
+                rtn = true;
+          } else{
+                rtn = false;
+          }
+           return rtn;
+    }
 }

@@ -18,6 +18,7 @@ public class CheckMileageMileage {
 	private String registerDate;								// 등록일
 	private String checkMileageMembersCheckMileageID;			// 사용자 ID 
 	private String checkMileageMerchantsMerchantID;				// 가맹점 ID
+	private String introduction;				// 가맹점 ID
 	
 	private String workPhoneNumber;
 	
@@ -95,9 +96,15 @@ public class CheckMileageMileage {
 	public void setMerchantImage(Bitmap merchantImage) {
 		this.merchantImage = merchantImage;
 	}
+	public String getIntroduction() {
+		return introduction;
+	}
+	public void setIntroduction(String introduction) {
+		this.introduction = introduction;
+	}
 	public CheckMileageMileage(String idCheckMileageMileages, String mileage, String modifyDate, 
 			String checkMileageMembersCheckMileageID, String checkMileageMerchantsMerchantID
-			,String companyName,String workPhoneNumber, String profileThumbnailImageUrl, Bitmap merchantImage){
+			,String companyName,String introduction, String workPhoneNumber, String profileThumbnailImageUrl, Bitmap merchantImage){
 		this.idCheckMileageMileages = idCheckMileageMileages;		// 키 값 --> 로그볼때 필요
 		this.mileage = mileage;										// 마일리지
 		this.modifyDate = modifyDate;								// 수정일
@@ -105,6 +112,7 @@ public class CheckMileageMileage {
 		this.checkMileageMerchantsMerchantID = checkMileageMerchantsMerchantID;		// 가맹점 아이디.
 		
 		this.merchantName = companyName;
+		this.introduction = introduction;
 		this.workPhoneNumber = workPhoneNumber;
 		this.merchantImg = profileThumbnailImageUrl;
 		this.merchantImage = merchantImage;

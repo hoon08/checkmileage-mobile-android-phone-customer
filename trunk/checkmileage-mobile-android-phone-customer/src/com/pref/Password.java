@@ -2,6 +2,14 @@
  * Copyright (C) 2011 Donghyun, Hwang (hbull@hanmail.net)
  */
 
+/*
+ *  사용 하는 겁니다.
+ *  
+ *  세팅을 쪼개서 비번 세팅 페이지가 있는데 거기서 이 페이지를 호출해서 사용합니다.
+ * 
+ * 
+ */
+
 package com.pref;
 
 import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
@@ -207,11 +215,10 @@ public class Password extends Activity {
     			co.kr.bettersoft.checkmileage_mobile_android_phone_customer.MainActivity.loginYN = true;
             	startActivity(nextActivity);    	
     		}else{				// 비번 변경 설정 등인 경우 설정 페이지로 돌아간다.(비번 저장후 종료하면 돌아가진다.)
-        		
         		 SharedPreferences.Editor savePWcustom = sharedPrefCustom.edit();		// 공용으로 비번도 저장해 준다.
     			 savePWcustom.putString("password" , currentPassword);
     			 savePWcustom.commit();
-        		
+        		 
     			 PrefActivityFromResource.memberInfo.setPassword(currentPassword);		// 변경된 비번을 서버에 저장시킨다..
     			 PrefActivityFromResource.updateLv = PrefActivityFromResource.updateLv+1;
     			 
