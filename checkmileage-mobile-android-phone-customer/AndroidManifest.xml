@@ -8,6 +8,7 @@
     <uses-permission android:name="co.kr.bettersoft.checkmileage_mobile_android_phone_customer.permission.C2D_MESSAGE" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+	<uses-permission android:name="android.permission.GET_TASKS" />
 	<uses-permission android:name="android.permission.USE_CREDENTIALS" />
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
 	<uses-feature android:name="android.hardware.camera" />
@@ -38,11 +39,15 @@
 	    >
 	 	<uses-library android:name="com.google.android.maps" />
 	    <activity android:name="CreateQRPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-	    <activity android:name="Main_TabsActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+	    <activity android:name="Main_TabsActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light"  
+	         android:windowSoftInputMode="adjustPan"
+	        ></activity>
 	    <activity android:name="MainActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light"  >
 	    </activity>
 	    <activity android:name="MemberStoreInfoPage" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-	    <activity android:name="MemberStoreListPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+	    <activity android:name="MemberStoreListPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" 
+	        
+	        ></activity>
 	    <activity android:name="MemberStoreLogPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
 	    <activity android:name="MemberStoreMapPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
 	    <activity android:name="MyMileagePageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>

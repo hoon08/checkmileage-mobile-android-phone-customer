@@ -55,9 +55,11 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 	
 	String controllerName = "";
 	String methodName = "";
-
+	int maxRetry = 5;
 	static String myQR = "";
 
+	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
+	
 	/*
 	 * // 각 페이지에서 제거하는게 확실하므로..주석처리함. 
 	 * (실행후 푸시 선택시 각 페이지의 onDesroy 가 올바르게 실행되지 않는 현상이 있음)
@@ -180,16 +182,16 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 				if(regId==null || regId.length()<1){		// 등록 되어있으면 재등록. --> 유지해봄.. 안되있으면?
 					reg();
 				}else{
-					Log.d(TAG,"already have a reg ID::"+regId);
-					try {
-						REGISTRATION_ID = regId;
-						updateMyGCMtoServer();
-						testGCM(REGISTRATION_ID);				
-					} catch (JSONException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					Log.d(TAG,"already have a reg ID::"+regId);					// 나중에 달아..
+//					try {
+//						REGISTRATION_ID = regId;
+//						updateMyGCMtoServer();
+//						testGCM(REGISTRATION_ID);				
+//					} catch (JSONException e) {
+//						e.printStackTrace();
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
 				}
 				return null;
 			}
@@ -243,14 +245,14 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 			System.out.println("postUrl      : " + postUrl2);
 			System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 		} catch (Exception e) {
-			Log.e("testGCM", "Fail to register category.");
+			Log.d("testGCM", "Fail to register category.");
 		}
 	}
 
 
 	public void checkDoneAndDoGCM(){
 		slow = slow +1;
-		if(slow==3){
+		if(slow==3){				// 3번 실행할때마다 추가 등록.(실패했을까봐)
 			slow = 0;
 			slowingReg();
 		}
@@ -260,13 +262,16 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 						try {
 							Thread.sleep(2000);
 						} catch (InterruptedException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
 						}finally{
 							REGISTRATION_ID = GCMRegistrar.getRegistrationId(getThis());	
 							if(REGISTRATION_ID.length()<1){
 								Log.i("testGCM", "wait..");
-								checkDoneAndDoGCM();
+								if(maxRetry>0){
+									maxRetry = maxRetry -1;
+									checkDoneAndDoGCM();
+								}else{
+									maxRetry = 5;
+								}
 							}else{
 								Log.i("testGCM", "now go with : "+REGISTRATION_ID);
 								try {
@@ -394,5 +399,31 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 	protected void onPause() {
 		unregisterReceiver(mMyBroadcastReceiver);
 		super.onPause();
+		 // 홈버튼 눌렀을때 종료 여부..
+      if(!isForeGround()){
+            Log.d(TAG,"go home, bye");
+            dummyActivity.finish();		// 더미도 종료
+			DummyActivity.count = 0;		// 개수 0으로 초기화 시켜준다. 다시 실행될수 있도록
+            finish();
+      }
 	}
+	
+	/*
+     * 프로세스가 최상위로 실행중인지 검사.
+     * @return true = 최상위
+     */
+     public Boolean isForeGround(){
+          ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE );
+          List<RunningTaskInfo> list = am.getRunningTasks(1);
+          ComponentName cn = list.get(0). topActivity;
+          String name = cn.getPackageName();
+          Boolean rtn = false;
+           if(name.indexOf(getPackageName()) > -1){
+                rtn = true;
+          } else{
+                rtn = false;
+          }
+           return rtn;
+    }
+
 }

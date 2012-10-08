@@ -55,6 +55,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -92,6 +94,9 @@ public class MyQRPageActivity extends Activity {
 	int myLon = 0;
 	
 	static Bitmap savedBMP = null;
+	int qrSize =300;
+	
+	int deviceSize = 0;
 	
 	/** Called when the activity is first created. */
 	static Bitmap bmp =null;
@@ -123,19 +128,27 @@ public class MyQRPageActivity extends Activity {
 		Log.i("screenWidth : ", "" + screenWidth);
 		float screenHeight = this.getResources().getDisplayMetrics().heightPixels;
 		Log.i("screenHeight : ", "" + screenHeight);
-	    float fqrSize = 0;
-	    if(screenWidth < screenHeight ){
-	    	fqrSize = (float) (screenWidth * 1.0);
-	    }else{
-	    	fqrSize = (float) (screenHeight * 1.0);
-	    }
-		final int qrSize = (int) fqrSize;		// 작은 쪽을 선택
+	    
 		
-		if(savedBMP==null){
-			Log.d(TAG,"savedBMP is null");
-		}else{
-			Log.d(TAG,"savedBMP is not null");
-		}
+//		float fqrSize = 0;
+//	    if(screenWidth < screenHeight ){
+//	    	fqrSize = (float) (screenWidth * 1.0);
+//	    }else{
+//	    	fqrSize = (float) (screenHeight * 1.0);
+//	    }
+//		qrSize = (int) fqrSize;		// 작은 쪽을 선택
+//		deviceSize = qrSize;
+//		
+//		if(qrSize>400){
+//			qrSize = 400;
+//		}
+//		if(savedBMP==null){
+//			Log.d(TAG,"savedBMP is null");
+//		}else{
+//			Log.d(TAG,"savedBMP is not null");
+//		}
+		
+		
 		
 		/*
 		 *  QR 코드를 받아옴.  구글 웹페이지를 통한 생성
@@ -145,7 +158,16 @@ public class MyQRPageActivity extends Activity {
         			public void run(){
         				if(savedBMP==null){
         					bmp = downloadBitmap("http://chart.apis.google.com/chart?cht=qr&chs="+qrSize+"x"+qrSize+"&choe=UTF-8&chld=H&chl="+qrCode); 
-        					saveBMPtoDB(bmp);
+        					
+//        					BitmapDrawable bmpResize = BitmapResizePrc(bmp, deviceSize, deviceSize);  // height, width
+//        					bmp = bmpResize.getBitmap();
+        					
+        					if(bmp==null){
+        						Log.d(TAG,"bmp==null");
+        					}else{
+        						saveBMPtoDB(bmp);
+        					}
+        					
         				}else{
         					bmp = savedBMP;
         				}
@@ -167,7 +189,7 @@ public class MyQRPageActivity extends Activity {
 	
 	// 생성한 QR코드 이미지를 DB에 저장한다.
 	public void saveBMPtoDB(Bitmap bmp){
-		Log.e(TAG,"saveBMPtoDB");
+		Log.d(TAG,"saveBMPtoDB");
 		SQLiteDatabase db = null;
 		db= openOrCreateDatabase( "sqlite_carrotDB.db",             
 		          SQLiteDatabase.CREATE_IF_NECESSARY ,null );
@@ -310,7 +332,7 @@ public class MyQRPageActivity extends Activity {
 	public void onBackPressed() {
 		Log.d("MainTabActivity", "MyQRPage finish");		
 		if(app_end == 1){
-			Log.e(TAG,"kill all");
+			Log.d(TAG,"kill all");
 			mainActivity.finish();
 			dummyActivity.finish();		// 더미도 종료
 			DummyActivity.count = 0;		// 개수 0으로 초기화 시켜준다. 다시 실행될수 있도록
@@ -348,11 +370,11 @@ public class MyQRPageActivity extends Activity {
 			}else{
 				location =  lm.getLastKnownLocation(provider);
 				if(location==null){
-					Log.e(TAG,"location = null");	
+					Log.d(TAG,"location = null");	
 				}else{
 					myLat = (int) (location.getLatitude()*1000000);				// 현위치의 좌표 획득 *** 로그용
 					myLon = (int) (location.getLongitude()*1000000);	
-					Log.e("runOnFirstFix", "location2:"+myLat+", "+myLon);			// 37529466 126921069
+					Log.d("runOnFirstFix", "location2:"+myLat+", "+myLon);			// 37529466 126921069
 					updateLocationToServer(Integer.toString(myLat), Integer.toString(myLon));
 				}
 			}
@@ -405,11 +427,11 @@ public class MyQRPageActivity extends Activity {
 							JSONObject obj = new JSONObject();
 							try{
 								// 자신의 아이디를 넣어서 조회
-//								Log.e(TAG,"checkMileageId::"+qrCode);
-//								Log.e(TAG,"latitude::"+myLat);
-//								Log.e(TAG,"longitude::"+myLon);
-//								Log.e(TAG,"activateYn::"+"Y");
-//								Log.e(TAG,"modifyDate::"+todays);
+//								Log.d(TAG,"checkMileageId::"+qrCode);
+//								Log.d(TAG,"latitude::"+myLat);
+//								Log.d(TAG,"longitude::"+myLon);
+//								Log.d(TAG,"activateYn::"+"Y");
+//								Log.d(TAG,"modifyDate::"+todays);
 								
 								obj.put("checkMileageId", qrCode);
 								obj.put("latitude", myLat);
@@ -489,6 +511,7 @@ public class MyQRPageActivity extends Activity {
 						JSONObject obj = new JSONObject();
 						try{
 							// 자신의 아이디를 넣어서 조회
+							Log.d(TAG,"getUserSettingsFromServer,qrcode:"+qrCode);
 							obj.put("checkMileageId", qrCode);		// 자신의 아이디 사용할 것.. 이전 사용자이다
 							obj.put("activateYn", "Y");
 						}catch(Exception e){
@@ -527,7 +550,7 @@ public class MyQRPageActivity extends Activity {
 	
 	public void theData1(InputStream in){
 		Log.d(TAG,"theData1");
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);
 		StringBuilder builder = new StringBuilder();
 		String line =null;
 		JSONObject jsonObject;
@@ -669,8 +692,6 @@ public class MyQRPageActivity extends Activity {
 								//									Log.e(TAG,"S");
 							}else{
 //								Toast.makeText(MemberStoreInfoPage.this, "오류가 발생하였습니다.\n잠시 후 다시 시도하여 주십시오.", Toast.LENGTH_SHORT).show();
-								
-							
 							}
 						}catch(Exception e){ 
 							e.printStackTrace();
@@ -681,7 +702,7 @@ public class MyQRPageActivity extends Activity {
 	}
 	public void theData2(InputStream in){
 		Log.d(TAG,"theData1");
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);
 		StringBuilder builder = new StringBuilder();
 		String line =null;
 		JSONObject jsonObject;
@@ -700,7 +721,7 @@ public class MyQRPageActivity extends Activity {
 		 * "businessRegistrationNumber01":1123,"businessRegistrationNumber02":4433,"businessKind01":"mm",
 		 * "decreaseMileage":0,"prSentence":1,"restrictionYn":"N","activateYn":"Y","modifyDate":"2012-08-10","registerDate":"2012-08-10"}}
 		 */
-		Log.e(TAG,"get data ::"+builder.toString());
+		Log.d(TAG,"get data ::"+builder.toString());
 		
 		String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다
 		// // // // // // // 바로 바로 화면에 add 하고 터치시 값 가져다가 상세 정보 보도록....
@@ -712,7 +733,7 @@ public class MyQRPageActivity extends Activity {
 			e1.printStackTrace();
 		}
 		int max = jsonArray2.length();
-		Log.e(TAG,"max::"+max);
+		Log.d(TAG,"max::"+max);
 //		try {
 //			entries1 = new ArrayList<CheckMileageMerchants>(max);
 //			if(max>0){
@@ -794,4 +815,57 @@ public class MyQRPageActivity extends Activity {
 //				e.printStackTrace();
 //			} 
 	}
+	
+	
+	
+	
+	
+	
+	/*
+	 * Bitmap 이미지 리사이즈
+	 * Src : 원본 Bitmap
+	 * newHeight : 새로운 높이
+	 * newWidth : 새로운 넓이
+	 * 참고 소스 : http://skyswim42.egloos.com/3477279 ( webview 에서 capture 화면 resizing 하는 source 도 있음 )
+	 */
+	private BitmapDrawable BitmapResizePrc( Bitmap Src, float newHeight, float newWidth)
+	{
+		BitmapDrawable Result = null;
+		int width = Src.getWidth();
+		int height = Src.getHeight();
+
+		// calculate the scale - in this case = 0.4f
+		float scaleWidth = ((float) newWidth) / width;
+		float scaleHeight = ((float) newHeight) / height;
+
+		// createa matrix for the manipulation
+		Matrix matrix = new Matrix();
+
+		// resize the bit map
+		matrix.postScale(scaleWidth, scaleHeight);
+
+		// rotate the Bitmap 회전 시키려면 주석 해제!
+		//matrix.postRotate(45);
+
+		// recreate the new Bitmap
+		Bitmap resizedBitmap = Bitmap.createBitmap(Src, 0, 0, width, height, matrix, true);
+
+		// check
+		width = resizedBitmap.getWidth();
+		height = resizedBitmap.getHeight();
+//		Log.i("ImageResize", "Image Resize Result : " + Boolean.toString((newHeight==height)&&(newWidth==width)) );
+
+		// make a Drawable from Bitmap to allow to set the BitMap
+		// to the ImageView, ImageButton or what ever
+		Result = new BitmapDrawable(resizedBitmap);
+		return Result;
+	}
+
+	
+	
+	
+	
+	
+	
+	
 }

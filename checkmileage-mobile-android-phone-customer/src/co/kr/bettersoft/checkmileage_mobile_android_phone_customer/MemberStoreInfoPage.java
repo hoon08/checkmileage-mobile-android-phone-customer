@@ -68,13 +68,14 @@ public class MemberStoreInfoPage extends Activity {
 	String merchantId ="";
 	String idCheckMileageMileages ="";
 	
-	String imgDomain = CommonUtils.imgDomain; 					// Img 가져올때 파일명만 있을 경우 앞에 붙일 도메인.   뒤에는 .jpg 를 하드코딩으로 붙임
+	String imgDomain = CommonUtils.imgDomain; 					// Img 가져올때 파일명만 있을 경우 앞에 붙일 도메인.   
 	
 	String latatude = "";
 	String longitude = "";
 	int error=0;
 	int reTry = 5;			 
-	
+	String tmpstr = "";
+	String tmpstr2 = "";
 	int maxPRstr = 200;					// 화면에 보여줄 소개 글의 최대 글자수. 넘어가면 자르고 ... 으로 표시해줌.
 	
 	float fImgSize = 0;
@@ -98,15 +99,14 @@ public class MemberStoreInfoPage extends Activity {
 
 					mileage.setText("★"+myMileage);
 					//					type.setText(text);
-					BitmapDrawable bmpResize = BitmapResizePrc(merchantData.getMerchantImage(), fImgSize, (float)(fImgSize*1.5));  // height, width
+//					BitmapDrawable bmpResize = BitmapResizePrc(merchantData.getMerchantImage(), fImgSize, (float)(fImgSize*1.5));  // height, width
 //					BitmapDrawable bmpResize = BitmapResizePrc(merchantData.getMerchantImage(), 400, 700);  		
 
 					// set the Drawable on the ImageView
-					titleImg.setImageDrawable(bmpResize);	
-//					titleImg.setImageBitmap(merchantData.getMerchantImage());		
+//					titleImg.setImageDrawable(bmpResize);	
+					titleImg.setImageBitmap(merchantData.getMerchantImage());		
 					latatude = merchantData.getLatitude();
 					longitude = merchantData.getLongtitude();
-					String tmpstr = "";
 					tmpstr = getString(R.string.representative);
 					name.setText(tmpstr+" : "+merchantData.getName());
 					tmpstr = getString(R.string.phone_num);
@@ -114,7 +114,7 @@ public class MemberStoreInfoPage extends Activity {
 					tmpstr = getString(R.string.addr);
 					addr.setText(tmpstr+" : "+merchantData.getAddress01());
 					tmpstr = getString(R.string.pr_str);
-					pr.setText(tmpstr+"소개 : "+merchantData.getPrSentence());
+					pr.setText(tmpstr+" : "+merchantData.getPrSentence());
 					member_store_title.setText(merchantData.getCompanyName());			// 상단 타이틀 안에 가맹점 이름.
 					tmpstr = getString(R.string.shop_name);
 					companyName.setText(tmpstr+" : "+merchantData.getCompanyName());
@@ -163,6 +163,9 @@ public class MemberStoreInfoPage extends Activity {
 //					serviceListBtn.setVisibility(View.VISIBLE);		// 서비스 내역 보기..
 					closeBtn.setVisibility(View.VISIBLE);
 					
+				}
+				if(b.getInt("showErrToast")==1){
+					Toast.makeText(MemberStoreInfoPage.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 				}
 			}catch(Exception e){
 				//				Toast.makeText(MyMileagePageActivity.this, "에러가 발생하였습니다."+entriesFn.size(), Toast.LENGTH_SHORT).show();
@@ -219,7 +222,8 @@ public class MemberStoreInfoPage extends Activity {
 				e.printStackTrace();
 			}
 		}else{
-			Toast.makeText(MemberStoreInfoPage.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+			showMSG();
+//			Toast.makeText(MemberStoreInfoPage.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 			finish();
 		}
 	}
@@ -227,7 +231,19 @@ public class MemberStoreInfoPage extends Activity {
 	public Context returnThis(){
 		return this;
 	}
-
+	public void showMSG(){			// 화면에 error 토스트 띄움..
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Message message = handler.obtainMessage();				
+						Bundle b = new Bundle();
+						b.putInt("showErrToast", 1);
+						message.setData(b);
+						handler.sendMessage(message);
+					}
+				}
+		).start();
+	} 
 
 
 
@@ -315,7 +331,8 @@ public class MemberStoreInfoPage extends Activity {
 									}else{
 										Log.w(TAG, "all retry get failed -- last retry and out.");
 										reTry = 5;
-										Toast.makeText(MemberStoreInfoPage.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+										showMSG();
+//										Toast.makeText(MemberStoreInfoPage.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 										error = 0;
 										finish();		// 종료. 다시 들어가도록..
 									}
@@ -349,7 +366,7 @@ public class MemberStoreInfoPage extends Activity {
 	 */
 	public void theData1(InputStream in){
 		Log.d(TAG,"theData");
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);
 		StringBuilder builder = new StringBuilder();
 		String line =null;
 		JSONObject jsonObject;
@@ -367,7 +384,7 @@ public class MemberStoreInfoPage extends Activity {
 		 * "businessRegistrationNumber01":1123,"businessRegistrationNumber02":4433,"businessKind01":"mm",
 		 * "decreaseMileage":0,"prSentence":1,"restrictionYn":"N","activateYn":"Y","modifyDate":"2012-08-10","registerDate":"2012-08-10"}}
 		 */
-		Log.d(TAG,"shop detail info ::"+builder.toString());
+//		Log.d(TAG,"shop detail info ::"+builder.toString());
 		String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다
 		// // // // // // // 바로 바로 화면에 add 하고 터치시 값 가져다가 상세 정보 보도록....
 		if(responseCode==200 || responseCode==204){
@@ -383,7 +400,7 @@ public class MemberStoreInfoPage extends Activity {
 					merchantData.setName("");
 				}
 				try{
-					merchantData.setProfileImageURL(jsonobj2.getString("profileThumbnailImageUrl"));				// 가맹점 이미지 URL
+					merchantData.setProfileImageURL(jsonobj2.getString("profileImageUrl"));				// 가맹점 이미지 URL
 				}catch(Exception e){
 					merchantData.setProfileImageURL("");
 				}
@@ -398,7 +415,11 @@ public class MemberStoreInfoPage extends Activity {
 					merchantData.setWorkPhoneNumber("");
 				}
 				try{
-					merchantData.setAddress01(jsonobj2.getString("address01"));			// 주소
+//					merchantData.setAddress01(jsonobj2.getString("address01"));			// 주소
+					tmpstr = jsonobj2.getString("address01");
+					tmpstr2 = jsonobj2.getString("address02");
+					tmpstr = tmpstr + " "+ tmpstr2;
+					merchantData.setAddress01(tmpstr);
 				}catch(Exception e){
 					merchantData.setAddress01("");
 				}
@@ -428,33 +449,29 @@ public class MemberStoreInfoPage extends Activity {
 							bm = LoadImage(merchantData.getProfileImageURL());				 
 						}catch(Exception e){
 							try{
-								Thread.sleep(300);
+								Log.w(TAG,"LoadImage with URL failed.:"+merchantData.getProfileImageURL());
+								Thread.sleep(100);
 								bm = LoadImage(merchantData.getProfileImageURL());	
 							}catch(Exception e3){
-								Log.w(TAG,"LoadImage with URL failed.:"+merchantData.getProfileImageURL());
-								BitmapDrawable dw = (BitmapDrawable) this.getResources().getDrawable(R.drawable.no_image);
+								Log.w(TAG,"LoadImage with URL failed again.:"+merchantData.getProfileImageURL());
+								BitmapDrawable dw = (BitmapDrawable) this.getResources().getDrawable(R.drawable.empty_320_160);
 								bm = dw.getBitmap();
 							}
 						}
 					}else{
 						try{
-							bm = LoadImage(imgDomain+merchantData.getProfileImageURL()+".jpg");				 
+							bm = LoadImage(imgDomain+merchantData.getProfileImageURL());				 
 						}catch(Exception e3){
-							Log.w(TAG, imgDomain+merchantData.getProfileImageURL()+".jpg -- fail");
+							Log.w(TAG, imgDomain+merchantData.getProfileImageURL()+" -- fail");
 							try{
-								BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.no_image);
+								BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.empty_320_160);
 								bm = dw.getBitmap();
 							}catch(Exception e4){}
 						}
 					}
-				}else{
-					try{
-						BitmapDrawable dw = (BitmapDrawable) this.getResources().getDrawable(R.drawable.no_image);
-						bm = dw.getBitmap();
-					}catch(Exception e3){}
 				}
 				if(bm==null){
-					BitmapDrawable dw = (BitmapDrawable) this.getResources().getDrawable(R.drawable.no_image);
+					BitmapDrawable dw = (BitmapDrawable) this.getResources().getDrawable(R.drawable.empty_320_160);
 					bm = dw.getBitmap();
 				}
 				merchantData.setMerchantImage(bm);
@@ -468,7 +485,8 @@ public class MemberStoreInfoPage extends Activity {
 				e.printStackTrace();
 			} 
 		}else{			// 요청 실패시	 토스트 띄우고 화면 유지.
-			Toast.makeText(MemberStoreInfoPage.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+			showMSG();
+//			Toast.makeText(MemberStoreInfoPage.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -476,7 +494,6 @@ public class MemberStoreInfoPage extends Activity {
 	private Bitmap LoadImage( String $imagePath ) {
 		InputStream inputStream = OpenHttpConnection( $imagePath ) ;
 		Bitmap bm = BitmapFactory.decodeStream( inputStream ) ;
-
 		return bm;
 	}
 	private InputStream OpenHttpConnection(String $imagePath) {
@@ -562,11 +579,11 @@ public class MemberStoreInfoPage extends Activity {
 		handler.post(new Runnable() {
 			public void run() {
 				// TODO Auto-generated method stub
-				Log.e(TAG, "Received phoneNumber: " + phoneNumber);
+				Log.d(TAG, "Received phoneNumber: " + phoneNumber);
 				if(("").equals(phoneNumber)) {
 					Toast.makeText(MemberStoreInfoPage.this, R.string.no_phone_num, Toast.LENGTH_SHORT).show();
 				} else {
-					Log.e(TAG, "Calling Phone.");
+					Log.d(TAG, "Calling Phone.");
 					startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phoneNumber)));
 //					startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber)));
 				}

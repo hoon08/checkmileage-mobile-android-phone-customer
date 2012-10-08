@@ -4,7 +4,7 @@
     android:layout_height="fill_parent"
     android:gravity="center"
     android:orientation="horizontal" >
-
+	
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
@@ -18,8 +18,10 @@
 
             <ImageView
                 android:id="@+id/merchantImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:scaleType="fitCenter"
+                android:layout_width="100sp"
+                android:layout_height="100sp"
                 android:contentDescription="@string/app_name" />
             
             <LinearLayout
@@ -37,9 +39,11 @@
 					<TextView
                         xmlns:android="http://schemas.android.com/apk/res/android"
                         android:id="@+id/merchantName"
+                        android:layout_weight="10"
                         android:layout_width="170dp"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
+                        android:layout_marginTop="4sp"
                         android:textSize="20sp"
                         android:gravity="left" />
 					
@@ -47,22 +51,33 @@
                     <TextView
                         xmlns:android="http://schemas.android.com/apk/res/android"
                         android:id="@+id/mileage"
+                        android:layout_weight="1"
                         android:layout_width="50dp"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
                         android:textSize="20sp"
-                        android:gravity="right" />
+                        android:background="#ffff0000"
+                        android:textColor="#ffffffff"
+                        android:gravity="center" />
 
                     
                 </LinearLayout>
-            
+            	<TextView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/merchantIntro"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:singleLine="true"
+    			android:ellipsize="end"
+                android:padding="2dp"
+                android:textSize="13sp" />
 				<TextView
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/merchantPhone"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:padding="2dp"
-                android:textSize="20sp" />
+                android:textSize="13sp" />
             
         </LinearLayout>
             

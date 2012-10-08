@@ -74,6 +74,11 @@ public class ImageAdapterList extends BaseAdapter {
 		TextView textViewMerchantPhone = (TextView) listView
 				.findViewById(R.id.merchantPhone);
 		textViewMerchantPhone.setText(((CheckMileageMileage)entries.get(position)).getModifyDate());		// 처음엔 전번이었으나 실제 값은 마지막 이용 일시로 한다.
+		
+		TextView textViewMerchantIntro = (TextView) listView
+		.findViewById(R.id.merchantIntro);
+		textViewMerchantIntro.setText(((CheckMileageMileage)entries.get(position)).getIntroduction());
+		
 		// set image based on selected text
 		ImageView imageView = (ImageView) listView
 				.findViewById(R.id.merchantImage);

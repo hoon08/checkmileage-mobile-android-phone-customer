@@ -28,8 +28,9 @@
 
                 <ImageView
                     android:id="@+id/myQRCode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:scaleType="fitXY"
+                    android:layout_width="350sp"
+                    android:layout_height="350sp"
                     android:src="@drawable/flag" />
                 <TextView
                     android:layout_width="fill_parent"

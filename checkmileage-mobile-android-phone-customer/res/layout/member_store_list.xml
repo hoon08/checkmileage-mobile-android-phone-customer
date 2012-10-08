@@ -23,10 +23,10 @@
         android:orientation="horizontal" >
 
         <Spinner
-            android:id="@+id/searchSpinnerArea"
+            android:id="@+id/searchSpinnerType"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="49"
+            android:layout_weight="48"
             android:gravity="center"
             android:textSize="20dp" />
 
@@ -34,16 +34,32 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="|"
+            android:text="  "
             android:textSize="20dp" />
-
-        <Spinner
-            android:id="@+id/searchSpinnerType"
+        
+        <EditText 
+            android:id="@+id/store_search_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="49"
+            android:layout_weight="34"
+            android:text=""
+            android:textSize="10dp" />
+        <Button 
+            android:id="@+id/store_search_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_weight="14"
+            android:textSize="8dp"
+            android:text="@string/search" />
+		<Spinner
+            android:id="@+id/searchSpinnerArea"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
             android:gravity="center"
             android:textSize="20dp" />
+        
     </LinearLayout>
 
     <FrameLayout

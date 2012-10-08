@@ -21,6 +21,7 @@
 
 		<TabWidget
 		    android:id="@android:id/tabs"
+		     android:windowSoftInputMode="adjustPan"
 		    android:layout_width="fill_parent"
 		    android:layout_height="50dp"
 		    android:background="#000000"

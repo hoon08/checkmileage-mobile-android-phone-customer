@@ -14,6 +14,7 @@ import android.net.http.AndroidHttpClient;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -77,8 +78,15 @@ public class CreateQRPageActivity extends Activity {
 	    Intent rIntent = getIntent();
         phoneNumber = rIntent.getStringExtra("phoneNumber");
 
-//	    qrcode = timeID;			// 이 줄을  주석 처리하면 기본 값 test1234 사용, 주석 풀면 새로 만든 시간 아이디 사용.
+        
+        
+        
+//	    qrcode = timeID;			// 이 줄을  주석 처리하면 기본 값 test1234 사용 - test용도. , 주석 풀면 새로 만든 시간 아이디 사용- 실제 사용 용도.. *** 
 	    
+        
+        
+        
+        
 	    /*
 	     *  서버와 통신하여 QR 생성.
 	     */
@@ -95,7 +103,7 @@ public class CreateQRPageActivity extends Activity {
 //	    saveQR();							// qr 저장소 사용 안함.
 	    saveQRforPref(qrcode);				// 설정 파일 사용함.
 
-	    saveQRtoServer();					// 서버에도 저장함.
+	    saveQRtoServer();					// 서버에도 저장함.			// test1234 아이디로 테스트시에 주석처리하지 않으면 에러가 발생한다.
 	    
 	    
 	    /*
@@ -187,7 +195,6 @@ public class CreateQRPageActivity extends Activity {
 							obj.put("modifyDate", nowTime);			
 							obj.put("registerDate", nowTime);		
 							Log.e(TAG,"myQRcode::"+qrcode);
-							
 						}catch(Exception e){
 							e.printStackTrace();
 						}
@@ -211,10 +218,18 @@ public class CreateQRPageActivity extends Activity {
 //								theData1(in);
 								Log.e(TAG, "register user S");
 							}else{
-								Log.e(TAG, "register user F");
+								Log.e(TAG, "register user F");		// 오류 발생시 에러 창 띄우고 돌아간다.. 통신에러 발생할수 있다.
+								Toast.makeText(CreateQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+								 Intent backToNoQRIntent = new Intent(CreateQRPageActivity.this, No_QR_PageActivity.class);
+								 startActivity(backToNoQRIntent);
+								 finish();
 							}
 						}catch(Exception e){ 
-							e.printStackTrace();
+							 e.printStackTrace();			// 오류 발생시 에러 창 띄우고 돌아간다.. 통신에러 발생할수 있다.
+							 Toast.makeText(CreateQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+							 Intent backToNoQRIntent = new Intent(CreateQRPageActivity.this, No_QR_PageActivity.class);
+							 startActivity(backToNoQRIntent);
+							 finish();
 						}
 					}
 				}
