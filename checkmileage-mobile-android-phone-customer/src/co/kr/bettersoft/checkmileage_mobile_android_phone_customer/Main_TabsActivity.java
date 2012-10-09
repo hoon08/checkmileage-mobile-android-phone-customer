@@ -283,7 +283,7 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 							}else{
 								Log.i("testGCM", "now go with : "+REGISTRATION_ID);
 								try {
-									updateMyGCMtoServer();
+//									updateMyGCMtoServer();
 									testGCM(REGISTRATION_ID);
 								} catch (JSONException e) {
 									// TODO Auto-generated catch block
@@ -367,18 +367,19 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 		int todayDay = c.get(Calendar.DATE);
 		int todayHour = c.get(Calendar.HOUR_OF_DAY);
 		int todayMinute = c.get(Calendar.MINUTE);
-
+		int todaySecond = c.get(Calendar.SECOND);
+		
 		String tempMonth = Integer.toString(todayMonth);
 		String tempDay = Integer.toString(todayDay);
 		String tempHour = Integer.toString(todayHour);
 		String tempMinute = Integer.toString(todayMinute);
-
+		String tempSecond = Integer.toString(todaySecond);
 		if(tempMonth.length()==1) tempMonth = "0"+tempMonth;
 		if(tempDay.length()==1) tempDay = "0"+tempDay;
 		if(tempHour.length()==1) tempHour = "0"+tempHour;
 		if(tempMinute.length()==1) tempMinute = "0"+tempMinute;
-
-		String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute;
+		
+		String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute+":"+tempSecond;
 		return nowTime;
 		//Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
 	}
