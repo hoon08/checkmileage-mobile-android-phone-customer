@@ -35,7 +35,7 @@ import com.pref.Password;
  * IntentService responsible for handling GCM messages.
  */
 public class GCMIntentService extends GCMBaseIntentService {
-	
+	static String tmpStr = "";
     @SuppressWarnings("hiding")
     private static final String TAG = "GCMIntentService";
 
@@ -166,12 +166,30 @@ public class GCMIntentService extends GCMBaseIntentService {
 //            notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK 
 //                    | Intent.FLAG_ACTIVITY_CLEAR_TOP 
 //                    | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            tmpStr = context.getString(R.string.mileage_noti);
+            PendingIntent intent =
+                    PendingIntent.getActivity(context, 0, notificationIntent, 0);
+            notification.setLatestEventInfo(context, title, tmpStr, intent);					
+            notification.flags |= Notification.FLAG_AUTO_CANCEL;
+            notificationManager.notify(0, notification);
+        }else if(message.contains("MARKETING")){
+        	Log.d(TAG,"noti event push");
+//        	notificationIntent = new Intent(context, MainActivity.class);		// 이걸 띄워서 문제가 된다면..
+            notificationIntent = new Intent(context, DummyActivity.class);	
+            notificationIntent.putExtra("RunMode", "MARKETING");
+            
+            // set intent so it does not start a new activity
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                  | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//            notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK 
+//                    | Intent.FLAG_ACTIVITY_CLEAR_TOP 
+//                    | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent intent =
                     PendingIntent.getActivity(context, 0, notificationIntent, 0);
             notification.setLatestEventInfo(context, title, message, intent);
             notification.flags |= Notification.FLAG_AUTO_CANCEL;
             notificationManager.notify(0, notification);
-        }else if(message.contains("MARKETING")){
+        }else{							// 마케팅 직구.
         	Log.d(TAG,"noti event push");
 //        	notificationIntent = new Intent(context, MainActivity.class);		// 이걸 띄워서 문제가 된다면..
             notificationIntent = new Intent(context, DummyActivity.class);	

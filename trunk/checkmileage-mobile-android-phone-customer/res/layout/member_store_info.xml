@@ -12,15 +12,13 @@
 
         <TextView
             android:id="@+id/member_store_title"
-                    android:layout_width="fill_parent"
-                    android:layout_height="50dp"
-                    android:gravity="center"
-                    android:textSize="17dp"
-                    android:background="#393939"
-                    android:textColor="@android:color/white"
-                    />
-        
-        
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:background="#393939"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="17dp" />
+
         <FrameLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" >
@@ -32,23 +30,22 @@
 
                 <ImageView
                     android:id="@+id/prImage"
-                    android:scaleType ="centerCrop"
                     android:layout_width="fill_parent"
                     android:layout_height="170sp"
-                    android:contentDescription="@string/app_name" />
+                    android:contentDescription="@string/app_name"
+                    android:scaleType="centerCrop" />
 
                 <TextView
                     android:id="@+id/merchantName2"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" 
-                    android:textSize="17sp"
-                    />
+                    android:layout_height="wrap_content"
+                    android:textSize="17sp" />
 
                 <TextView
                     android:id="@+id/name"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" 
-                    android:textSize="17sp"/>
+                    android:layout_height="wrap_content"
+                    android:textSize="17sp" />
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -58,17 +55,17 @@
 
                     <TextView
                         android:id="@+id/phone"
-                        android:layout_weight="21"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="left" 
-                        android:textSize="17sp"/>
+                        android:layout_weight="21"
+                        android:gravity="left"
+                        android:textSize="17sp" />
 
                     <Button
                         android:id="@+id/callBtn"
-                        android:layout_weight="1"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/calling" />
                 </LinearLayout>
@@ -81,17 +78,17 @@
 
                     <TextView
                         android:id="@+id/addr"
-                        android:layout_weight="21"
                         android:layout_width="240dp"
                         android:layout_height="wrap_content"
-                        android:gravity="left" 
-                        android:textSize="17sp"/>
+                        android:layout_weight="21"
+                        android:gravity="left"
+                        android:textSize="17sp" />
 
                     <Button
                         android:id="@+id/mapBtn"
-                        android:layout_weight="1"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/viewmap" />
                 </LinearLayout>
@@ -99,8 +96,8 @@
                 <TextView
                     android:id="@+id/pr"
                     android:layout_width="wrap_content"
-                    android:layout_height="70dp" 
-                    android:textSize="17sp"/>
+                    android:layout_height="70dp"
+                    android:textSize="17sp" />
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -110,40 +107,41 @@
 
                     <Button
                         android:id="@+id/logListBtn"
-                        android:layout_weight="1"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/showlog" />
 
                     <Button
                         android:id="@+id/serviceListBtn"
-                        android:layout_weight="20"
                         android:layout_width="160dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="20"
                         android:text="@string/showservicemenu" />
 
                     <Button
                         android:id="@+id/closeBtn"
-                        android:layout_weight="1"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/closebtn" />
                 </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:gravity="top|right"
                 android:orientation="vertical" >
 
                 <TextView
                     android:id="@+id/mileage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="50dp"
-                    android:layout_marginTop="5dp" />
+                    android:background="#ffff0000"
+                    android:textColor="#ffffffff" />
 
                 <TextView
                     android:id="@+id/type"
@@ -153,11 +151,6 @@
                     android:layout_marginTop="50dp" />
             </LinearLayout>
         </FrameLayout>
-        
-        
-        
-        
-        
     </LinearLayout>
 
 </RelativeLayout>

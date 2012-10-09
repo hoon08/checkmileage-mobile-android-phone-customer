@@ -355,7 +355,7 @@ public class MyQRPageActivity extends Activity {
 			provider = LocationManager.GPS_PROVIDER;
 			Criteria criteria = new Criteria();
 			criteria.setAccuracy(Criteria.ACCURACY_COARSE); // 정확도
-			criteria.setPowerRequirement(Criteria.POWER_LOW); // 전원 소리량
+			criteria.setPowerRequirement(Criteria.POWER_LOW); // 전원 소비량
 			criteria.setAltitudeRequired(false); // 고도
 			criteria.setBearingRequired(false); // ..
 			criteria.setSpeedRequired(false); // 속도
@@ -398,28 +398,7 @@ public class MyQRPageActivity extends Activity {
 			controllerName = "checkMileageMemberController";
 			methodName = "updateMemberLocation";
 			
-			Calendar c = Calendar.getInstance();
-			int todayYear = 0;						// 지금 -  년 월 일 시 분
-			int todayMonth = 0;
-			int todayDay = 0;
-			int todayHour = 0;
-			int todayMinute = 0;
-			todayYear = c.get(Calendar.YEAR);
-			todayMonth = c.get(Calendar.MONTH)+1;			// 꺼내면 0부터 시작이니까 +1 해준다.
-			todayDay = c.get(Calendar.DATE);
-			todayHour = c.get(Calendar.HOUR_OF_DAY);
-			todayMinute = c.get(Calendar.MINUTE);
-			String tempMonth = Integer.toString(todayMonth+1);
-			String tempDay = Integer.toString(todayDay);
-			String tempHour = Integer.toString(todayHour);
-			String tempMinute = Integer.toString(todayMinute);
 			
-			if(tempMonth.length()==1) tempMonth = "0"+tempMonth;
-			if(tempDay.length()==1) tempDay = "0"+tempDay;
-			if(tempHour.length()==1) tempHour = "0"+tempHour;
-			if(tempMinute.length()==1) tempMinute = "0"+tempMinute;
-			
-			final String todays = todayYear+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute;
 //			Log.e(TAG,todays+"//"+myLat+"//"+myLon);
 			new Thread(
 					new Runnable(){
@@ -437,7 +416,10 @@ public class MyQRPageActivity extends Activity {
 								obj.put("latitude", myLat);
 								obj.put("longitude", myLon);
 								obj.put("activateYn", "Y");
-								obj.put("modifyDate", todays);
+								
+								String nowTime = getNow();
+								
+								obj.put("modifyDate", nowTime);
 							}catch(Exception e){
 								e.printStackTrace();
 							}
@@ -472,6 +454,37 @@ public class MyQRPageActivity extends Activity {
 		}else{
 			Log.w(TAG,"already updating..");
 		}
+	}
+	
+	// 업뎃 시각
+	public String getNow(){
+		// 일단 오늘.
+		Calendar c = Calendar.getInstance();
+		int todayYear = 0;						// 지금 -  년 월 일 시 분
+		int todayMonth = 0;
+		int todayDay = 0;
+		int todayHour = 0;
+		int todayMinute = 0;
+		int todaySecond = 0;
+		todayYear = c.get(Calendar.YEAR);
+		todayMonth = c.get(Calendar.MONTH)+1;			// 꺼내면 0부터 시작이니까 +1 해준다.
+		todayDay = c.get(Calendar.DATE);
+		todayHour = c.get(Calendar.HOUR_OF_DAY);
+		todayMinute = c.get(Calendar.MINUTE);
+		todaySecond = c.get(Calendar.SECOND);
+		String tempMonth = Integer.toString(todayMonth+1);
+		String tempDay = Integer.toString(todayDay);
+		String tempHour = Integer.toString(todayHour);
+		String tempMinute = Integer.toString(todayMinute);
+		String tempSecond = Integer.toString(todaySecond);
+		if(tempMonth.length()==1) tempMonth = "0"+tempMonth;
+		if(tempDay.length()==1) tempDay = "0"+tempDay;
+		if(tempHour.length()==1) tempHour = "0"+tempHour;
+		if(tempMinute.length()==1) tempMinute = "0"+tempMinute;
+		if(tempSecond.length()==1) tempSecond = "0"+tempSecond;
+		String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute+":"+tempSecond;
+		return nowTime;
+//		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
 	}
 	
 	

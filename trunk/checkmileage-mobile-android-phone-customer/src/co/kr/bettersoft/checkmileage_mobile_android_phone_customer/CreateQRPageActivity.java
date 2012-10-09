@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Locale;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -64,6 +65,14 @@ public class CreateQRPageActivity extends Activity {
 	int todayDay = 0;
 	int todayHour = 0;
 	int todayMinute = 0;
+	int todaySecond = 0;
+	
+	// Locale
+    Locale systemLocale = null ;
+//    String strDisplayCountry = "" ;
+    String strCountry = "" ;
+    String strLanguage = "" ;
+
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -161,7 +170,13 @@ public class CreateQRPageActivity extends Activity {
     	Log.i(TAG, "saveQRtoServer");
 		controllerName = "checkMileageMemberController";
 		methodName = "registerMember";
-		
+
+		// locale get
+		systemLocale = getResources().getConfiguration(). locale;
+		//      strDisplayCountry = systemLocale.getDisplayCountry();
+		strCountry = systemLocale .getCountry();
+		strLanguage = systemLocale .getLanguage();
+
 		// 서버 통신부
 		new Thread(
 				new Runnable(){
@@ -181,16 +196,10 @@ public class CreateQRPageActivity extends Activity {
 							obj.put("activateYn", "Y");			
 							obj.put("receiveNotificationYn", "Y");			
 							
-							getNow();
-							String tempMonth = Integer.toString(todayMonth);
-							String tempDay = Integer.toString(todayDay);
-							String tempHour = Integer.toString(todayHour);
-							String tempMinute = Integer.toString(todayMinute);
-							if(tempMonth.length()==1) tempMonth = "0"+tempMonth;
-							if(tempDay.length()==1) tempDay = "0"+tempDay;
-							if(tempHour.length()==1) tempHour = "0"+tempHour;
-							if(tempMinute.length()==1) tempMinute = "0"+tempMinute;
-							String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute;
+							obj.put( "countryCode", strCountry ); 
+							obj.put( "languageCode" , strLanguage );
+			
+							String nowTime = getNow();
 							Log.i(TAG, "nowTime::"+nowTime);
 							obj.put("modifyDate", nowTime);			
 							obj.put("registerDate", nowTime);		
@@ -237,13 +246,26 @@ public class CreateQRPageActivity extends Activity {
     }
     
     // 현시각
-    public void getNow(){
+    public String getNow(){
 		// 일단 오늘.
 		todayYear = c.get(Calendar.YEAR);
 		todayMonth = c.get(Calendar.MONTH)+1;			// 꺼내면 0부터 시작이니까 +1 해준다.
 		todayDay = c.get(Calendar.DATE);
 		todayHour = c.get(Calendar.HOUR_OF_DAY);
 		todayMinute = c.get(Calendar.MINUTE);
+		todaySecond = c.get(Calendar.SECOND);
+		String tempMonth = Integer.toString(todayMonth);
+		String tempDay = Integer.toString(todayDay);
+		String tempHour = Integer.toString(todayHour);
+		String tempMinute = Integer.toString(todayMinute);
+		String tempSecond = Integer.toString(todaySecond);
+		if(tempMonth.length()==1) tempMonth = "0"+tempMonth;
+		if(tempDay.length()==1) tempDay = "0"+tempDay;
+		if(tempHour.length()==1) tempHour = "0"+tempHour;
+		if(tempMinute.length()==1) tempMinute = "0"+tempMinute;
+		if(tempSecond.length()==1) tempSecond = "0"+tempSecond;
+		String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute+":"+tempSecond;
+		return nowTime;
 //		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
 	}
 }

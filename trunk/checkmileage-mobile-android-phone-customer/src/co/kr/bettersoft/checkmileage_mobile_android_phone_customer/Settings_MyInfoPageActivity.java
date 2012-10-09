@@ -14,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import org.json.JSONException;
@@ -61,6 +62,7 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 	int todayDay = 0;
 	int todayHour = 0;
 	int todayMinute = 0;
+	int todaySecond = 0;
 	
 	int birthYear = 0;						// 생년월일 - 년 월 일
 	int birthMonth= 0;
@@ -79,6 +81,11 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 	String server_email = "";
 	String server_gender = "";
 	
+	// Locale
+    Locale systemLocale = null ;
+//    String strDisplayCountry = "" ;
+    String strCountry = "" ;
+    String strLanguage = "" ;
 	
 	// 케릭 설정 정보 저장해 놓을 도메인. 항상 최신 정보를 유지해야 한다.
 	static CheckMileageMembers memberInfo;
@@ -86,7 +93,6 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		getNow();
 		//		Toast.makeText(Settings_MyInfoPageActivity.this, "Year:"+todayYear+",Month:"+todayMonth+",Day:"+todayDay, Toast.LENGTH_SHORT).show();
 
 		// 1. \res\xml\preferences.xml로 부터 Preference 계층구조를 읽어와
@@ -184,14 +190,26 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 		}
 	}
 
-	public void getNow(){
+	public String getNow(){
 		// 일단 오늘.
 		todayYear = c.get(Calendar.YEAR);
 		todayMonth = c.get(Calendar.MONTH)+1;			// 꺼내면 0부터 시작이니까 +1 해준다.
 		todayDay = c.get(Calendar.DATE);
 		todayHour = c.get(Calendar.HOUR_OF_DAY);
 		todayMinute = c.get(Calendar.MINUTE);
-		
+		todaySecond = c.get(Calendar.SECOND);
+		String tempMonth = Integer.toString(todayMonth);
+		String tempDay = Integer.toString(todayDay);
+		String tempHour = Integer.toString(todayHour);
+		String tempMinute = Integer.toString(todayMinute);
+		String tempSecond = Integer.toString(todaySecond);
+		if(tempMonth.length()==1) tempMonth = "0"+tempMonth;
+		if(tempDay.length()==1) tempDay = "0"+tempDay;
+		if(tempHour.length()==1) tempHour = "0"+tempHour;
+		if(tempMinute.length()==1) tempMinute = "0"+tempMinute;
+		if(tempSecond.length()==1) tempSecond = "0"+tempSecond;
+		String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute+":"+tempSecond;
+		return nowTime;
 //		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
 	}
 	
@@ -354,18 +372,14 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 								obj.put("deviceType", memberInfo.getDeviceType());
 								obj.put("registrationId", memberInfo.getRegistrationId());
 								obj.put("activateYn", memberInfo.getActivateYn());
+								
+								obj.put("countryCode", memberInfo.getCountryCode());
+								obj.put("languageCode", memberInfo.getLanguageCode());
+								
 								obj.put("receiveNotificationYn", memberInfo.getReceiveNotificationYn());
 								Log.i(TAG, "activateYn::"+memberInfo.getActivateYn());
-								getNow();
-								String tempMonth = Integer.toString(todayMonth);
-								String tempDay = Integer.toString(todayDay);
-								String tempHour = Integer.toString(todayHour);
-								String tempMinute = Integer.toString(todayMinute);
-								if(tempMonth.length()==1) tempMonth = "0"+tempMonth;
-								if(tempDay.length()==1) tempDay = "0"+tempDay;
-								if(tempHour.length()==1) tempHour = "0"+tempHour;
-								if(tempMinute.length()==1) tempMinute = "0"+tempMinute;
-								String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute;
+								
+								String nowTime = getNow();
 								Log.i(TAG, "nowTime::"+nowTime);
 								obj.put("modifyDate", nowTime);		// 지금 시간으로.
 							}catch(Exception e){
@@ -418,6 +432,13 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 		StringBuilder builder = new StringBuilder();
 		String line =null;
 		JSONObject jsonObject;
+		
+		// Locale
+	      systemLocale = getResources().getConfiguration(). locale;
+//      strDisplayCountry = systemLocale.getDisplayCountry();
+         strCountry = systemLocale .getCountry();
+         strLanguage = systemLocale .getLanguage();
+		
 		try {
 			while((line=reader.readLine())!=null){
 				builder.append(line).append("\n");
@@ -484,7 +505,12 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 				try{	// 알림 수신 여부 
 					memberInfo.setReceiveNotificationYn(jsonobj2.getString("receiveNotificationYn"));				
 				}catch(Exception e){ memberInfo.setReceiveNotificationYn(""); }
-				
+				try{	// 국가 코드
+					memberInfo.setCountryCode(jsonobj2.getString("countryCode"));				
+				}catch(Exception e){ memberInfo.setCountryCode(strCountry); }
+				try{	// 언어 코드
+					memberInfo.setLanguageCode(jsonobj2.getString("languageCode"));				
+				}catch(Exception e){ memberInfo.setLanguageCode(strLanguage); }
 				// 그 외 activateYn 는 수동 조작. 이시점에 저장 완료.
 			} catch (JSONException e) {
 				e.printStackTrace();

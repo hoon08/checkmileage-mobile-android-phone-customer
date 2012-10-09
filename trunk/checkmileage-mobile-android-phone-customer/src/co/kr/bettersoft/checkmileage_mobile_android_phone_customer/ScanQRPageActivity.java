@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Locale;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,6 +40,14 @@ public class ScanQRPageActivity extends Activity {
 	int todayDay = 0;
 	int todayHour = 0;
 	int todayMinute = 0;
+	int todaySecond = 0;
+	
+	//Locale
+	Locale systemLocale = null;
+//	String strDisplayCountry = "";
+	String strCountry = "";
+	String strLanguage = "";
+	
 	
 	String idExist = "";
 	static int qrResult = 0;
@@ -158,7 +167,6 @@ public class ScanQRPageActivity extends Activity {
 		Log.i(TAG, "checkAlreadyExistID");
 		controllerName = "checkMileageMemberController";
 		methodName = "selectMemberExist";
-		
 		// 서버 통신부
 		new Thread(
 				new Runnable(){
@@ -237,7 +245,7 @@ public class ScanQRPageActivity extends Activity {
 					idExist = jsonobj2.getString("totalCount");				// 아이디가 있으면1 없으면 0
 				}catch(Exception e){
 					e.printStackTrace();
-					idExist = "1";
+					idExist = "0";
 				}
 				if(idExist.equals("0")){		// 서버에 아이디가 없으면 업데이트 해준다. 있으면 업데이트 하지 않는다.
 					saveQRtoServer();		
@@ -263,6 +271,11 @@ public class ScanQRPageActivity extends Activity {
 		controllerName = "checkMileageMemberController";
 		methodName = "registerMember";
 		
+		systemLocale = getResources().getConfiguration().locale;
+//		strDisplayCountry = systemLocale.getDisplayCountry();
+		strCountry = systemLocale.getCountry();
+		strLanguage = systemLocale.getLanguage();
+		
 		// 서버 통신부
 		new Thread(
 				new Runnable(){
@@ -282,16 +295,10 @@ public class ScanQRPageActivity extends Activity {
 							obj.put("activateYn", "Y");			
 							obj.put("receiveNotificationYn", "Y");			
 							
-							getNow();
-							String tempMonth = Integer.toString(todayMonth);
-							String tempDay = Integer.toString(todayDay);
-							String tempHour = Integer.toString(todayHour);
-							String tempMinute = Integer.toString(todayMinute);
-							if(tempMonth.length()==1) tempMonth = "0"+tempMonth;
-							if(tempDay.length()==1) tempDay = "0"+tempDay;
-							if(tempHour.length()==1) tempHour = "0"+tempHour;
-							if(tempMinute.length()==1) tempMinute = "0"+tempMinute;
-							String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute;
+							obj.put("countryCode", strCountry);	
+							obj.put("languageCode", strLanguage);	
+							
+							String nowTime = getNow();
 							Log.i(TAG, "nowTime::"+nowTime);
 							obj.put("modifyDate", nowTime);			
 							obj.put("registerDate", nowTime);		
@@ -339,13 +346,26 @@ public class ScanQRPageActivity extends Activity {
     }
     
     // 현시각
-    public void getNow(){
+    public String getNow(){
 		// 일단 오늘.
 		todayYear = c.get(Calendar.YEAR);
 		todayMonth = c.get(Calendar.MONTH)+1;			// 꺼내면 0부터 시작이니까 +1 해준다.
 		todayDay = c.get(Calendar.DATE);
 		todayHour = c.get(Calendar.HOUR_OF_DAY);
 		todayMinute = c.get(Calendar.MINUTE);
+		todaySecond = c.get(Calendar.SECOND);
+		String tempMonth = Integer.toString(todayMonth);
+		String tempDay = Integer.toString(todayDay);
+		String tempHour = Integer.toString(todayHour);
+		String tempMinute = Integer.toString(todayMinute);
+		String tempSecond = Integer.toString(todaySecond);
+		if(tempMonth.length()==1) tempMonth = "0"+tempMonth;
+		if(tempDay.length()==1) tempDay = "0"+tempDay;
+		if(tempHour.length()==1) tempHour = "0"+tempHour;
+		if(tempMinute.length()==1) tempMinute = "0"+tempMinute;
+		if(tempSecond.length()==1) tempSecond = "0"+tempSecond;
+		String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute+":"+tempSecond;
+		return nowTime;
 //		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
 	}
 }

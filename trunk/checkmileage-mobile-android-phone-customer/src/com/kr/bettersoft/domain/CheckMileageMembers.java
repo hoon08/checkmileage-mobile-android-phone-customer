@@ -28,6 +28,9 @@ public class CheckMileageMembers {
 	
 	private String receiveNotificationYn;
 	
+	private String countryCode;
+	private String languageCode;
+	
 	public String getCheckMileage() {
 		return checkMileage;
 	}
@@ -129,6 +132,18 @@ public class CheckMileageMembers {
 	}
 	public void setReceiveNotificationYn(String receiveNotificationYn) {
 		this.receiveNotificationYn = receiveNotificationYn;
+	}
+	public String getCountryCode() {
+		return countryCode;
+	}
+	public void setCountryCode(String countryCode) {
+		this.countryCode = countryCode;
+	}
+	public String getLanguageCode() {
+		return languageCode;
+	}
+	public void setLanguageCode(String languageCode) {
+		this.languageCode = languageCode;
 	}
 	
 	
