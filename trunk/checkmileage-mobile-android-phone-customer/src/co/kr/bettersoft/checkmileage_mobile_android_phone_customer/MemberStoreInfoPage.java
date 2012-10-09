@@ -48,6 +48,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,6 +80,10 @@ public class MemberStoreInfoPage extends Activity {
 	int maxPRstr = 200;					// 화면에 보여줄 소개 글의 최대 글자수. 넘어가면 자르고 ... 으로 표시해줌.
 	
 	float fImgSize = 0;
+	
+	// 진행바
+	ProgressBar pb1;		// 중단 로딩 진행바
+	
 	// 핸들러
 	Handler handler = new Handler(){
 		@Override
@@ -96,7 +101,7 @@ public class MemberStoreInfoPage extends Activity {
 					TextView addr = (TextView)findViewById(R.id.addr);	
 					TextView pr = (TextView)findViewById(R.id.pr);
 					TextView companyName = (TextView)findViewById(R.id.merchantName2);	
-
+					hidePb();
 					mileage.setText("★"+myMileage);
 					//					type.setText(text);
 //					BitmapDrawable bmpResize = BitmapResizePrc(merchantData.getMerchantImage(), fImgSize, (float)(fImgSize*1.5));  // height, width
@@ -164,6 +169,19 @@ public class MemberStoreInfoPage extends Activity {
 					closeBtn.setVisibility(View.VISIBLE);
 					
 				}
+				if(b.getInt("order")==1){
+					// 프로그래스바 실행
+					if(pb1==null){
+						pb1=(ProgressBar) findViewById(R.id.memberstore_list_ProgressBar01);
+					}
+					pb1.setVisibility(View.VISIBLE);
+				}else if(b.getInt("order")==2){
+					// 프로그래스바  종료
+					if(pb1==null){
+						pb1=(ProgressBar) findViewById(R.id.memberstore_list_ProgressBar01);
+					}
+					pb1.setVisibility(View.INVISIBLE);
+				}
 				if(b.getInt("showErrToast")==1){
 					Toast.makeText(MemberStoreInfoPage.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 				}
@@ -173,6 +191,38 @@ public class MemberStoreInfoPage extends Activity {
 			}
 		}
 	};
+	
+	
+	// 중앙 프로그래스바 보임, 숨김
+	public void showPb(){
+		new Thread( 
+				new Runnable(){
+					public void run(){
+						Message message = handler .obtainMessage();
+						Bundle b = new Bundle();
+						b.putInt( "order" , 1);
+						message.setData(b);
+						handler .sendMessage(message);
+					}
+				}
+		).start();
+	}
+	public void hidePb(){
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Message message = handler .obtainMessage();
+						Bundle b = new Bundle();
+						b.putInt( "order" , 2);
+						message.setData(b);
+						handler .sendMessage(message);
+					}
+				}
+		).start();
+	}
+	
+	
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -190,6 +240,10 @@ public class MemberStoreInfoPage extends Activity {
 		logListBtn.setVisibility(View.INVISIBLE);
 		serviceListBtn.setVisibility(View.INVISIBLE);
 		closeBtn.setVisibility(View.INVISIBLE);
+		
+		// progress bar
+		pb1 = (ProgressBar) findViewById(R.id.memberstore_info_ProgressBar01);		// 로딩(중앙)
+		showPb();
 		
 		// 화면 크기 측정. (가맹점 사진 보여주기 위함)
 		float screenWidth = this.getResources().getDisplayMetrics().widthPixels;
