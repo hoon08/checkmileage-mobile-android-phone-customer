@@ -415,7 +415,6 @@ public class MyMileagePageActivity extends Activity {
 								obj.put("activateYn", "Y");
 								obj.put("checkMileageMembersCheckMileageId", myQRcode);
 								Log.i(TAG, "myQRcode::"+myQRcode);
-								
 							}catch(Exception e){
 								e.printStackTrace();
 							}

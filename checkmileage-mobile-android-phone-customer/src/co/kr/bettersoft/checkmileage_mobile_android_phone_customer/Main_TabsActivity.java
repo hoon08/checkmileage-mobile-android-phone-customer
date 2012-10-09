@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -131,10 +132,6 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu4))
 				.setContent(new Intent(this, com.pref.PrefActivityFromResource.class)));  
 		
-		
-		
-		
-		
 		// Tab에 색 지정
         for(int i = 0; i < tabhost.getTabWidget().getChildCount(); i++) {
          tabhost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#393939"));
@@ -142,16 +139,27 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
         tabhost.getTabWidget().setCurrentTab(0);
         tabhost.getTabWidget().getChildAt(0).setBackgroundColor(Color.parseColor("#595959"));
         
-        
      // 마일리지 통한 실행시에 대한 조치 사항
 		if(RunMode.length()>0){
 			if(RunMode.equals("MILEAGE")){
 				tabhost.setCurrentTab(1);		// 시작 탭 설정을 원할 경우..
 			}
 		}
+		
+		// locale
+		getLocale();
 	}
 
-
+	public void getLocale(){
+		Locale systemLocale = getResources().getConfiguration().locale;
+		String strDisplayCountry = systemLocale.getDisplayCountry();
+		String strCountry = systemLocale.getCountry();
+		String strLanguage = systemLocale.getLanguage();
+		Log.d(TAG,"strDisplayCountry:"+strDisplayCountry+"/strCountry:"+strCountry+"/strLanguage:"+strLanguage);
+	}
+	
+	
+	
 	@Override
 	public void onTabChanged(String tabId) {
 //		Log.d(TAG, "onTabChanged");
@@ -211,7 +219,7 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 				new Runnable(){
 					public void run(){
 						try {
-							Thread.sleep(2000);
+							Thread.sleep(1000);
 						} catch (InterruptedException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -260,7 +268,7 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 				new Runnable(){
 					public void run(){
 						try {
-							Thread.sleep(2000);
+							Thread.sleep(1000);
 						} catch (InterruptedException e1) {
 						}finally{
 							REGISTRATION_ID = GCMRegistrar.getRegistrationId(getThis());	

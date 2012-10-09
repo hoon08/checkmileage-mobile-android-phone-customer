@@ -14,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -79,19 +80,18 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	
 	SharedPreferences sharedPrefCustom;	// 공용 프립스		 잠금 및 QR (잠금은 메인과 공유  위의 것(default,this)은 메인과 공유되지 않아 이 sharedPref 도 사용한다.)		
 //	PreferenceCategory category1;			// 설정의 카테고리째로 비활성 시킬수 있다. 본 프로젝트에서 사용 안함
-	WebView mWeb;							// 도움말, 공지 등 볼때 사용하는 웹뷰
+//	WebView mWeb;							// 도움말, 공지 등 볼때 사용하는 웹뷰		--> 다른 액티비티 통해 호출함.
 	
 	SharedPreferences thePrefs;				// 어플 내 자체 프리퍼런스.  Resume 때 이곳에 연결하여 사용(탈퇴때 초기화 용도)-- 이건 사실 위에거랑 같음.. 삽질했음.
-	
 	SharedPreferences defaultPref;			// default --  이것이 자체 프리퍼런스!!. 
 	
 	Calendar c = Calendar.getInstance();
-	
 	int todayYear = 0;						// 지금 -  년 월 일 시 분
 	int todayMonth = 0;
 	int todayDay = 0;
 	int todayHour = 0;
 	int todayMinute = 0;
+	int todaySecond = 0;
 	
 	int birthYear = 0;						// 생년월일 - 년 월 일
 	int birthMonth= 0;
@@ -104,6 +104,12 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	static int responseCode = 0;			// JSON 서버 통신 결과
 	
 	static int updateLv=0;							// 서버에 업뎃 칠지 여부 검사용도. 0이면 안하고, 1이면 한다, 2면 두번한다(업뎃중 값이 바뀐 경우임)
+	
+	// Locale
+    Locale systemLocale = null ;
+//    String strDisplayCountry = "" ;
+    String strCountry = "" ;
+    String strLanguage = "" ;
 	
 	// GCM 받을지 여부 저장. 메서드용.
 	String strYorN = "";
@@ -126,11 +132,9 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		/*
 		 *  서버로부터 개인 정보를 가져와서 도메인 같은 곳에 담아둔다. 나중에 업데이트 할때 사용해야 하니까. 업데이트하고 나면 그 도메인 그대로 유지해야 한다..
 		 *  없는거는 null pointer 나므로 ""로 바꿔주는 처리가 필요하다.
-		 *  리쥼에 넣지 말고 온크에 넣는게 나을까...어차피 유지될 거라면.. 
 		 */
 		memberInfo = new CheckMileageMembers();
 		getUserInfo();
-		
 		
 		
 		if(!resumeCalled){			// 한번만 하자.. 느리니까
@@ -170,14 +174,26 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		}
 	}
 
-	public void getNow(){
+	public String getNow(){
 		// 일단 오늘.
 		todayYear = c.get(Calendar.YEAR);
 		todayMonth = c.get(Calendar.MONTH)+1;			// 꺼내면 0부터 시작이니까 +1 해준다.
 		todayDay = c.get(Calendar.DATE);
 		todayHour = c.get(Calendar.HOUR_OF_DAY);
 		todayMinute = c.get(Calendar.MINUTE);
-		
+		todaySecond = c.get(Calendar.SECOND);
+		String tempMonth = Integer.toString(todayMonth);
+		String tempDay = Integer.toString(todayDay);
+		String tempHour = Integer.toString(todayHour);
+		String tempMinute = Integer.toString(todayMinute);
+		String tempSecond = Integer.toString(todaySecond);
+		if(tempMonth.length()==1) tempMonth = "0"+tempMonth;
+		if(tempDay.length()==1) tempDay = "0"+tempDay;
+		if(tempHour.length()==1) tempHour = "0"+tempHour;
+		if(tempMinute.length()==1) tempMinute = "0"+tempMinute;
+		if(tempSecond.length()==1) tempSecond = "0"+tempSecond;
+		String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute+":"+tempSecond;
+		return nowTime;
 //		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
 	}
 	
@@ -328,8 +344,12 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		
 		// 이벤트 알림  pref_push_list
 		if(preference.equals(findPreference("pref_push_list"))){
-			Intent PushListIntent = new Intent(PrefActivityFromResource.this, co.kr.bettersoft.checkmileage_mobile_android_phone_customer.PushList.class);
-			startActivity(PushListIntent);
+			AlertShow_Message();				// 준비중입니다.
+			
+			// 이벤트 목록 구현 이후 주석 해제.
+//			Intent PushListIntent = new Intent(PrefActivityFromResource.this, co.kr.bettersoft.checkmileage_mobile_android_phone_customer.PushList.class);
+//			startActivity(PushListIntent);
+			
 		}
 		
 		// 이 앱은 ? pref_app_what
@@ -343,6 +363,29 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		return super.onPreferenceTreeClick(preferenceScreen, preference);
 	}	
 
+	
+	// 준비중입니다.. -> 이벤트 목록 현재 미구현.
+	public void AlertShow_Message(){		//R.string.network_error
+		AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
+		alert_internet_status.setTitle("Carrot");
+		alert_internet_status.setMessage(R.string.not_yet);
+		String tmpstr = getString(R.string.closebtn);
+		alert_internet_status.setPositiveButton(tmpstr, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+//				finish();
+			}
+		});
+		alert_internet_status.show();
+	}
+	
+	
+	
+	
+	
+	
+	
 	/*
 	 *  서버로부터 개인 정보를 받아와서 도메인에 저장해 둔다. 나중에 업데이트 할때 사용해야하니까.
 	 *  checkMileageMemberController 컨/ selectMemberInformation  메/ checkMileageMember 도/ 
@@ -419,18 +462,13 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								obj.put("deviceType", memberInfo.getDeviceType());
 								obj.put("registrationId", memberInfo.getRegistrationId());
 								obj.put("activateYn", memberInfo.getActivateYn());
+								
+								obj.put("countryCode", memberInfo.getCountryCode());
+								obj.put("languageCode", memberInfo.getLanguageCode());
+								
 								obj.put("receiveNotificationYn", memberInfo.getReceiveNotificationYn());
 								Log.i(TAG, "activateYn::"+memberInfo.getActivateYn());
-								getNow();
-								String tempMonth = Integer.toString(todayMonth);
-								String tempDay = Integer.toString(todayDay);
-								String tempHour = Integer.toString(todayHour);
-								String tempMinute = Integer.toString(todayMinute);
-								if(tempMonth.length()==1) tempMonth = "0"+tempMonth;
-								if(tempDay.length()==1) tempDay = "0"+tempDay;
-								if(tempHour.length()==1) tempHour = "0"+tempHour;
-								if(tempMinute.length()==1) tempMinute = "0"+tempMinute;
-								String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute;
+								String nowTime = getNow();
 								Log.i(TAG, "nowTime::"+nowTime);
 								obj.put("modifyDate", nowTime);		// 지금 시간으로.
 							}catch(Exception e){
@@ -507,16 +545,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								obj.put("receiveNotificationYn", strYorN);						// 정해서 넣어.
 								obj.put("activateYn", memberInfo.getActivateYn());
 								
-								getNow();
-								String tempMonth = Integer.toString(todayMonth);
-								String tempDay = Integer.toString(todayDay);
-								String tempHour = Integer.toString(todayHour);
-								String tempMinute = Integer.toString(todayMinute);
-								if(tempMonth.length()==1) tempMonth = "0"+tempMonth;
-								if(tempDay.length()==1) tempDay = "0"+tempDay;
-								if(tempHour.length()==1) tempHour = "0"+tempHour;
-								if(tempMinute.length()==1) tempMinute = "0"+tempMinute;
-								String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute;
+								String nowTime = getNow();
 								obj.put("modifyDate", nowTime);		// 지금 시간으로.
 								
 								Log.i(TAG, "checkMileageId::"+memberInfo.getCheckMileageId());
@@ -587,16 +616,8 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							obj.put("checkMileageId", memberInfo.getCheckMileageId());
 							obj.put("activateYn", memberInfo.getActivateYn());
 							Log.i(TAG, "activateYn::"+memberInfo.getActivateYn());
-							getNow();
-							String tempMonth = Integer.toString(todayMonth);
-							String tempDay = Integer.toString(todayDay);
-							String tempHour = Integer.toString(todayHour);
-							String tempMinute = Integer.toString(todayMinute);
-							if(tempMonth.length()==1) tempMonth = "0"+tempMonth;
-							if(tempDay.length()==1) tempDay = "0"+tempDay;
-							if(tempHour.length()==1) tempHour = "0"+tempHour;
-							if(tempMinute.length()==1) tempMinute = "0"+tempMinute;
-							String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute;
+
+							String nowTime = getNow();
 							Log.i(TAG, "nowTime::"+nowTime);
 							obj.put("modifyDate", nowTime);		// 지금 시간으로.
 						}catch(Exception e){
@@ -640,6 +661,13 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		StringBuilder builder = new StringBuilder();
 		String line =null;
 		JSONObject jsonObject;
+		
+		// Locale
+	      systemLocale = getResources().getConfiguration(). locale;
+//        strDisplayCountry = systemLocale.getDisplayCountry();
+           strCountry = systemLocale .getCountry();
+           strLanguage = systemLocale .getLanguage();
+
 		try {
 			while((line=reader.readLine())!=null){
 				builder.append(line).append("\n");
@@ -706,6 +734,13 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 				try{	// 알림 수신 여부 
 					memberInfo.setReceiveNotificationYn(jsonobj2.getString("receiveNotificationYn"));				
 				}catch(Exception e){ memberInfo.setReceiveNotificationYn(""); }
+				
+				try{	// 국가 코드
+					memberInfo.setCountryCode(jsonobj2.getString("countryCode"));				
+				}catch(Exception e){ memberInfo.setCountryCode(strCountry); }
+				try{	// 언어 코드
+					memberInfo.setLanguageCode(jsonobj2.getString("languageCode"));				
+				}catch(Exception e){ memberInfo.setLanguageCode(strLanguage); }
 				
 				// 그 외 activateYn 는 수동 조작. 이시점에 저장 완료.
 			} catch (JSONException e) {
