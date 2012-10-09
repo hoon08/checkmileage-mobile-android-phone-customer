@@ -437,7 +437,7 @@ public class MyQRPageActivity extends Activity {
 //								System.out.println("postUrl      : " + postUrl2);
 								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 								responseCode = connection2.getResponseCode();
-								InputStream in =  connection2.getInputStream();
+//								InputStream in =  connection2.getInputStream();
 								// 조회한 결과를 처리.
 //								theData1(in);
 								if(responseCode==200 || responseCode==204){

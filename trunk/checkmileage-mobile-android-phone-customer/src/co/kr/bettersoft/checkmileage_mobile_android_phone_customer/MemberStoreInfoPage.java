@@ -102,7 +102,7 @@ public class MemberStoreInfoPage extends Activity {
 					TextView pr = (TextView)findViewById(R.id.pr);
 					TextView companyName = (TextView)findViewById(R.id.merchantName2);	
 					hidePb();
-					mileage.setText("¡Ú"+myMileage);
+					mileage.setText("  "+myMileage+"  ");
 					//					type.setText(text);
 //					BitmapDrawable bmpResize = BitmapResizePrc(merchantData.getMerchantImage(), fImgSize, (float)(fImgSize*1.5));  // height, width
 //					BitmapDrawable bmpResize = BitmapResizePrc(merchantData.getMerchantImage(), 400, 700);  		
