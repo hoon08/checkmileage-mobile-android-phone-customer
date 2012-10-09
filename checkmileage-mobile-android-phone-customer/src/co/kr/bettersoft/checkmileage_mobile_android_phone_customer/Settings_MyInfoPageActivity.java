@@ -116,10 +116,20 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 		pref_user_sex.setPersistent(true);
 		pref_user_sex.setOnPreferenceChangeListener(new OnPreferenceChangeListener()  {
 			@Override
-			public boolean onPreferenceChange(Preference arg0, Object arg1) {		// 성별 성별을 선택합니다 // 남성  여성
+			public boolean onPreferenceChange(Preference arg0, Object arg1) {		// 성별 성별을 선택합니다 // 남성  여성 비공개
+				String tmpStrMale = getString(R.string.sex_male);
+				String tmpStrFemale = getString(R.string.sex_male);
+				String tmpStr = (String) arg1;
+				if(tmpStr.equals(tmpStrMale)){
+					memberInfo.setGender("MALE");
+				}else if(tmpStr.equals(tmpStrFemale)){
+					memberInfo.setGender("FEMALE");
+				}else{
+					memberInfo.setGender("ETC");
+				}
 				// TODO Auto-generated method stub
 //				Log.e(TAG, "arg0::"+arg0+",,arg1::"+arg1);		// 변경된 값을 받아옴.
-				memberInfo.setGender((String) arg1);
+				
 				if(updateLv<2){		// 0또는 1일경우. 1 증가. (최대 2까지)
 					updateLv = updateLv+1;
 					if(updateLv==1){

@@ -140,7 +140,8 @@
                     android:id="@+id/mileage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="#ffff0000"
+                    android:textSize="23sp"
+                    android:background="#ccff0000"
                     android:textColor="#ffffffff" />
 
                 <TextView
