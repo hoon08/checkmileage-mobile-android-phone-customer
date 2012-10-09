@@ -726,8 +726,11 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 					memberInfo.setRegistrationId(jsonobj2.getString("registrationId"));				
 				}catch(Exception e){ memberInfo.setRegistrationId(""); }
 				try{	// 액티베이트
-					memberInfo.setActivateYn(jsonobj2.getString("activateYn"));				
-				}catch(Exception e){ memberInfo.setActivateYn(""); }
+					memberInfo.setActivateYn(jsonobj2.getString("activateYn"));	
+					if((jsonobj2.getString("activateYn")==null)||(jsonobj2.getString("activateYn").length()<1)){
+						memberInfo.setActivateYn("Y");
+					}
+				}catch(Exception e){ memberInfo.setActivateYn("Y"); }
 				try{	// 변경일
 					memberInfo.setModifyDate(jsonobj2.getString("modifyDate"));				
 				}catch(Exception e){ memberInfo.setModifyDate(""); }

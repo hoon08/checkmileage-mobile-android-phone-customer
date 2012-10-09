@@ -118,7 +118,6 @@ public class MyMileagePageActivity extends Activity {
 			try{
 				if(b.getInt("showYN")==1){		// 받아온 마일리지 결과를 화면에 뿌려준다.
 					// 최종 결과 배열은 entriesFn 에 저장되어 있다.. 
-					
 					if(entriesFn.size()>0){
 						setListing();
 					}else{
@@ -506,7 +505,6 @@ public class MyMileagePageActivity extends Activity {
 		if(responseCode==200 || responseCode==204){
 			try {
 				entries = new ArrayList<CheckMileageMileage>(max);
-				
 				String tmp_idCheckMileageMileages = "";
 				String tmp_mileage = "";
 				String tmp_modifyDate = "";
@@ -580,7 +578,6 @@ public class MyMileagePageActivity extends Activity {
 //						}catch(Exception e){
 //							tmp_profileImageUrl = "";
 //						}
-						
 						// tmp_profileThumbnailImageUrl 있을때.
 						if(tmp_profileThumbnailImageUrl!=null && tmp_profileThumbnailImageUrl.length()>0){
 							if(tmp_profileThumbnailImageUrl.contains("http")){		// url 포함한 경우
@@ -607,7 +604,6 @@ public class MyMileagePageActivity extends Activity {
 						// bm 이미지 크기 변환 .
 //						BitmapDrawable bmpResize = BitmapResizePrc(bm, fImgSize/5, fImgSize/5);  
 //						bm2 = (bmpResize.getBitmap());
-						
 						entries.add(new CheckMileageMileage(tmp_idCheckMileageMileages,
 								tmp_mileage,
 								tmp_modifyDate,
@@ -626,18 +622,12 @@ public class MyMileagePageActivity extends Activity {
 					//    			 2차 작업. 가맹점 이름, 이미지 가져와서 추가로 넣음.
 					//    			 array 채로 넘기고 돌려받을수 있도록 한다..
 				}
-			} catch (JSONException e) {
+			}catch (JSONException e) {
 				doneCnt--;
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}finally{
-//				Log.e(TAG, ""+doneCnt);		// 데이터 개수 같음.
-				if(doneCnt>0){
-//					getMerchantInfo(entries,max);   sdfsdf
-					entriesFn = entries;
-				}else{		// 데이터 없어도 로딩은 끝내쟈
-					entriesFn = entries;
-				}
+				entriesFn = entries;
 				reTry = 5;				// 재시도 횟수 복구
 				searched = true;
 				showInfo();

@@ -141,20 +141,20 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 //							Log.e(TAG,"notifyDataSetChanged");
 							imgAdapter.notifyDataSetChanged();		// 알림 -> 변경사항이 화면상에 업데이트 되도록함.
 						}
-						adding = false;		// 조회 및 추가 끝났음. 다른거 조회시 또 추가 가능.. (스크롤 리스너를 다룰때 사용)
-						
 						gridView.setEnabled(true);			// 그리드 뷰 허용함.
 						
-						// 하단 로딩바를 숨긴다.
-						hidePb2();
 					}else{
 						Log.d(TAG,"no data");
 						emptyView = findViewById(R.id.empty1);		// 데이터 없으면 '빈 페이지'(데이터 없음 메시지)표시
 						gridView.setEmptyView(emptyView);
 						gridView.setVisibility(8);			//   0 visible   4 invisible   8 gone
 						emptyView.setVisibility(0);
-						hidePb2();
 					}
+					
+					adding = false;		// 조회 및 추가 끝났음. 다른거 조회시 또 추가 가능.. (스크롤 리스너를 다룰때 사용)
+					// 하단 로딩바를 숨긴다.
+					hidePb2();
+					
 					isRunning = 0;		// 진행중이지 않음. - 이후 추가 조작으로 새 조회 가능.
 //					searchSpinnerArea.setEnabled(true);
 					searchSpinnerType.setEnabled(true);
@@ -541,8 +541,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		indexDataTotal = max;
 		Log.w(TAG,"indexDataTotal=max::"+max);
 		try {
-			entries1 = new ArrayList<CheckMileageMerchants>(max);
 			if(max>0){
+				entries1 = new ArrayList<CheckMileageMerchants>(max);
 				for ( int i = 0; i < max; i++ ){
 					JSONObject jsonObj = jsonArray2.getJSONObject(i).getJSONObject("checkMileageMerchant");		// 대소문자 주의
 					/*
@@ -858,20 +858,25 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		@Override protected Void doInBackground(Void... params) {  
 			// TODO Auto-generated method stub  
 //			preLoadSrcBitmap();  
-			
+			Log.d(TAG,"backgroundGetMerchantInfo");
 //			for(int i=0; i<entries1.size(); i++){
 //				Log.e(TAG,"entries1.get("+i+").getProfileImageURL()"+entries1.get(i).getProfileImageURL());
 //			}
-			
-			if(!((indexDataTotal<indexDataFirst)||(indexDataTotal<indexDataLast))){		// 하극상 아닌 경우
-				if(!adding){
-					adding = true;
-					getMerchantInfo();
-				}
+			Log.w(TAG, "indexDataTotal::"+indexDataTotal+"//indexDataFirst::"+indexDataFirst+"//indexDataLast::"+indexDataLast+"/adding:"+adding);
+			if(indexDataTotal==0){
+				showInfo();
 			}else{
-				indexDataLast = indexDataTotal;
-				Log.w(TAG, "indexDataTotal::"+indexDataTotal+"//indexDataFirst::"+indexDataFirst+"//indexDataLast::"+indexDataLast);
+				if(!((indexDataTotal<indexDataFirst)||(indexDataTotal<indexDataLast))){		// 하극상 아닌 경우
+					if(!adding){
+						adding = true;
+						getMerchantInfo();
+					}
+				}else{
+					indexDataLast = indexDataTotal;
+					Log.w(TAG, "indexDataTotal::"+indexDataTotal+"//indexDataFirst::"+indexDataFirst+"//indexDataLast::"+indexDataLast);
+				}
 			}
+			
 			return null; 
 		}
 	}

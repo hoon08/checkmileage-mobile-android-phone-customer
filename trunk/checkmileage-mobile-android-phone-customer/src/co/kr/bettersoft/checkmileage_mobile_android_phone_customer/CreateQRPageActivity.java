@@ -56,7 +56,7 @@ public class CreateQRPageActivity extends Activity {
 	String qrcode = "test1234";
 //	String qrcode = "createdNewQRCodeOne";
 	String phoneNumber = "";
-	
+	String tmpStr = "";
 	// 시간 관련
 	Calendar c = Calendar.getInstance();
 	
@@ -85,12 +85,13 @@ public class CreateQRPageActivity extends Activity {
 	    Log.e(TAG, "Now to millis : "+ timeID);
 	    
 	    Intent rIntent = getIntent();
-        phoneNumber = rIntent.getStringExtra("phoneNumber");
-
-        
-        
-        
-//	    qrcode = timeID;			// 이 줄을  주석 처리하면 기본 값 test1234 사용 - test용도. , 주석 풀면 새로 만든 시간 아이디 사용- 실제 사용 용도.. *** 
+       
+	    tmpStr = rIntent.getStringExtra("phoneNumber");
+	    if(tmpStr!=null && tmpStr.length()>0){
+	    	phoneNumber = rIntent.getStringExtra("phoneNumber");
+	    }
+	    
+	    qrcode = timeID;			// 이 줄을  주석 처리하면 기본 값 test1234 사용 - test용도. , 주석 풀면 새로 만든 시간 아이디 사용- 실제 사용 용도.. *** 
 	    
         
         
@@ -235,7 +236,7 @@ public class CreateQRPageActivity extends Activity {
 							}
 						}catch(Exception e){ 
 							 e.printStackTrace();			// 오류 발생시 에러 창 띄우고 돌아간다.. 통신에러 발생할수 있다.
-							 Toast.makeText(CreateQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+//							 Toast.makeText(CreateQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 							 Intent backToNoQRIntent = new Intent(CreateQRPageActivity.this, No_QR_PageActivity.class);
 							 startActivity(backToNoQRIntent);
 							 finish();
