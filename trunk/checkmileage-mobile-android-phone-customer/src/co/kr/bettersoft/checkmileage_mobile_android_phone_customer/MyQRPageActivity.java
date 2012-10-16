@@ -161,13 +161,12 @@ public class MyQRPageActivity extends Activity {
         					
 //        					BitmapDrawable bmpResize = BitmapResizePrc(bmp, deviceSize, deviceSize);  // height, width
 //        					bmp = bmpResize.getBitmap();
-        					
         					if(bmp==null){
         						Log.d(TAG,"bmp==null");
         					}else{
         						saveBMPtoDB(bmp);
+        						getUserSettingsFromServer();
         					}
-        					
         				}else{
         					bmp = savedBMP;
         				}
@@ -183,8 +182,6 @@ public class MyQRPageActivity extends Activity {
         			}
         		}
         ).start();
-	    
-	    getUserSettingsFromServer();
 	}
 	
 	// 생성한 QR코드 이미지를 DB에 저장한다.
@@ -637,20 +634,16 @@ public class MyQRPageActivity extends Activity {
 		
 //		saveUpdateYn.putString("updateYN", "y");
 		
-//		saveUpdateYn.putString("server_birthday", settings.getBirthday());
-//		saveUpdateYn.putString("server_email", settings.getEmail());
-//		saveUpdateYn.putString("server_gender", settings.getGender());
+		saveUpdateYn.putString("server_birthday", settings.getBirthday());
+		saveUpdateYn.putString("server_email", settings.getEmail());
+		saveUpdateYn.putString("server_gender", settings.getGender());
 //		saveUpdateYn.putString("server_receive_notification_yn", settings.getReceive_notification_yn());
 
 //		saveUpdateYn.putString("server_birthday", "1999-02-12");
 //		saveUpdateYn.putString("server_email", "a1@b.c");
 //		saveUpdateYn.putString("server_gender", "여성");
 //		saveUpdateYn.putBoolean("server_receive_notification_yn", false);
-		
-//		saveUpdateYn.commit();
-		
-		
-		
+		saveUpdateYn.commit();
 //		PrefActivityFromResource.mySettings = settings;
 //		PrefActivityFromResource.saveServerSettingsToPrefs(); // db에 저장해야 하나? 설정탭으로 갈때? 업뎃 필요 여부 체크? 
 		// 공용 셰어드에 저장을 해두고, 공용 셰여드에 여부 저장도 해두고, 해당 설정 들어갔을때 여부 저장 값을 읽어서 y이면 나머지 값 4개를 읽어서 자체에 저장하고, 아님말고.

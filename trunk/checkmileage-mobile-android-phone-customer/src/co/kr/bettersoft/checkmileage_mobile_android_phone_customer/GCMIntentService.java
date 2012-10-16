@@ -48,6 +48,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 	String methodName="";
 	String regIdGCM = "";
 	Boolean dontTwice = true;
+	
     @SuppressWarnings("hiding")
     private static final String TAG = "GCMIntentService";
 
@@ -209,14 +210,14 @@ public class GCMIntentService extends GCMBaseIntentService {
     /**
      * Issues a notification to inform the user that server has sent a message.
      */
-    private static void generateNotification(Context context, String message) {
+    private  void generateNotification(Context context, String message) {
         int icon = R.drawable.ic_stat_gcm;
         long when = System.currentTimeMillis();
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = new Notification(icon, message, when);
         String title = context.getString(R.string.app_name);
-        
+        String mileageUpdateStr = context.getString(R.string.mileage_noti);
         Intent notificationIntent;
         /*
          * MILEAGE : 새로운 마일리지가 등록되거나 기존 마일리지가 업데이트되었다.
@@ -226,7 +227,8 @@ public class GCMIntentService extends GCMBaseIntentService {
          * <string name="gcm_new_msgkkk">새로운 메시지</string>
          */
         String new_msg = "새로운 메시지";
-        if(message.contains(new_msg)){
+        
+        if(message.equals(new_msg)){
         	Log.d(TAG,"new msg - test");
 //        	notificationIntent = new Intent(context, MainActivity.class);		// 이걸 띄워서 문제가 된다면..
 //            notificationIntent = new Intent(context, PushDetail.class);	// 데이터 전달이 가능하므로 직접 부르지 않아도 되려나..
@@ -245,7 +247,10 @@ public class GCMIntentService extends GCMBaseIntentService {
             notification.setLatestEventInfo(context, title, message, intent);
             notification.flags |= Notification.FLAG_AUTO_CANCEL;
             notificationManager.notify(0, notification);
-        }else if(message.contains("MILEAGE")){
+            
+//        }else if(message.contains("MILEAGE")){
+//        }else if(message.contains(mileageUpdateStr)){			// 캐럿이 변경되었습니다. (다국어)
+        }else if(message.equals(mileageUpdateStr)){			// 캐럿이 변경되었습니다. (다국어).
         	Log.d(TAG,"update mileage");
         	MyMileagePageActivity.searched = false;
 //        	notificationIntent = new Intent(context, MainActivity.class);		// 이걸 띄워서 문제가 된다면..
@@ -258,13 +263,12 @@ public class GCMIntentService extends GCMBaseIntentService {
 //            notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK 
 //                    | Intent.FLAG_ACTIVITY_CLEAR_TOP 
 //                    | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            tmpStr = context.getString(R.string.mileage_noti);
             PendingIntent intent =
                     PendingIntent.getActivity(context, 0, notificationIntent, 0);
-            notification.setLatestEventInfo(context, title, tmpStr, intent);					
+            notification.setLatestEventInfo(context, title, message, intent);					
             notification.flags |= Notification.FLAG_AUTO_CANCEL;
             notificationManager.notify(0, notification);
-        }else if(message.contains("MARKETING")){
+        }else if(message.equals("MARKETING")){
         	Log.d(TAG,"noti event push");
 //        	notificationIntent = new Intent(context, MainActivity.class);		// 이걸 띄워서 문제가 된다면..
             notificationIntent = new Intent(context, DummyActivity.class);	
