@@ -657,7 +657,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	 */
 	public void theData1(InputStream in){
 		Log.d(TAG,"theData1");
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);
 		StringBuilder builder = new StringBuilder();
 		String line =null;
 		JSONObject jsonObject;

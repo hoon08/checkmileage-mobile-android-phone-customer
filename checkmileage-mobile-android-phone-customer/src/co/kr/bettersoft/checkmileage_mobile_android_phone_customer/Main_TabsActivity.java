@@ -1,7 +1,6 @@
 package co.kr.bettersoft.checkmileage_mobile_android_phone_customer;
 // 메인 메뉴들. 탭1:내QR보기 , 탭2:내마일리지, 탭3:가맹점목록, 탭4:설정
 import static co.kr.bettersoft.checkmileage_mobile_android_phone_customer.CommonUtilities.DISPLAY_MESSAGE_ACTION;
-import static co.kr.bettersoft.checkmileage_mobile_android_phone_customer.CommonUtilities.EXTRA_MESSAGE;
 import static co.kr.bettersoft.checkmileage_mobile_android_phone_customer.CommonUtilities.SENDER_ID;
 
 import java.io.IOException;
@@ -18,11 +17,9 @@ import org.json.JSONObject;
 import com.google.android.gcm.GCMRegistrar;
 import com.pref.DummyActivity;
 
-import android.R.drawable;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.TabActivity;
-import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -30,25 +27,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.view.Window;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
-import android.widget.TabHost.TabSpec;
-import android.widget.Button;
-import android.widget.TabWidget;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class Main_TabsActivity extends TabActivity implements OnTabChangeListener {
 	String TAG ="Main_TabsActivity";
@@ -106,9 +90,6 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 		
 		tabhost.setOnTabChangedListener(this);		// 이걸 해줘야 체인지 효과가..
 		
-
-		
-		
 		// 설정
 		tabhost.addTab(
 				tabhost.newTabSpec("tab_1")
@@ -163,7 +144,6 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 	@Override
 	public void onTabChanged(String tabId) {
 //		Log.d(TAG, "onTabChanged");
-		// TODO Auto-generated method stub
 //		String strMsg;
 //        strMsg = "onTabChanged : " + tabId;
 //        Toast.makeText( this, strMsg, Toast.LENGTH_SHORT ).show();
@@ -183,7 +163,7 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 		GCMRegistrar.checkManifest(this);				
 		Log.i(TAG, "registerReceiver1 ");
 		final String regId = GCMRegistrar.getRegistrationId(this);
-		final Context context = this;
+//		final Context context = this;
 		mRegisterTask = new AsyncTask<Void, Void, Void>() {
 			@Override
 			protected Void doInBackground(Void... params) {
@@ -191,15 +171,15 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 					reg();
 				}else{
 					Log.d(TAG,"already have a reg ID::"+regId);					// 나중에 달아..
-//					try {
-//						REGISTRATION_ID = regId;
-//						updateMyGCMtoServer();
+					try {
+						REGISTRATION_ID = regId;			// 안해도 되지만 서버에 값이 잘못 들어 있을 경우 문제가 될수 있기 때문에 값이 있다면 한번더 업뎃을 해준다. 
+						updateMyGCMtoServer();
 //						testGCM(REGISTRATION_ID);				
 //					} catch (JSONException e) {
 //						e.printStackTrace();
-//					} catch (IOException e) {
-//						e.printStackTrace();
-//					}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 				return null;
 			}
@@ -219,9 +199,8 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 				new Runnable(){
 					public void run(){
 						try {
-							Thread.sleep(1000);
+							Thread.sleep(500);
 						} catch (InterruptedException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}finally{
 							checkDoneAndDoGCM();
@@ -268,7 +247,7 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 				new Runnable(){
 					public void run(){
 						try {
-							Thread.sleep(1000);
+							Thread.sleep(500);
 						} catch (InterruptedException e1) {
 						}finally{
 							REGISTRATION_ID = GCMRegistrar.getRegistrationId(getThis());	
@@ -286,10 +265,8 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 //									updateMyGCMtoServer();
 									testGCM(REGISTRATION_ID);
 								} catch (JSONException e) {
-									// TODO Auto-generated catch block
 									e.printStackTrace();
 								} catch (IOException e) {
-									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
 							}

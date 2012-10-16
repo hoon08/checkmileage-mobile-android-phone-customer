@@ -16,6 +16,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,6 +81,12 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
 	MainActivity mainActivity = (MainActivity)MainActivity.mainActivity;
 	
+	// Locale
+    Locale systemLocale = null ;
+//    String strDisplayCountry = "" ;
+    String strCountry = "" ;
+    String strLanguage = "" ;
+    
 //	int dontTwice = 1;				// 스피너 리스너로 인한 초기 2회 조회 방지. 
 	public boolean connected = false;  // 인터넷 연결상태
 	String myQRcode = "";			// 내 아이디
@@ -105,6 +112,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	Boolean mIsLast = false;			// 끝까지 갔음. true 라면 더이상의 추가 없음. 새 조회시 false 로 초기화
 	Boolean adding = false;			// 데이터 더하기 진행 중임.
 	Boolean newSearch = false; 		// 새로운 조회인지 여부. 새로운 조회라면 기존 데이터는 지우고 새로 검색한 데이터만 사용. 새로운 조회가 아니라면 기존 데이터에 추가 데이터를 추가.
+	Boolean jobKindSearched = false;
 	Bitmap bm = null;
 	int reTry = 5;
 	
@@ -122,6 +130,12 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	// 진행바
 	ProgressBar pb1;		// 중단 로딩 진행바
 	ProgressBar pb2;		// 하단 추가 진행바
+	
+	// ListView에 뿌릴 Data 를 위한 스피너 데이터들. --> 나중에 서버 통신하여 처음에 가져와서 만들어 지도록 한다.
+	String[] areas = {"전지역", "홍대", "신촌", "영등포", "신림", "강남", "종로", "건대", "노원", "대학로", "여의도"};			// 나중에 조회 해 올 것..
+	String[] jobs = {"", ""};
+	String[] tmpJobs = null;
+	GridView gridView;
 	
 	// 핸들러
 	Handler handler = new Handler(){
@@ -191,19 +205,23 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 				if(b.getInt("showErrToast")==1){
 					Toast.makeText(MemberStoreListPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 				}
+				if(b.getInt("setJobsList")==1){
+					jobs = tmpJobs;
+					// 스피너 데이터 세팅. 
+					 ArrayAdapter<String> aa2 =  new ArrayAdapter<String>(getThis(), android.R.layout.simple_spinner_item, jobs);
+					 aa2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+					 searchSpinnerType.setAdapter(aa2);
+					 jobKindSearched = true;			// 업종 검색 끝.
+				}
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 		}
 	};
 	
-
-	
-	// ListView에 뿌릴 Data 를 위한 스피너 데이터들. --> 나중에 서버 통신하여 처음에 가져와서 만들어 지도록 한다.
-	String[] areas = {"전지역", "홍대", "신촌", "영등포", "신림", "강남", "종로", "건대", "노원", "대학로", "여의도"};			// 나중에 조회 해 올 것..
-	String[] jobs = {"모든 업종", "PX", "매점" , "식당"};
-	
-	GridView gridView;
+	public Context getThis(){
+		return this;
+	}
 	
 	@Override
 	protected void onCreate(Bundle icicle) {
@@ -212,9 +230,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		
 		// 내 QR 코드. 
 		myQRcode = MyQRPageActivity.qrCode;		
-		
 		entriesFn = new ArrayList<CheckMileageMerchants>();
-		
 		imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE); 	// 가상키보드 닫기위함
 		
 		// 크기 측정
@@ -224,10 +240,6 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		Log.i("screenHeight : ", "" + screenHeight);
 		if(screenWidth < screenHeight ){fImgSize = screenWidth;
 	    }else{fImgSize = screenHeight;}
-		
-		URL imageURL = null;							
-		URLConnection conn = null;
-		InputStream is= null;
 		
 		// progress bar
 		pb1 = (ProgressBar) findViewById(R.id.memberstore_list_ProgressBar01);		// 로딩(중앙)
@@ -242,24 +254,16 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 //		searchBtn.isFocused()
 		searchBtn.setOnClickListener(new Button.OnClickListener()  {
 			public void onClick(View v)  {
-				goSearch();		 // 검색 ㄱㄱ 
+				goSearch();		 // 단어로 검색 ㄱㄱ 
 			}
 		});
-		
 
 		// spinner
-//		searchSpinnerArea = (Spinner)findViewById(R.id.searchSpinnerArea);
 		searchSpinnerType = (Spinner)findViewById(R.id.searchSpinnerType);
 		// spinner listener
-//		searchSpinnerArea.setOnItemSelectedListener(this);
 		searchSpinnerType.setOnItemSelectedListener(this);
-		// 스피너 데이터 세팅. 
-//		ArrayAdapter<String> aa1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areas);
-//		aa1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//		searchSpinnerArea.setAdapter(aa1);
-		 ArrayAdapter<String> aa2 =  new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, jobs);
-		 aa2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		 searchSpinnerType.setAdapter(aa2);
+		
+		
 	}
     
 	
@@ -375,6 +379,161 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 				}
 		).start();
 	} 
+	
+	
+	
+	
+	/*
+	 * 검색을 위한 가맹점 업종리스트를 가져온다.
+	 *   도메인 이름 : checkMileageBusinessKind
+	 *   컨트롤러 : checkMileageBusinessKindController
+	 *   메소드 : selectBusinessKindList
+	 *   필요 파라미터 : countryCode / languageCode / activateYn
+	 *   앞의 두개는 모바일에서 값을 꺼내서 사용한다. 액티브는 Y 값을 사용.
+	 *   결과 값 : List<checkMileageBusinessKind>  의 content 를 사용한다.
+	 */
+	public void getBusinessKindList(){
+		if(CheckNetwork()){
+			Log.i(TAG, "getBusinessKindList");
+			
+			// 로딩중입니다..  
+			new Thread(	
+					new Runnable(){
+						public void run(){
+							Message message = handler.obtainMessage();
+							Bundle b = new Bundle();
+							b.putInt("order", 1);
+							message.setData(b);
+							handler.sendMessage(message);
+						}
+					}
+			).start();
+			searchSpinnerType.setEnabled(false);
+			searchText.setEnabled(false); 
+			searchBtn.setEnabled(false);
+			
+			controllerName = "checkMileageBusinessKindController";
+			methodName = "selectBusinessKindList";
+			
+			// locale get
+			systemLocale = getResources().getConfiguration(). locale;
+			//      strDisplayCountry = systemLocale.getDisplayCountry();
+			strCountry = systemLocale .getCountry();
+			strLanguage = systemLocale .getLanguage();
+			
+			// 서버 통신부
+			new Thread(
+					new Runnable(){
+						public void run(){
+							JSONObject obj = new JSONObject();
+							try{
+								obj.put("countryCode", strCountry);		// 국가 코드
+								obj.put("languageCode", strLanguage);			// 언어코드
+								obj.put("activateYn", "Y");
+								Log.w(TAG,"countryCode::"+strCountry+",languageCode:"+strLanguage);
+							}catch(Exception e){
+								e.printStackTrace();
+							}
+							String jsonString = "{\"checkMileageBusinessKind\":" + obj.toString() + "}";
+							try{
+								URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+								HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+								connection2.setDoOutput(true);
+								connection2.setInstanceFollowRedirects(false);
+								connection2.setRequestMethod("POST");
+								connection2.setRequestProperty("Content-Type", "application/json");
+								OutputStream os2 = connection2.getOutputStream();
+								os2.write(jsonString.getBytes());
+								os2.flush();
+								Thread.sleep(500);
+								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+								responseCode = connection2.getResponseCode();
+								if(responseCode==200||responseCode==204){
+									InputStream in =  connection2.getInputStream();
+									// 조회한 결과를 처리.
+									setBusinessKindList(in);
+								}
+							}catch(Exception e){ 
+								e.printStackTrace();
+								if(reTry>0){
+									reTry = reTry-1;
+									try {
+										Thread.sleep(500);
+									} catch (InterruptedException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
+									getBusinessKindList();
+								}else{
+									Log.w(TAG,"reTry failed. -- init reTry");
+									reTry = 5;			
+									searchSpinnerType.setEnabled(true);
+									searchText.setEnabled(true); 
+									searchBtn.setEnabled(true);
+									showMSG();
+								}
+							}
+						}
+					}
+			).start();
+		}
+	}
+	
+	/*
+	 * 가맹점 정보 1차 데이터 받음. entries 도메인에 저장. 이후 url 정보를 꺼내 이미지를 받아오는 함수를 호출한다.
+	 */
+	public void setBusinessKindList(InputStream in){		
+		Log.d(TAG,"setBusinessKindList");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);
+		StringBuilder builder = new StringBuilder();
+		String line =null;
+		try {
+			while((line=reader.readLine())!=null){
+				builder.append(line).append("\n");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+//		Log.d(TAG,"수신::"+builder.toString());
+		String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다
+		JSONArray jsonArray2 = null;
+		try {
+			jsonArray2 = new JSONArray(tempstr);
+		} catch (JSONException e1) {
+			e1.printStackTrace();
+		}
+		int max = jsonArray2.length();
+		Log.d(TAG,"max:"+max);				// 0 번째 모든 업종 제거.
+		try {
+			tmpJobs = new String[max];		// 0번째 제거로 max+1 --> max
+//			tmpJobs[0] = "모든 업종";			// 나중에 바꿔야 하는데.. 다국어로. *** 		--> 0번째 모든 업종 항목 제거
+			if(max>0){
+				for ( int i = 0; i < max; i++ ){
+					JSONObject jsonObj = jsonArray2.getJSONObject(i).getJSONObject("checkMileageBusinessKind");		// 대소문자 주의
+					tmpJobs[i] = jsonObj.getString("content");		// 0 번째 모든 업종  제거 --> i+1 --> i
+				}
+			}
+			
+			isRunning = 0;			// 다른 검색 가능.
+			new Thread(
+					new Runnable(){
+						public void run(){
+							Message message = handler.obtainMessage();				
+							Bundle b = new Bundle();
+							b.putInt("setJobsList", 1);
+							message.setData(b);
+							handler.sendMessage(message);
+						}
+					}
+			).start();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	
 	/*
 	 * 서버와 통신하여   가맹점 목록을 가져온다. 새로 조회.			 조회 1.
 	 * 그 결과를 List<CheckMileageMerchant> Object 로 반환 한다.  
@@ -771,6 +930,12 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	public void onResume(){
 		super.onResume();
 		app_end = 0;
+		
+		// 가맹점 업종 목록 가져오기.
+		if((!jobKindSearched) && (isRunning==0)){				// 업종 검색이 완료되지 않았고, 실행중인 작업이 없을 경우.
+			isRunning = 1;		// 연속 실행 방지 (다른 실행 거부)
+			getBusinessKindList();
+		}
 	}
 	
 	/*
@@ -810,12 +975,15 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			gridView  = (GridView)findViewById(R.id.gridview);
 			gridView.setEnabled(false);					// 그리드 뷰 허용 안함. 검색 도중 이전 검색 리스트를 스크롤하면 어플 강제 종료됨. -- 인덱스 문제 때문.
 			Log.i(TAG,"searchSpinnerJobs//"+jobs[arg2]);
-			if(arg2==0){
-				searchWordType = "";
-			}else{
-				searchWordType = jobs[arg2];
-			}
-			// TODO Auto-generated method stub
+			
+			// 0번째 모든 업종 --> 제거.
+//			if(arg2==0){
+//				searchWordType = "";
+//			}else{
+//				searchWordType = jobs[arg2];
+//			}
+			
+			searchWordType = jobs[arg2];
 //			Log.e(TAG,arg0+"//"+arg1+"//"+arg2+"//"+arg3);	
 			// areas jobs
 //			if(searchSpinnerArea==arg0){		// 지역 변경한 경우 .	// 정상 동작. arg2 는 몇번째 거인지.. areas[arg2]

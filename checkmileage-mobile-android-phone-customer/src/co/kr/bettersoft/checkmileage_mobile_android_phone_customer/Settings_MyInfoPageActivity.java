@@ -438,7 +438,7 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 	 */
 	public void theData1(InputStream in){
 		Log.d(TAG,"theData1");
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);
 		StringBuilder builder = new StringBuilder();
 		String line =null;
 		JSONObject jsonObject;
@@ -525,8 +525,9 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 			} catch (JSONException e) {
 				e.printStackTrace();
 			} 
-		}else{			// 요청 실패시	 토스트 띄우고 화면 유지.
-			Toast.makeText(Settings_MyInfoPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+		}else{			// 요청 실패시	 토스트 띄우고 화면 유지. -- toast 는 에러 발생.
+			Log.d(TAG, this.getString(R.string.error_message));
+//			Toast.makeText(Settings_MyInfoPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 		}
 	}
 	// ...
