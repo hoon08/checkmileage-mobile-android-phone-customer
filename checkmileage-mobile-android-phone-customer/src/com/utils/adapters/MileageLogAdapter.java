@@ -64,7 +64,7 @@ public class MileageLogAdapter extends BaseAdapter {
 
 		TextView textView3 = (TextView) listView
 		.findViewById(R.id.merchant_log_mileage);
-		textView3.setText("(¡Ú"+((CheckMileageMemberMileageLogs)entries.get(position)).getMileage()+")");
+		textView3.setText("("+((CheckMileageMemberMileageLogs)entries.get(position)).getMileage()+")");
 
 		TextView textView4 = (TextView) listView
 		.findViewById(R.id.merchant_log_time2);

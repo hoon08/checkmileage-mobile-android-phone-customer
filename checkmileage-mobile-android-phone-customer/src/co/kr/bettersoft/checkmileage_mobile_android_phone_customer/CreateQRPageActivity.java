@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -26,6 +28,7 @@ public class CreateQRPageActivity extends Activity {
 	
 	String controllerName = "";
 	String methodName = "";
+	String serverName = CommonUtils.serverNames;
 	
 	static int qrResult = 0;
 	String qrcode = "test1234";
@@ -48,6 +51,36 @@ public class CreateQRPageActivity extends Activity {
     String strCountry = "" ;
     String strLanguage = "" ;
 
+    
+ // 핸들러
+	Handler handler = new Handler(){
+		@Override
+		public void handleMessage(Message msg){
+			Bundle b = msg.getData();
+			try{
+				if(b.getInt("showErrToast")==1){
+					Toast.makeText(CreateQRPageActivity.this,b.getString("msg"), Toast.LENGTH_SHORT).show();
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+	};
+	public void alertMsg(final String alrtmsg){
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Message message = handler.obtainMessage();
+						Bundle b = new Bundle();
+//						String alrtMsg = getString(R.string.certi_fail_msg);
+						b.putInt("showErrToast", 1);
+						b.putString("msg", alrtmsg);			
+						message.setData(b);
+						handler.sendMessage(message);
+					}
+				}
+		).start();
+	}
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -185,7 +218,7 @@ public class CreateQRPageActivity extends Activity {
 						}
 						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 						try{
-							URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+							URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
@@ -204,13 +237,17 @@ public class CreateQRPageActivity extends Activity {
 								Log.e(TAG, "register user S");
 							}else{
 								Log.e(TAG, "register user F");		// 오류 발생시 에러 창 띄우고 돌아간다.. 통신에러 발생할수 있다.
-								Toast.makeText(CreateQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
-								 Intent backToNoQRIntent = new Intent(CreateQRPageActivity.this, No_QR_PageActivity.class);
+								String alrtMsg = getString(R.string.error_message);
+								alertMsg(alrtMsg);
+//								Toast.makeText(CreateQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();			
+								Intent backToNoQRIntent = new Intent(CreateQRPageActivity.this, No_QR_PageActivity.class);
 								 startActivity(backToNoQRIntent);
 								 finish();
 							}
 						}catch(Exception e){ 
 							 e.printStackTrace();			// 오류 발생시 에러 창 띄우고 돌아간다.. 통신에러 발생할수 있다.
+							 String alrtMsg = getString(R.string.error_message);
+							 alertMsg(alrtMsg);
 //							 Toast.makeText(CreateQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 							 Intent backToNoQRIntent = new Intent(CreateQRPageActivity.this, No_QR_PageActivity.class);
 							 startActivity(backToNoQRIntent);

@@ -15,30 +15,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.kr.bettersoft.domain.CheckMileageMemberMileageLogs;
-import com.kr.bettersoft.domain.CheckMileageMileage;
-import com.utils.adapters.ImageAdapter;
 import com.utils.adapters.MileageLogAdapter;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class MemberStoreLogPageActivity extends Activity {
 	String idCheckMileageMileages ="";
@@ -49,6 +37,7 @@ public class MemberStoreLogPageActivity extends Activity {
 	
 	String controllerName = "";
 	String methodName = "";
+	String serverName = CommonUtils.serverNames;
 	
 	public List<CheckMileageMemberMileageLogs> entries;	// 1차적으로 조회한 결과.(리스트)
 	
@@ -74,9 +63,12 @@ public class MemberStoreLogPageActivity extends Activity {
 						emptyText.setText(R.string.no_used_logs);
 					}
 				}
+				if(b.getInt("showErrToast")==1){
+					Toast.makeText(MemberStoreLogPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+				}
 			}catch(Exception e){
 				String tmpstr = getString(R.string.error_occured);
-				Toast.makeText(MemberStoreLogPageActivity.this, tmpstr+entriesFn.size(), Toast.LENGTH_SHORT).show();
+				Toast.makeText(MemberStoreLogPageActivity.this, tmpstr, Toast.LENGTH_SHORT).show();
 				e.printStackTrace();
 			}
 			
@@ -145,7 +137,7 @@ public class MemberStoreLogPageActivity extends Activity {
 						}
 						String jsonString = "{\"checkMileageMemberMileageLog\":" + obj.toString() + "}";
 						try{
-							URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+							URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
@@ -240,7 +232,8 @@ public class MemberStoreLogPageActivity extends Activity {
 				showInfo();					// 밖으로 뺀 결과를 가지고 화면에 뿌려주는 작업을 한다.
 			}
 		}else{			// 요청 실패시	 토스트 띄우고 화면 유지.
-			Toast.makeText(MemberStoreLogPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+			showMSG();
+//			Toast.makeText(MemberStoreLogPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 		}
 	}
 	
@@ -259,4 +252,17 @@ public class MemberStoreLogPageActivity extends Activity {
 		).start();
 	}
 	
+	public void showMSG(){			// 화면에 error 토스트 띄움..
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Message message = handler.obtainMessage();				
+						Bundle b = new Bundle();
+						b.putInt("showErrToast", 1);
+						message.setData(b);
+						handler.sendMessage(message);
+					}
+				}
+		).start();
+	} 
 }

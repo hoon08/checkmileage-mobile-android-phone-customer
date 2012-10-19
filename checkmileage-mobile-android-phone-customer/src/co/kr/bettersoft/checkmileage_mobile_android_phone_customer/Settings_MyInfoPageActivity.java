@@ -58,7 +58,7 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 	Calendar c = Calendar.getInstance();
 	
 	int todayYear = 0;						// 지금 -  년 월 일 시 분
-	int todayMonth = 0;
+	int todayMonth = 1;
 	int todayDay = 0;
 	int todayHour = 0;
 	int todayMinute = 0;
@@ -257,10 +257,11 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 		// 개인정보 변경 - 생년월일 pref_user_birth
 		if(preference.equals(findPreference("pref_user_birth"))){
 			// 꺼내서 없으면 오늘.
+			getNow();
 			birthYear = sharedPrefCustom.getInt("birthYear", todayYear);		
 			birthMonth = sharedPrefCustom.getInt("birthMonth", todayMonth)-1;		// 저장할때 1 더해서 넣었으니 꺼낼때는 1 빼서..	
 			birthDay = sharedPrefCustom.getInt("birthDay", todayDay);
-//			Log.e(TAG, "preference .. birthYear::"+birthYear+"//birthMonth::"+birthMonth+"//birthDay::"+birthDay);
+			Log.e(TAG, "preference .. birthYear::"+birthYear+"//birthMonth::"+birthMonth+"//birthDay::"+birthDay);
 			DatePickerDialog DatePickerDialog2 = new DatePickerDialog(this, mDateSetListener, birthYear, birthMonth, birthDay);
 			DatePickerDialog2.setTitle(R.string.set_birth);		// 달력 타이틀 설정
 			DatePickerDialog2.show();

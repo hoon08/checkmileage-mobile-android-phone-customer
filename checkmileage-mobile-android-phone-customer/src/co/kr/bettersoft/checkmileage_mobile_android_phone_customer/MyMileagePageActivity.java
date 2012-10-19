@@ -8,7 +8,6 @@ package co.kr.bettersoft.checkmileage_mobile_android_phone_customer;
  */
 import java.io.BufferedReader;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,12 +26,10 @@ import org.json.JSONObject;
 
 import com.kr.bettersoft.domain.CheckMileageMileage;
 import com.pref.DummyActivity;
-import com.utils.adapters.ImageAdapter;
 import com.utils.adapters.ImageAdapterList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -51,26 +48,13 @@ import android.os.Message;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.RelativeLayout.LayoutParams;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import java.util.ArrayList;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.Toast;
 
 public class MyMileagePageActivity extends Activity {
 	int app_end = 0;	// 뒤로가기 버튼으로 닫을때 2번만에 닫히도록
@@ -85,6 +69,7 @@ public class MyMileagePageActivity extends Activity {
 	String myQRcode = "";
 	String controllerName = "";
 	String methodName = "";
+	String serverName = CommonUtils.serverNames;
 	
 	String imgthumbDomain = CommonUtils.imgthumbDomain; 					// Img 가져올때 파일명만 있을 경우 앞에 붙일 도메인.   
 	public List<CheckMileageMileage> entries;	// 1차적으로 조회한 결과. (가맹점 상세 정보 제외)
@@ -513,10 +498,8 @@ public class MyMileagePageActivity extends Activity {
 				myQRcode = MyQRPageActivity.qrCode;
 				getMyMileageList();
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}else{
@@ -581,7 +564,7 @@ public class MyMileagePageActivity extends Activity {
 							}
 							String jsonString = "{\"checkMileageMileage\":" + obj.toString() + "}";
 							try{
-								URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+								URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 								HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
@@ -789,7 +772,6 @@ public class MyMileagePageActivity extends Activity {
 			}catch (JSONException e) {
 				doneCnt--;
 				dbSaveEnable = false;
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}finally{
 //				entriesFn = entries;								// db 처리 위해 임시 주석 *** 
@@ -852,7 +834,7 @@ public class MyMileagePageActivity extends Activity {
 							// 보낼 문자열. (위의 json 방식의 오브젝트를 문자열로)
 							String jsonString = "{\"checkMileageMerchant\":" + obj.toString() + "}";
 							try{
-								URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+								URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 								HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
@@ -979,7 +961,6 @@ public class MyMileagePageActivity extends Activity {
 		return bm;
 	}
 	private InputStream OpenHttpConnection(String $imagePath) {
-		// TODO Auto-generated method stub
 		InputStream stream = null ;
 		try {
 			URL url = new URL( $imagePath ) ;
@@ -1004,38 +985,38 @@ public class MyMileagePageActivity extends Activity {
 	 * newWidth : 새로운 넓이
 	 * 참고 소스 : http://skyswim42.egloos.com/3477279 ( webview 에서 capture 화면 resizing 하는 source 도 있음 )
 	 */
-	private BitmapDrawable BitmapResizePrc( Bitmap Src, float newHeight, float newWidth)
-	{
-		BitmapDrawable Result = null;
-		int width = Src.getWidth();
-		int height = Src.getHeight();
-
-		// calculate the scale - in this case = 0.4f
-		float scaleWidth = ((float) newWidth) / width;
-		float scaleHeight = ((float) newHeight) / height;
-
-		// createa matrix for the manipulation
-		Matrix matrix = new Matrix();
-
-		// resize the bit map
-		matrix.postScale(scaleWidth, scaleHeight);
-
-		// rotate the Bitmap 회전 시키려면 주석 해제!
-		//matrix.postRotate(45);
-
-		// recreate the new Bitmap
-		Bitmap resizedBitmap = Bitmap.createBitmap(Src, 0, 0, width, height, matrix, true);
-
-		// check
-		width = resizedBitmap.getWidth();
-		height = resizedBitmap.getHeight();
-//		Log.i("ImageResize", "Image Resize Result : " + Boolean.toString((newHeight==height)&&(newWidth==width)) );
-
-		// make a Drawable from Bitmap to allow to set the BitMap
-		// to the ImageView, ImageButton or what ever
-		Result = new BitmapDrawable(resizedBitmap);
-		return Result;
-	}
+//	private BitmapDrawable BitmapResizePrc( Bitmap Src, float newHeight, float newWidth)
+//	{
+//		BitmapDrawable Result = null;
+//		int width = Src.getWidth();
+//		int height = Src.getHeight();
+//
+//		// calculate the scale - in this case = 0.4f
+//		float scaleWidth = ((float) newWidth) / width;
+//		float scaleHeight = ((float) newHeight) / height;
+//
+//		// createa matrix for the manipulation
+//		Matrix matrix = new Matrix();
+//
+//		// resize the bit map
+//		matrix.postScale(scaleWidth, scaleHeight);
+//
+//		// rotate the Bitmap 회전 시키려면 주석 해제!
+//		//matrix.postRotate(45);
+//
+//		// recreate the new Bitmap
+//		Bitmap resizedBitmap = Bitmap.createBitmap(Src, 0, 0, width, height, matrix, true);
+//
+//		// check
+//		width = resizedBitmap.getWidth();
+//		height = resizedBitmap.getHeight();
+////		Log.i("ImageResize", "Image Resize Result : " + Boolean.toString((newHeight==height)&&(newWidth==width)) );
+//
+//		// make a Drawable from Bitmap to allow to set the BitMap
+//		// to the ImageView, ImageButton or what ever
+//		Result = new BitmapDrawable(resizedBitmap);
+//		return Result;
+//	}
 	
 	@Override
 	public void onResume(){
@@ -1051,10 +1032,8 @@ public class MyMileagePageActivity extends Activity {
 						myQRcode = MyQRPageActivity.qrCode;
 						getMyMileageList();
 					} catch (JSONException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}else{
@@ -1117,10 +1096,8 @@ public class MyMileagePageActivity extends Activity {
 	  				myQRcode = MyQRPageActivity.qrCode;
 	  				getMyMileageList();
 	  			} catch (JSONException e) {
-	  				// TODO Auto-generated catch block
 	  				e.printStackTrace();
 	  			} catch (IOException e) {
-	  				// TODO Auto-generated catch block
 	  				e.printStackTrace();
 	  			}
 	  		}else{

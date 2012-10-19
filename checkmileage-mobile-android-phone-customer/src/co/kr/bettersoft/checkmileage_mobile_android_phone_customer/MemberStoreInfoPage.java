@@ -64,6 +64,8 @@ public class MemberStoreInfoPage extends Activity {
 	int responseCode = 0;
 	String controllerName ="";
 	String methodName ="";
+	String serverName = CommonUtils.serverNames;
+	
 	public CheckMileageMerchants merchantData = new CheckMileageMerchants();	// 결과 저장해서 보여주기 위한 도메인.
 	String myMileage = "";
 	String merchantId ="";
@@ -139,7 +141,6 @@ public class MemberStoreInfoPage extends Activity {
 					});
 					logListBtn.setOnClickListener(new Button.OnClickListener()  {
 						public void onClick(View v)  {
-//							Toast.makeText(returnThis(), "strr33",Toast.LENGTH_SHORT).show();
 							Intent logIntent = new Intent(MemberStoreInfoPage.this, MemberStoreLogPageActivity.class);
 							logIntent.putExtra("idCheckMileageMileages", idCheckMileageMileages);
 							logIntent.putExtra("storeName", merchantData.getCompanyName());
@@ -358,7 +359,7 @@ public class MemberStoreInfoPage extends Activity {
 						InputStream in = null;
 						try{
 							error = 1;
-							postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 							connection2 = (HttpURLConnection) postUrl2.openConnection();
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
@@ -390,7 +391,7 @@ public class MemberStoreInfoPage extends Activity {
 										error = 0;
 										finish();		// 종료. 다시 들어가도록..
 									}
-									postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+									postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 									connection2 = (HttpURLConnection) postUrl2.openConnection();
 									connection2.setDoOutput(true);
 									connection2.setInstanceFollowRedirects(false);

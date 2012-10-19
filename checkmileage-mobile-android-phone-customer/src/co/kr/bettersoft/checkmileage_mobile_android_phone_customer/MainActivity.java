@@ -1,29 +1,11 @@
 package co.kr.bettersoft.checkmileage_mobile_android_phone_customer;
 // 인트로
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.pref.DummyActivity;
 import com.pref.Password;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -38,7 +20,6 @@ import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Window;
-import android.widget.Toast;
 
 /* intro 화면
  * 기능 : 인트로 화면을 보여줌.
@@ -58,19 +39,6 @@ public class MainActivity extends Activity {
 	
 	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
 	
-    
-    
-	// 핸들러
-	Handler handler = new Handler(){
-		@Override
-		public void handleMessage(Message msg){
-			try{
-				Bundle b = msg.getData();
-			}catch(Exception e){
-				Toast.makeText(MainActivity.this, R.string.error_occured, Toast.LENGTH_SHORT).show();
-			}
-		}
-	};
 	// 내 QR 코드
 	static String myQR = "";
 	// QR 저장소이용 결과.
@@ -218,7 +186,7 @@ public class MainActivity extends Activity {
 //		////////////////////////////////////////////GCM 세팅        ///////////////////////////////////////////////////////////////		
 		readQR();			// 일단 저장된 QR 값이 있는지부터 확인 한다.. 있다면 인증을하지 않는다..
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
-		//testJson_log();			// JSON 통신하여 로그 남기기 테스트하기.
+		
 
 		// 시작. 검사를 통해 다음 진로 결정.
 		new Thread(
@@ -304,89 +272,6 @@ public class MainActivity extends Activity {
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////   
 
-
-	/////////////////////////////////JSON 테스트. 로그.. //////////////////////////////////////////////////////////////////////////////////
-	// 테스트용. 온크레이트 에서 호출 -  마일리지 로그를 남긴다
-	public void testJson_log(){
-		try {
-			jsontest1();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	/*
-	 *  (테스트용). 마일리지 로그를 남긴다. 
-	 *  서버와 통신할때에는 스레드 사용 또는 비동기 통신을 하지 않으면 네트워크 에러가 발생한다. 
-	 *  (모바일의 OS 에서 통신이 방해받는것을 싫어하기 때문)
-	 *   테스트 용이기 때문에 등록 할때마다 푸쉬 알림 메시지를 받는다.
-	 *    정식 버전에서는 필요시에만 날라온다. 
-	 */
-	public void jsontest1() throws JSONException, IOException {
-		Log.i("jsontest1", "jsontest1");
-		new Thread(
-				new Runnable(){
-					public void run(){
-						HttpClient client = new DefaultHttpClient(); 
-						HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000); 
-						HttpResponse response = null; 
-						JSONObject obj = new JSONObject();
-						try{
-							obj.put("merchantId", "a1b2");
-							obj.put("checkMileageId", "11");
-							obj.put("registerDate", "2012-08-08");
-							obj.put("viewName", "AE");
-						}catch(Exception e){}
-						String jsonString = "{\"checkMileageLog\":" + obj.toString() + "}";
-						try{
-							URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/checkMileageLogController/registerLog");
-							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
-							connection2.setDoOutput(true);
-							connection2.setInstanceFollowRedirects(false);
-							connection2.setRequestMethod("POST");
-							connection2.setRequestProperty("Content-Type", "application/json");
-							OutputStream os2 = connection2.getOutputStream();
-							os2.write(jsonString.getBytes());
-							os2.flush();
-							System.out.println("postUrl      : " + postUrl2);
-							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
-							InputStream in =  connection2.getInputStream();
-							theData(in);
-						}catch(Exception e){ 
-							e.printStackTrace();
-						}  
-					}
-				}
-		).start();
-	}
-	// JSON 통신 결과 받아서 처리
-	public void theData(InputStream in){
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-		StringBuilder builder = new StringBuilder();
-		String line =null;
-		try {
-			while((line=reader.readLine())!=null){
-				builder.append(line).append("\n");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		Log.d(TAG,"get::"+builder.toString());
-		String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다... 용도에 맞게 구현할 것.
-		//    	try{
-		//    		String result = "";
-		//    		JSONArray ja = new JSONArray(tempstr);
-		//    		for(int i=0; i<ja.length(); i++){
-		//    			JSONObject order =ja.getJSONObject(i);
-		//    			result+=""
-		//    		}
-		//    	}
-	}
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
 
 
 	@Override

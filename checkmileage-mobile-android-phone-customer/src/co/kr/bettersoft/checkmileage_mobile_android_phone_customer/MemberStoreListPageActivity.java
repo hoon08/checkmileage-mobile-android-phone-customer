@@ -12,9 +12,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -24,8 +22,6 @@ import org.json.JSONObject;
 
 
 import com.kr.bettersoft.domain.CheckMileageMerchants;
-import com.kr.bettersoft.domain.CheckMileageMileage;
-import com.kr.bettersoft.domain.MemberStoreListViewWrapper;
 import com.pref.DummyActivity;
 import com.utils.adapters.ImageAdapter;
 
@@ -34,7 +30,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.MergeCursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -48,19 +43,14 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -71,8 +61,6 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import android.os.AsyncTask;
 
-import android.app.ListActivity;
-
 public class MemberStoreListPageActivity extends Activity implements OnItemSelectedListener, OnEditorActionListener{
 	
 	String TAG = "MemberStoreListPageActivity";
@@ -80,6 +68,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	
 	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
 	MainActivity mainActivity = (MainActivity)MainActivity.mainActivity;
+	
+	String serverName = CommonUtils.serverNames;
 	
 	// Locale
     Locale systemLocale = null ;
@@ -146,7 +136,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 				if(b.getInt("showYN")==1){		// 받아온 마일리지 결과를 화면에 뿌려준다.
 					Log.d(TAG,"showYN");
 					// 최종 결과 배열은 entriesFn 에 저장되어 있다.. 여기 리스트 레이아웃.
-					if(entriesFn.size()>0){
+					if((entriesFn!=null)&&(entriesFn.size()>0)){
 //						Log.e(TAG,"indexDataFirst::"+indexDataFirst);
 						if(newSearch){		// 새로운 검색일 경우 새로 설정, 추가일 경우 알림만 하기 위함.
 							setGriding();
@@ -156,7 +146,6 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 							imgAdapter.notifyDataSetChanged();		// 알림 -> 변경사항이 화면상에 업데이트 되도록함.
 						}
 						gridView.setEnabled(true);			// 그리드 뷰 허용함.
-						
 					}else{
 						Log.d(TAG,"no data");
 						emptyView = findViewById(R.id.empty1);		// 데이터 없으면 '빈 페이지'(데이터 없음 메시지)표시
@@ -306,7 +295,6 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 				mIsLast = true;
 			}
 //			Log.d(TAG,"adding:"+adding+",mIsLast:"+mIsLast);
-			// TODO Auto-generated method stub
 			//			  if(indexDataFirst==indexDataLast){		// 시작이 더 크면 문제 있는거
 			//				  mIsLast = true;
 			//			  }
@@ -436,7 +424,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 							}
 							String jsonString = "{\"checkMileageBusinessKind\":" + obj.toString() + "}";
 							try{
-								URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+								URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 								HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
@@ -460,7 +448,6 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 									try {
 										Thread.sleep(500);
 									} catch (InterruptedException e1) {
-										// TODO Auto-generated catch block
 										e1.printStackTrace();
 									}
 									getBusinessKindList();
@@ -510,8 +497,11 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			if(max>0){
 				for ( int i = 0; i < max; i++ ){
 					JSONObject jsonObj = jsonArray2.getJSONObject(i).getJSONObject("checkMileageBusinessKind");		// 대소문자 주의
-					tmpJobs[i] = jsonObj.getString("content");		// 0 번째 모든 업종  제거 --> i+1 --> i
+					tmpJobs[i] = jsonObj.getString("content");		// 0 번째 항목 "모든 업종" 제거 --> i+1 --> i
 				}
+			}else{
+				tmpJobs = new String[1];
+				tmpJobs[0] = "Not Available";				// 검색 불가. (서버에서 받아온 업종 개수가 0개임.)
 			}
 			
 			isRunning = 0;			// 다른 검색 가능.
@@ -597,7 +587,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 								}
 								String jsonString = "{\"checkMileageMerchant\":" + obj.toString() + "}";
 								try{
-									URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+									URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 									HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
 									connection2.setDoOutput(true);
 									connection2.setInstanceFollowRedirects(false);
@@ -889,41 +879,41 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	 * newWidth : 새로운 넓이
 	 * 참고 소스 : http://skyswim42.egloos.com/3477279 ( webview 에서 capture 화면 resizing 하는 source 도 있음 )
 	 */
-	private BitmapDrawable BitmapResizePrc( Bitmap Src, float newHeight, float newWidth)
-	{
-//		Log.e(TAG,"BitmapResizePrc");
-
-		BitmapDrawable Result = null;
-		int width = Src.getWidth();
-		int height = Src.getHeight();
-
-		// calculate the scale - in this case = 0.4f
-		float scaleWidth = ((float) newWidth) / width;
-		float scaleHeight = ((float) newHeight) / height;
-
-		// createa matrix for the manipulation
-		Matrix matrix = new Matrix();
-
-		// resize the bit map
-		matrix.postScale(scaleWidth, scaleHeight);
-
-		// rotate the Bitmap 회전 시키려면 주석 해제!
-		//matrix.postRotate(45);
-
-		// recreate the new Bitmap
-		Bitmap resizedBitmap = Bitmap.createBitmap(Src, 0, 0, width, height, matrix, true);
-
-		// check
-		width = resizedBitmap.getWidth();
-		height = resizedBitmap.getHeight();
-//		Log.i("ImageResize", "Image Resize Result : " + Boolean.toString((newHeight==height)&&(newWidth==width)) );
-
-		// make a Drawable from Bitmap to allow to set the BitMap
-		// to the ImageView, ImageButton or what ever
-		Result = new BitmapDrawable(resizedBitmap);
-		
-		return Result;
-	}
+//	private BitmapDrawable BitmapResizePrc( Bitmap Src, float newHeight, float newWidth)
+//	{
+////		Log.e(TAG,"BitmapResizePrc");
+//
+//		BitmapDrawable Result = null;
+//		int width = Src.getWidth();
+//		int height = Src.getHeight();
+//
+//		// calculate the scale - in this case = 0.4f
+//		float scaleWidth = ((float) newWidth) / width;
+//		float scaleHeight = ((float) newHeight) / height;
+//
+//		// createa matrix for the manipulation
+//		Matrix matrix = new Matrix();
+//
+//		// resize the bit map
+//		matrix.postScale(scaleWidth, scaleHeight);
+//
+//		// rotate the Bitmap 회전 시키려면 주석 해제!
+//		//matrix.postRotate(45);
+//
+//		// recreate the new Bitmap
+//		Bitmap resizedBitmap = Bitmap.createBitmap(Src, 0, 0, width, height, matrix, true);
+//
+//		// check
+//		width = resizedBitmap.getWidth();
+//		height = resizedBitmap.getHeight();
+////		Log.i("ImageResize", "Image Resize Result : " + Boolean.toString((newHeight==height)&&(newWidth==width)) );
+//
+//		// make a Drawable from Bitmap to allow to set the BitMap
+//		// to the ImageView, ImageButton or what ever
+//		Result = new BitmapDrawable(resizedBitmap);
+//		
+//		return Result;
+//	}
 	
 	
 	@Override
@@ -1024,7 +1014,6 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			//			Toast.makeText(AndroidList.this,    "onPreExecute \n: preload bitmap in AsyncTask",    Toast.LENGTH_LONG).show(); 
 		} 
 		@Override protected Void doInBackground(Void... params) {  
-			// TODO Auto-generated method stub  
 //			preLoadSrcBitmap();  
 			Log.d(TAG,"backgroundGetMerchantInfo");
 //			for(int i=0; i<entries1.size(); i++){
@@ -1142,18 +1131,15 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	TextWatcher textWatcherInput = new TextWatcher() {  
 		        @Override  
 		        public void onTextChanged(CharSequence s, int start, int before, int count) {  
-		            // TODO Auto-generated method stub  
 //		            Log.i("onTextChanged", s.toString());             
 		        }  
 		        @Override  
 		        public void beforeTextChanged(CharSequence s, int start, int count,  
 		                int after) {  
-		            // TODO Auto-generated method stub  
 //		            Log.i("beforeTextChanged", s.toString());         
 		        }  
 		        @Override  
 		        public void afterTextChanged(Editable s) {  
-		            // TODO Auto-generated method stub  
 //		            Log.i("afterTextChanged", s.toString());  
 		        }
 		    };    

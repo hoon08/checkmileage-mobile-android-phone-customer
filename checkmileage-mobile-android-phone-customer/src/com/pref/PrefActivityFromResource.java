@@ -384,8 +384,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	
 	
 	
-	
-	
 	/*
 	 *  서버로부터 개인 정보를 받아와서 도메인에 저장해 둔다. 나중에 업데이트 할때 사용해야하니까.
 	 *  checkMileageMemberController 컨/ selectMemberInformation  메/ checkMileageMember 도/ 
@@ -405,6 +403,8 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							// 사용자 아이디를 넣어서 조회
 							obj.put("activateYn", "Y");
 							obj.put("checkMileageId", MyQRPageActivity.qrCode);
+							Log.d(TAG,"checkMileageId:"+ MyQRPageActivity.qrCode);
+							
 						}catch(Exception e){
 							e.printStackTrace();
 						}
@@ -685,7 +685,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		 *   업데이트 할 것들.  도메인에 저장.
 		 *  checkMileageId /password /phoneNumber /email /birthday /gender /latitude /longitude /deviceType /registrationId /activateYn /modifyDate /
 		 */
-//		Log.d(TAG,"서버에서 받은 고객 상세정보::"+builder.toString());
+		Log.d(TAG,"서버에서 받은 고객 상세정보::"+builder.toString());
 		String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다
 		// // // // // // // 바로 바로 화면에 add 하고 터치시 값 가져다가 상세 정보 보도록....
 		if(responseCode==200 || responseCode==204){
@@ -695,7 +695,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 //				Bitmap bm = null;
 				// 데이터를 전역 변수 도메인에 저장하고 핸들러를 통해 도메인-> 화면에 보여준다..
 				try{  // 아이디
-//					Log.i(TAG, "checkMileageId:::"+jsonobj2.getString("checkMileageId"));
+					Log.i(TAG, "checkMileageId:::"+jsonobj2.getString("checkMileageId"));
 					memberInfo.setCheckMileageId(jsonobj2.getString("checkMileageId"));				
 				}catch(Exception e){ memberInfo.setCheckMileageId(""); }
 				try{  // 비번
