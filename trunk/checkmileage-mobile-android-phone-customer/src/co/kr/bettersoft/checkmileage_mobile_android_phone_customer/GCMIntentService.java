@@ -16,7 +16,6 @@
 package co.kr.bettersoft.checkmileage_mobile_android_phone_customer;
 
 import static co.kr.bettersoft.checkmileage_mobile_android_phone_customer.CommonUtilities.SENDER_ID;
-import static co.kr.bettersoft.checkmileage_mobile_android_phone_customer.CommonUtilities.displayMessage;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -31,12 +30,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.gcm.GCMRegistrar;
 import com.pref.DummyActivity;
-import com.pref.Password;
 
 /**
  * IntentService responsible for handling GCM messages.
@@ -46,10 +43,11 @@ public class GCMIntentService extends GCMBaseIntentService {
 	
 	String controllerName="";
 	String methodName="";
+	String serverName = CommonUtils.serverNames;
+	
 	String regIdGCM = "";
 	Boolean dontTwice = true;
 	
-    @SuppressWarnings("hiding")
     private static final String TAG = "GCMIntentService";
 
     public GCMIntentService() {
@@ -94,7 +92,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 						}
 						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 						try{
-							URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+							URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);

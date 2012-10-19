@@ -28,6 +28,8 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -46,6 +48,38 @@ public class CertificationStep2 extends Activity {
 	
 	String controllerName = "";		// 서버 조회시 컨트롤러 이름
 	String methodName = "";			// 서버 조회시 메서드 이름
+	String serverName = CommonUtils.serverNames;
+	
+	// 핸들러
+	Handler handler = new Handler(){
+		@Override
+		public void handleMessage(Message msg){
+			Bundle b = msg.getData();
+			try{
+				if(b.getInt("showErrToast")==1){
+					Toast.makeText(CertificationStep2.this,b.getString("msg"), Toast.LENGTH_SHORT).show();
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+	};
+	public void alertMsg(){
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Message message = handler.obtainMessage();
+						Bundle b = new Bundle();
+						String alrtMsg = getString(R.string.certi_fail_msg);
+						b.putInt("showErrToast", 1);
+						b.putString("msg", alrtMsg);			
+						message.setData(b);
+						handler.sendMessage(message);
+					}
+				}
+		).start();
+	}
+	
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -110,7 +144,7 @@ public class CertificationStep2 extends Activity {
 						}
 						String jsonString = "{\"checkMileageCertification\":" + obj.toString() + "}";
 						try{
-							  URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+							  URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 					  		  HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
 					  		  connection2.setDoOutput(true);
 					  		  connection2.setInstanceFollowRedirects(false);
@@ -175,7 +209,8 @@ public class CertificationStep2 extends Activity {
     				}
     		).start();
     	}else{			// 인증 실패시	 토스트 띄우고 인증 1단계로 돌아감.
-    		Toast.makeText(CertificationStep2.this, R.string.certi_fail_msg, Toast.LENGTH_SHORT).show();
+    		alertMsg();
+//    		Toast.makeText(CertificationStep2.this, R.string.certi_fail_msg, Toast.LENGTH_SHORT).show();
     		new Thread(
     				new Runnable(){
     					public void run(){

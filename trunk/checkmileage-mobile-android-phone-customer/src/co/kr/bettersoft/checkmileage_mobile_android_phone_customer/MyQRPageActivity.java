@@ -11,9 +11,7 @@ package co.kr.bettersoft.checkmileage_mobile_android_phone_customer;
 
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,8 +19,8 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Hashtable;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -32,29 +30,25 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.MemberStoreListPageActivity.backgroundGetMerchantInfo;
-
-import com.google.android.maps.MapView;
-import com.google.android.maps.MyLocationOverlay;
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import com.google.zxing.qrcode.encoder.ByteMatrix;
 import com.kr.bettersoft.domain.CheckMileageMemberSettings;
-import com.kr.bettersoft.domain.CheckMileageMerchants;
 import com.pref.DummyActivity;
-import com.pref.PrefActivityFromResource;
 
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Criteria;
@@ -64,17 +58,40 @@ import android.net.http.AndroidHttpClient;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.CheckBoxPreference;
 import android.util.Base64;
 import android.util.Log;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+
+//import java.awt.image.BufferedImage; 
+//import com.google.zxing.BarcodeFormat; 
+//import com.google.zxing.WriterException; 
+//import com.google.zxing.client.j2se.MatrixToImageWriter; 
+//import com.google.zxing.common.ByteMatrix; 
+//import com.google.zxing.qrcode.QRCodeWriter; 
+import com.google.zxing.BarcodeFormat; 
+import com.google.zxing.WriterException;     
+import android.app.Activity; 
+import android.graphics.Bitmap; 
+import android.graphics.Point; 
+import android.os.Bundle; 
+import android.util.Log; 
+import android.view.Display; 
+import android.view.View; 
+import android.view.View.OnClickListener; 
+import android.view.WindowManager; 
+import android.widget.Button; 
+import android.widget.EditText; 
+import android.widget.ImageView; 
+
 
 public class MyQRPageActivity extends Activity {
 	String TAG = "MyQRPageActivity";
 	String controllerName="";
 	String methodName="";
+	String serverName = CommonUtils.serverNames;
+	
 	int responseCode= 0;
 	int isUpdating = 0;
 	
@@ -103,17 +120,108 @@ public class MyQRPageActivity extends Activity {
 	 static Bitmap bmp2 =null;
 	static ImageView imgView;
 	public static String qrCode = "";
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+//	public static BufferedImage createTextCode(String text){ 
+//        QRCodeWriter qrCodeWriter= new QRCodeWriter(); 
+//          
+//        int qrWidth=128; 
+//        int qrHeight=128; 
+//        ByteMatrix byteMatrix=null; 
+//        try { 
+//            byteMatrix=qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, qrWidth, qrHeight); 
+//        } catch (WriterException e) { 
+//            e.printStackTrace(); 
+//        } 
+//        return toBufferedImage(byteMatrix); 
+//    } 
+//      
+//    public static BufferedImage createURLCode(String url){ 
+//        QRCodeWriter qrCodeWriter= new QRCodeWriter(); 
+//          
+//        int qrWidth=128; 
+//        int qrHeight=128; 
+//        ByteMatrix byteMatrix = null; 
+//        try { 
+//            byteMatrix=qrCodeWriter.encode(url, BarcodeFormat.QR_CODE, qrWidth, qrHeight); 
+//        } catch (WriterException e) { 
+//            e.printStackTrace(); 
+//        } 
+//  
+//        return toBufferedImage(byteMatrix); 
+//    } 
+//      
+//    public static BufferedImage createDirectDownloadCode(){ 
+//        return createURLCode(""); 
+//    } 
+//      
+//    public static BufferedImage createMarketDownloadCode(){ 
+//        return createURLCode("market://search?q=pname:org.openintents.wifiqr"); 
+//    } 
+//      
+//      
+//    public static BufferedImage toBufferedImage(ByteMatrix matrix) { 
+//        int width = matrix.getWidth(); 
+//        int height = matrix.getHeight(); 
+//        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB); 
+//        for (int x = 0; x < width; x++) { 
+//          for (int y = 0; y < height; y++) { 
+//  
+//            image.setRGB(x, y, matrix.get(x, y) == 0 ? BLACK : WHITE); 
+//          } 
+//        } 
+//        return image; 
+//    } 
+//    private static final int BLACK = 0xFF000000; 
+//    private static final int WHITE = 0xFFFFFFFF; 
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	// 핸들러 등록
-	static Handler handler = new Handler(){
+	Handler handler = new Handler(){
     	@Override
     	public void handleMessage(Message msg){
     		Bundle b = msg.getData();
-    		int testData =  b.getInt("testData");		// 값을 넣지 않으면 0 을 꺼내었다.
-    		if(testData==1234){
+    		int showQR =  b.getInt("showQR");		// 값을 넣지 않으면 0 을 꺼내었다.
+    		if(showQR==1){
     			imgView.setImageBitmap(bmp);
     		}
+    		if(b.getInt("showErrToast")==1){
+				Toast.makeText(MyQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+			}
+    		
     	}
     };
+    
+    public void showMSG(){			// 화면에 토스트 띄움..
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Message message = handler.obtainMessage();				
+						Bundle b = new Bundle();
+						b.putInt("showErrToast", 1);
+						message.setData(b);
+						handler.sendMessage(message);
+					}
+				}
+		).start();
+	}
     
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -174,11 +282,12 @@ public class MyQRPageActivity extends Activity {
 //        				 bmp = downloadBitmap("http://chart.apis.google.com/chart?cht=qr&chs=500x500&choe=UTF-8&chld=H&chl=test1234"); 
 //        				    Log.w("MyQRPageActivity", "bmp size getHeight" + bmp.getHeight()); 
 //        					Log.w("MyQRPageActivity", "bmp size getWidth" + bmp.getWidth());  
-        						Message message = handler.obtainMessage();
-        						Bundle b = new Bundle();
-        						b.putInt("testData", 1234);
-        						message.setData(b);
-        						handler.sendMessage(message);
+						// showQR
+        				Message message = handler.obtainMessage();
+						Bundle b = new Bundle();
+						b.putInt("showQR", 1);
+						message.setData(b);
+						handler.sendMessage(message);
         			}
         		}
         ).start();
@@ -257,59 +366,66 @@ public class MyQRPageActivity extends Activity {
 	/*
 	 * QR 이미지 생성. 자체 라이브러리 사용하여 QR 이미지 생성
 	 */
-	public static void CreateQR() throws WriterException, IOException {
-		new Thread(
-				new Runnable(){
-					public void run(){
-						//	        				 bmp = "";
-						QRCodeWriter qrCodeWriter = new QRCodeWriter();
-						String text = "test1234";
-						try {
-							text = new String(text.getBytes("UTF-8"), "ISO-8859-1");
-						} catch (UnsupportedEncodingException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						try {
-							BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE,
-									100, 100);
-							
-							// 방법 1. 변환 -> 변환 -> 디코딩  :: null pointer 에러 (팩토리에서 디코딩하면 null 이 나옴)
-//							String st =  bitMatrix.toString();
-//							byte[] data  = st.getBytes();
-//							Log.i("MyQRPageActivity", "lv4");
-//							ByteArrayInputStream in = new ByteArrayInputStream(data);
-//							bmp2 = BitmapFactory.decodeStream(in); 
-							
-							// 방법 2.자체 메소드 호출 -> class not def 에러.
-//							try {
-//								MatrixToImageWriter.writeToFile(bitMatrix, "png", new File("qrcode.png"));
-//							} catch (IOException e) {
-//								// TODO Auto-generated catch block
-//								e.printStackTrace();
-//							}
-						} catch (WriterException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						//	        					Log.w("MyQRPageActivity", "bmp size getHeight" + bmp.getHeight()); 
-						//	        					Log.w("MyQRPageActivity", "bmp size getWidth" + bmp.getWidth());  
-						Message message = handler.obtainMessage();
-						Bundle b = new Bundle();
-						b.putInt("testData", 2222);
-						message.setData(b);
-						handler.sendMessage(message);
-					}
-				}
-		).start();
-//        Bitmap bm=null; 
-//        BitmapDrawable bmd = new BitmapDrawable(in); 
-//        //	        	in.read(data);		// null pointer exception
-////        Bitmap bitmap = BitmapFactory.decodeStream(in);  
-//        bm = bmd.getBitmap(); 
-////        Log.i("MyQRPageActivity", "6-1"+bitmap.getHeight());
-////        MatrixToImageWriter.writeToFile(bitMatrix, "png", new File("qrcode.png"));	// cant find class exception
-	}
+//	public void CreateQR() throws WriterException, IOException {
+//		new Thread(
+//				new Runnable(){
+//					public void run(){
+//						//	        				 bmp = "";
+//						QRCodeWriter qrCodeWriter = new QRCodeWriter();
+//						String text = "test1234";
+//						try {
+//							text = new String(text.getBytes("UTF-8"), "ISO-8859-1");
+//						} catch (UnsupportedEncodingException e) {
+//							e.printStackTrace();
+//						}
+//						try {
+//							BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE,100, 100);
+//							Bitmap bmpbmb = encodeAsBitmap(text, BarcodeFormat.QR_CODE,100, 100);
+//							// 방법 1. 변환 -> 변환 -> 디코딩  :: null pointer 에러 (팩토리에서 디코딩하면 null 이 나옴)
+////							String st =  bitMatrix.toString();
+////							byte[] data  = st.getBytes();
+////							Log.i("MyQRPageActivity", "lv4");
+////							ByteArrayInputStream in = new ByteArrayInputStream(data);
+////							bmp2 = BitmapFactory.decodeStream(in); 
+//							
+//							// 방법 2.자체 메소드 호출 -> class not def 에러.
+////							try {
+////								MatrixToImageWriter.writeToFile(bitMatrix, "png", new File("qrcode.png"));
+////							} catch (IOException e) {
+////								// TODO Auto-generated catch block
+////								e.printStackTrace();
+////							}
+//						} catch (WriterException e) {
+//							e.printStackTrace();
+//						}
+//						//	        					Log.w("MyQRPageActivity", "bmp size getHeight" + bmp.getHeight()); 
+//						//	        					Log.w("MyQRPageActivity", "bmp size getWidth" + bmp.getWidth());  
+//						Message message = handler.obtainMessage();
+//						Bundle b = new Bundle();
+//						b.putInt("testData", 2222);
+//						message.setData(b);
+//						handler.sendMessage(message);
+//					}
+//				}
+//		).start();
+//	}
+//	private void encodeBarcode(String type, String data) { 
+//		//Encode with a QR Code image    
+//		QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(qrInputText,null,Contents.Type.TEXT,BarcodeFormat.QR_CODE.toString(),smallerDimension);
+//		try {     
+//			Bitmap bitmap = qrCodeEncoder.encodeAsBitmap();
+//			ImageView myImage = (ImageView) findViewById(R.id.imageView1);
+//			myImage.setImageBitmap(bitmap);
+//		} catch (WriterException e) {
+//			e.printStackTrace(); 
+//		}
+//		  Intent intent = new Intent("com.google.zxing.client.android.ENCODE"); 
+//		  intent.putExtra("ENCODE_TYPE", type); 
+//		  intent.putExtra("ENCODE_DATA", data); 
+//		  startActivity(intent); 
+//	} 
+
+	
 	
 	@Override
 	public void onResume(){
@@ -422,7 +538,7 @@ public class MyQRPageActivity extends Activity {
 							}
 							String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 							try{
-								URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+								URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 								HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
@@ -529,7 +645,7 @@ public class MyQRPageActivity extends Activity {
 						}
 						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 						try{
-							URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+							URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
@@ -548,6 +664,7 @@ public class MyQRPageActivity extends Activity {
 								//		//	//		//	//			theData1(in);  // 성공시 -> 도메인에 담아서 어쩌구.. 호출
 								//									Log.e(TAG,"S");
 							}else{
+								showMSG();
 //								Toast.makeText(MemberStoreInfoPage.this, "오류가 발생하였습니다.\n잠시 후 다시 시도하여 주십시오.", Toast.LENGTH_SHORT).show();
 							}
 						}catch(Exception e){ 
@@ -659,7 +776,7 @@ public class MyQRPageActivity extends Activity {
 	
 	/*
 	 * 가맹점 전체 목록 날라오는지 테스트용.  --  사용 x
-	 * http://checkmileage.onemobileservice.com/checkMileageMerchant/selectMerchantList
+	 * http://"+serverName+"/checkMileageMerchant/selectMerchantList
 	 * 
 	 */
 	public void test1(){		// 서버로부터 설정 정보를 받는다.  아이디를 사용.모든데이터.  CheckMileageMember
@@ -677,8 +794,8 @@ public class MyQRPageActivity extends Activity {
 						}
 						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 						try{
-//							URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/checkMileageMerchant/selectMerchantList");
-							URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+//							URL postUrl2 = new URL("http://"+serverName+"/checkMileageMerchant/selectMerchantList");
+							URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
@@ -697,6 +814,7 @@ public class MyQRPageActivity extends Activity {
 								//		//	//		//	//			theData1(in);  // 성공시 -> 도메인에 담아서 어쩌구.. 호출
 								//									Log.e(TAG,"S");
 							}else{
+								showMSG();		//error_message
 //								Toast.makeText(MemberStoreInfoPage.this, "오류가 발생하였습니다.\n잠시 후 다시 시도하여 주십시오.", Toast.LENGTH_SHORT).show();
 							}
 						}catch(Exception e){ 

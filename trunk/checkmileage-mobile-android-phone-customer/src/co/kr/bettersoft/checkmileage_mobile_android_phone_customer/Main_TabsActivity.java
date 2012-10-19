@@ -40,6 +40,8 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 	
 	String controllerName = "";
 	String methodName = "";
+	String serverName = CommonUtils.serverNames;
+	
 	int maxRetry = 5;
 	static String myQR = "";
 
@@ -220,7 +222,7 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 		String jsonString = "{\"checkMileageMember\":" + jsonMember.toString() + "}";
 		//Log.i("testGCM", "jsonMember : " + jsonString);
 		try {
-			URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/checkMileageMemberController/testGCM");
+			URL postUrl2 = new URL("http://"+serverName+"/checkMileageMemberController/testGCM");
 			HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
 			connection2.setDoOutput(true);
 			connection2.setInstanceFollowRedirects(false);
@@ -310,7 +312,7 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 						}
 						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 						try{
-							URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
+							URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);

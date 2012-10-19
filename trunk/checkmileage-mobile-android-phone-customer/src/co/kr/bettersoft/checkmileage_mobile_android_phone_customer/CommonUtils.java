@@ -28,6 +28,7 @@ public class CommonUtils extends Activity {
 	static String imgDomain = "http://www.mcarrot.net/upload/profile/"; 	
 	static String imgthumbDomain = "http://www.mcarrot.net/upload/thumb/"; 	
 	
+	static String serverNames = "checkmileage.mcarrot.net";
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
