@@ -19,7 +19,7 @@ package kr.co.bettersoft.checkmileage.activities;
 import static kr.co.bettersoft.checkmileage.activities.CommonUtilities.TAG;
 import static kr.co.bettersoft.checkmileage.activities.CommonUtilities.displayMessage;
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 
 import com.google.android.gcm.GCMRegistrar;
 

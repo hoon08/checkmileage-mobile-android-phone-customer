@@ -5,7 +5,7 @@ package kr.co.bettersoft.checkmileage.activities;
  * 화면 구성은 최상단에 타이틀,  상단부에 이미지(첨부 이미지). 하단부에 텍스트. 
  * 타이틀, 이미지는 고정상태고 하단 텍스트의 내용이 많을 경우 스크롤 되도록 한다. 
  */
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

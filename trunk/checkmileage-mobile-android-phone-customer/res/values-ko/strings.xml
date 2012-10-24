@@ -31,6 +31,7 @@
     
     <string name="sex_female">여성</string>
     <string name="sex_male">남성</string>
+    <string name="sex_etc">비공개</string>
     <string name="password_main">암호 입력</string>
     <string name="certi_step1_btn1">인증번호 요청하기</string>
     <string name="certi_step1_help1">사용하시는 전화번호를 입력해 주세요.</string>

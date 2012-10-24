@@ -31,6 +31,7 @@
     
     <string name="sex_female">女性</string>
     <string name="sex_male">男性</string>
+    <string name="sex_etc">非公開</string>
     <string name="password_main">暗号入力</string>
     <string name="certi_step1_btn1">認証番号を要請する</string>
     <string name="certi_step1_help1">お電話番号を入力してください。</string>

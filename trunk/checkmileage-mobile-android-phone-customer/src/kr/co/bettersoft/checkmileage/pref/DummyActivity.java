@@ -2,10 +2,12 @@ package kr.co.bettersoft.checkmileage.pref;
 
 import java.util.List;
 
-import kr.co.bettersoft.checkmileage.GCMIntentService;
-import kr.co.bettersoft.checkmileage.MainActivity;
-import kr.co.bettersoft.checkmileage.Main_TabsActivity;
-import kr.co.bettersoft.checkmileage.MyMileagePageActivity;
+import kr.co.bettersoft.checkmileage.activities.CommonUtils;
+import kr.co.bettersoft.checkmileage.activities.GCMIntentService;
+import kr.co.bettersoft.checkmileage.activities.MainActivity;
+import kr.co.bettersoft.checkmileage.activities.Main_TabsActivity;
+import kr.co.bettersoft.checkmileage.activities.MyMileagePageActivity;
+import kr.co.bettersoft.checkmileage.activities.R;
 
 
 import android.app.Activity;
@@ -39,7 +41,6 @@ public class DummyActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		
 	    super.onCreate(savedInstanceState);
-	    
 	    dummyActivity = DummyActivity.this;
 	    // TODO Auto-generated method stub
 	   
@@ -52,35 +53,21 @@ public class DummyActivity extends Activity {
 			 RunMode = "NORMAL";
 		 }
 	    
-	    
-	    
 	    // 결과는 true 가 나온다.
-	    isRunningProcess(this, "co.kr.bettersoft.checkmileage_mobile_android_phone_customer");
+	    isRunningProcess(this, CommonUtils.packageNames);
 	    if(count==1){		// 최초 실행.(나밖에없음)	
 	    	// 테스트 및 노멀은 같다. 그냥 실행. 마일리지 변경사항도 의미가 없다. 어차피 조회.
 	    	Intent intent = new Intent(DummyActivity.this, MainActivity.class);
 	    	if(RunMode.equals("MILEAGE")){
 	    		intent.putExtra("RunMode", "MILEAGE");
 	    	}else if(RunMode.equals("MARKETING")){		// 이벤트 푸쉬일 경우 해당 이벤트 화면을 보여줘야 한다. 새 인텐트로 액티비티를 실행해주면 된다. 문제는 순서. 위에거 하고나서 해준다.
-	    		intent.putExtra("RunMode", "MARKETING");
+	    		intent.putExtra("RunMode", "MARKETING");			// 현재 마일리지 모드만 반응한다.
 	    		// 이벤트 화면이 가장 위에 올라와야 인정.
 	    		// ... 인텐트 작성해서 실행시켜준다.
 	    	}//  그 외에는 동작 하지 않는다.
 		    startActivity(intent);
-		    
-		    
-
-		    finish();
-
 	    }else{				// 이미 실행중.
 	    	count = 0;		// 초기화 해준다. 종료하고 다시 실행할 수 있게..
-	    	
-	    	//// 테스트
-	    	if(RunMode.equals("TEST")){			// 그냥 테스트용. 나중에 지울것.
-	    		MyMileagePageActivity.searched = false;		// 그냥 테스트용. 나중에 지울것.
-	    		Main_TabsActivity.tabhost.setCurrentTab(2);
-	    	}
-	    	//// 테스트
 	    	
 	    	if(RunMode.equals("MILEAGE")){			// 마일리지일 경우에는 내 마일리지 목록 재 조회 되도록 변수 값을 설정해준다.	
 	    		MyMileagePageActivity.searched = false;		// ...		// 내 마일리지 목록 조회 변수 값 설정 해줄 것..
@@ -88,11 +75,9 @@ public class DummyActivity extends Activity {
 	    	}else if(RunMode.equals("MARKETING")){		// 이벤트 푸쉬일 경우 해당 이벤트 화면을 보여줘야 한다. 이미 실행중이니까 새 인텐트로 액티비티만 실행해주면 된다.
 	    		// ... 인텐트 작성해서 실행시켜준다.
 	    	}//  그 외에는 동작 하지 않는다.
-	    	
-	    	finish();
 	    }
 //	    }
-//	    
+	    finish();
 	}
 	
 	
@@ -103,10 +88,13 @@ public class DummyActivity extends Activity {
     	List<RunningAppProcessInfo> list = actMng.getRunningAppProcesses();
     	for(RunningAppProcessInfo rap : list)
     	{
+//    		Log.d("Log","rap.processName:"+rap.processName+"/packageName:"+packageName);
     		if(rap.processName.equals(packageName))
     		{
+    			Log.d("Log","packageName=packageName/"+packageName);
     			isRunning = true;
     			count= count+1;		// 실행중인 캐럿수 (중복 실행 방지 용)
+    			Log.d("Log","count:"+count);
     			break;
     			}
     		}

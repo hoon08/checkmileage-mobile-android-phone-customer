@@ -30,6 +30,10 @@ public class CommonUtils extends Activity {
 	
 	static String serverNames = "checkmileage.mcarrot.net";
 	
+	public static String packageNames = "kr.co.bettersoft.checkmileage.activities";
+	
+//	public static String prefPath = "kr.co.bettersoft.checkmileage.pref";
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

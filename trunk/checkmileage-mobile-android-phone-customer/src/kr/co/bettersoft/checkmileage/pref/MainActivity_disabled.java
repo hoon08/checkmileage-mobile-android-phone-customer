@@ -1,6 +1,7 @@
 package kr.co.bettersoft.checkmileage.pref;
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+import kr.co.bettersoft.checkmileage.activities.R;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

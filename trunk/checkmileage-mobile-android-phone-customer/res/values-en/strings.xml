@@ -31,6 +31,7 @@
     
     <string name="sex_female">Female</string>
     <string name="sex_male">Male</string>
+    <string name="sex_etc">Private setting</string>
     <string name="password_main">Enter password.</string>
     <string name="certi_step1_btn1">Request authorization code.</string>
     <string name="certi_step1_help1">Enter phone number.</string>

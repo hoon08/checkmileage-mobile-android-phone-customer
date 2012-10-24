@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import kr.co.bettersoft.checkmileage.activities.No_QR_PageActivity;
+import kr.co.bettersoft.checkmileage.activities.ScanQRPageActivity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -30,8 +33,6 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.No_QR_PageActivity;
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.ScanQRPageActivity;
 
 import com.google.zxing.ResultPoint;
 import com.google.zxing.client.android.camera.CameraManager;

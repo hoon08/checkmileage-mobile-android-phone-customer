@@ -33,7 +33,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.gcm.GCMRegistrar;
@@ -101,6 +101,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
+							Thread.sleep(2000);
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes());
 							os2.flush();

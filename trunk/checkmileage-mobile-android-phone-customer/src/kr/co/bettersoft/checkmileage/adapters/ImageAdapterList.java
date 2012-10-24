@@ -2,11 +2,12 @@ package kr.co.bettersoft.checkmileage.adapters;
 
 import java.util.List;
 
+import kr.co.bettersoft.checkmileage.activities.R;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMerchants;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMileage;
 
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

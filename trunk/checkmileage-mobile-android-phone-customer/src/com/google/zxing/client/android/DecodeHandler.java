@@ -18,13 +18,15 @@ package com.google.zxing.client.android;
 
 import java.util.Hashtable;
 
+import kr.co.bettersoft.checkmileage.activities.R;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;

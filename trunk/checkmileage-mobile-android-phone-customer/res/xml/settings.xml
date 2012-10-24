@@ -11,8 +11,8 @@
             android:title="@string/settings_lock_settings" > 
             <intent
                 android:action="android.intent.action.VIEW"
-                android:targetClass="co.kr.bettersoft.checkmileage_mobile_android_phone_customer.Settings_PasswordPageActivity"
-                android:targetPackage="co.kr.bettersoft.checkmileage_mobile_android_phone_customer" />
+                android:targetClass="kr.co.bettersoft.checkmileage.activities.Settings_PasswordPageActivity"
+                android:targetPackage="kr.co.bettersoft.checkmileage.activities" />
         </PreferenceScreen>
 
         <CheckBoxPreference
@@ -30,8 +30,8 @@
             android:title="@string/settings_user_info_title" >
             <intent
                 android:action="android.intent.action.VIEW"
-                android:targetClass="co.kr.bettersoft.checkmileage_mobile_android_phone_customer.Settings_MyInfoPageActivity"
-                android:targetPackage="co.kr.bettersoft.checkmileage_mobile_android_phone_customer" />
+                android:targetClass="kr.co.bettersoft.checkmileage.activities.Settings_MyInfoPageActivity"
+                android:targetPackage="kr.co.bettersoft.checkmileage.activities" />
         </PreferenceScreen>
     </PreferenceCategory>
     <PreferenceCategory

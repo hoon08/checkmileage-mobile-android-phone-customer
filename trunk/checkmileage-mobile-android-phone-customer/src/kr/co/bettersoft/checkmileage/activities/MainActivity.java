@@ -6,7 +6,7 @@ import java.util.List;
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
 import kr.co.bettersoft.checkmileage.pref.Password;
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,6 +24,7 @@ import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Window;
+import android.widget.Toast;
 
 /* intro 화면
  * 기능 : 인트로 화면을 보여줌.
@@ -168,7 +169,7 @@ public class MainActivity extends Activity {
 //			Toast.makeText(MainActivity.this, "locked", Toast.LENGTH_SHORT).show();	
 			Intent intent = new Intent(MainActivity.this, Password.class);
         	// 비번 이후 액티비티 설정(나)
-        	intent.putExtra(Password.NEXT_ACTIVITY, "co.kr.bettersoft.checkmileage_mobile_android_phone_customer.MainActivity");
+        	intent.putExtra(Password.NEXT_ACTIVITY, CommonUtils.packageNames+".MainActivity");
         	// 현재 화면 비번 전달
             intent.putExtra(Password.PASSWORD, sharedPrefCustom.getString("password", "1234"));
             // 비번 입력 모드
@@ -307,4 +308,10 @@ public class MainActivity extends Activity {
           }
            return rtn;
     }
+     
+     // 로딩중에 취소버튼으로 종료 못하게 막음. 종료해도 메인 페이지가 뜨기 때문.
+     @Override
+ 	public void onBackPressed() {
+ 		Log.i("MainActivity", "onBackPressed");		
+ 	}
 }

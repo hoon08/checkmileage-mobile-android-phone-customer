@@ -25,7 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 
 
 import android.app.Activity;
@@ -433,10 +433,11 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
+								Thread.sleep(200);
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes());
 								os2.flush();
-								Thread.sleep(500);
+								Thread.sleep(200);
 								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 								responseCode = connection2.getResponseCode();
 								if(responseCode==200||responseCode==204){
@@ -584,7 +585,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 									obj.put("checkMileageId", myQRcode);			// 내 아이디
 									obj.put("companyName", searchText.getText());			// 내 아이디
 									
-									Log.w(TAG,"myQRcode::"+myQRcode+",searchWordArea:"+searchWordArea+",searchWordType:"+searchWordType+",companyName:"+searchText.getText());
+//									Log.w(TAG,"myQRcode::"+myQRcode+",searchWordArea:"+searchWordArea+",searchWordType:"+searchWordType+",companyName:"+searchText.getText());
+									Log.w(TAG,"myQRcode::"+myQRcode+",searchWordType:"+searchWordType+",companyName:"+searchText.getText());
 								}catch(Exception e){
 									e.printStackTrace();
 								}
@@ -595,7 +597,9 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 									connection2.setDoOutput(true);
 									connection2.setInstanceFollowRedirects(false);
 									connection2.setRequestMethod("POST");
+									Thread.sleep(200);
 									connection2.setRequestProperty("Content-Type", "application/json");
+									Thread.sleep(200);
 									OutputStream os2 = connection2.getOutputStream();
 									os2.write(jsonString.getBytes());
 									os2.flush();
@@ -640,12 +644,16 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 										try{
 											Log.w(TAG,"failed, retry all again. remain retry : "+reTry);
 											reTry = reTry -1;
-											Thread.sleep(500);		// 재시도?
+											Thread.sleep(200);		// 재시도?
 											getMemberStoreList();
 										}catch(Exception e2){}
 									}else{
 										Log.w(TAG,"reTry failed. -- init reTry");
-										reTry = 5;			
+										try{
+											reTry = 5;	
+										}catch(Exception e1){
+											e1.printStackTrace();
+										}
 										searchSpinnerType.setEnabled(true);
 										searchText.setEnabled(true); 
 										searchBtn.setEnabled(true);

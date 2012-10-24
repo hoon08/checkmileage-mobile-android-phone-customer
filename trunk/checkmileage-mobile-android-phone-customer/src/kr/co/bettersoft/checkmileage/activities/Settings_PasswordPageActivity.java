@@ -9,7 +9,7 @@ import kr.co.bettersoft.checkmileage.pref.Password;
 import android.os.Bundle;
 
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;

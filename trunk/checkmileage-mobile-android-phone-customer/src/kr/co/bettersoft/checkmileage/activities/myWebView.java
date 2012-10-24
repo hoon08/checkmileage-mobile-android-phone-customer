@@ -1,6 +1,6 @@
 package kr.co.bettersoft.checkmileage.activities;
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
