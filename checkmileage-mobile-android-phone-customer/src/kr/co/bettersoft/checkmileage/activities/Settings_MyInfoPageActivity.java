@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import org.json.JSONException;
 import org.json.JSONObject;
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -48,16 +48,13 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 	
 	static String TAG = "Settings_MyInfoPageActivity";
 	
-	public Boolean resumeCalled = false;
+//	public Boolean resumeCalled = false;		// (설정 정보가져와서 저장하는 등의 처리를 )한번만 실행 되도록 하기 위해서. -> 최초 1회 실행 후 true 가 됨.
 	
 	SharedPreferences sharedPrefCustom;		// 공용 프립스		 잠금 및 QR (잠금은 메인과 공유  위의 것(default,this)은 메인과 공유되지 않아 이 sharedPref 도 사용한다.)		
 	
-	SharedPreferences thePrefs;				// 어플 내 자체 프리퍼런스.  Resume 때 이곳에 연결하여 사용(탈퇴때 초기화 용도)-- 이건 사실 위에거랑 같음.. 삽질했음.
+	SharedPreferences defaultPref;			// default --  자체 프리퍼런스. 
 	
-	SharedPreferences defaultPref;			// default --  이것이 자체 프리퍼런스!!. 
-	
-	Calendar c = Calendar.getInstance();
-	
+	Calendar c = Calendar.getInstance();	
 	int todayYear = 0;						// 지금 -  년 월 일 시 분
 	int todayMonth = 1;
 	int todayDay = 0;
@@ -65,7 +62,7 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 	int todayMinute = 0;
 	int todaySecond = 0;
 	
-	int birthYear = 0;						// 생년월일 - 년 월 일
+	int birthYear = 0;						// 생년월일 - 년 /월/ 일
 	int birthMonth= 0;
 	int birthDay = 0;
 	
@@ -75,7 +72,7 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 	static String methodName = "";			// JSON 서버 통신용 메소드 명
 	static int responseCode = 0;			// JSON 서버 통신 결과
 	
-	static int updateLv=0;							// 서버에 업뎃 칠지 여부 검사용도. 0이면 안하고, 1이면 한다, 2면 두번한다(업뎃중 값이 바뀐 경우임)
+	static int updateLv=0;							// 서버에 업뎃 칠지 여부 검사용도. 0이면 안하고, 1이면 한다, 2면 두번한다(업뎃중 값이 바뀐 경우이다)
 	
 	String updateYN = "";
 	String server_birthday = "";			// 서버에서 받은 설정 파일중 필요한 정보들.
@@ -93,22 +90,13 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		//		Toast.makeText(Settings_MyInfoPageActivity.this, "Year:"+todayYear+",Month:"+todayMonth+",Day:"+todayDay, Toast.LENGTH_SHORT).show();
-
-		// 1. \res\xml\preferences.xml로 부터 Preference 계층구조를 읽어와
-		// 2. 이 PreferenceActivity의 계층구조로 지정/표현 하고
-		// 3. \data\data\패키지이름\shared_prefs\패키지이름_preferences.xml 생성
-		// 4. 이 후 Preference에 변경 사항이 생기면 파일에 자동 저장
 		addPreferencesFromResource(R.xml.settings_myinfo);
-		
 		/*
 		 *  서버로부터 개인 정보를 가져와서 도메인 같은 곳에 담아둔다. 나중에 업데이트 할때 사용해야 하니까. 업데이트하고 나면 그 도메인 그대로 유지해야 한다..
-		 *  없는거는 null pointer 나므로 ""로 바꿔주는 처리가 필요하다.
-		 *  리쥼에 넣지 말고 온크에 넣는게 나을까...어차피 유지될 거라면.. 
 		 */
 		memberInfo = new CheckMileageMembers();
 		getUserInfo();
+		updateServerSettingsToPrefs();				// 서버 설정 자체 설정으로 저장 - 테스트 *** 
 		
 		/*
 		 * 성별 변경시 리스너 달아서 서버에 업뎃
@@ -119,13 +107,14 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 			@Override
 			public boolean onPreferenceChange(Preference arg0, Object arg1) {		// 성별 성별을 선택합니다 // 남성  여성 비공개
 				String tmpStrMale = getString(R.string.sex_male);
-				String tmpStrFemale = getString(R.string.sex_male);
+				String tmpStrFemale = getString(R.string.sex_female);
+				String tmpStrEtc = getString(R.string.sex_etc);
 				String tmpStr = (String) arg1;
 				if(tmpStr.equals(tmpStrMale)){
 					memberInfo.setGender("MALE");
 				}else if(tmpStr.equals(tmpStrFemale)){
 					memberInfo.setGender("FEMALE");
-				}else{
+				}else if(tmpStr.equals(tmpStrEtc)){
 					memberInfo.setGender("ETC");
 				}
 				// TODO Auto-generated method stub
@@ -140,6 +129,8 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 				return true;		// 자체 설정도 먹도록 해줌. false 일땐 자체 설정이 먹지 않음.
 			}
 		});
+		
+		
 		/*
 		 * 메일 변경시. 서버에 업뎃.
 		 */
@@ -162,11 +153,10 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 					Toast.makeText(Settings_MyInfoPageActivity.this, R.string.invalid_email, Toast.LENGTH_SHORT).show();
 					return false;
 				}
-				
 			}
 		});
 		
-		if(!resumeCalled){			// 한번만 하자.. 느리니까
+//		if(!resumeCalled){			// 한번만 실행시키기 위해서 flag 사용
 			getPreferenceScreen().getSharedPreferences() 
 			.registerOnSharedPreferenceChangeListener(this); 
 
@@ -174,33 +164,71 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 			 *  비번 잠금 설정은 비번이 있을 경우에만 해준다.	(비번이 없다면 잠금 체크 설정을 사용할 수 없다.)		
 			 *  비번 설정의 경우 리쥼에 넣지 않으면 한번밖에 안읽어서 변경시 적용되지 않는다. (어플 재기동해야 적용)
 			 */
-			// prefs 	// 어플 잠금 설정. 공용으로 쓸것도 필요하다. 
+			// prefs 	// 어플 잠금 설정. 공용으로 쓸것도 필요 
 			sharedPrefCustom = getSharedPreferences("MyCustomePref",
 					Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
 			sharedPrefCustom.registerOnSharedPreferenceChangeListener(this);			// 여기에도 등록해놔야 리시버가 제대로 반응한다.
-
-
-			// default 도 한번 테스트
+			// default pref
 			defaultPref = PreferenceManager.getDefaultSharedPreferences(this);
-			defaultPref.registerOnSharedPreferenceChangeListener(this);			// test 용.. 혹시나..
+			defaultPref.registerOnSharedPreferenceChangeListener(this);			
 
-			SharedPreferences.Editor init2 = sharedPrefCustom.edit();		// 강제 호출용도  .. 단어명은 의미없다.
-			int someNum = sharedPrefCustom.getInt("pref_app_leave", sharePrefsFlag);	// 이전 값과 같을수 있으므로..
+			SharedPreferences.Editor init2 = sharedPrefCustom.edit();		// 강제 호출용도  .. 단어명은 의미없음.
+			int someNum = sharedPrefCustom.getInt("someNum", sharePrefsFlag);	// 이전 값과 같을수 있으므로..
 			someNum = someNum * -1;													// 매번 다른 값이 들어가야 제대로 호출이 된다. 같은 값들어가면 변화 없다고 호출 안됨.			
-			init2.putInt("pref_app_leave", someNum); 		// 프리퍼런스 값 넣어 업데이트 시키면 강제로 리스너 호출.
+			init2.putInt("someNum", someNum); 		// 프리퍼런스 값 넣어 업데이트 시키면 강제로 리스너 호출.
 			init2.commit();			
 			// 자체 프리퍼를 지목할 수 있게 됨. 탈퇴 메소드때 초기값 세팅해준다.
+			
+//			resumeCalled = true;
+		}
+//	}
 
-			// password 변경하고 온 경우 업뎃 한번 쳐주기.
-			if(updateLv>0){		// 2였던 경우. (업뎃중 또 변경된 경우 한번더)
-				Log.d(TAG,"Need Update one more time");
-				updateToServer();
+	
+	/**
+	 *  공용설정에서 업뎃 여부 확인 이후, y 이면 자체 설정에 업뎃 친다. 아니면 말고.  비번은 해당사항 없다.
+	 *  설정에서 값을 꺼내어 화면에 세팅한다. 
+	 *  (설정에 값이 있다고 화면에 그대로 보여지지 않기 때문에 화면에 보여지도록 처리해줘야 함)
+	 */
+	public void updateServerSettingsToPrefs(){
+		if(sharedPrefCustom==null){
+			sharedPrefCustom = getSharedPreferences("MyCustomePref",
+					Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
+		}
+		String updateYN = sharedPrefCustom.getString("updateYN2", "N");
+		if(updateYN.equals("Y")){
+			Log.w(TAG,"need update o");
+			String server_email = sharedPrefCustom.getString("server_email", "");
+			String server_gender = sharedPrefCustom.getString("server_gender", "");
+			if(defaultPref==null){
+				defaultPref = PreferenceManager.getDefaultSharedPreferences(this);
 			}
-//			updateServerSettingsToPrefs();				// 서버 설정 자체 설정으로 저장 - 테스트
-			resumeCalled = true;
+			if(server_gender.length()>0){			// 성별 설정을 꺼내어 화면에 셋팅.
+				Log.d(TAG,server_gender);
+				ListPreference pref_user_sex = (ListPreference)findPreference("pref_user_sex");
+				if (server_gender.equals("MALE" )){
+					pref_user_sex.setValue(getString(R.string.sex_male));
+				} else if (server_gender.equals("FEMALE")){
+					pref_user_sex.setValue(getString(R.string.sex_female));
+				} else if (server_gender.equals("ETC")){
+					pref_user_sex.setValue(getString(R.string.sex_etc));
+				}
+			}
+			if(server_email.length()>0){			// 이메일 설정을 꺼내어 화면에 셋팅.
+				Log.d(TAG,server_email);
+				EditTextPreference pref_user_email = (EditTextPreference)findPreference("pref_user_email");
+				pref_user_email.setText(server_email);
+			}
+			SharedPreferences.Editor updateDone =   sharedPrefCustom.edit();
+			updateDone.putString("updateYN2", "N");
+			updateDone.commit();
+			Log.i(TAG,"update settings to mobile step2 done");
+		}else{
+//			Log.e(TAG,"업뎃 필요 x");
 		}
 	}
-
+	
+	
+	
 	public String getNow(){
 		// 일단 오늘.
 		todayYear = c.get(Calendar.YEAR);
@@ -224,18 +252,9 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 //		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
 	}
 	
-	/*
-	 * oncreate 에 있으면 한번밖에 못해서 두번 이상 하려면 Resume 에 둔다..
-	 * 화면으로 올때마다 비번을 꺼낸다. 
-	 * (비번 변경 이후 돌아왔을때 변경된 비번 꺼낼수 있도록 함)
-	 * (non-Javadoc)
-	 * @see android.app.Activity#onResume()
-	 */
 	@Override
 	public void onResume(){		
 		super.onResume();
-//		Log.i(TAG, "onResume");		// yyyyMMdd
-		    // Set up a listener whenever a key changes 
 	}
 
 	@Override 
@@ -286,7 +305,6 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 			birthDate.commit();
 			
 			// 도메인의 birthday 를 업데이트.
-//			String birthday = Integer.toString(year) + Integer.toString(monthOfYear+1) + Integer.toString(dayOfMonth);
 			String tempMonth = Integer.toString(monthOfYear+1);
 			String tempDay = Integer.toString(dayOfMonth);
 			if(tempMonth.length()==1){
@@ -296,7 +314,7 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 				tempDay = "0"+tempDay;
 			}
 			String birthday = Integer.toString(year)+ "-" + tempMonth + "-" + tempDay;
-			Log.i(TAG, "birthday::"+birthday);		// yyyyMMdd
+			Log.i(TAG, "birthday::"+birthday);		// yyyy-MM-dd
 			Log.i(TAG, "act::"+memberInfo.getActivateYn());		
 			memberInfo.setBirthday(birthday);
 			if(updateLv<2){		// 0또는 1일경우. 1 증가. (최대 2까지)
@@ -430,13 +448,10 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 					}
 			).start();
 		}
-		// ...
 	}
 	
-	
-	
 	/*
-	 * 서버로부터 받아온 개인 정보를 파싱해서 도메인에 저장하는 부분. 업뎃, 탈퇴에서 호출하면 안됨. 멤버 데이터 모두 날아감
+	 * 서버로부터 받아온 개인 정보를 파싱해서 도메인에 저장하는 부분. 업뎃, 탈퇴할때 호출하면 안됨. 멤버 데이터 모두 날아감
 	 */
 	public void theData1(InputStream in){
 		Log.d(TAG,"theData1");
@@ -458,25 +473,12 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		/*
-		 *  일단 받은 내용 여기에 적을것
-		 *  고객 상세정보::{"checkMileageMember":
-		 *  {"checkMileageId":"test1234","password":"","phoneNumber":"01022173645",
-		 *  "email":"","birthday":"","gender":"","latitude":"","longitude":"","deviceType":"AS",
-		 *  "registrationId":"aaqw","activateYn":"Y","modifyDate":"2012-08-10","registerDate":"2012-08-10"}}
-		 *  
-		 *   업데이트 할 것들.  도메인에 저장.
-		 *  checkMileageId /password /phoneNumber /email /birthday /gender /latitude /longitude /deviceType /registrationId /activateYn /modifyDate /
-		 */
 //		Log.d(TAG,"서버에서 받은 고객 상세정보::"+builder.toString());
-		String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다
-		// // // // // // // 바로 바로 화면에 add 하고 터치시 값 가져다가 상세 정보 보도록....
+		String tempstr = builder.toString();		
 		if(responseCode==200 || responseCode==204){
 			try {
 				jsonObject = new JSONObject(tempstr);
 				JSONObject jsonobj2 = jsonObject.getJSONObject("checkMileageMember");
-//				Bitmap bm = null;
-				// 데이터를 전역 변수 도메인에 저장하고 핸들러를 통해 도메인-> 화면에 보여준다..
 				try{  // 아이디
 //					Log.i(TAG, "checkMileageId:::"+jsonobj2.getString("checkMileageId"));
 					memberInfo.setCheckMileageId(jsonobj2.getString("checkMileageId"));				
@@ -529,88 +531,17 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 			} 
 		}else{			// 요청 실패시	 토스트 띄우고 화면 유지. -- toast 는 에러 발생.
 			Log.d(TAG, this.getString(R.string.error_message));
-//			Toast.makeText(Settings_MyInfoPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 		}
 	}
-	// ...
 
 	
-	// 주 용도는 resume 때 자체 프리퍼런스 전달하여 컨트롤 할 수 있게 하는 것.  추후 단일 프리퍼런스 사용으로 전환도 가능하다(이걸 메인으로). 현재는 프리퍼런스 3개 사용중;;
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		if(key.equals("pref_app_leave")){		// resume 에서 넣은 것과 이름 일치해야 동작한다.
-//			Toast.makeText(Settings_MyInfoPageActivity.this, "???"+key, Toast.LENGTH_SHORT).show();
-			/*  // 테스트용
-			Map<String, ?> map = sharedPreferences.getAll();
-			Log.e(TAG, "map.size"+map.size());	
-			Set set  = map.keySet();
-			Iterator ii = set.iterator();
-			String iikey="";
-			String iivalue="";
-			Object obj = null;
-			while(ii.hasNext()){
-				iikey =( String)ii.next();
-				obj = (Object) map.get(iikey);
-//				iivalue  = (String)obj;
-				Log.e(TAG, iikey+"//"+obj);	
-			}
-			*/		// 테스트용(확인용)
-			thePrefs = sharedPreferences;
+		if(key.equals("someNum")){		// resume 에서 넣은 것과 이름 일치해야 동작한다.
 		}
 	}
 	
-	
-//	/**
-//	 *  공용설정에서 업뎃 여부 확인 이후, y 이면 자체 설정에 업뎃 친다. 아니면 말고.  설정은 먹는데 재접 이후 먹는다..
-//	 *  
-//	 */
-//	public void updateServerSettingsToPrefs(){
-//		if(updateYN.equals("y")){
-//			Log.e(TAG,"업뎃 필요 o");
-//			
-//			if(server_birthday.length()>8){		// 2012-08-25		0123 4x 56 7x 89
-//				String server_birth_year = server_birthday.substring(0,4);
-//			    String server_birth_month = server_birthday.substring(5,7);
-//			    String server_birth_day = server_birthday.substring(8,10);
-//			    Log.e(TAG,"server_birth_year::"+server_birth_year+"//server_birth_month::"+server_birth_month+"//server_birth_day::"+server_birth_day);
-//			    int int_server_birth_year = Integer.parseInt(server_birth_year);
-//				int int_server_birth_month = Integer.parseInt(server_birth_month);
-//				int int_server_birth_day = Integer.parseInt(server_birth_day);
-//				SharedPreferences.Editor birthDate = sharedPrefCustom.edit();
-//				birthDate.putInt("birthYear", int_server_birth_year);
-//				birthDate.putInt("birthMonth", int_server_birth_month);
-//				birthDate.putInt("birthDay", int_server_birth_day);
-//				Log.e(TAG,"birthYear::"+int_server_birth_year+"//birthMonth::"+int_server_birth_month+"//birthDay::"+int_server_birth_day);
-//				birthDate.commit();
-//			}else{
-//				Log.e(TAG,"server_birthday.length()");
-//			}
-//			
-//			SharedPreferences.Editor updateDone =   sharedPrefCustom.edit();
-//			updateDone.putString("updateYN", "n");
-//			updateDone.commit();
-//			Log.i(TAG,"update settings to mobile done");
-//			
-//			SharedPreferences.Editor sets = defaultPref.edit();
-//			if(server_gender.length()>0){
-//				Log.e(TAG,server_gender);
-//				ListPreference pref_user_sex = (ListPreference)findPreference("pref_user_sex");
-//				pref_user_sex.setValue(server_gender);
-//				sets.putString("pref_user_sex", server_gender);
-//			}
-//			if(server_email.length()>0){
-//				Log.e(TAG,server_email);
-//				EditTextPreference pref_user_email = (EditTextPreference)findPreference("pref_user_email");
-//				pref_user_email.setText(server_email);
-//				sets.putString("pref_user_email", server_email);
-//			}
-//			sets.commit();		// 자체 설정도 바꾸고 화면상에서도 바꿔준다.
-//			
-//		}else{
-////			Log.e(TAG,"업뎃 필요 x");
-//		}
-//	}
 	
 	/**
      * 이메일주소 유효검사

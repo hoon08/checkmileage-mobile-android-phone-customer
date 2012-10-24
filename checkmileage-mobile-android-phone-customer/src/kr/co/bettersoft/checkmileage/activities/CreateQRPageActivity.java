@@ -18,7 +18,7 @@ import java.util.Locale;
 
 import org.json.JSONObject;
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 
 /* 
  * QR 을 생성하고 바로 다음단계인 나의 QR 코드 보기액티비티로 넘어간다.

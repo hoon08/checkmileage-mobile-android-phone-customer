@@ -17,7 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 
 
 import android.app.Activity;

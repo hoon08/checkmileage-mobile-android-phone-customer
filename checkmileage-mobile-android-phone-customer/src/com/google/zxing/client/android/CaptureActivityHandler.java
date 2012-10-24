@@ -16,7 +16,7 @@
 
 package com.google.zxing.client.android;
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
@@ -32,6 +32,8 @@ import android.os.Message;
 import android.util.Log;
 
 import java.util.Vector;
+
+import kr.co.bettersoft.checkmileage.activities.R;
 
 /**
  * This class handles all the messaging which comprises the state machine for capture.

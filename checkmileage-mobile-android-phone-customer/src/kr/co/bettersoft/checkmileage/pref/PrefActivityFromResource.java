@@ -26,7 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -59,13 +59,14 @@ import android.widget.Toast;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import kr.co.bettersoft.checkmileage.MainActivity;
-import kr.co.bettersoft.checkmileage.MemberStoreInfoPage;
-import kr.co.bettersoft.checkmileage.MemberStoreListPageActivity;
-import kr.co.bettersoft.checkmileage.MyMileagePageActivity;
-import kr.co.bettersoft.checkmileage.MyQRPageActivity;
-import kr.co.bettersoft.checkmileage.Settings_AboutPageActivity;
-import kr.co.bettersoft.checkmileage.myWebView;
+import kr.co.bettersoft.checkmileage.activities.MainActivity;
+import kr.co.bettersoft.checkmileage.activities.MemberStoreInfoPage;
+import kr.co.bettersoft.checkmileage.activities.MemberStoreListPageActivity;
+import kr.co.bettersoft.checkmileage.activities.MyMileagePageActivity;
+import kr.co.bettersoft.checkmileage.activities.MyQRPageActivity;
+import kr.co.bettersoft.checkmileage.activities.R;
+import kr.co.bettersoft.checkmileage.activities.Settings_AboutPageActivity;
+import kr.co.bettersoft.checkmileage.activities.myWebView;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMembers;
 
 
@@ -814,17 +815,17 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	
 	/**
 	 *  공용설정에서 업뎃 여부 확인 이후, y 이면 자체 설정에 업뎃 친다. 아니면 말고.  비번은 해당사항 없다.
-	 *  
+	 *  서버에서 받은 설정 정보를 모바일 설정에 저장한다. 업데이트 여부는 updateYN 를 이용한다.
 	 */
 	public void updateServerSettingsToPrefs(){
-		String updateYN = sharedPrefCustom.getString("updateYN", "n");
-		if(updateYN.equals("y")){
+		String updateYN = sharedPrefCustom.getString("updateYN", "N");
+		if(updateYN.equals("Y")){		
 			Log.w(TAG,"need update o");
 			String server_birthday = sharedPrefCustom.getString("server_birthday", "");
 			String server_email = sharedPrefCustom.getString("server_email", "");
 			String server_gender = sharedPrefCustom.getString("server_gender", "");
-			Boolean server_receive_notification_yn = sharedPrefCustom.getBoolean("server_receive_notification_yn", true);
-			
+			Boolean server_receive_notification_yn = sharedPrefCustom.getBoolean("server_receive_notification_yn", true);			
+			// 생년월일은 꺼내서 쪼개서 다시 저장
 			if(server_birthday.length()>8){		// 2012-08-25		0123 4x 56 7x 89
 				String server_birth_year = server_birthday.substring(0,4);
 			    String server_birth_month = server_birthday.substring(5,7);
@@ -842,57 +843,40 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			}else{
 				Log.d(TAG,"server_birthday.length()");
 			}
-			
 			SharedPreferences.Editor updateDone =   sharedPrefCustom.edit();
-			updateDone.putString("updateYN", "n");
-			updateDone.commit();
-			Log.i(TAG,"update settings to mobile done");
-			
-//			birthYear = sharedPrefCustom.getInt("birthYear", todayYear);		
-//			birthMonth = sharedPrefCustom.getInt("birthMonth", todayMonth)-1;		// 저장할때 1 더해서 넣었으니 꺼낼때는 1 빼서..	
-//			birthDay = sharedPrefCustom.getInt("birthDay", todayDay);
-//			DatePickerDialog DatePickerDialog2 = new DatePickerDialog(this, mDateSetListener, birthYear, birthMonth, birthDay);
-//			DatePickerDialog2.setTitle("생년월일 설정");		// 달력 타이틀 설정
-//			DatePickerDialog2.show();
-			
 			SharedPreferences.Editor sets = defaultPref.edit();
 			if(!server_receive_notification_yn){
-				sets.putBoolean("preference_alarm_chk", false);	
+				sets.putBoolean("preference_alarm_chk", false);			// 자체 설정 바꿈
 				CheckBoxPreference preference_alarm_chk = (CheckBoxPreference)findPreference("preference_alarm_chk");
-				preference_alarm_chk.setChecked(false);
+				preference_alarm_chk.setChecked(false);					// 화면에서도 바꿈
+			}			
+			if(server_gender!=null && server_gender.length()>0){
+				sets.putString("pref_user_sex", server_gender);		// 자체 설정만 바꿈 (화면에서는 하위 페이지에서 바꿈)
 			}
-			if(server_gender.length()>0){
-				Log.d(TAG,server_gender);
-//				ListPreference pref_user_sex = (ListPreference)findPreference("pref_user_sex");
-//				pref_user_sex.setValue(server_gender);
-				sets.putString("pref_user_sex", server_gender);
+			if(server_email!=null && server_email.length()>0){
+				sets.putString("pref_user_email", server_email);	// 자체 설정만 바꿈 (화면에서는 하위 페이지에서 바꿈)
 			}
-			if(server_email.length()>0){
-				Log.d(TAG,server_email);
-//				EditTextPreference pref_user_email = (EditTextPreference)findPreference("pref_user_email");
-//				pref_user_email.setText(server_email);
-				sets.putString("pref_user_email", server_email);
-			}
-			sets.commit();		// 자체 설정도 바꾸고 화면상에서도 바꿔준다.
-			
+			sets.commit();		// 자체 설정 바꿈 저장.
+			updateDone.putString("updateYN", "N");		// 폰으로 업뎃 끝 이후. 
+			updateDone.putString("updateYN2", "Y");		// 폰으로 업뎃 끝 이후. --> 하위 페이지에서 완료됨.
+			updateDone.commit();
+			Log.i(TAG,"update settings to mobile step1 done");
 //			(Preference)findPreference("preference_alarm_chk").
-			
-			if(defaultPref!=null){		// 자체 설정. 
-				Map<String, ?> map = defaultPref.getAll();
-				Log.d(TAG, "map.size"+map.size());	
-				Set set  = map.keySet();
-				Iterator ii = set.iterator();
-				String iikey="";
-				String iivalue="";
-				Object obj = null;
-				while(ii.hasNext()){
-					iikey =( String)ii.next();
-					obj = (Object) map.get(iikey);
-//					iivalue  = (String)obj;
-					Log.d(TAG, iikey+"//"+obj);	
-				}
-			}
-			
+//			if(defaultPref!=null){		// 자체 설정. 
+//				Map<String, ?> map = defaultPref.getAll();
+//				Log.d(TAG, "map.size"+map.size());	
+//				Set set  = map.keySet();
+//				Iterator ii = set.iterator();
+//				String iikey="";
+//				String iivalue="";
+//				Object obj = null;
+//				while(ii.hasNext()){
+//					iikey =( String)ii.next();
+//					obj = (Object) map.get(iikey);
+////					iivalue  = (String)obj;
+//					Log.d(TAG, iikey+"//"+obj);	
+//				}
+//			}
 		}else{
 //			Log.e(TAG,"업뎃 필요 x");
 		}

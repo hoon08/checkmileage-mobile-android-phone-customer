@@ -1,6 +1,7 @@
 package kr.co.bettersoft.checkmileage.activities;
 // QR 없을 경우 QR 추가 페이지. -> QR 획득 방법 선택. 1.QR생성. 2.QR스켄
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+import kr.co.bettersoft.checkmileage.pref.DummyActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class No_QR_PageActivity extends Activity {
 
@@ -76,4 +78,11 @@ public class No_QR_PageActivity extends Activity {
 		}
 	}
 	
+	
+	@Override
+	public void onBackPressed() {
+		// 여기서 종료시킬때는 다음에 잘 동작하도록 카운팅을 조절해야한다.
+		DummyActivity.count = 0;
+		finish();
+	}
 }

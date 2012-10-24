@@ -20,8 +20,8 @@
                 android:id="@+id/merchantImage"
                 android:padding="5dp"
                 android:scaleType="fitCenter"
-                android:layout_width="100sp"
-                android:layout_height="100sp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:contentDescription="@string/app_name" />
             
             <LinearLayout
@@ -43,8 +43,8 @@
                         android:layout_width="170dp"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
-                        android:layout_marginTop="4sp"
-                        android:textSize="20sp"
+                        android:layout_marginTop="4dp"
+                        android:textSize="20dp"
                         android:gravity="left" />
 					
 					
@@ -52,10 +52,10 @@
                         xmlns:android="http://schemas.android.com/apk/res/android"
                         android:id="@+id/mileage"
                         android:layout_weight="1"
-                        android:layout_width="60sp"
+                        android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
-                        android:textSize="20sp"
+                        android:textSize="20dp"
                         android:background="#ffff0000"
                         android:textColor="#ffffffff"
                         android:gravity="center" />
@@ -70,14 +70,14 @@
                 android:singleLine="true"
     			android:ellipsize="end"
                 android:padding="2dp"
-                android:textSize="13sp" />
+                android:textSize="13dp" />
 				<TextView
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/merchantPhone"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:padding="2dp"
-                android:textSize="13sp" />
+                android:textSize="13dp" />
             
         </LinearLayout>
             

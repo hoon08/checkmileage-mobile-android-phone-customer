@@ -16,7 +16,7 @@ import kr.co.bettersoft.checkmileage.pref.DummyActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 
 import com.google.android.gcm.GCMRegistrar;
 
@@ -218,28 +218,28 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 	///////////////////////////////////////// GCM 등록 위한 메소드들 //////////////////////////////////    
 	
 	
-	public void testGCM(String registrationId) throws JSONException, IOException {
-		Log.i("testGCM", "testGCM");
-		JSONObject jsonMember = new JSONObject();
-		jsonMember.put("registrationId", registrationId);
-		String jsonString = "{\"checkMileageMember\":" + jsonMember.toString() + "}";
-		//Log.i("testGCM", "jsonMember : " + jsonString);
-		try {
-			URL postUrl2 = new URL("http://"+serverName+"/checkMileageMemberController/testGCM");
-			HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
-			connection2.setDoOutput(true);
-			connection2.setInstanceFollowRedirects(false);
-			connection2.setRequestMethod("POST");
-			connection2.setRequestProperty("Content-Type", "application/json");
-			OutputStream os2 = connection2.getOutputStream();
-			os2.write(jsonString.getBytes());
-			os2.flush();
-			System.out.println("postUrl      : " + postUrl2);
-			System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
-		} catch (Exception e) {
-			Log.d("testGCM", "Fail to register category.");
-		}
-	}
+//	public void testGCM(String registrationId) throws JSONException, IOException {
+//		Log.i("testGCM", "testGCM");
+//		JSONObject jsonMember = new JSONObject();
+//		jsonMember.put("registrationId", registrationId);
+//		String jsonString = "{\"checkMileageMember\":" + jsonMember.toString() + "}";
+//		//Log.i("testGCM", "jsonMember : " + jsonString);
+//		try {
+//			URL postUrl2 = new URL("http://"+serverName+"/checkMileageMemberController/testGCM");
+//			HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+//			connection2.setDoOutput(true);
+//			connection2.setInstanceFollowRedirects(false);
+//			connection2.setRequestMethod("POST");
+//			connection2.setRequestProperty("Content-Type", "application/json");
+//			OutputStream os2 = connection2.getOutputStream();
+//			os2.write(jsonString.getBytes());
+//			os2.flush();
+//			System.out.println("postUrl      : " + postUrl2);
+//			System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+//		} catch (Exception e) {
+//			Log.d("testGCM", "Fail to register category.");
+//		}
+//	}
 
 
 	public void checkDoneAndDoGCM(){
@@ -265,15 +265,15 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 									maxRetry = 5;
 								}
 							}else{
-								Log.i("testGCM", "now go with : "+REGISTRATION_ID);
-								try {
-//									updateMyGCMtoServer();
-									testGCM(REGISTRATION_ID);
-								} catch (JSONException e) {
-									e.printStackTrace();
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
+								Log.i("testGCM", "now go with : "+REGISTRATION_ID+"-->test skip");
+//								try {
+////									updateMyGCMtoServer();
+////									testGCM(REGISTRATION_ID);
+//								} catch (JSONException e) {
+//									e.printStackTrace();
+//								} catch (IOException e) {
+//									e.printStackTrace();
+//								}
 							}
 						}
 					}

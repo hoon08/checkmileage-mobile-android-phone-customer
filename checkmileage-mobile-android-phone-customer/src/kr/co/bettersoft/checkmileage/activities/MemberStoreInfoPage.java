@@ -28,7 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 
 
 import android.R.drawable;
@@ -598,7 +598,7 @@ public class MemberStoreInfoPage extends Activity {
 	 * newWidth : 새로운 넓이
 	 * 참고 소스 : http://skyswim42.egloos.com/3477279 ( webview 에서 capture 화면 resizing 하는 source 도 있음 )
 	 */
-	private BitmapDrawable BitmapResizePrc( Bitmap Src, float newHeight, float newWidth)
+	private BitmapDrawable BitmapResizePrc(Bitmap Src, float newHeight, float newWidth)
 	{
 		BitmapDrawable Result = null;
 		int width = Src.getWidth();
@@ -631,6 +631,8 @@ public class MemberStoreInfoPage extends Activity {
 		return Result;
 	}
 
+
+	
 
 	
 	public void setCallingPhoneNumber(final String phoneNumber) {

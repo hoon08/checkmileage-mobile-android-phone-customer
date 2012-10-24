@@ -21,6 +21,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
+import kr.co.bettersoft.checkmileage.activities.R;
+
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -43,7 +45,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;

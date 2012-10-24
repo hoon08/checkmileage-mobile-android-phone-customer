@@ -28,7 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 
 
 import android.app.Activity;
@@ -90,13 +90,6 @@ public class MyMileagePageActivity extends Activity {
 	
 	public boolean connected = false;  // 인터넷 연결상태
 	
-	/*  구식 방법 사용 안함
-	private ArrayAdapter<String> m_adapter = null;
-	private ListView m_list = null;
-	ArrayAdapter<CheckMileageMileage> adapter = null;
-	MyAdapter mAdapter;
-*/ 
-
 	List<CheckMileageMileage> entriesFn = null;
 	float fImgSize = 0;
 	int isRunning = 0;
@@ -233,7 +226,6 @@ public class MyMileagePageActivity extends Activity {
 		try{
 			// 조회
 			Cursor c = db.rawQuery( Q_GET_LIST, null );
-//			Log.i(TAG, Integer.toString(c.getCount()));			// qr img
 			if(c.getCount()==0){
 				Log.i(TAG, "saved mileage data NotExist");
 			}else{
@@ -268,6 +260,7 @@ public class MyMileagePageActivity extends Activity {
 		       }
 			}
 			 c.close();
+			 db.close();
 			 entriesFn = dbOutEntries;						//  *** 꺼낸 데이터를 결과 데이터에 세팅 
 		}catch(Exception e){e.printStackTrace();}
 		showInfo();									//  *** 결과 데이터를 화면에 보여준다.		 데이터 있는지 여부는 결과 처리에서 함께..
@@ -293,11 +286,6 @@ public class MyMileagePageActivity extends Activity {
 						listView.setVisibility(8);			//   0 visible   4 invisible   8 gone
 						emptyView.setVisibility(0);
 					}
-					/* 구식 방법
-					mAdapter = new MyAdapter(returnThis(), R.layout.my_mileage_list, (ArrayList<CheckMileageMileage>) entriesFn);		// entriesFn   dataArr
-					m_list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-					m_list.setAdapter(mAdapter);
-					*/
 					isRunning = isRunning -1;
 				}
 				if(b.getInt("order")==1){
@@ -376,8 +364,6 @@ public class MyMileagePageActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
 				Intent intent = new Intent(MyMileagePageActivity.this, MemberStoreInfoPage.class);
-//				Log.i(TAG, "checkMileageMerchantsMerchantID::"+entriesFn.get(position).getCheckMileageMerchantsMerchantID());
-//				Log.i(TAG, "myMileage::"+entriesFn.get(position).getMileage());
 				intent.putExtra("checkMileageMerchantsMerchantID", entriesFn.get(position).getCheckMileageMerchantsMerchantID());		// 가맹점 아이디
 				intent.putExtra("idCheckMileageMileages", entriesFn.get(position).getIdCheckMileageMileages());		// 고유 식별 번호. (상세보기 조회용도)
 				intent.putExtra("myMileage", entriesFn.get(position).getMileage());									// 내 마일리지    // 가맹점에 대한 내 마일리지
@@ -386,67 +372,6 @@ public class MyMileagePageActivity extends Activity {
 		});
 	}
 	
-	/*   // 구식 방법을 사용하지 않음.
-	// 어댑터 클래스. 이곳에서 얻어온 데이터를 뷰 아이디를 통해 세팅한다.
-	class MyAdapter extends BaseAdapter{
-		Context context;
-		int layoutId;
-		ArrayList<CheckMileageMileage> myDataArr;
-		LayoutInflater Inflater;
-		MyAdapter(Context _context, int _layoutId, ArrayList<CheckMileageMileage> _myDataArr){
-			context = _context;
-			layoutId = _layoutId;
-			myDataArr = _myDataArr;
-			Inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		}
-		@Override
-		public int getCount() {
-			return myDataArr.size();
-		}
-		@Override
-		public String getItem(int position) {
-			return myDataArr.get(position).getCheckMileageMerchantsMerchantID();
-		}
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			final int pos = position;
-			if (convertView == null)  {
-				convertView = Inflater.inflate(layoutId, parent, false);
-			}
-			ImageView leftImg = (ImageView)convertView.findViewById(R.id.merchantImage);		// 가맹점 이미지 넣고
-			// set the Drawable on the ImageView
-			if(myDataArr.get(position).getMerchantImage()!=null){
-				BitmapDrawable bmpResize = BitmapResizePrc(myDataArr.get(position).getMerchantImage(), fImgSize/2, fImgSize/2);  
-				leftImg.setImageDrawable(bmpResize);	
-			}
-				
-//			leftImg.setImageBitmap(myDataArr.get(position).getMerchantImage());			
-			
-			TextView nameTv = (TextView)convertView.findViewById(R.id.merchantName);			// 가맹점 이름 넣고
-			nameTv.setText(myDataArr.get(position).getMerchantName());
-			TextView mileage = (TextView)convertView.findViewById(R.id.mileage);				// 가맹점에 대한 내 마일리지 넣고		.. 더 넣을거 있으면 아래에 추가, XML 파일에도 뷰 등록..
-			mileage.setText(myDataArr.get(position).getMileage()+"점");					
-			
-			TextView workPhone = (TextView)convertView.findViewById(R.id.merchantPhone);				// 가맹점 전번.
-			workPhone.setText(myDataArr.get(position).getWorkPhoneNumber());		
-			
-//			Button btn = (Button)convertView.findViewById(R.id.sendBtn);		// 하단 버튼 넣어서 클릭시 어쩌구..
-//			btn.setOnClickListener(new Button.OnClickListener()  {
-//				public void onClick(View v)  {
-//					String str = myDataArr.get(pos).name + "님의 전화번호는 [ "+
-//					                                                   myDataArr.get(pos).phone+" ] 입니다.";
-//					Toast.makeText(context, str,Toast.LENGTH_SHORT).show();
-//				}
-//			});
-			return convertView;
-		}
-	}
-	*/
-	
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -454,21 +379,12 @@ public class MyMileagePageActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		pb1 = (ProgressBar) findViewById(R.id.ProgressBar01);
-//		final ProgressDialog dialog= ProgressDialog.show(MyMileagePageActivity.this, "타이틀","메시지",true);
-////		b. Dialog를 화면에서 제거하는 코드를 작성한다. 예를 들어 3초쯤 있다가 다이얼로그를 없애고 싶다면...
-//		new Thread(new Runnable() {
-//		public void run() {
-//		try { Thread.sleep(3000); } catch(Exception e) {}
-//		dialog.dismiss();
-//		}
-//		});
-		
 		
 		// DB 쓸거니까 초기화 해준다.
 		 initDB();
 		 
 		 
-		myQRcode = MyQRPageActivity.qrCode;			// 내 QR 코드. (확인용)
+		myQRcode = MyQRPageActivity.qrCode;			// 내 QR 코드. 
 		
 		// 크기 측정
 		float screenWidth = this.getResources().getDisplayMetrics().widthPixels;
@@ -482,16 +398,11 @@ public class MyMileagePageActivity extends Activity {
 	    }
 		
 		Log.i(TAG, myQRcode);		
-		URL imageURL = null;							
-		URLConnection conn = null;
-		InputStream is= null;
+//		URL imageURL = null;							
+//		URLConnection conn = null;
+//		InputStream is= null;
 		
 		setContentView(R.layout.my_mileage);
-		
-		/* 구식 방법
-		m_list = (ListView) findViewById(R.id.id_list);
-		m_list.setOnItemClickListener(onItemClick);
-		*/
 		
 		searched = false;		// ?
 		
@@ -510,27 +421,6 @@ public class MyMileagePageActivity extends Activity {
 		}
 	}
 
-	
-	/* 구식 방법을 사용하지 않음
-	
-	AdapterView.OnItemClickListener onItemClick = new AdapterView.OnItemClickListener() {
-		@Override
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
-		{
-			// 실행문
-//			Toast.makeText(MyMileagePageActivity.this, "터치터치"+arg2+"이곳은:"+entriesFn.get(arg2).getCheckMileageMerchantsMerchantID(), Toast.LENGTH_SHORT).show();
-			Intent intent = new Intent(MyMileagePageActivity.this, MemberStoreInfoPage.class);
-			intent.putExtra("checkMileageMerchantsMerchantID", entriesFn.get(arg2).getCheckMileageMerchantsMerchantID());		// 가맹점 아이디
-			intent.putExtra("idCheckMileageMileages", entriesFn.get(arg2).getIdCheckMileageMileages());					// 고유 식별 번호
-			intent.putExtra("myMileage", entriesFn.get(arg2).getMileage());			// 가맹점에 대한 내 마일리지
-			startActivity(intent);
-		}
-	};
-
-*/
-	
-	
-	
 	
 	/*
 	 * 서버와 통신하여 내 마일리지 목록을 가져온다.
@@ -601,26 +491,12 @@ public class MyMileagePageActivity extends Activity {
 									isRunning = isRunning-1;
 									getDBData();						// 5회 재시도에도 실패하면 db에서 꺼내서 보여준다.
 								}
-								
-//								// 에러니까 로딩바 없애고 다시 할수 있도록
-//								new Thread(
-//										new Runnable(){
-//											public void run(){
-//												Message message = handler.obtainMessage();
-//												Bundle b = new Bundle();
-//												b.putInt("order", 2);
-//												message.setData(b);
-//												handler.sendMessage(message);
-//											}
-//										}
-//								).start();
-//								isRunning = 0;
 							}
 						}
 					}
 			).start();
 		}else{
-			isRunning = isRunning-1;		// 돌려놔.
+			isRunning = isRunning-1;		// 작업중인 카운팅-1
 		}
 	}
 
@@ -641,8 +517,7 @@ public class MyMileagePageActivity extends Activity {
 			e.printStackTrace();
 		}
 //		Log.d(TAG,"수신::"+builder.toString());
-		String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다
-		// // // // // // // 바로 바로 화면에 add 하고 터치시 값 가져다가 상세 정보 보도록....
+		String tempstr = builder.toString();		
 		
 		JSONArray jsonArray2 = null;
 		try {
@@ -664,10 +539,7 @@ public class MyMileagePageActivity extends Activity {
 				String tmp_introduction = "";		//prstr = jsonobj2.getString("introduction");		// prSentence --> introduction
 				String tmp_workPhoneNumber = "";
 				String tmp_profileThumbnailImageUrl = "";
-//				String tmp_profileImageUrl = "";
-//				String tmp_ = "";
 				Bitmap bm = null;
-//				Bitmap bm2 = null;
 				if(max>0){
 					for ( int i = 0; i < max; i++ ){
 						doneCnt++;
@@ -722,11 +594,6 @@ public class MyMileagePageActivity extends Activity {
 						}catch(Exception e){
 							tmp_profileThumbnailImageUrl = "";
 						}
-//						try{
-//							tmp_profileImageUrl = jsonObj.getString("profileImageUrl");
-//						}catch(Exception e){
-//							tmp_profileImageUrl = "";
-//						}
 						// tmp_profileThumbnailImageUrl 있을때.
 						if(tmp_profileThumbnailImageUrl!=null && tmp_profileThumbnailImageUrl.length()>0){
 							if(tmp_profileThumbnailImageUrl.contains("http")){		// url 포함한 경우
@@ -749,11 +616,6 @@ public class MyMileagePageActivity extends Activity {
 							BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.empty_60_60);
 							bm = dw.getBitmap();
 						}
-						// 가맹점 이미지 URL로부터 이미지 받아와서 도메인에 저장한다.
-//						Bitmap bm = LoadImage(entries3.get(j).getMerchantImg());
-						// bm 이미지 크기 변환 .
-//						BitmapDrawable bmpResize = BitmapResizePrc(bm, fImgSize/5, fImgSize/5);  
-//						bm2 = (bmpResize.getBitmap());
 						entries.add(new CheckMileageMileage(tmp_idCheckMileageMileages,
 								tmp_mileage,
 								tmp_modifyDate,
@@ -769,19 +631,15 @@ public class MyMileagePageActivity extends Activity {
 						));
 						
 					}
-					//    			 2차 작업. 가맹점 이름, 이미지 가져와서 추가로 넣음.
-					//    			 array 채로 넘기고 돌려받을수 있도록 한다..
 				}
 			}catch (JSONException e) {
 				doneCnt--;
 				dbSaveEnable = false;
 				e.printStackTrace();
 			}finally{
-//				entriesFn = entries;								// db 처리 위해 임시 주석 *** 
 				dbInEntries = entries; 
 				reTry = 5;				// 재시도 횟수 복구
 				searched = true;
-//				showInfo();											// db 처리 위해 임시 주석 *** 
 				// db 에 데이터를 넣는다.
 				try{
 					if(dbSaveEnable){		// 이미지까지 성공적으로 가져온 경우.
@@ -809,139 +667,10 @@ public class MyMileagePageActivity extends Activity {
 	
 	
 	
-	// 가맹점 아이디로 가맹점 정보 가져오기. .. Array채로 주고 받기..  -- 2차 검색  -- > 2차 검색 없앨 거.. 
-	public void getMerchantInfo(final List<CheckMileageMileage> entries3, final int max){
-		controllerName = "checkMileageMerchantController";
-		methodName = "selectMerchantInformation";
-//		Log.i(TAG, "merchantInfoGet");
-		final ArrayList<CheckMileageMileage> entries2 = new ArrayList<CheckMileageMileage>(max);
-		final int max2 = max;
-		// 각각에 대해서 돌린다.
-		new Thread(
-				new Runnable(){
-					public void run(){
-						
-						for (int j = 0; j < max2; j++ ){
-							// 가맹점 아이디를 꺼낸다.
-							final String merchantId2 = entries3.get(j).getCheckMileageMerchantsMerchantID();
-							// 요청할 문자열을 만들기 위함. (json 방식으로 보내기 위해 생성)
-							JSONObject obj = new JSONObject();
-							try{
-								// 보낼 데이터 세팅
-								obj.put("activateYn", "Y");
-								obj.put("merchantId", merchantId2);
-//								Log.i(TAG, "merchantId::"+merchantId2);
-							}catch(Exception e){
-								e.printStackTrace();
-							}
-							// 보낼 문자열. (위의 json 방식의 오브젝트를 문자열로)
-							String jsonString = "{\"checkMileageMerchant\":" + obj.toString() + "}";
-							try{
-								URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
-								HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
-								connection2.setDoOutput(true);
-								connection2.setInstanceFollowRedirects(false);
-								connection2.setRequestMethod("POST");
-								connection2.setRequestProperty("Content-Type", "application/json");
-								OutputStream os2 = connection2.getOutputStream();
-								os2.write(jsonString.getBytes());
-								os2.flush();				
-//								System.out.println("postUrl      : " + postUrl2);				
-								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
-								InputStream in =  connection2.getInputStream();
-								// 가맹점 아이디로 가맹점 정보를 가져온걸 처리..저장값: 인덱스번호, 수정날짜, 아이디, 가맹점아이디. + 가맹점 이름, 가맹점 이미지 URL
-								BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);	
-								StringBuilder builder = new StringBuilder();
-								String line =null;
-								while((line=reader.readLine())!=null){
-									builder.append(line).append("\n");
-								}
-//								Log.d(TAG,"수신::"+builder.toString());
-								String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다... 용도에 맞게 구현할 것.
-								JSONObject jsonObject;	// 1차로 받은거.
-								JSONObject jsonObject2;	// 1차로 받은거중 "가맹점아이디" 으로 꺼낸거. --> 여기서 스트링으로 값 하나씩 꺼낸다.
-								if(connection2.getResponseCode()==200 || connection2.getResponseCode()==204){		// 요청 성공시
-									jsonObject = new JSONObject(tempstr);
-									jsonObject2 = jsonObject.getJSONObject("checkMileageMerchant");
-									// 가맹점 이름.
-									newMerchantName = jsonObject2.getString("companyName");			// 특정 글자수 초과시 뒤에 자르고 ... 붙인다.
-									if(newMerchantName.length()>merchantNameMaxLength){
-										newMerchantName = newMerchantName.substring(0,merchantNameMaxLength-2);		// 최대 글자수 -2 만큼 자르고 ... 붙인다.
-										newMerchantName = newMerchantName + "...";
-										entries3.get(j).setMerchantName(newMerchantName);
-									}else{
-										entries3.get(j).setMerchantName(newMerchantName);
-									}
-									entries3.get(j).setMerchantName(jsonObject2.getString("companyName"));// 가맹점 정보를 받는다. 이름
-									
-									// 전번.
-									if(jsonObject2.getString("workPhoneNumber")==null || jsonObject2.getString("workPhoneNumber").length()<1){	// 가맹점 정보를 받는다. 전번
-										entries3.get(j).setWorkPhoneNumber("");// 가맹점 정보를 받는다. 전번
-									}else{
-										entries3.get(j).setWorkPhoneNumber("(☎)"+jsonObject2.getString("workPhoneNumber"));
-									}
-									// 가맹점 URL
-									Bitmap bm = null;
-									// 가맹점 이미지 URL 저장한다. -- 이미지까지 생성
-									try{
-										entries3.get(j).setMerchantImg(jsonObject2.getString("profileThumbnailImageUrl"));				// 가맹점 이미지 URL     profileImageUrl --> profileThumbnailImageUrl
-									}catch(Exception e){
-										entries3.get(j).setMerchantImg("");
-									}
-									if(entries3.get(j).getMerchantImg()!=null && entries3.get(j).getMerchantImg().length()>0){
-										if(entries3.get(j).getMerchantImg().contains("http")){
-											try{
-												bm = LoadImage(entries3.get(j).getMerchantImg());				 
-											}catch(Exception e3){}
-										}else{
-											try{
-												bm = LoadImage(imgthumbDomain+entries3.get(j).getMerchantImg());				 
-											}catch(Exception e3){
-												Log.w(TAG, imgthumbDomain+entries3.get(j).getMerchantImg()+" -- fail");
-											}
-										}
-									}else{
-										BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.empty_60_60);
-										bm = dw.getBitmap();
-									}
-									if(bm==null){
-										BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.empty_60_60);
-										bm = dw.getBitmap();
-									}
-									// 가맹점 이미지 URL로부터 이미지 받아와서 도메인에 저장한다.
-//									Bitmap bm = LoadImage(entries3.get(j).getMerchantImg());
-									// bm 이미지 크기 변환 .
-//									BitmapDrawable bmpResize = BitmapResizePrc(bm, fImgSize/4, fImgSize/4);  
-//									entries3.get(j).setMerchantImage(bmpResize.getBitmap());
-									entries3.get(j).setMerchantImage(bm);
-								}
-							}catch(Exception e){ 
-								// Re Try
-								if(reTry>0){
-									Log.w(TAG,"failed, retry all again remain retry : "+reTry);
-									reTry = reTry -1;
-									try{
-										Thread.sleep(300);
-										getMerchantInfo(entries3, max);		// 재시도?
-									}catch(Exception e2){}
-								}else{
-									Log.w(TAG,"reTry failed. -- init reTry");
-									reTry = 5;			// 진행 ??
-								}
-							}
-						}		// for문 종료
-//						Log.d(TAG,"가맹점 정보 수신 완료. ");
-						entriesFn = entries3;
-						showInfo();					// ? 실패시에도 되나..?
-					}
-				}
-		).start();
-	}
 
 	// entries3 를 전역에 저장후 스레드 이용하여 돌린다. 화면에 보여준다.		-- 2차 처리.
 	public void showInfo(){
 		hidePb();
-		
 		//  가져온 데이터 화면에 보여주기.
 		new Thread(
 				new Runnable(){
@@ -981,46 +710,6 @@ public class MyMileagePageActivity extends Activity {
 		return stream ;
 	}
 
-	/*
-	 * Bitmap 이미지 리사이즈
-	 * Src : 원본 Bitmap
-	 * newHeight : 새로운 높이
-	 * newWidth : 새로운 넓이
-	 * 참고 소스 : http://skyswim42.egloos.com/3477279 ( webview 에서 capture 화면 resizing 하는 source 도 있음 )
-	 */
-//	private BitmapDrawable BitmapResizePrc( Bitmap Src, float newHeight, float newWidth)
-//	{
-//		BitmapDrawable Result = null;
-//		int width = Src.getWidth();
-//		int height = Src.getHeight();
-//
-//		// calculate the scale - in this case = 0.4f
-//		float scaleWidth = ((float) newWidth) / width;
-//		float scaleHeight = ((float) newHeight) / height;
-//
-//		// createa matrix for the manipulation
-//		Matrix matrix = new Matrix();
-//
-//		// resize the bit map
-//		matrix.postScale(scaleWidth, scaleHeight);
-//
-//		// rotate the Bitmap 회전 시키려면 주석 해제!
-//		//matrix.postRotate(45);
-//
-//		// recreate the new Bitmap
-//		Bitmap resizedBitmap = Bitmap.createBitmap(Src, 0, 0, width, height, matrix, true);
-//
-//		// check
-//		width = resizedBitmap.getWidth();
-//		height = resizedBitmap.getHeight();
-////		Log.i("ImageResize", "Image Resize Result : " + Boolean.toString((newHeight==height)&&(newWidth==width)) );
-//
-//		// make a Drawable from Bitmap to allow to set the BitMap
-//		// to the ImageView, ImageButton or what ever
-//		Result = new BitmapDrawable(resizedBitmap);
-//		return Result;
-//	}
-	
 	@Override
 	public void onResume(){
 		super.onResume();
@@ -1089,10 +778,6 @@ public class MyMileagePageActivity extends Activity {
 	    public boolean itemCallback(MenuItem item){
 	      switch(item.getItemId()){
 	      case Menu. FIRST+1:
-//	    	  Toast.makeText(MyMileagePageActivity.this, "123123", Toast.LENGTH_SHORT).show();
-//	                Intent intent = new Intent(UserManagementActivity.this,AddUserActivity.class);        // example에서 이름
-//	            Intent intent = new Intent(MainActivity.this ,AddUserActivity.class);
-//	            startActivity(intent);
 	    	  if(isRunning<1){
 	  			isRunning = isRunning+1;
 	  			try {

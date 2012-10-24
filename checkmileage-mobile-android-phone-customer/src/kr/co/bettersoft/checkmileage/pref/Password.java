@@ -12,7 +12,8 @@
 
 package kr.co.bettersoft.checkmileage.pref;
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+import kr.co.bettersoft.checkmileage.activities.R;
 import android.app.Activity; 
 import android.content.Context;
 import android.content.Intent;
@@ -212,7 +213,7 @@ public class Password extends Activity {
     		Log.i("Password", "goToNextPhase--PHASE_CONFIRM_PASSWORD::"+currentPassword);
 //    		nextActivity.putExtra(RESULT_PASSWORD, currentPassword);		// 테스트용. 바꾼 비번 확인 화면.
     		if(loginYN){		// 로그인인 경우에는 다시 메인 페이지로 돌아간다. (로그인 이후 단계를 진행한다.)
-    			kr.co.bettersoft.checkmileage.MainActivity.loginYN = true;
+    			kr.co.bettersoft.checkmileage.activities.MainActivity.loginYN = true;
             	startActivity(nextActivity);    	
     		}else{				// 비번 변경 설정 등인 경우 설정 페이지로 돌아간다.(비번 저장후 종료하면 돌아가진다.)
         		 SharedPreferences.Editor savePWcustom = sharedPrefCustom.edit();		// 공용으로 비번도 저장해 준다.

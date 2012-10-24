@@ -14,7 +14,7 @@ import java.util.Locale;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 
 import android.app.Activity;
 import android.content.Context;
@@ -23,6 +23,8 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -55,10 +57,36 @@ public class ScanQRPageActivity extends Activity {
 	static int qrResult = 0;
 	public static final String TAG = ScanQRPageActivity.class.getSimpleName();
 	
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
-	 */
+	// 핸들러 등록
+	Handler handler = new Handler(){
+    	@Override
+    	public void handleMessage(Message msg){
+    		Bundle b = msg.getData();
+    		int showQR =  b.getInt("showQR");		// 값을 넣지 않으면 0 을 꺼내었다.
+    		
+    		if(b.getInt("showErrToast")==1){
+				Toast.makeText(ScanQRPageActivity.this, R.string.fail_scan_qr, Toast.LENGTH_SHORT).show();
+			}
+    		
+    	}
+    };
+    public void showMSG(){			// 화면에 토스트 띄움..
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Message message = handler.obtainMessage();				
+						Bundle b = new Bundle();
+						b.putInt("showErrToast", 1);
+						message.setData(b);
+						handler.sendMessage(message);
+					}
+				}
+		).start();
+	}
 
+	
+	
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +95,9 @@ public class ScanQRPageActivity extends Activity {
 		
 		Intent rIntent = getIntent();
         phoneNumber = rIntent.getStringExtra("phoneNumber");
+        if(phoneNumber==null){
+        	phoneNumber="";
+        }
 		/* 
 		 * QR 스켄모드가 되어 QR 카드를 스켄한다.
 		 * QR 카드 스켄이 성공하여 QR 정보를 얻어오면, 해당 정보를 앱에 저장하고, 서버에 등록한다.
@@ -131,7 +162,7 @@ public class ScanQRPageActivity extends Activity {
 				// 2. 다음 페이지로 이동. qrCode 에 값 세팅해서 줌.
 				Log.i("ScanQRPageActivity", "load qrcode to img : "+qrcode);
 				MyQRPageActivity.qrCode = qrcode;
-
+				Main_TabsActivity.myQR = qrcode;
 				new Thread(
 						new Runnable(){
 							public void run(){
@@ -151,7 +182,8 @@ public class ScanQRPageActivity extends Activity {
 				).start();
 			} else if(resultCode == RESULT_CANCELED) {
 				// 취소 또는 실패시 이전화면으로.
-				Toast.makeText(ScanQRPageActivity.this, R.string.fail_scan_qr, Toast.LENGTH_SHORT).show();
+				showMSG();
+//				Toast.makeText(ScanQRPageActivity.this, R.string.fail_scan_qr, Toast.LENGTH_SHORT).show();
 				Intent intent2 = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
 				startActivity(intent2);
 				finish();
@@ -251,6 +283,8 @@ public class ScanQRPageActivity extends Activity {
 				}
 				if(idExist.equals("0")){		// 서버에 아이디가 없으면 업데이트 해준다. 있으면 업데이트 하지 않는다.
 					saveQRtoServer();		
+				}else{						// 서버에 아이디가 있으면 설정을 받아와서 저장해야 한다.
+					MyQRPageActivity.getSettingsFromServer = true;
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -337,7 +371,7 @@ public class ScanQRPageActivity extends Activity {
 							}
 						}catch(Exception e){ 
 							e.printStackTrace();
-							 Toast.makeText(ScanQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+//							 Toast.makeText(ScanQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 							 Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
 							 startActivity(backToNoQRIntent);
 							 finish();

@@ -3,7 +3,7 @@ package kr.co.bettersoft.checkmileage.activities;
 /*
  *  What is this App.
  */
-import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
