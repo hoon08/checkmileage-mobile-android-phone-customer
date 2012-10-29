@@ -334,7 +334,7 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 								Log.i(TAG, "F to update GCM ID to server");
 							}
 						}catch(Exception e){ 
-							e.printStackTrace();
+							Log.d(TAG,"updateMyGCMtoServer->fail");
 						}
 					}
 				}

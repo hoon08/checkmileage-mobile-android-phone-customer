@@ -2,12 +2,9 @@
 
     <string name="app_name">Check Mileage</string>
     <string name="hello_world">Hello world!</string>
-    
     <string name="menu_settings">Settings</string>
-    
     <string name="title_activity_main">Check Mileage</string>
     <string name="AppName">Crazy Carrot</string>
-
     <string name="error_config">Please set the %1$s constant and recompile the app.</string>
     <string name="already_registered">Device is already registered on server.</string>
     <string name="gcm_registered">From GCM: device successfully registered!</string>
@@ -25,10 +22,8 @@
     <string name="options_unregister">Unregister</string>
     <string name="options_clear">Clear</string>
     <string name="options_exit">Exit</string>
-    
     <string name="my_qr_title">QR</string>
     <string name="pref_app_what_title">What is this App?</string>
-    
     <string name="sex_female">Female</string>
     <string name="sex_male">Male</string>
     <string name="sex_etc">Private setting</string>
@@ -37,19 +32,19 @@
     <string name="certi_step1_help1">Enter phone number.</string>
     <string name="certi_fail_msg">Due to error authorization failed.</string>
     <string name="certi_step2_btn1">Authorization confirmed.</string>
-    <string name="scan_qr_message">Automaticaly detect barcode.</string>
+    <string name="scan_qr_message">Automatically detect barcode.</string>
     <string name="no_qr_create">Click here if you want to create QR code.</string>
     <string name="no_qr_scan">Click here with QR card that you received it from participant store.</string>
-    <string name="my_qr_help1">Scan QR code with store iPad. It will automatically earn mileage.</string>
+    <string name="my_qr_help1">Scan QR code with store iPad.\nIt will automatically earn mileage.</string>
     <string name="my_mileage_title">Mileage</string>
-    <string name="last_update">Recent activity date</string>
-    <string name="member_store_list_title">Locate participant store</string>
-     <string name="error_occured">occurs error</string>
-     <string name="representative">CEO</string>
-     <string name="phone_num">Phone number</string>
-     <string name="addr">Address</string>
-     <string name="pr_str">Introduce</string>
-     <string name="shop_name">Name of participant store </string>
+    <string name="last_update">Last update</string>
+    <string name="member_store_list_title">Search participant store</string>
+    <string name="error_occured">occurs error</string>
+    <string name="representative">Representative</string>
+    <string name="phone_num">Phone number</string>
+    <string name="addr">Address</string>
+    <string name="pr_str">Introduce</string>
+    <string name="shop_name">Name of participant store </string>
     <string name="settings_user_info">User information</string>
     <string name="settings_basic_info">Basic information</string>
     <string name="settings_get_gcm_summary">Notification alert setting.</string>
@@ -61,9 +56,9 @@
     <string name="settings_lock_settings">Password lock</string>
     <string name="pref_app_qna">FAQ</string>
     <string name="pref_app_notify">Important announcement</string>
-    <string name="pref_app_terms">terms and condition</string>
-    <string name="pref_app_leave_summary">Leave permantly?</string>
-    <string name="pref_app_leave_title">Leave permantly</string>
+    <string name="pref_app_terms">Terms and Condition</string>
+    <string name="pref_app_leave_summary">Leave permanently?</string>
+    <string name="pref_app_leave_title">Leave permanently</string>
     <string name="pref_push_list_summary">View event notification list</string>
     <string name="pref_push_list_title">Event</string>
     <string name="pref_app_what_summary">What is this application?</string>
@@ -78,23 +73,23 @@
     <string name="preference_setting_pwd_title">Lock setting</string>
     <string name="preference_lock_chk_title">Application lock setting</string>
     <string name="preference_lock_chk_summary">Application lock setting</string>
-    <string name="preference_lock_chk_y">You will receive password when application starts.</string>
+    <string name="preference_lock_chk_y">Application startup, you must enter the password.</string>
     <string name="preference_lock_chk_n">Not use lock function</string>
     <string name="preference_lock_password_title">Password setting</string>
     <string name="password_input_new">Enter new password.</string>
-	<string name="password_not_equals">The password you entered does not match.</string>
+    <string name="password_not_equals">The password you entered does not match.</string>
     <string name="password_input_again">Please re enter the password.</string>
     <string name="password_set_success">New password has been set.</string>
     <string name="password_input_pw">Enter the password.</string>
     <string name="password_input_old">Enter previous password.</string>
-     <string name="network_error">Please check network connection and try again.</string> 
-     <string name="error_message">Error occurred.\nPlease try again.</string> 
-     <string name="cant_find_url">Can not find the address you request.</string> 
-     <string name="closebtn">Close</string>
+    <string name="network_error">Please check network connection and try again.</string>
+    <string name="error_message">Error occurred.\nPlease try again.</string>
+    <string name="cant_find_url">Can not find the address you request.</string>
+    <string name="closebtn">Close</string>
     <string name="refresh">Refresh</string>
     <string name="noti_back_finish">Will close if you click go back button again.</string>
     <string name="calling">Dial call</string>
-    <string name="no_phone_num">Phone number does not exist.\nPlease check.</string> 
+    <string name="no_phone_num">Phone number does not exist.\nPlease check.</string>
     <string name="viewmap">View map</string>
     <string name="its_user_location">User location</string>
     <string name="its_shop_location">Participant location</string>
@@ -103,8 +98,8 @@
     <string name="no_shop_info">No participant store information.</string>
     <string name="no_saved_shop_info">No saved participant store information.</string>
     <string name="no_mileage_info">No mileage information.</string>
-    <string name="no_used_logs">No useage statement.</string>
-    <string name="scan_qr_help">Automaticaly detect barcode.</string>
+    <string name="no_used_logs">No usage records.</string>
+    <string name="scan_qr_help">Automatically detect barcode.</string>
     <string name="fail_scan_qr">QR code does not match.\nPlease try again.</string>
     <string name="settings_about_content">This application is to earn mileage.\n\nIn any participant store you could use one registed ID. \n\nYou do not need to carry many mileage cards. \n\nIts easy and simple to use with mobile application. \n\nEven though you delete application and re installed you could keep using it after confirmed.</string>
     <string name="not_yet">In preparation.</string>
@@ -112,4 +107,5 @@
     <string name="set_birth">Date of Birth setting</string>
     <string name="search">Search</string>
     <string name="mileage_noti">Carrot has been changed.</string>
+
 </resources>

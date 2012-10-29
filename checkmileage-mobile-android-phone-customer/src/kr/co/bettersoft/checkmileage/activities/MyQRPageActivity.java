@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import kr.co.bettersoft.checkmileage.activities.GCMIntentService.backgroundUpdateMyGCMtoServer;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMemberSettings;
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
 
@@ -58,6 +59,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.http.AndroidHttpClient;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -86,7 +88,6 @@ public class MyQRPageActivity extends Activity {
 	// 설정 정보 저장할 도메인.
 	CheckMileageMemberSettings settings;
 	
-	//	MyLocationOverlay2 mLocation;
 	int myLat = 0;
 	int myLon = 0;
 	
@@ -136,7 +137,7 @@ public class MyQRPageActivity extends Activity {
     
     public Bitmap createQRself(String qrCode){
     	try { 
-    	    // generate a 150x150 QR code 
+    	    // generate a 200x200 QR code 
     	    Bitmap bm = encodeAsBitmap(qrCode, BarcodeFormat.QR_CODE, 200, 200); 
     	    if(bm != null) { 
     	        Log.d(TAG,"S to createQRself");
@@ -159,12 +160,6 @@ public class MyQRPageActivity extends Activity {
     		BarcodeFormat format, 
     		int desiredWidth,         
     		int desiredHeight) throws Exception {
-//    	Hashtable<EncodeHintType,Object> hints = null;  
-//    	String encoding = guessAppropriateEncoding(contents);  		// UTF-8 // null
-//    	if (encoding != null) { 
-//    		hints = new Hashtable<EncodeHintType,Object>(2);  
-//    		hints.put(EncodeHintType.CHARACTER_SET, encoding); 
-//    		}   
     	MultiFormatWriter writer = new MultiFormatWriter();   
     	BitMatrix result = writer.encode(contents, format, desiredWidth, desiredHeight, null);   
     	int width = result.getWidth();  
@@ -181,16 +176,6 @@ public class MyQRPageActivity extends Activity {
     	bitmap.setPixels(pixels, 0, width, 0, 0, width, height); 
     	return bitmap; 
     	}
-    private static String guessAppropriateEncoding(CharSequence contents) { 
-    	// Very crude at the moment 
-    	for (int i = 0; i < contents.length(); i++) {  
-    		if (contents.charAt(i) > 0xFF) 
-    		{   
-    			return "UTF-8"; 
-    		}    
-    	} 
-    	return null;  
-    }
    
     
 	@Override
@@ -207,30 +192,28 @@ public class MyQRPageActivity extends Activity {
 		float screenHeight = this.getResources().getDisplayMetrics().heightPixels;
 		Log.i("screenHeight : ", "" + screenHeight);
 		/*
-		 *  QR 코드를 받아옴.  구글 웹페이지를 통한 생성
+		 *  QR 코드를 받아옴.  구글 웹페이지를 통한 생성 --> 자체 라이브러리 먼저 해보고 안되면 웹통신.
 		 */
 	    new Thread(
         		new Runnable(){
         			public void run(){
         				if(savedBMP==null){
-//        					bmp = downloadBitmap("http://chart.apis.google.com/chart?cht=qr&chs="+qrSize+"x"+qrSize+"&choe=UTF-8&chld=H&chl="+qrCode); 		// 웹 통신하여 가져옴
-        					bmp = createQRself(qrCode);								// 자체 라이브러리 사용하여 생성.
+        					bmp = createQRself(qrCode);		// 자체 라이브러리 사용하여 생성.
         					if(bmp==null){
         						Log.d(TAG,"bmp1==null");
-        						bmp = downloadBitmap("http://chart.apis.google.com/chart?cht=qr&chs="+qrSize+"x"+qrSize+"&choe=UTF-8&chld=H&chl="+qrCode); 
+        						bmp = downloadBitmap("http://chart.apis.google.com/chart?cht=qr&chs="+qrSize+"x"+qrSize+"&choe=UTF-8&chld=H&chl="+qrCode);		// 웹 통신하여 가져옴 
         						if(bmp==null){
         							Log.d(TAG,"bmp2==null");
         						}
         						// QR 이미지 생성 실패. 처리 필요 *** no qr img 로 가야 할듯.? 재실행?;
         					}else{
         						saveBMPtoDB(bmp);
-        						if(getSettingsFromServer){			// 스켄했는데 서버에 정보가 있는 경우. 설정 정보를 가져와서 저장 함.
-        							getUserSettingsFromServer();	
+        						if(getSettingsFromServer){			// 스켄했는데 서버에 정보가 있는 경우. 
+        							new backgroundGetUserSettingsFromServer().execute();		//설정 정보를 가져와서 저장 함.
         						}
         					}
         				}else{
         					bmp = savedBMP;
-//        					getUserSettingsFromServer();		// test용. 나중에 지울 것 *** 
         				}
         				
 						// showQR
@@ -284,7 +267,6 @@ public class MyQRPageActivity extends Activity {
 		try {        
 			HttpResponse response = client.execute(getRequest);        
 			final int statusCode = response.getStatusLine().getStatusCode();        
-//			Log.i("MyQRPageActivity", "lva3");
 			if (statusCode != HttpStatus.SC_OK) {             
 				Log.w("MyQRPageActivity", "Error " + statusCode + " while retrieving bitmap from " + url);             
 				return null;        
@@ -303,7 +285,7 @@ public class MyQRPageActivity extends Activity {
 					entity.consumeContent();           
 				}        
 			}    
-		} catch (Exception e) {        // Could provide a more explicit error message for IOException or IllegalStateException        
+		} catch (Exception e) {        
 			getRequest.abort();        
 			Log.w("MyQRPageActivity", "Error while retrieving bitmap from " + url +"  " + e.toString());    
 		} finally {        
@@ -321,7 +303,6 @@ public class MyQRPageActivity extends Activity {
 		myLocationIs();
 		
 		
-//		test1();		// 가맹점 리스트 오는지 테스트용
 	}
 	
 	/*
@@ -363,19 +344,21 @@ public class MyQRPageActivity extends Activity {
 			bestProvider = lm.getBestProvider(criteria, true);
 			location =  lm.getLastKnownLocation(bestProvider);
 			if(location!=null){
-				myLat = (int) (location.getLatitude()*1000000);				// 현위치의 좌표 획득 *** 로그용
+				myLat = (int) (location.getLatitude()*1000000);				// 현위치의 좌표 획득
 				myLon = (int) (location.getLongitude()*1000000);	
 				Log.d(TAG, "runOnFirstFix// location1:"+myLat+", "+myLon);			// 37529466 126921069
-				updateLocationToServer(Integer.toString(myLat), Integer.toString(myLon));
+//				updateLocationToServer(Integer.toString(myLat), Integer.toString(myLon));
+				new backgroundUpdateLocationToServer().execute();	// 비동기로 전환		
+				
 			}else{
 				location =  lm.getLastKnownLocation(provider);
 				if(location==null){
 					Log.d(TAG,"location = null");	
 				}else{
-					myLat = (int) (location.getLatitude()*1000000);				// 현위치의 좌표 획득 *** 로그용
+					myLat = (int) (location.getLatitude()*1000000);				// 현위치의 좌표 획득
 					myLon = (int) (location.getLongitude()*1000000);	
-					Log.d("runOnFirstFix", "location2:"+myLat+", "+myLon);			// 37529466 126921069
-					updateLocationToServer(Integer.toString(myLat), Integer.toString(myLon));
+					Log.d("runOnFirstFix", "location2:"+myLat+", "+myLon);			
+					new backgroundUpdateLocationToServer().execute();	// 비동기로 전환	
 				}
 			}
 		}catch(Exception e){
@@ -384,21 +367,35 @@ public class MyQRPageActivity extends Activity {
 	}
 	
 	
+	
+	
+	// 비동기로사용자의 위치 정보를 수정
+	public class backgroundUpdateLocationToServer extends  AsyncTask<Void, Void, Void> { 
+		@Override protected void onPostExecute(Void result) {  
+		} 
+		@Override protected void onPreExecute() {  
+		} 
+		@Override protected Void doInBackground(Void... params) {  
+			Log.d(TAG,"backgroundUpdateMyGCMtoServer");
+			updateLocationToServer();
+			return null; 
+		}
+	}
+	
 	/*
 	 * 사용자의 위치 정보를 수정 한다.
 	 * 그 결과를 'SUCCESS' 나 'FAIL' 의 스트링으로 반환 한다.
 	 * //checkMileageMemberController  updateMemberLocation   checkMileageMember  
 	 *	// checkMileageId  latitude  longitude  activateYn  modifyDate
-	 *	// SUCCESS / FAIL /// 200 204
 	 */
-	public void updateLocationToServer(final String myLat, final String myLon){
+	public void updateLocationToServer(){
 		if(isUpdating==0){
 			isUpdating = 1;
 			Log.i(TAG, "updateLocationToServer");
 			controllerName = "checkMileageMemberController";
 			methodName = "updateMemberLocation";
-			
-			
+			final String myLat2 = Integer.toString(myLat);
+			final String myLon2 = Integer.toString(myLon);
 //			Log.e(TAG,todays+"//"+myLat+"//"+myLon);
 			new Thread(
 					new Runnable(){
@@ -411,10 +408,9 @@ public class MyQRPageActivity extends Activity {
 //								Log.d(TAG,"longitude::"+myLon);
 //								Log.d(TAG,"activateYn::"+"Y");
 //								Log.d(TAG,"modifyDate::"+todays);
-								
 								obj.put("checkMileageId", qrCode);
-								obj.put("latitude", myLat);
-								obj.put("longitude", myLon);
+								obj.put("latitude", myLat2);
+								obj.put("longitude", myLon2);
 								obj.put("activateYn", "Y");
 								
 								String nowTime = getNow();
@@ -427,6 +423,7 @@ public class MyQRPageActivity extends Activity {
 							try{
 								URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 								HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+								connection2.setConnectTimeout(1000);
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
@@ -440,12 +437,11 @@ public class MyQRPageActivity extends Activity {
 								responseCode = connection2.getResponseCode();
 //								InputStream in =  connection2.getInputStream();
 								// 조회한 결과를 처리.
-//								theData1(in);
 								if(responseCode==200 || responseCode==204){
-//									Log.e(TAG,"S");
+//									Log.d(TAG,"S");
 								}
 							}catch(Exception e){ 
-								e.printStackTrace();
+								Log.d(TAG,"updateLocationToServer->fail");
 							}finally{
 								isUpdating = 0;
 							}
@@ -499,6 +495,22 @@ public class MyQRPageActivity extends Activity {
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
+	public class backgroundGetUserSettingsFromServer extends   AsyncTask<Void, Void, Void> {
+        @Override protected void onPostExecute(Void result) { 
+       }
+        @Override protected void onPreExecute() { 
+       }
+        @Override protected Void doInBackground(Void... params) { 
+        	Log. d(TAG,"backgroundGetUserSettingsFromServer");
+        	getUserSettingsFromServer();
+        	return null ;
+        }
+	}
+
+
+	
+	
+	
 	/*
 	 *     인증 성공(현재 기능 보류) 이후  
 	 *     이전 사용자일 경우 서버로부터 사용자 설정 정보를 가져와서 모바일의 설정 정보에 대입시킨다..
@@ -525,12 +537,13 @@ public class MyQRPageActivity extends Activity {
 						try{
 							URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+							connection2.setConnectTimeout(2000);
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
-							Thread.sleep(1000);
+							Thread.sleep(400);
 							connection2.setRequestProperty("Content-Type", "application/json");
-							Thread.sleep(1000);
+							Thread.sleep(400);
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes());
 							os2.flush();
@@ -540,8 +553,7 @@ public class MyQRPageActivity extends Activity {
 							if(responseCode==200 || responseCode==204){
 								// 조회한 결과를 처리.
 								theMySettingData1(in);
-								//		//	//		//	//			theData1(in);  // 성공시 -> 도메인에 담아서 어쩌구.. 호출
-								//									Log.e(TAG,"S");
+								//									Log.d(TAG,"S");
 							}else{
 								showMSG();
 							}
@@ -594,7 +606,7 @@ public class MyQRPageActivity extends Activity {
 				}catch(Exception e){
 					settings.setReceive_notification_yn("");
 				}
-//				showInfo();
+
 				setUserSettingsToPrefs();		// 설정에 전달 및 저장
 			} catch (JSONException e) {
 				e.printStackTrace();

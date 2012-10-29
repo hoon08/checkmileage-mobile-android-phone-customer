@@ -45,6 +45,7 @@ import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -212,6 +213,10 @@ public class MyMileagePageActivity extends Activity {
 	// db 에 저장된 데이터를 화면에
 	public void getDBData(){
 		Log.i(TAG, "getDBData");
+		if(!db.isOpen()){
+			Log.d(TAG,"getDBData-> db is closed. need to open");
+			db= openOrCreateDatabase( "sqlite_carrotDB.db", SQLiteDatabase.CREATE_IF_NECESSARY ,null );
+		}
 		String tmp_idCheckMileageMileages = "";
 		String tmp_mileage = "";
 		String tmp_modifyDate = "";
@@ -303,6 +308,9 @@ public class MyMileagePageActivity extends Activity {
 				}
 				if(b.getInt("showErrToast")==1){
 					Toast.makeText(MyMileagePageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+				}
+				if(b.getInt("showNetErrToast")==1){			
+					Toast.makeText(MyMileagePageActivity.this, R.string.network_error, Toast.LENGTH_SHORT).show();
 				}
 			}catch(Exception e){
 				e.printStackTrace();
@@ -398,29 +406,43 @@ public class MyMileagePageActivity extends Activity {
 	    }
 		
 		Log.i(TAG, myQRcode);		
-//		URL imageURL = null;							
-//		URLConnection conn = null;
-//		InputStream is= null;
 		
 		setContentView(R.layout.my_mileage);
 		
-		searched = false;		// ?
+		searched = false;		 
 		
 		if(isRunning<1){								// 이유가 있을것.??;
 			isRunning = isRunning+1;
-			try {
 				myQRcode = MyQRPageActivity.qrCode;
+				new backgroundGetMyMileageList().execute();
+		}else{
+			Log.w(TAG, "already running..");
+		}
+	}
+
+	
+	
+	// 비동기로 마일리지 목록 가져오는 함수 호출.
+	public class backgroundGetMyMileageList extends   AsyncTask<Void, Void, Void> {
+        @Override protected void onPostExecute(Void result) { 
+       }
+        @Override protected void onPreExecute() { 
+       }
+        @Override protected Void doInBackground(Void... params) { 
+        	Log. d(TAG,"backgroundGetMyMileageList");
+        	try {
 				getMyMileageList();
 			} catch (JSONException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}else{
-			Log.w(TAG, "already running..");
-		}
-	}
+        	return null ;
+        }
+ }
 
+	
+	
 	
 	/*
 	 * 서버와 통신하여 내 마일리지 목록을 가져온다.
@@ -459,6 +481,7 @@ public class MyMileagePageActivity extends Activity {
 							try{
 								URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 								HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+								connection2.setConnectTimeout(5000);
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
@@ -473,7 +496,7 @@ public class MyMileagePageActivity extends Activity {
 								// 조회한 결과를 처리.
 								theData1(in);
 							}catch(Exception e){ 
-								// 다시?
+								// 다시
 								if(reTry>0){
 									Log.w(TAG, "fail and retry remain : "+reTry);
 									reTry = reTry-1;
@@ -485,7 +508,6 @@ public class MyMileagePageActivity extends Activity {
 									}	
 								}else{
 									Log.w(TAG,"reTry failed - init reTry");
-									//e.printStackTrace();
 									reTry = 5;
 									hidePb();
 									isRunning = isRunning-1;
@@ -646,7 +668,7 @@ public class MyMileagePageActivity extends Activity {
 						saveDataToDB();
 					}else{
 						alertToUser();		// 이미지 가져오는데 실패한 경우.
-						// 어쨎든 처리가 끝나면 (공통) -  db를 검사하여 데이터가 있으면 보여주고 없으면 말고... entriesFn = dbOutEntries
+						// 어쨎든 처리가 끝나면 (공통) -  db를 검사하여 데이터가 있으면 보여주고  entriesFn = dbOutEntries
 					}	// 처리가 끝나면 공통으로 해야할 showInfo(); (그전에 entriesFn 설정 한다)
 				}catch(Exception e){}
 				finally{
@@ -720,14 +742,8 @@ public class MyMileagePageActivity extends Activity {
 			if(dontTwice==0){
 				if(isRunning<1){
 					isRunning = isRunning+1;
-					try {
 						myQRcode = MyQRPageActivity.qrCode;
-						getMyMileageList();
-					} catch (JSONException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+						new backgroundGetMyMileageList().execute();
 				}else{
 					Log.w(TAG, "already running..");
 				}
@@ -737,6 +753,12 @@ public class MyMileagePageActivity extends Activity {
 		}
 	}
 
+	
+	
+	
+	
+	
+	
 	/*
 	 *  닫기 버튼 2번 누르면 종료 됨.(non-Javadoc)
 	 * @see android.app.Activity#onBackPressed()
@@ -780,14 +802,8 @@ public class MyMileagePageActivity extends Activity {
 	      case Menu. FIRST+1:
 	    	  if(isRunning<1){
 	  			isRunning = isRunning+1;
-	  			try {
 	  				myQRcode = MyQRPageActivity.qrCode;
-	  				getMyMileageList();
-	  			} catch (JSONException e) {
-	  				e.printStackTrace();
-	  			} catch (IOException e) {
-	  				e.printStackTrace();
-	  			}
+	  				new backgroundGetMyMileageList().execute();
 	  		}else{
 	  			Log.w(TAG, "already running..");
 	  		}
@@ -817,9 +833,20 @@ public class MyMileagePageActivity extends Activity {
 			+"//Conn="+isMobileConn;
 			if(!(isWifiConn||isMobileConn)){
 				Log.w(TAG,status);
-//				AlertShow("Wifi 혹은 3G 망이 연결되지 않았거나 원할하지 않습니다. 네트워크 확인 후 다시 접속해 주세요.");
-				AlertShow_networkErr();
+//				AlertShow_networkErr();
+				new Thread( 
+						new Runnable(){
+							public void run(){
+								Message message = handler .obtainMessage();
+								Bundle b = new Bundle();
+								b.putInt( "showNetErrToast" , 1);
+								message.setData(b);
+								handler .sendMessage(message);
+							}
+						}
+				).start();
 				hidePb();
+				getDBData();		// 통신 안되면 db거 보여주기로..
 				isRunning = 0;
 				connected = false;
 			}else{
@@ -827,18 +854,18 @@ public class MyMileagePageActivity extends Activity {
 			}
 			return connected;
 		}
-		public void AlertShow_networkErr(){		//R.string.network_error
-			AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
-			alert_internet_status.setTitle("Warning");
-			alert_internet_status.setMessage(R.string.network_error);
-			String tmpstr = getString(R.string.closebtn);
-			alert_internet_status.setPositiveButton(tmpstr, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.dismiss();
-//					finish();
-				}
-			});
-			alert_internet_status.show();
-		}
+//		public void AlertShow_networkErr(){		//R.string.network_error
+//			AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
+//			alert_internet_status.setTitle("Warning");
+//			alert_internet_status.setMessage(R.string.network_error);
+//			String tmpstr = getString(R.string.closebtn);
+//			alert_internet_status.setPositiveButton(tmpstr, new DialogInterface.OnClickListener() {
+//				@Override
+//				public void onClick(DialogInterface dialog, int which) {
+//					dialog.dismiss();
+////					finish();
+//				}
+//			});
+//			alert_internet_status.show();
+//		}
 }

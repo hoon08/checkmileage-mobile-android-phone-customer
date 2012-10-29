@@ -22,6 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
 
+import kr.co.bettersoft.checkmileage.activities.MemberStoreListPageActivity.backgroundGetBusinessKindList;
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
 
 import org.json.JSONObject;
@@ -31,6 +32,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.util.Log;
 
 //import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
@@ -58,19 +60,32 @@ public class GCMIntentService extends GCMBaseIntentService {
     }
 
     @Override
-    protected void onRegistered(Context context, String registrationId) {
+    public void onRegistered(Context context, String registrationId) {
         Log.i(TAG, "Device registered: regId = " + registrationId);
         if(dontTwice){			// 한번 하고 막는다.
         	MainActivity.REGISTRATION_ID = registrationId;
             regIdGCM = registrationId;
-            updateMyGCMtoServer();
+            
+            new backgroundUpdateMyGCMtoServer().execute();	// 비동기로 전환 - 서버에 GCM 아이디 저장	
 //            displayMessage(context, getString(R.string.gcm_registered));			// 브로드 케스트로 보내줌.. 리시버가 잡음. (노티는 없음)
             ServerUtilities.register(context, registrationId);
         	dontTwice = false;
         }
     }
-
     
+
+	// 비동기로 GCM 아이디 업뎃 호출
+	public class backgroundUpdateMyGCMtoServer extends  AsyncTask<Void, Void, Void> { 
+		@Override protected void onPostExecute(Void result) {  
+		} 
+		@Override protected void onPreExecute() {  
+		} 
+		@Override protected Void doInBackground(Void... params) {  
+			Log.d(TAG,"backgroundGetBusinessKindList");
+			updateMyGCMtoServer();
+			return null; 
+		}
+	}
   //서버에 GCM 아이디 업뎃한다.
 	public void updateMyGCMtoServer(){
 		Log.i(TAG, "updateMyGCMtoServer");
@@ -89,7 +104,6 @@ public class GCMIntentService extends GCMBaseIntentService {
 							Log.d(TAG, "checkMileageId:"+Main_TabsActivity.myQR);
 							Log.d(TAG, "registrationId:"+regIdGCM);
 							Log.d(TAG, "modifyDate:"+getNow());
-
 						}catch(Exception e){
 							e.printStackTrace();
 						}
@@ -97,11 +111,12 @@ public class GCMIntentService extends GCMBaseIntentService {
 						try{
 							URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+							connection2.setConnectTimeout(3000);
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
-							Thread.sleep(2000);
+							Thread.sleep(500);
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes());
 							os2.flush();

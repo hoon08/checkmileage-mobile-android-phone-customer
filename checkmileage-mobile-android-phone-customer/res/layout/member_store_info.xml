@@ -31,9 +31,9 @@
                 <ImageView
                     android:id="@+id/prImage"
                     android:layout_width="fill_parent"
-                    android:layout_height="160dp"
+                    android:layout_height="240dp"
                     android:contentDescription="@string/app_name"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="fitCenter" />
 
                 <TextView
                     android:id="@+id/merchantName2"
@@ -64,8 +64,9 @@
                     <Button
                         android:id="@+id/callBtn"
                         android:layout_width="80dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="30dp"
                         android:layout_weight="1"
+                        android:textSize="10dp"
                         android:gravity="center"
                         android:text="@string/calling" />
                 </LinearLayout>
@@ -87,7 +88,8 @@
                     <Button
                         android:id="@+id/mapBtn"
                         android:layout_width="80dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="30dp"
+                        android:textSize="10dp"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/viewmap" />
@@ -108,7 +110,8 @@
                     <Button
                         android:id="@+id/logListBtn"
                         android:layout_width="80dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="30dp"
+                        android:textSize="10dp"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/showlog" />
@@ -123,7 +126,8 @@
                     <Button
                         android:id="@+id/closeBtn"
                         android:layout_width="80dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="30dp"
+                        android:textSize="10dp"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/closebtn" />
