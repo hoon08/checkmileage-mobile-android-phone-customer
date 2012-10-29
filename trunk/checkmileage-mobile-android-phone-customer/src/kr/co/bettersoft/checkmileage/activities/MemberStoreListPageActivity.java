@@ -151,6 +151,9 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 						gridView.setEnabled(true);			// 그리드 뷰 허용함.
 					}else{
 						Log.d(TAG,"no data");
+						if(gridView==null){
+							gridView  = (GridView)findViewById(R.id.gridview);
+						}
 						emptyView = findViewById(R.id.empty1);		// 데이터 없으면 '빈 페이지'(데이터 없음 메시지)표시
 						gridView.setEmptyView(emptyView);
 						gridView.setVisibility(8);			//   0 visible   4 invisible   8 gone
@@ -166,6 +169,15 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 					searchSpinnerType.setEnabled(true);
 					searchText.setEnabled(true); 
 					searchBtn.setEnabled(true);
+				}
+				if(b.getInt("enableOrDisable")==1){
+					searchSpinnerType.setEnabled(true);
+					searchText.setEnabled(true); 
+					searchBtn.setEnabled(true);
+				}else if(b.getInt("enableOrDisable")==2){
+					searchSpinnerType.setEnabled(false);
+					searchText.setEnabled(false); 
+					searchBtn.setEnabled(false);
 				}
 				if(b.getInt("order")==1){
 					// 프로그래스바 실행
@@ -196,6 +208,9 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 				}
 				if(b.getInt("showErrToast")==1){
 					Toast.makeText(MemberStoreListPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+				}
+				if(b.getInt("showNetErrToast")==1){			
+					Toast.makeText(MemberStoreListPageActivity.this, R.string.network_error, Toast.LENGTH_SHORT).show();
 				}
 				if(b.getInt("setJobsList")==1){
 					jobs = tmpJobs;
@@ -242,6 +257,11 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		searchText.setOnEditorActionListener(this);  
 		searchText.addTextChangedListener(textWatcherInput);  
 
+		// spinner
+		searchSpinnerType = (Spinner)findViewById(R.id.searchSpinnerType);
+		// spinner listener
+		searchSpinnerType.setOnItemSelectedListener(this);
+		
 //		searchBtn.hasFocus();
 //		searchBtn.isFocused()
 		searchBtn.setOnClickListener(new Button.OnClickListener()  {
@@ -250,10 +270,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			}
 		});
 
-		// spinner
-		searchSpinnerType = (Spinner)findViewById(R.id.searchSpinnerType);
-		// spinner listener
-		searchSpinnerType.setOnItemSelectedListener(this);
+		
 		
 		
 	}
@@ -386,7 +403,6 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	public void getBusinessKindList(){
 		if(CheckNetwork()){
 			Log.i(TAG, "getBusinessKindList");
-			
 			// 로딩중입니다..  
 			new Thread(	
 					new Runnable(){
@@ -394,14 +410,15 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 							Message message = handler.obtainMessage();
 							Bundle b = new Bundle();
 							b.putInt("order", 1);
+							b.putInt("enableOrDisable", 2);
 							message.setData(b);
 							handler.sendMessage(message);
 						}
 					}
 			).start();
-			searchSpinnerType.setEnabled(false);
-			searchText.setEnabled(false); 
-			searchBtn.setEnabled(false);
+//			searchSpinnerType.setEnabled(false);			// handler 에서 처리 		b.putInt("enableOrDisable", 2);
+//			searchText.setEnabled(false); 
+//			searchBtn.setEnabled(false);
 			
 			controllerName = "checkMileageBusinessKindController";
 			methodName = "selectBusinessKindList";
@@ -429,6 +446,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 							try{
 								URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 								HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+								connection2.setConnectTimeout(3000);
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
@@ -457,11 +475,14 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 									getBusinessKindList();
 								}else{
 									Log.w(TAG,"reTry failed. -- init reTry");
-									reTry = 5;			
-									searchSpinnerType.setEnabled(true);
-									searchText.setEnabled(true); 
-									searchBtn.setEnabled(true);
+									reTry = 5;	
 									showMSG();
+									
+//									searchSpinnerType.setEnabled(true);
+//									searchText.setEnabled(true); 
+//									searchBtn.setEnabled(true);
+									showInfo();		// 로 대체
+									
 								}
 							}
 						}
@@ -469,6 +490,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			).start();
 		}
 	}
+	
+	
 	
 	/*
 	 * 가맹점 정보 1차 데이터 받음. entries 도메인에 저장. 이후 url 정보를 꺼내 이미지를 받아오는 함수를 호출한다.
@@ -535,13 +558,13 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	 *  호출 대상 :: 
 	 * checkMileageMerchantController // selectSearchMerchantList // checkMileageMerchant 
 	 * 
-	 *  보내는 정보 :  businessArea01 / businessKind03 / activateYn
-	 * 
+	 *  보내는 정보 :  businessArea01 / businessKind03 / activateYn							// 국가코드, 언어코드..
+	 * 	
 	 *	받는 정보.
 	 *  merchantId // companyName / // profileImageUrl / 
 	 *  workPhoneNumber / zipCode01 / address01/ address02 / businessArea01 // latitude // longitude
 	 * 
-	 *  터치하면 가맹점 상세정보로 가야하기 때문에 키도 필요하다..  merchantId 같은거..
+	 *  터치하면 가맹점 상세정보로 가야하기 때문에 키도 필요하다..  merchantId 같은거..	
 	 *  
 	 */
 	public void getMemberStoreList() throws JSONException, IOException {
@@ -570,9 +593,21 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			if(isRunning==0){		// 진행중에 다른 조작 사절
 				isRunning=1;
 //				searchSpinnerArea.setEnabled(false);
-				searchSpinnerType.setEnabled(false);
-				searchText.setEnabled(false); 
-				searchBtn.setEnabled(false);
+				
+				new Thread(	
+						new Runnable(){
+							public void run(){
+								Message message = handler.obtainMessage();
+								Bundle b = new Bundle();
+								b.putInt("enableOrDisable", 2);
+								message.setData(b);
+								handler.sendMessage(message);
+							}
+						}
+				).start();
+//				searchSpinnerType.setEnabled(false);
+//				searchText.setEnabled(false); 
+//				searchBtn.setEnabled(false);
 				// 서버 통신부
 				new Thread(
 						new Runnable(){
@@ -654,9 +689,20 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 										}catch(Exception e1){
 											e1.printStackTrace();
 										}
-										searchSpinnerType.setEnabled(true);
-										searchText.setEnabled(true); 
-										searchBtn.setEnabled(true);
+										new Thread(	
+												new Runnable(){
+													public void run(){
+														Message message = handler.obtainMessage();
+														Bundle b = new Bundle();
+														b.putInt("enableOrDisable", 1);
+														message.setData(b);
+														handler.sendMessage(message);
+													}
+												}
+										).start();
+//										searchSpinnerType.setEnabled(true);
+//										searchText.setEnabled(true); 
+//										searchBtn.setEnabled(true);
 										showMSG();
 //										Toast.makeText(MemberStoreListPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 									}
@@ -931,11 +977,12 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	public void onResume(){
 		super.onResume();
 		app_end = 0;
-		
 		// 가맹점 업종 목록 가져오기.
 		if((!jobKindSearched) && (isRunning==0)){				// 업종 검색이 완료되지 않았고, 실행중인 작업이 없을 경우.
 			isRunning = 1;		// 연속 실행 방지 (다른 실행 거부)
-			getBusinessKindList();
+			
+//			getBusinessKindList();
+			new backgroundGetBusinessKindList().execute();			// 비동기로 변환
 		}
 	}
 	
@@ -969,39 +1016,11 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	@Override
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
 			long arg3) {
-//		if(dontTwice>0){				// ( dont 2
-//			Log.i(TAG,"dontTwice");		
-//			dontTwice = dontTwice - 1;
-//		}else{
 			gridView  = (GridView)findViewById(R.id.gridview);
 			gridView.setEnabled(false);					// 그리드 뷰 허용 안함. 검색 도중 이전 검색 리스트를 스크롤하면 어플 강제 종료됨. -- 인덱스 문제 때문.
 			Log.i(TAG,"searchSpinnerJobs//"+jobs[arg2]);
 			
-			// 0번째 모든 업종 --> 제거.
-//			if(arg2==0){
-//				searchWordType = "";
-//			}else{
-//				searchWordType = jobs[arg2];
-//			}
-			
 			searchWordType = jobs[arg2];
-//			Log.e(TAG,arg0+"//"+arg1+"//"+arg2+"//"+arg3);	
-			// areas jobs
-//			if(searchSpinnerArea==arg0){		// 지역 변경한 경우 .	// 정상 동작. arg2 는 몇번째 거인지.. areas[arg2]
-//				Log.i(TAG,"searchSpinnerArea//"+areas[arg2]);	
-//				if(arg2==0){
-//					searchWordArea = "";  
-//				}else{
-//					searchWordArea = areas[arg2];
-//				}
-//			}else{								// 업종 변경한 경우 .	// 정상 동작.	areas[jobs]		// 0 은 전체니까 비워서 검색, 0이 아닐 경우 해당 값으로 검색.
-//				Log.i(TAG,"searchSpinnerJobs//"+jobs[arg2]);
-//				if(arg2==0){
-//					searchWordType = "";
-//				}else{
-//					searchWordType = jobs[arg2];
-//				}
-//			}
 			try {
 				getMemberStoreList();
 			} catch (JSONException e) {
@@ -1009,46 +1028,48 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-//		}		// dont 2 )
 	}
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {
-		// TODO Auto-generated method stub			// 안바꾸면 마는거지
+		// 스피너 안바꾸면 반응x
 	}
 	
 	public class backgroundGetMerchantInfo extends  AsyncTask<Void, Void, Void> { 
 		@Override protected void onPostExecute(Void result) {  
-			//			setListAdapter(new MyCustomAdapter(AndroidList.this, R.layout.row, month));  
-			//			Toast.makeText(AndroidList.this,    "onPostExecute \n: setListAdapter after bitmap preloaded",    Toast.LENGTH_LONG).show(); 
 		} 
 		@Override protected void onPreExecute() {  
-			//			Toast.makeText(AndroidList.this,    "onPreExecute \n: preload bitmap in AsyncTask",    Toast.LENGTH_LONG).show(); 
 		} 
 		@Override protected Void doInBackground(Void... params) {  
-//			preLoadSrcBitmap();  
 			Log.d(TAG,"backgroundGetMerchantInfo");
-//			for(int i=0; i<entries1.size(); i++){
-//				Log.e(TAG,"entries1.get("+i+").getProfileImageURL()"+entries1.get(i).getProfileImageURL());
-//			}
 			Log.w(TAG, "indexDataTotal::"+indexDataTotal+"//indexDataFirst::"+indexDataFirst+"//indexDataLast::"+indexDataLast+"/adding:"+adding);
-			if(indexDataTotal==0){
+			if(indexDataTotal==0){				// 전체 개수가 0일 경우..  보여줌 -> "없습니다"
 				showInfo();
-			}else{
-				if(!((indexDataTotal<indexDataFirst)||(indexDataTotal<indexDataLast))){		// 하극상 아닌 경우
+			}else{								// 개수가 0이 아닐때.
+				if(!((indexDataTotal<indexDataFirst)||(indexDataTotal<indexDataLast))){		// 정상적인 경우
 					if(!adding){
 						adding = true;
-						getMerchantInfo();
+						getMerchantInfo();						// 데이터를 가져옴
 					}
 				}else{
-					indexDataLast = indexDataTotal;
+					indexDataLast = indexDataTotal;				// 비정상적인 경우. 마지막 데이터가 최대값을 넘겼을때.
 					Log.w(TAG, "indexDataTotal::"+indexDataTotal+"//indexDataFirst::"+indexDataFirst+"//indexDataLast::"+indexDataLast);
 				}
 			}
-			
 			return null; 
 		}
 	}
-
+	// 비동기로 업종 목록 가져오기.
+	public class backgroundGetBusinessKindList extends  AsyncTask<Void, Void, Void> { 
+		@Override protected void onPostExecute(Void result) {  
+		} 
+		@Override protected void onPreExecute() {  
+		} 
+		@Override protected Void doInBackground(Void... params) {  
+			Log.d(TAG,"backgroundGetBusinessKindList");
+			getBusinessKindList();
+			return null; 
+		}
+	}
 	
 	/*
 	 * 네트워크 상태 감지
@@ -1070,33 +1091,49 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			Log.w(TAG,status);
 //			AlertShow("Wifi 혹은 3G 망이 연결되지 않았거나 원할하지 않습니다. 네트워크 확인 후 다시 접속해 주세요.");
 			Log.d(TAG,"1");
+			if(gridView==null){
+				gridView  = (GridView)findViewById(R.id.gridview);
+			}
 			gridView.setEnabled(true);
 			searchSpinnerType.setEnabled(true);
 			searchText.setEnabled(true); 
 			searchBtn.setEnabled(true);
-			AlertShow_networkErr();
-			Log.d(TAG,"2");
+			
+			new Thread( 
+					new Runnable(){
+						public void run(){
+							Message message = handler .obtainMessage();
+							Bundle b = new Bundle();
+							b.putInt( "showNetErrToast" , 1);
+							message.setData(b);
+							handler .sendMessage(message);
+						}
+					}
+			).start();
+//			Log.i(TAG,"AlertShow_networkErr");
+//			AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
+//			alert_internet_status.setTitle("Warning");
+//			alert_internet_status.setMessage(R.string.network_error);
+//			alert_internet_status.setPositiveButton(R.string.closebtn, new DialogInterface.OnClickListener() {
+//				@Override
+//				public void onClick(DialogInterface dialog, int which) {
+//					dialog.dismiss();
+////					finish();
+//				}
+//			});
+//			alert_internet_status.show();
+////			AlertShow_networkErr();
+			
 			// 상태 복원. 검색 가능하도록. 
 			connected = false;
+			isRunning = 0;		// 나중에 재시도 가능하도록.
 		}else{
 			connected = true;
 		}
 		return connected;
 	}
-	public void AlertShow_networkErr(){
-		Log.i(TAG,"AlertShow_networkErr");
-		AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
-		alert_internet_status.setTitle("Warning");
-		alert_internet_status.setMessage(R.string.network_error);
-		alert_internet_status.setPositiveButton(R.string.closebtn, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-//				finish();
-			}
-		});
-		alert_internet_status.show();
-	}
+//	public void AlertShow_networkErr(){
+//	}
 	
 	@Override
 	public void onPause(){

@@ -512,7 +512,7 @@ public class MemberStoreInfoPage extends Activity {
 								bm = LoadImage(merchantData.getProfileImageURL());	
 							}catch(Exception e3){
 								Log.w(TAG,"LoadImage with URL failed again.:"+merchantData.getProfileImageURL());
-								BitmapDrawable dw = (BitmapDrawable) this.getResources().getDrawable(R.drawable.empty_320_160);
+								BitmapDrawable dw = (BitmapDrawable) this.getResources().getDrawable(R.drawable.empty_320_240);
 								bm = dw.getBitmap();
 							}
 						}
@@ -522,14 +522,14 @@ public class MemberStoreInfoPage extends Activity {
 						}catch(Exception e3){
 							Log.w(TAG, imgDomain+merchantData.getProfileImageURL()+" -- fail");
 							try{
-								BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.empty_320_160);
+								BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.empty_320_240);
 								bm = dw.getBitmap();
 							}catch(Exception e4){}
 						}
 					}
 				}
 				if(bm==null){
-					BitmapDrawable dw = (BitmapDrawable) this.getResources().getDrawable(R.drawable.empty_320_160);
+					BitmapDrawable dw = (BitmapDrawable) this.getResources().getDrawable(R.drawable.empty_320_240);
 					bm = dw.getBitmap();
 				}
 				merchantData.setMerchantImage(bm);
