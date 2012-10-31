@@ -1,9 +1,9 @@
 package kr.co.bettersoft.checkmileage.activities;
 // 개인정보 변경
+
 /*
  * 설정 화면. -- 하위. 내 정보 설정.
  * 
- * 터치시 이벤트 설정도 여기서
  */
 import java.io.BufferedReader;
 import java.io.IOException;

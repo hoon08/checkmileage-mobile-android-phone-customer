@@ -3,16 +3,14 @@
  */
 
 /*
- *  사용 하는 겁니다.
+ *  사용 하는 겁니다. Settings_PasswordPageActivity  설정화면에서 비번 생성 및 변경시 호출됩니다.
  *  
  *  세팅을 쪼개서 비번 세팅 페이지가 있는데 거기서 이 페이지를 호출해서 사용합니다.
- * 
  * 
  */
 
 package kr.co.bettersoft.checkmileage.pref;
 
-//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 import kr.co.bettersoft.checkmileage.activities.R;
 import android.app.Activity; 
 import android.content.Context;
@@ -54,7 +52,8 @@ public class Password extends Activity {
 	private int currentMode = PHASE_CONFIRM_PASSWORD;
 	private int initMode = PHASE_CONFIRM_PASSWORD;
 	private String currentPassword;
-	private int passwordLength = 9999;
+	
+//	private int passwordLength = 4;		// 1칸짜리일 경우 비번 최대 길이.
 	private Intent nextActivity;
 //	private EditText passwordForm, passwordConfirmForm;
 	
@@ -62,7 +61,7 @@ public class Password extends Activity {
 	
 	private EditText pwpart1, pwpart2, pwpart3, pwpart4, pw_cnfrmpart1, pw_cnfrmpart2, pw_cnfrmpart3, pw_cnfrmpart4;		// 비번 4칸짜리
 	String pwForms, pw_cnfrmForms;				// 비번 4칸짜리 값 모은 스트링.
-	String tempStr1, tempStr2, tempStr3, tempStr4;		// 비번 4칸짜리 임시 저장용. 비번칸에는 동그라미를 보여주고 값은 임시 저장소에 저장.
+	String tempStr1="", tempStr2="", tempStr3="", tempStr4="";		// 비번 4칸짜리 임시 저장용. 비번칸에는 동그라미를 보여주고 값은 임시 저장소에 저장.
 	private String passwordString;
 //	private ViewFlipper passwordFlipper;
 	private ViewFlipper passwordFlipper2;
@@ -247,7 +246,7 @@ public class Password extends Activity {
         Log.i("Password", "passwordString::"+passwordString);
         currentMode = initMode;
         currentPassword = passwordString;
-        passwordLength = 4;		// 비번은 무조건 4글자여야만 한다.
+//        passwordLength = 4;		// 비번은 무조건 4글자여야만 한다.
         
         // 비번 입력창과 안내 메시지창.
         textMessage = (TextView)findViewById(R.id.password_message);
@@ -329,8 +328,9 @@ public class Password extends Activity {
         pwpart1.addTextChangedListener(new TextWatcher() {
         	   @Override
         	   public void onTextChanged(CharSequence s, int start, int before, int count) {
-        	    if(pwpart1.length()==1){  // edit1  값의 제한값을 6이라고 가정했을때
+        	    if((pwpart1.length()==1) && !((pwpart1.getText()+"").equals("●"))){  // edit1  값의 제한값을 6이라고 가정했을때
         	    	tempStr1 = pwpart1.getText()+"";
+        	    	pwpart1.setText("●");
         	    	pwpart1.setFocusableInTouchMode(false);
         	    	pwpart2.setFocusableInTouchMode(true);
         	    	pwpart2.requestFocus(); // 두번째EditText 로 포커스가 넘어가게 됩니다
@@ -364,8 +364,10 @@ public class Password extends Activity {
         pwpart2.addTextChangedListener(new TextWatcher() {
      	   @Override
      	   public void onTextChanged(CharSequence s, int start, int before, int count) {
-     	    if(pwpart2.length()==1){  // edit1  값의 제한값을 6이라고 가정했을때
-     	    	tempStr2 = pwpart2.getText()+"";
+     		   
+     		   if((pwpart2.length()==1) && !((pwpart2.getText()+"").equals("●"))){  // edit1  값의 제한값을 6이라고 가정했을때
+     			  tempStr2 = pwpart2.getText()+"";
+     			   pwpart2.setText("●");
      	    	pwpart2.setFocusableInTouchMode(false);
     	    	pwpart3.setFocusableInTouchMode(true);
      	    	pwpart3.requestFocus(); // 두번째EditText 로 포커스가 넘어가게 됩니다
@@ -398,8 +400,9 @@ public class Password extends Activity {
         pwpart3.addTextChangedListener(new TextWatcher() {
       	   @Override
       	   public void onTextChanged(CharSequence s, int start, int before, int count) {
-      	    if(pwpart3.length()==1){  // edit1  값의 제한값을 6이라고 가정했을때
-      	    	tempStr3 = pwpart3.getText()+"";
+      		   if((pwpart3.length()==1) && !((pwpart3.getText()+"").equals("●"))){
+      			 tempStr3 = pwpart3.getText()+"";
+      			   pwpart3.setText("●");
       	    	pwpart3.setFocusableInTouchMode(false);
     	    	pwpart4.setFocusableInTouchMode(true);
       	    	pwpart4.requestFocus(); // 두번째EditText 로 포커스가 넘어가게 됩니다
@@ -433,11 +436,12 @@ public class Password extends Activity {
         pwpart4.addTextChangedListener(new TextWatcher() {
        	   @Override
        	   public void onTextChanged(CharSequence s, int start, int before, int count) {
-       	    if(pwpart4.length()==1){  // edit1  값의 제한값을 6이라고 가정했을때
-       	    	tempStr4 = pwpart4.getText()+"";
+       		   if((pwpart4.length()==1) && !((pwpart4.getText()+"").equals("●"))){  // edit1  값의 제한값을 6이라고 가정했을때
+       			tempStr4 = pwpart4.getText()+"";
+       			   pwpart4.setText("●");
        	    	// 비번 4개 다받았다..
        	    	pwForms = tempStr1+tempStr2+tempStr3+tempStr4;
-//       	    	Log.d(TAG, "비번4개 다받음. "+pwForms);
+       	    	Log.d(TAG, "got password:"+pwForms);
             		Handler passwordHandler = new Handler();
             		passwordHandler.postDelayed(passwordRunnable, 200);
        	    }
@@ -470,9 +474,10 @@ public class Password extends Activity {
         }); 
         pw_cnfrmpart1.addTextChangedListener(new TextWatcher() {
         	   @Override
-        	   public void onTextChanged(CharSequence s, int start, int before, int count) {
-        	    if(pw_cnfrmpart1.length()==1){  // edit1  값의 제한값을 6이라고 가정했을때
+        	   public void onTextChanged(CharSequence s, int start, int before, int count) {					
+        	    if((pw_cnfrmpart1.length()==1) && !((pw_cnfrmpart1.getText()+"").equals("●"))){  // edit1  값의 제한값을 6이라고 가정했을때
         	    	tempStr1 = pw_cnfrmpart1.getText()+"";
+        	    	pw_cnfrmpart1.setText("●");
         	    	pw_cnfrmpart1.setFocusableInTouchMode(false);
         	    	pw_cnfrmpart2.setFocusableInTouchMode(true);
         	    	pw_cnfrmpart2.requestFocus(); // 두번째EditText 로 포커스가 넘어가게 됩니다
@@ -490,7 +495,7 @@ public class Password extends Activity {
         		if(keyCode == KeyEvent.KEYCODE_DEL){   
         			if(dontTwice==1){
 	        			//this is for backspace 
-	        			// pwpart1 값 지우고 그쪽으로 간다.
+	        			// pw_cnfrmpart1 값 지우고 그쪽으로 간다.
         				pw_cnfrmpart1.setText("");
         				pw_cnfrmpart2.setFocusableInTouchMode(false);
         				pw_cnfrmpart1.setFocusableInTouchMode(true);
@@ -506,8 +511,9 @@ public class Password extends Activity {
         pw_cnfrmpart2.addTextChangedListener(new TextWatcher() {
      	   @Override
      	   public void onTextChanged(CharSequence s, int start, int before, int count) {
-     	    if(pw_cnfrmpart2.length()==1){  // edit1  값의 제한값을 6이라고 가정했을때
-     	    	tempStr2 = pw_cnfrmpart2.getText()+"";
+     		  if((pw_cnfrmpart2.length()==1) && !((pw_cnfrmpart2.getText()+"").equals("●"))){  // edit1  값의 제한값을 6이라고 가정했을때
+      	    	tempStr2 = pw_cnfrmpart2.getText()+"";
+      	    	pw_cnfrmpart2.setText("●");
      	    	pw_cnfrmpart2.setFocusableInTouchMode(false);
      	    	pw_cnfrmpart3.setFocusableInTouchMode(true);
      	    	pw_cnfrmpart3.requestFocus(); // 두번째EditText 로 포커스가 넘어가게 됩니다
@@ -540,8 +546,9 @@ public class Password extends Activity {
         pw_cnfrmpart3.addTextChangedListener(new TextWatcher() {
       	   @Override
       	   public void onTextChanged(CharSequence s, int start, int before, int count) {
-      	    if(pw_cnfrmpart3.length()==1){  // edit1  값의 제한값을 6이라고 가정했을때
-      	    	tempStr3 = pw_cnfrmpart3.getText()+"";
+      		 if((pw_cnfrmpart3.length()==1) && !((pw_cnfrmpart3.getText()+"").equals("●"))){  // edit1  값의 제한값을 6이라고 가정했을때
+       	    	tempStr3 = pw_cnfrmpart3.getText()+"";
+       	    	pw_cnfrmpart3.setText("●");
       	    	pw_cnfrmpart3.setFocusableInTouchMode(false);
       	    	pw_cnfrmpart4.setFocusableInTouchMode(true);
       	    	pw_cnfrmpart4.requestFocus(); // 두번째EditText 로 포커스가 넘어가게 됩니다
@@ -575,11 +582,12 @@ public class Password extends Activity {
         pw_cnfrmpart4.addTextChangedListener(new TextWatcher() {
        	   @Override
        	   public void onTextChanged(CharSequence s, int start, int before, int count) {
-       	    if(pw_cnfrmpart4.length()==1){  // edit1  값의 제한값을 6이라고 가정했을때
-       	    	tempStr4 = pw_cnfrmpart4.getText()+"";
+       		if((pw_cnfrmpart4.length()==1) && !((pw_cnfrmpart4.getText()+"").equals("●"))){  // edit1  값의 제한값을 6이라고 가정했을때
+      	    	tempStr4 = pw_cnfrmpart4.getText()+"";
+      	    	pw_cnfrmpart4.setText("●");
        	    	// 비번 4개 다받았다..
        	    	pw_cnfrmForms = tempStr1 + tempStr2 + tempStr3 + tempStr4;
-       	    	Log.i(TAG, "pw all get(4th) 2. "+pw_cnfrmForms);
+//       	    	Log.i(TAG, "pw all get(4th) 2. "+pw_cnfrmForms);
             		Handler passwordHandler = new Handler();
             		passwordHandler.postDelayed(passwordRunnable, 200);
        	    }

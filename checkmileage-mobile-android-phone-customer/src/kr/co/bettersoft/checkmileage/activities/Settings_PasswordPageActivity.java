@@ -1,9 +1,9 @@
 package kr.co.bettersoft.checkmileage.activities;
 
 /*
- * 설정 화면. 
- * 
- * 터치시 이벤트 설정도 여기서
+ * 설정 화면. - 하위- 비번 설정 화면.
+ *    비번 잠금 기능 설정 및 비번 생성 및 변경.
+ *      단 비번 생성 및 변경은 pref 의 password 페이지를 호출하여 진행.
  */
 import kr.co.bettersoft.checkmileage.pref.Password;
 import android.os.Bundle;

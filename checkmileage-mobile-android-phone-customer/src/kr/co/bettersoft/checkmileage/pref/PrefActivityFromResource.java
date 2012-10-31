@@ -899,6 +899,16 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		}else{
 			app_end = 1;
 			Toast.makeText(PrefActivityFromResource.this, R.string.noti_back_finish, Toast.LENGTH_SHORT).show();
+			new Thread( 
+					new Runnable(){
+						public void run(){
+							try {
+								Thread.sleep(3000);
+								app_end = 0;
+							} catch (InterruptedException e) {e.printStackTrace();}
+						}
+					}
+			).start();
 		}
 	}
 	
