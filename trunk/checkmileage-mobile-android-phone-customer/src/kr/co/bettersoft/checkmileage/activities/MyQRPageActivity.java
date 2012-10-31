@@ -83,11 +83,6 @@ public class MyQRPageActivity extends Activity {
 	MainActivity mainActivity = (MainActivity)MainActivity.mainActivity;
 	
 	
-	SharedPreferences sharedPrefCustom;
-	
-	// 설정 정보 저장할 도메인.
-	CheckMileageMemberSettings settings;
-	
 	int myLat = 0;
 	int myLon = 0;
 	
@@ -102,8 +97,6 @@ public class MyQRPageActivity extends Activity {
 	static ImageView imgView;
 	public static String qrCode = "";
 	
-	static Boolean getSettingsFromServer = false;
-
 	// 핸들러 등록
 	Handler handler = new Handler(){
     	@Override
@@ -113,27 +106,8 @@ public class MyQRPageActivity extends Activity {
     		if(showQR==1){
     			imgView.setImageBitmap(bmp);
     		}
-    		if(b.getInt("showErrToast")==1){
-				Toast.makeText(MyQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
-			}
-    		
     	}
     };
-    
-    public void showMSG(){			// 화면에 토스트 띄움..
-		new Thread(
-				new Runnable(){
-					public void run(){
-						Message message = handler.obtainMessage();				
-						Bundle b = new Bundle();
-						b.putInt("showErrToast", 1);
-						message.setData(b);
-						handler.sendMessage(message);
-					}
-				}
-		).start();
-	}
-    
     
     public Bitmap createQRself(String qrCode){
     	try { 
@@ -141,7 +115,6 @@ public class MyQRPageActivity extends Activity {
     	    Bitmap bm = encodeAsBitmap(qrCode, BarcodeFormat.QR_CODE, 200, 200); 
     	    if(bm != null) { 
     	        Log.d(TAG,"S to createQRself");
-//    	        Log.d(TAG,"bm.getHeight()"+bm.getHeight()+"//bm.getWidth():"+bm.getWidth());
     	        return bm;
     	    } 
     	} catch (Exception e) { 
@@ -208,9 +181,6 @@ public class MyQRPageActivity extends Activity {
         						// QR 이미지 생성 실패. 처리 필요 *** no qr img 로 가야 할듯.? 재실행?;
         					}else{
         						saveBMPtoDB(bmp);
-        						if(getSettingsFromServer){			// 스켄했는데 서버에 정보가 있는 경우. 
-        							new backgroundGetUserSettingsFromServer().execute();		//설정 정보를 가져와서 저장 함.
-        						}
         					}
         				}else{
         					bmp = savedBMP;
@@ -321,6 +291,16 @@ public class MyQRPageActivity extends Activity {
 		}else{
 			app_end = 1;
 			Toast.makeText(MyQRPageActivity.this, R.string.noti_back_finish, Toast.LENGTH_SHORT).show();
+			new Thread( 
+					new Runnable(){
+						public void run(){
+							try {
+								Thread.sleep(3000);
+								app_end = 0;
+							} catch (InterruptedException e) {e.printStackTrace();}
+						}
+					}
+			).start();
 		}
 	}
 	
@@ -347,8 +327,7 @@ public class MyQRPageActivity extends Activity {
 				myLat = (int) (location.getLatitude()*1000000);				// 현위치의 좌표 획득
 				myLon = (int) (location.getLongitude()*1000000);	
 				Log.d(TAG, "runOnFirstFix// location1:"+myLat+", "+myLon);			// 37529466 126921069
-//				updateLocationToServer(Integer.toString(myLat), Integer.toString(myLon));
-				new backgroundUpdateLocationToServer().execute();	// 비동기로 전환		
+				new backgroundUpdateLocationToServer().execute();	// 비동기로 서버에 위치 업뎃		
 				
 			}else{
 				location =  lm.getLastKnownLocation(provider);
@@ -484,159 +463,11 @@ public class MyQRPageActivity extends Activity {
 //		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
 	}
 	
-	
 	@Override			// 이 액티비티(인트로)가 종료될때 실행. (액티비티가 넘어갈때 종료됨)
 	protected void onDestroy() {
 		super.onDestroy();
 	}
 	
-	
-	
-	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public class backgroundGetUserSettingsFromServer extends   AsyncTask<Void, Void, Void> {
-        @Override protected void onPostExecute(Void result) { 
-       }
-        @Override protected void onPreExecute() { 
-       }
-        @Override protected Void doInBackground(Void... params) { 
-        	Log. d(TAG,"backgroundGetUserSettingsFromServer");
-        	getUserSettingsFromServer();
-        	return null ;
-        }
-	}
-
-
-	
-	
-	
-	/*
-	 *     인증 성공(현재 기능 보류) 이후  
-	 *     이전 사용자일 경우 서버로부터 사용자 설정 정보를 가져와서 모바일의 설정 정보에 대입시킨다..
-	 *     비번의 경우 분실시 어플 삭제후 재설치.. 재 인증 받는다. 그럼 비번 초기화.
-	 */
-	public void getUserSettingsFromServer(){		// 서버로부터 설정 정보를 받는다.  아이디를 사용.모든데이터.  CheckMileageMember
-		Log.d(TAG, "getUserSettingsFromServer");
-		controllerName = "checkMileageMemberController";
-		methodName = "selectMemberInformation";
-
-		new Thread(
-				new Runnable(){
-					public void run(){
-						JSONObject obj = new JSONObject();
-						try{
-							// 자신의 아이디를 넣어서 조회
-							Log.d(TAG,"getUserSettingsFromServer,qrcode:"+qrCode);
-							obj.put("checkMileageId", qrCode);		// 자신의 아이디 사용할 것.. 이전 사용자이다
-							obj.put("activateYn", "Y");
-						}catch(Exception e){
-							e.printStackTrace();
-						}
-						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
-						try{
-							URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
-							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
-							connection2.setConnectTimeout(2000);
-							connection2.setDoOutput(true);
-							connection2.setInstanceFollowRedirects(false);
-							connection2.setRequestMethod("POST");
-							Thread.sleep(400);
-							connection2.setRequestProperty("Content-Type", "application/json");
-							Thread.sleep(400);
-							OutputStream os2 = connection2.getOutputStream();
-							os2.write(jsonString.getBytes());
-							os2.flush();
-							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
-							responseCode = connection2.getResponseCode();
-							InputStream in =  connection2.getInputStream();
-							if(responseCode==200 || responseCode==204){
-								// 조회한 결과를 처리.
-								theMySettingData1(in);
-								//									Log.d(TAG,"S");
-							}else{
-								showMSG();
-							}
-						}catch(Exception e){ 
-							e.printStackTrace();
-						}
-					}
-				}
-		).start();
-	}
-	
-	public void theMySettingData1(InputStream in){
-		Log.d(TAG,"theMySettingData1");
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);
-		StringBuilder builder = new StringBuilder();
-		String line =null;
-		JSONObject jsonObject;
-		settings = new CheckMileageMemberSettings(); // 객체 생성
-		try {
-			while((line=reader.readLine())!=null){
-				builder.append(line).append("\n");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-//		Log.d(TAG,"내 설정 상세정보::"+builder.toString());
-		String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다
-		// // // // // // // 바로 바로 화면에 add 하고 터치시 값 가져다가 상세 정보 보도록....
-			try {
-				jsonObject = new JSONObject(tempstr);
-				JSONObject jsonobj2 = jsonObject.getJSONObject("checkMileageMember");
-				// 데이터를 전역 변수 도메인에 저장하고  설정에 저장..
-				try{
-					settings.setEmail(jsonobj2.getString("email"));				
-				}catch(Exception e){
-					settings.setEmail("");
-				}
-				try{
-					settings.setBirthday(jsonobj2.getString("birthday"));				
-				}catch(Exception e){
-					settings.setBirthday("");
-				}
-				try{
-					settings.setGender(jsonobj2.getString("gender"));				
-				}catch(Exception e){
-					settings.setGender("");
-				}
-				try{
-					settings.setReceive_notification_yn(jsonobj2.getString("receiveNotificationYn"));	
-				}catch(Exception e){
-					settings.setReceive_notification_yn("");
-				}
-
-				setUserSettingsToPrefs();		// 설정에 전달 및 저장
-			} catch (JSONException e) {
-				e.printStackTrace();
-			} 
-	}
-	
-	/*
-	 * 서버에서 받은 설정 정보를 모바일 내 설정 정보에 저장한다.
-	 *   EMAIL  // BIRTHDAY //  GENDER // RECEIVE_NOTIFICATION_YN
-	 *   4가지. -> 를 설정 도메인에 저장한 후 설정에서 세팅해준다..
-	 */
-	public void setUserSettingsToPrefs(){
-		sharedPrefCustom = getSharedPreferences("MyCustomePref",
-				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
-		SharedPreferences.Editor saveUpdateYn = sharedPrefCustom.edit();		// 공용으로 비번도 저장해 준다.
-		
-		saveUpdateYn.putString("updateYN", "Y");
-		saveUpdateYn.putString("server_birthday", settings.getBirthday());
-		saveUpdateYn.putString("server_email", settings.getEmail());
-		saveUpdateYn.putString("server_gender", settings.getGender());
-		if(settings.getReceive_notification_yn().equals("N")){		// 있고 N
-			saveUpdateYn.putBoolean("server_receive_notification_yn", false);
-		}else{		// 없거나 Y
-			saveUpdateYn.putBoolean("server_receive_notification_yn", true);
-		}
-		saveUpdateYn.commit();
-	}
-	
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	
 	
 }

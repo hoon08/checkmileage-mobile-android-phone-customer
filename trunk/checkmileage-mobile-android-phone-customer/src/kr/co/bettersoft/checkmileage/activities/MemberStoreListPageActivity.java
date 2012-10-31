@@ -593,7 +593,6 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			if(isRunning==0){		// 진행중에 다른 조작 사절
 				isRunning=1;
 //				searchSpinnerArea.setEnabled(false);
-				
 				new Thread(	
 						new Runnable(){
 							public void run(){
@@ -777,13 +776,34 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 					 */
 					//  merchantId,  companyName,  profileImageUrl,  
 					// 객체 만들고 값 받은거 넣어서 저장..  저장값:  가맹점아이디. 가맹점 이름, 프로필 URL
+					String tempMerchantId="";
+					String tempCompanyName="";
+					String tempProfileThumbnailImageUrl="";
+					String tempIdCheckMileageMileages="";
+					String tempMileage="";
+					try{
+						tempMerchantId = jsonObj.getString("merchantId");
+					}catch(Exception e1){ tempMerchantId = ""; }
+					try{
+						tempCompanyName = jsonObj.getString("companyName");
+					}catch(Exception e1){ tempCompanyName = ""; }
+					try{
+						tempProfileThumbnailImageUrl = jsonObj.getString("profileThumbnailImageUrl");
+					}catch(Exception e1){ tempProfileThumbnailImageUrl = ""; }
+					try{
+						tempIdCheckMileageMileages = jsonObj.getString("idCheckMileageMileages");
+					}catch(Exception e1){ tempIdCheckMileageMileages = ""; }
+					try{
+						tempMileage = jsonObj.getString("mileage");
+					}catch(Exception e1){ tempMileage = ""; }
+					
 					entries1.add(
 							new CheckMileageMerchants(
-									jsonObj.getString("merchantId"),
-									jsonObj.getString("companyName"),
-									jsonObj.getString("profileThumbnailImageUrl"),		//profileImageUrl--> profileThumbnailImageUrl
-									jsonObj.getString("idCheckMileageMileages"),
-									jsonObj.getString("mileage")
+									tempMerchantId,
+									tempCompanyName,
+									tempProfileThumbnailImageUrl,		//profileImageUrl--> profileThumbnailImageUrl
+									tempIdCheckMileageMileages,
+									tempMileage
 							)
 					);
 				}
@@ -1003,6 +1023,16 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		}else{
 			app_end = 1;
 			Toast.makeText(MemberStoreListPageActivity.this, R.string.noti_back_finish, Toast.LENGTH_SHORT).show();
+			new Thread( 
+					new Runnable(){
+						public void run(){
+							try {
+								Thread.sleep(3000);		// 3초후 복원. 다시 뒤로 가기 눌렀을때 종료 여부 확인.
+								app_end = 0;
+							} catch (InterruptedException e) {e.printStackTrace();}
+						}
+					}
+			).start();
 		}
 	}
 

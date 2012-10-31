@@ -775,6 +775,16 @@ public class MyMileagePageActivity extends Activity {
 		}else{
 			app_end = 1;
 			Toast.makeText(MyMileagePageActivity.this, R.string.noti_back_finish, Toast.LENGTH_SHORT).show();
+			new Thread( 
+					new Runnable(){
+						public void run(){
+							try {
+								Thread.sleep(3000);
+								app_end = 0;
+							} catch (InterruptedException e) {e.printStackTrace();}
+						}
+					}
+			).start();
 		}
 	}
 	
@@ -854,18 +864,5 @@ public class MyMileagePageActivity extends Activity {
 			}
 			return connected;
 		}
-//		public void AlertShow_networkErr(){		//R.string.network_error
-//			AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
-//			alert_internet_status.setTitle("Warning");
-//			alert_internet_status.setMessage(R.string.network_error);
-//			String tmpstr = getString(R.string.closebtn);
-//			alert_internet_status.setPositiveButton(tmpstr, new DialogInterface.OnClickListener() {
-//				@Override
-//				public void onClick(DialogInterface dialog, int which) {
-//					dialog.dismiss();
-////					finish();
-//				}
-//			});
-//			alert_internet_status.show();
-//		}
+ 
 }
