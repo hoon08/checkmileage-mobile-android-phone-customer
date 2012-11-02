@@ -61,7 +61,7 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 	static String barCode = "";
 	public static TabHost tabhost;
 
-	///////////////////////////////  // GCM 
+	////////////////////////////////////  // GCM 
 	AsyncTask<Void, Void, Void> mRegisterTask;
 	public static String REGISTRATION_ID = "";		// 등록아이디
 	
