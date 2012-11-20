@@ -20,7 +20,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import kr.co.bettersoft.checkmileage.adapters.ImageAdapterList;
+import kr.co.bettersoft.checkmileage.adapters.MyMileageListAdapter;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMileage;
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
 
@@ -84,7 +84,7 @@ public class MyMileagePageActivity extends Activity {
 	public static Boolean searched = false;		// 조회 했는가?
 	
 	
-	int reTry = 5;
+	int reTry = 3;
 	
 	int merchantNameMaxLength = 9;			// 가맹점명 표시될 최대 글자수.
 	String newMerchantName="";
@@ -180,6 +180,14 @@ public class MyMileagePageActivity extends Activity {
 	public void saveDataToDB(){			//	db 테이블을 초기화 후 새 데이터를 넣습니다.	  // oncreate()에서 테이블 검사해서 만들었기 때문에 최초 등은 걱정하지 않는다.
 		Log.i(TAG, "saveDataToDB");
 		try{
+			if(db==null){
+		          db= openOrCreateDatabase( "sqlite_carrotDB.db", SQLiteDatabase.CREATE_IF_NECESSARY ,null );
+		    }
+			if(!(db.isOpen())){
+				Log.i(TAG, "db is not open.. open db");
+				db= openOrCreateDatabase( "sqlite_carrotDB.db", SQLiteDatabase.CREATE_IF_NECESSARY ,null );
+			}
+			
 			db.execSQL(Q_INIT_TABLE);
 			ContentValues initialValues = null;
 			int entrySize = dbInEntries.size();
@@ -206,6 +214,7 @@ public class MyMileagePageActivity extends Activity {
 				}
 			}
 			Log.i(TAG, "saveDataToDB success");
+			
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
@@ -367,7 +376,7 @@ public class MyMileagePageActivity extends Activity {
 	
 	public void setListing(){
 		listView  = (ListView)findViewById(R.id.listview);
-		listView.setAdapter(new ImageAdapterList(this, entriesFn));
+		listView.setAdapter(new MyMileageListAdapter(this, entriesFn));
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
@@ -487,7 +496,7 @@ public class MyMileagePageActivity extends Activity {
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
 								OutputStream os2 = connection2.getOutputStream();
-								os2.write(jsonString.getBytes());
+								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
 //								System.out.println("postUrl      : " + postUrl2);
 								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
@@ -495,6 +504,7 @@ public class MyMileagePageActivity extends Activity {
 								InputStream in =  connection2.getInputStream();
 								// 조회한 결과를 처리.
 								theData1(in);
+								connection2.disconnect();
 							}catch(Exception e){ 
 								// 다시
 								if(reTry>0){
@@ -508,7 +518,7 @@ public class MyMileagePageActivity extends Activity {
 									}	
 								}else{
 									Log.w(TAG,"reTry failed - init reTry");
-									reTry = 5;
+									reTry = 3;
 									hidePb();
 									isRunning = isRunning-1;
 									getDBData();						// 5회 재시도에도 실패하면 db에서 꺼내서 보여준다.
@@ -660,7 +670,7 @@ public class MyMileagePageActivity extends Activity {
 				e.printStackTrace();
 			}finally{
 				dbInEntries = entries; 
-				reTry = 5;				// 재시도 횟수 복구
+				reTry = 3;				// 재시도 횟수 복구
 				searched = true;
 				// db 에 데이터를 넣는다.
 				try{
@@ -711,7 +721,6 @@ public class MyMileagePageActivity extends Activity {
 	private Bitmap LoadImage( String $imagePath ) {
 		InputStream inputStream = OpenHttpConnection( $imagePath ) ;
 		Bitmap bm = BitmapFactory.decodeStream( inputStream ) ;
-
 		return bm;
 	}
 	private InputStream OpenHttpConnection(String $imagePath) {

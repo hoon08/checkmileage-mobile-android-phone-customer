@@ -17,11 +17,11 @@ import android.widget.TextView;
 /*
  * 가맹점 검색용 아답터. 가맹점 목록 --> 그리드 뷰로 화면에 보여줌. 1줄에 두개. 정렬 되있음.
  */
-public class ImageAdapter extends BaseAdapter {
+public class MemberStoreSearchListAdapter extends BaseAdapter {
 	private Context context;
 	private final List<CheckMileageMerchants> entries;
  
-	public ImageAdapter(Context context, List<CheckMileageMerchants> entriesFn) {		
+	public MemberStoreSearchListAdapter(Context context, List<CheckMileageMerchants> entriesFn) {		
 		this.context = context;
 		this.entries = entriesFn;
 	}

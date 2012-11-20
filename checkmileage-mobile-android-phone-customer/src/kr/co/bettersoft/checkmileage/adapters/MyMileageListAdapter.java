@@ -18,11 +18,11 @@ import android.widget.TextView;
 /*
  * 마일리지 목록 용 아답터.
  */
-public class ImageAdapterList extends BaseAdapter {
+public class MyMileageListAdapter extends BaseAdapter {
 	private Context context;
 	private final List<CheckMileageMileage> entries;
  
-	public ImageAdapterList(Context context, List<CheckMileageMileage> entriesFn) {		
+	public MyMileageListAdapter(Context context, List<CheckMileageMileage> entriesFn) {		
 		this.context = context;
 		this.entries = entriesFn;
 	}

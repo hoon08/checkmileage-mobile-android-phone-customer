@@ -220,7 +220,7 @@ public class ScanQRPageActivity extends Activity {
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
 							OutputStream os2 = connection2.getOutputStream();
-							os2.write(jsonString.getBytes());
+							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
 							System.out.println("postUrl      : " + postUrl2);
 							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
@@ -235,6 +235,7 @@ public class ScanQRPageActivity extends Activity {
 								 startActivity(backToNoQRIntent);
 								 finish();
 							}
+							connection2.disconnect();
 						}catch(Exception e){ 
 							e.printStackTrace();
 							showErrMSG();
@@ -356,7 +357,7 @@ public class ScanQRPageActivity extends Activity {
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
 							OutputStream os2 = connection2.getOutputStream();
-							os2.write(jsonString.getBytes());
+							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
 							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 							responseCode = connection2.getResponseCode();
@@ -368,6 +369,7 @@ public class ScanQRPageActivity extends Activity {
 							}else{
 								showErrMSG();
 							}
+							connection2.disconnect();
 						}catch(Exception e){ 
 							e.printStackTrace();
 						}
@@ -494,7 +496,7 @@ public class ScanQRPageActivity extends Activity {
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
 							OutputStream os2 = connection2.getOutputStream();
-							os2.write(jsonString.getBytes());
+							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
 							System.out.println("postUrl      : " + postUrl2);
 							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상

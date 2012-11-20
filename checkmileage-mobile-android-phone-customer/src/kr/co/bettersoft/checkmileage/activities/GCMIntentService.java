@@ -17,14 +17,16 @@ package kr.co.bettersoft.checkmileage.activities;
 
 import static kr.co.bettersoft.checkmileage.activities.CommonUtilities.SENDER_ID;
 
+import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
 
-import kr.co.bettersoft.checkmileage.activities.MemberStoreListPageActivity.backgroundGetBusinessKindList;
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Notification;
@@ -53,6 +55,9 @@ public class GCMIntentService extends GCMBaseIntentService {
 	String regIdGCM = "";
 	Boolean dontTwice = true;
 	
+	Context localContext;
+	String localRegistrationId;
+	
     private static final String TAG = "GCMIntentService";
 
     public GCMIntentService() {
@@ -68,11 +73,26 @@ public class GCMIntentService extends GCMBaseIntentService {
             
             new backgroundUpdateMyGCMtoServer().execute();	// 비동기로 전환 - 서버에 GCM 아이디 저장	
 //            displayMessage(context, getString(R.string.gcm_registered));			// 브로드 케스트로 보내줌.. 리시버가 잡음. (노티는 없음)
-            ServerUtilities.register(context, registrationId);
+            
+            localContext = context;
+			localRegistrationId = registrationId;
+//            new backgroundServerRegister().execute();
         	dontTwice = false;
         }
     }
     
+    // 비동기로 서버에 레지스터..
+    public class backgroundServerRegister extends  AsyncTask<Void, Void, Void> { 
+		@Override protected void onPostExecute(Void result) {  
+		} 
+		@Override protected void onPreExecute() {  
+		} 
+		@Override protected Void doInBackground(Void... params) {  
+			Log.d(TAG,"backgroundServerRegister");
+			ServerUtilities.register(localContext, localRegistrationId);
+			return null; 
+		}
+	} 
 
 	// 비동기로 GCM 아이디 업뎃 호출
 	public class backgroundUpdateMyGCMtoServer extends  AsyncTask<Void, Void, Void> { 
@@ -81,8 +101,15 @@ public class GCMIntentService extends GCMBaseIntentService {
 		@Override protected void onPreExecute() {  
 		} 
 		@Override protected Void doInBackground(Void... params) {  
-			Log.d(TAG,"backgroundGetBusinessKindList");
+			Log.d(TAG,"backgroundUpdateMyGCMtoServer");
 			updateMyGCMtoServer();
+//			try {
+//				testGCM(regIdGCM);
+//			} catch (JSONException e) {
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
 			return null; 
 		}
 	}
@@ -111,14 +138,14 @@ public class GCMIntentService extends GCMBaseIntentService {
 						try{
 							URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
-							connection2.setConnectTimeout(3000);
+							connection2.setConnectTimeout(2000);
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
-							Thread.sleep(500);
+							Thread.sleep(100);
 							OutputStream os2 = connection2.getOutputStream();
-							os2.write(jsonString.getBytes());
+							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
 							System.out.println("postUrl      : " + postUrl2);
 							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
@@ -129,6 +156,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 							}else{
 								Log.i(TAG, "F to update GCM ID to server");
 							}
+							connection2.disconnect();
 						}catch(Exception e){ 
 							e.printStackTrace();
 						}
@@ -137,6 +165,33 @@ public class GCMIntentService extends GCMBaseIntentService {
 		).start();
 	}
     
+	public void testGCM(String registrationId) throws JSONException, IOException {
+		  Log.i(TAG, "testGCM");
+		  JSONObject jsonMember = new JSONObject();
+		  jsonMember.put("registrationId", registrationId);
+		  String jsonString = "{\"checkMileageMember\":" + jsonMember.toString() + "}";
+		 
+		  Log.i(TAG, "jsonMember : " + jsonString);
+		 
+		  try {
+		   URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/checkMileageMemberController/testGCM");
+		   HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+		         connection2.setDoOutput(true);
+		         connection2.setInstanceFollowRedirects(false);
+		         connection2.setRequestMethod("POST");
+		         connection2.setRequestProperty("Content-Type", "application/json");
+		         OutputStream os2 = connection2.getOutputStream();
+		         os2.write(jsonString.getBytes("UTF-8"));
+		         os2.flush();
+		         System.out.println("postUrl      : " + postUrl2);
+		         System.out.println("responseCode : " + connection2.getResponseCode());
+		  } catch (Exception e) {
+		   // TODO: handle exception
+		//   resultGatheringMessage.setResult("FAIL");
+		   Log.e(TAG, "Fail to register category.");
+		  }
+		}
+	
 	public String getNow(){
 		// 일단 오늘.
 		Calendar c = Calendar.getInstance();
@@ -182,6 +237,7 @@ public class GCMIntentService extends GCMBaseIntentService {
         String message = intent.getStringExtra("MESSAGE");
 //        displayMessage(context, message);
         Log.i(TAG, "Received message of onMessage():"+intent.getStringExtra("MESSAGE"));		// 동작함.
+        
 //        Toast.makeText(GCMIntentService.this, "(테스트)메시지가 도착하였습니다."+intent.getStringExtra("MESSAGE"), Toast.LENGTH_SHORT).show();
 //        if(intent.getStringExtra("MESSAGE").equals("Check Mileage 로 부터 새로운 메시지가 도착했습니다.")){
 //        	// ...Log.i(TAG, "112233");		// 동작함.
@@ -290,7 +346,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 //        	notificationIntent = new Intent(context, MainActivity.class);		// 이걸 띄워서 문제가 된다면..
             notificationIntent = new Intent(context, DummyActivity.class);	
             notificationIntent.putExtra("RunMode", "MARKETING");
-            
+            notificationIntent.putExtra("MESSAGE", "New Event");
             // set intent so it does not start a new activity
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                   | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -307,6 +363,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 //        	notificationIntent = new Intent(context, MainActivity.class);		// 이걸 띄워서 문제가 된다면..
             notificationIntent = new Intent(context, DummyActivity.class);	
             notificationIntent.putExtra("RunMode", "MARKETING");
+            notificationIntent.putExtra("MESSAGE", message);
             
             // set intent so it does not start a new activity
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP

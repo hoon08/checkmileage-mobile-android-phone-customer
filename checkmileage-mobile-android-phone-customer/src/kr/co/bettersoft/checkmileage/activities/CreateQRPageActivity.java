@@ -227,7 +227,7 @@ public class CreateQRPageActivity extends Activity {
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
 							OutputStream os2 = connection2.getOutputStream();
-							os2.write(jsonString.getBytes());
+							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
 							System.out.println("postUrl      : " + postUrl2);
 							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
@@ -246,6 +246,7 @@ public class CreateQRPageActivity extends Activity {
 								 startActivity(backToNoQRIntent);
 								 finish();
 							}
+							connection2.disconnect();
 						}catch(Exception e){ 
 							 e.printStackTrace();			// 오류 발생시 에러 창 띄우고 돌아간다.. 통신에러 발생할수 있다.
 							 String alrtMsg = getString(R.string.error_message);

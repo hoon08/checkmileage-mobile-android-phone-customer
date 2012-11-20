@@ -27,6 +27,8 @@ public class CommonUtils extends Activity {
 	
 	static String imgDomain = "http://www.mcarrot.net/upload/profile/"; 	
 	static String imgthumbDomain = "http://www.mcarrot.net/upload/thumb/"; 	
+	static String imgPushDomain = "http://www.mcarrot.net/upload/pushThumb/"; 	
+	
 	
 	static String serverNames = "checkmileage.mcarrot.net";
 	

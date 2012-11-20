@@ -155,7 +155,7 @@ public class CertificationStep2 extends Activity {
 					  		  connection2.setRequestMethod("POST");
 					  		  connection2.setRequestProperty("Content-Type", "application/json");
 					  		  OutputStream os2 = connection2.getOutputStream();
-					  		  os2.write(jsonString.getBytes());
+					  		  os2.write(jsonString.getBytes("UTF-8"));
 					  		  os2.flush();
 					  		  System.out.println("postUrl      : " + postUrl2);
 					  		  System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : Á¤»ó

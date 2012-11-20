@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
+import kr.co.bettersoft.checkmileage.pref.PrefActivityFromResource;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,9 +33,15 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TabHost;
+import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 
 public class Main_TabsActivity extends TabActivity implements OnTabChangeListener {
@@ -45,7 +52,6 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 	String methodName = "";
 	String serverName = CommonUtils.serverNames;
 	
-	int maxRetry = 5;
 	static String myQR = "";
 
 	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
@@ -66,9 +72,27 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 	public static String REGISTRATION_ID = "";		// 등록아이디
 	
 	int waitEnd = 0;		// test GCM 대기용
-	int slow = 0;
 	
 	String RunMode = "";		// push 통한 실행을 위한 조치
+	
+	
+	// 핸들러
+	Handler handler = new Handler(){
+		@Override
+		public void handleMessage(Message msg){
+			Bundle b = msg.getData();
+			try{
+				if(b.getInt("unregGCM")==1){
+					Log.d(TAG,"unregGCM");
+					unregisterReceiver(mMyBroadcastReceiver);
+					GCMRegistrar.unregister(getThis());
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+	};
+	
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -129,6 +153,10 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 		if(RunMode.length()>0){
 			if(RunMode.equals("MILEAGE")){
 				tabhost.setCurrentTab(1);		// 시작 탭 설정을 원할 경우..
+			}else if(RunMode.equals("MARKETING")){
+				Intent PushListIntent = new Intent(Main_TabsActivity.this, kr.co.bettersoft.checkmileage.activities.PushList.class);
+				MyQRPageActivity.qrCode = myQR;
+				startActivity(PushListIntent);
 			}
 		}
 		
@@ -167,25 +195,10 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 		GCMRegistrar.checkDevice(this);					// 임시 중지  ->해제
 		GCMRegistrar.checkManifest(this);				
 		Log.i(TAG, "registerReceiver1 ");
-		final String regId = GCMRegistrar.getRegistrationId(this);
-//		final Context context = this;
 		mRegisterTask = new AsyncTask<Void, Void, Void>() {
 			@Override
-			protected Void doInBackground(Void... params) {
-				if(regId==null || regId.length()<1){		// 등록 되어있으면 재등록. --> 유지해봄.. 안되있으면?
-					reg();
-				}else{
-					Log.d(TAG,"already have a reg ID::"+regId);					// 나중에 달아..
-					try {
-						REGISTRATION_ID = regId;			// 안해도 되지만 서버에 값이 잘못 들어 있을 경우 문제가 될수 있기 때문에 값이 있다면 한번더 업뎃을 해준다. 
-						updateMyGCMtoServer();
-//						testGCM(REGISTRATION_ID);				
-//					} catch (JSONException e) {
-//						e.printStackTrace();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
+			protected Void doInBackground(Void... params) {	// 무조건 GCM 등록한다. 이전값이든 새값이든 등록하고 //등록 결과를 서버에 업뎃하는 부분은 GCM서비스에서 처리한다.
+				GCMRegistrar.register(getThis(), SENDER_ID);	
 				return null;
 			}
 			@Override
@@ -195,150 +208,9 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 		};
 		mRegisterTask.execute(null, null, null);
 	}
-
-
-	///////////////////////////////////////// GCM 등록 메소드 ///////////////////////////////////////    
-	//GCM 등록
-	public void reg(){
-		new Thread(
-				new Runnable(){
-					public void run(){
-						try {
-							Thread.sleep(500);
-						} catch (InterruptedException e1) {
-							e1.printStackTrace();
-						}finally{
-							checkDoneAndDoGCM();
-						}
-					}
-				}
-		).start();
-	}
-
 	///////////////////////////////////////// GCM 등록 위한 메소드들 //////////////////////////////////    
-	
-	
-//	public void testGCM(String registrationId) throws JSONException, IOException {
-//		Log.i("testGCM", "testGCM");
-//		JSONObject jsonMember = new JSONObject();
-//		jsonMember.put("registrationId", registrationId);
-//		String jsonString = "{\"checkMileageMember\":" + jsonMember.toString() + "}";
-//		//Log.i("testGCM", "jsonMember : " + jsonString);
-//		try {
-//			URL postUrl2 = new URL("http://"+serverName+"/checkMileageMemberController/testGCM");
-//			HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
-//			connection2.setDoOutput(true);
-//			connection2.setInstanceFollowRedirects(false);
-//			connection2.setRequestMethod("POST");
-//			connection2.setRequestProperty("Content-Type", "application/json");
-//			OutputStream os2 = connection2.getOutputStream();
-//			os2.write(jsonString.getBytes());
-//			os2.flush();
-//			System.out.println("postUrl      : " + postUrl2);
-//			System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
-//		} catch (Exception e) {
-//			Log.d("testGCM", "Fail to register category.");
-//		}
-//	}
-
-
-	public void checkDoneAndDoGCM(){
-		slow = slow +1;
-		if(slow==3){				// 3번 실행할때마다 추가 등록.(실패했을까봐)
-			slow = 0;
-			slowingReg();
-		}
-		new Thread(
-				new Runnable(){
-					public void run(){
-						try {
-							Thread.sleep(500);
-						} catch (InterruptedException e1) {
-						}finally{
-							REGISTRATION_ID = GCMRegistrar.getRegistrationId(getThis());	
-							if(REGISTRATION_ID.length()<1){
-								Log.i("testGCM", "wait..");
-								if(maxRetry>0){
-									maxRetry = maxRetry -1;
-									checkDoneAndDoGCM();
-								}else{
-									maxRetry = 5;
-								}
-							}else{
-								Log.i("testGCM", "now go with : "+REGISTRATION_ID+"-->test skip");
-//								try {
-////									updateMyGCMtoServer();
-////									testGCM(REGISTRATION_ID);
-//								} catch (JSONException e) {
-//									e.printStackTrace();
-//								} catch (IOException e) {
-//									e.printStackTrace();
-//								}
-							}
-						}
-					}
-				}
-		).start();
-	}
-
 	public Context getThis(){
 		return this;
-	}
-
-	public void slowingReg(){
-		GCMRegistrar.register(this, SENDER_ID);
-	}
-
-
-	//서버에 GCM 아이디 업뎃한다.
-	public void updateMyGCMtoServer(){
-		Log.i(TAG, "updateMyGCMtoServer");
-		controllerName = "checkMileageMemberController";
-		methodName = "updateRegistrationId";
-		// 서버 통신부
-		new Thread(
-				new Runnable(){
-					public void run(){
-						JSONObject obj = new JSONObject();
-						try{
-							obj.put("activateYn", "Y");
-							obj.put("checkMileageId", myQR);			  
-							obj.put("registrationId", REGISTRATION_ID);							
-							obj.put("modifyDate", getNow());			
-
-							Log.d(TAG, "checkMileageId:"+myQR);
-							Log.d(TAG, "registrationId:"+REGISTRATION_ID);
-							Log.d(TAG, "modifyDate:"+getNow());
-
-						}catch(Exception e){
-							e.printStackTrace();
-						}
-						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
-						try{
-							URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
-							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
-							connection2.setDoOutput(true);
-							connection2.setInstanceFollowRedirects(false);
-							connection2.setRequestMethod("POST");
-							connection2.setRequestProperty("Content-Type", "application/json");
-							OutputStream os2 = connection2.getOutputStream();
-							os2.write(jsonString.getBytes());
-							os2.flush();
-							System.out.println("postUrl      : " + postUrl2);
-							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
-							int responseCode = connection2.getResponseCode();
-							if(responseCode==200||responseCode==204){
-								Log.i(TAG, "S to update GCM ID to server");
-								// 조회한 결과를 처리.
-							}else{
-								Log.i(TAG, "F to update GCM ID to server");
-							}
-						}catch(Exception e){ 
-							Log.d(TAG,"updateMyGCMtoServer->fail");
-						}
-					}
-				}
-		).start();
 	}
 
 	public String getNow(){
@@ -388,7 +260,17 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 
 	@Override
 	protected void onPause() {
-		unregisterReceiver(mMyBroadcastReceiver);
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Message message = handler.obtainMessage();				
+						Bundle b = new Bundle();
+						b.putInt("unregGCM", 1);
+						message.setData(b);
+						handler.sendMessage(message);
+					}
+				}
+		).start();		
 		super.onPause();
 		 // 홈버튼 눌렀을때 종료 여부..
       if(!isForeGround()){
