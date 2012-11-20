@@ -3,12 +3,83 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text=""
-        tools:context=".MainActivity" />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/push_detail_title"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:background="#393939"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="17dp" />
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical"
+                android:gravity="center" >
+
+                <ImageView
+                    android:id="@+id/push_detail_image"
+                    android:layout_width="fill_parent"
+                    android:layout_height="240dp"
+                    android:contentDescription="@string/app_name"
+                    android:scaleType="fitCenter" />
+
+                <TextView
+                    android:id="@+id/push_detail_store_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20dp" />
+
+                <ScrollView
+                    android:id="@+id/push_detail_content_scrollview"
+                    android:layout_width="fill_parent"
+                    android:layout_height="140dp" >
+                    <TextView
+                        android:id="@+id/push_detail_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="140dp"
+                        android:textSize="17dp" />
+                </ScrollView>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:gravity="center"
+                    >
+                    <Button
+                        android:id="@+id/push_detail_closebtn"
+                        android:layout_width="80dp"
+                        android:layout_height="40dp"
+                        android:gravity="center"
+                        android:text="@string/closebtn"
+                        android:textSize="15dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="vertical" >
+
+                <ProgressBar
+                    android:id="@+id/push_detail_progressbar01"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible" />
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
 
 </RelativeLayout>

@@ -370,7 +370,7 @@ public class MemberStoreInfoPage extends Activity {
 							connection2.setRequestProperty("Content-Type", "application/json");
 //							connection2.connect();		// ???
 							OutputStream os2 = connection2.getOutputStream();
-							os2.write(jsonString.getBytes());
+							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
 //							Thread.sleep(500);	
 							// 200 , 204 : 정상
@@ -379,6 +379,7 @@ public class MemberStoreInfoPage extends Activity {
 							// 조회한 결과를 처리.
 							theData1(in);
 							error = 0;
+							connection2.disconnect();
 						}catch(Exception e){ 
 //							e.printStackTrace();
 							while(error==1){			// 에러 발생시 다시 정보를 가져온다. 될때까지 반복..은 위험.
@@ -403,7 +404,7 @@ public class MemberStoreInfoPage extends Activity {
 //									System.out.println("postUrl      : " + postUrl2);
 //									connection2.connect();
 									OutputStream os2 = connection2.getOutputStream();
-									os2.write(jsonString.getBytes());
+									os2.write(jsonString.getBytes("UTF-8"));
 									os2.flush();
 									Thread.sleep(300);
 									System.out.println("responseCode : " + connection2.getResponseCode());
@@ -412,6 +413,7 @@ public class MemberStoreInfoPage extends Activity {
 									in =  connection2.getInputStream();
 									// 조회한 결과를 처리.
 									theData1(in);
+									connection2.disconnect();
 								}catch(Exception e2){}
 						}  
 					}

@@ -357,7 +357,7 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
 							OutputStream os2 = connection2.getOutputStream();
-							os2.write(jsonString.getBytes());
+							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
 //							System.out.println("postUrl      : " + postUrl2);
 							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
@@ -365,6 +365,7 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 							InputStream in =  connection2.getInputStream();
 							// 조회한 결과를 처리.
 							theData1(in);
+							connection2.disconnect();
 						}catch(Exception e){ 
 							e.printStackTrace();
 						}  
@@ -424,7 +425,7 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
 								OutputStream os2 = connection2.getOutputStream();
-								os2.write(jsonString.getBytes());
+								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
 								System.out.println("postUrl      : " + postUrl2);
 								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
@@ -441,6 +442,7 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 								}else{
 									Log.e(TAG,"fail to update");
 								}
+								connection2.disconnect();
 							}catch(Exception e){ 
 								e.printStackTrace();
 							}  

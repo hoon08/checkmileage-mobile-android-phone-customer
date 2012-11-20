@@ -35,7 +35,7 @@ public class DummyActivity extends Activity {
 	
 	String TAG = "DummyActivity";
 	String RunMode = "";
-	
+	String message;
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +46,7 @@ public class DummyActivity extends Activity {
 	   
 	    Intent receiveIntent = getIntent();
 	    RunMode = receiveIntent.getStringExtra("RunMode");					// TEST  MILEAGE  MARKETING  NORMAL
+	    
 		 if(RunMode!=null && RunMode.length()>0){		// 데이터 전달이 가능하다.
 			 Log.d(TAG, RunMode);
 		 }else{
@@ -67,12 +68,23 @@ public class DummyActivity extends Activity {
 	    	}//  그 외에는 동작 하지 않는다.
 		    startActivity(intent);
 	    }else{				// 이미 실행중.
-	    	count = 0;		// 초기화 해준다. 종료하고 다시 실행할 수 있게..
-	    	
+//	    	count = 0;		// 초기화 해준다. 종료하고 다시 실행할 수 있게..
+	    	count = count -1;
+	    	if(count<0){
+	    		count = 0;
+	    	}
 	    	if(RunMode.equals("MILEAGE")){			// 마일리지일 경우에는 내 마일리지 목록 재 조회 되도록 변수 값을 설정해준다.	
 	    		MyMileagePageActivity.searched = false;		// ...		// 내 마일리지 목록 조회 변수 값 설정 해줄 것..
 	    		Main_TabsActivity.tabhost.setCurrentTab(1);				// 하는 김에 내 마일리지 탭으로 이동시켜준다.
 	    	}else if(RunMode.equals("MARKETING")){		// 이벤트 푸쉬일 경우 해당 이벤트 화면을 보여줘야 한다. 이미 실행중이니까 새 인텐트로 액티비티만 실행해주면 된다.
+	    		
+	    		Log.d(TAG,"MARKETING");
+	    		message = receiveIntent.getStringExtra("message");	
+	    		Log.d(TAG,"receiveIntent.getStringExtra():"+message);
+	    		
+	    		Intent PushListIntent = new Intent(DummyActivity.this, kr.co.bettersoft.checkmileage.activities.PushList.class);
+				startActivity(PushListIntent);
+	    		
 	    		// ... 인텐트 작성해서 실행시켜준다.
 	    	}//  그 외에는 동작 하지 않는다.
 	    }
@@ -88,7 +100,7 @@ public class DummyActivity extends Activity {
     	List<RunningAppProcessInfo> list = actMng.getRunningAppProcesses();
     	for(RunningAppProcessInfo rap : list)
     	{
-//    		Log.d("Log","rap.processName:"+rap.processName+"/packageName:"+packageName);
+    		Log.e("Log","rap.processName:"+rap.processName+"/packageName:"+packageName);
     		if(rap.processName.equals(packageName))
     		{
     			Log.d("Log","packageName=packageName/"+packageName);

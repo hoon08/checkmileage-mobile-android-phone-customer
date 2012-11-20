@@ -346,11 +346,13 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		
 		// 이벤트 알림  pref_push_list
 		if(preference.equals(findPreference("pref_push_list"))){
-			AlertShow_Message();				// 준비중입니다.
+			
+			
+//			AlertShow_Message();				// 준비중입니다.
 			
 			// 이벤트 목록 구현 이후 주석 해제.
-//			Intent PushListIntent = new Intent(PrefActivityFromResource.this, co.kr.bettersoft.checkmileage_mobile_android_phone_customer.PushList.class);
-//			startActivity(PushListIntent);
+			Intent PushListIntent = new Intent(PrefActivityFromResource.this, kr.co.bettersoft.checkmileage.activities.PushList.class);
+			startActivity(PushListIntent);
 			
 		}
 		
@@ -419,7 +421,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
 							OutputStream os2 = connection2.getOutputStream();
-							os2.write(jsonString.getBytes());
+							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
 //							System.out.println("postUrl      : " + postUrl2);
 							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
@@ -427,6 +429,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							InputStream in =  connection2.getInputStream();
 							// 조회한 결과를 처리.
 							theData1(in);
+							connection2.disconnect();
 						}catch(Exception e){ 
 							e.printStackTrace();
 						}  
@@ -485,7 +488,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
 								OutputStream os2 = connection2.getOutputStream();
-								os2.write(jsonString.getBytes());
+								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
 								System.out.println("postUrl      : " + postUrl2);
 								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
@@ -502,6 +505,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								}else{
 									Log.w(TAG,"fail to update");
 								}
+								connection2.disconnect();
 							}catch(Exception e){ 
 								e.printStackTrace();
 							}  
@@ -567,7 +571,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
 								OutputStream os2 = connection2.getOutputStream();
-								os2.write(jsonString.getBytes());
+								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
 								System.out.println("postUrl      : " + postUrl2);
 								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
@@ -585,6 +589,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								}else{
 									Log.w(TAG,"fail to update");
 								}
+								connection2.disconnect();
 							}catch(Exception e){ 
 								e.printStackTrace();
 							}  
@@ -634,7 +639,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
 							OutputStream os2 = connection2.getOutputStream();
-							os2.write(jsonString.getBytes());
+							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
 							System.out.println("postUrl      : " + postUrl2);
 							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
@@ -647,6 +652,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							}else{
 								Log.w(TAG,"fail to update");
 							}
+							connection2.disconnect();
 						}catch(Exception e){ 
 							e.printStackTrace();
 						}  

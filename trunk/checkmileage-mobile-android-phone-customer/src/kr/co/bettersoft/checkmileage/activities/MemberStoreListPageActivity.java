@@ -16,13 +16,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import kr.co.bettersoft.checkmileage.adapters.ImageAdapter;
+import kr.co.bettersoft.checkmileage.adapters.MemberStoreSearchListAdapter;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMerchants;
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONStringer;
 
 
 //import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
@@ -109,7 +116,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	Bitmap bm = null;
 	int reTry = 5;
 	
-	private ImageAdapter imgAdapter;
+	private MemberStoreSearchListAdapter imgAdapter;
 	
 	public ArrayList<CheckMileageMerchants> entries1 = new ArrayList<CheckMileageMerchants>();	// 1차적으로 조회한 결과. (가맹점 상세 정보 제외)   // 저장용.
 	ArrayList<CheckMileageMerchants> entries2 = new ArrayList<CheckMileageMerchants>();			// 잘라서 더하는 부분.
@@ -159,11 +166,9 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 						gridView.setVisibility(8);			//   0 visible   4 invisible   8 gone
 						emptyView.setVisibility(0);
 					}
-					
 					adding = false;		// 조회 및 추가 끝났음. 다른거 조회시 또 추가 가능.. (스크롤 리스너를 다룰때 사용)
 					// 하단 로딩바를 숨긴다.
 					hidePb2();
-					
 					isRunning = 0;		// 진행중이지 않음. - 이후 추가 조작으로 새 조회 가능.
 //					searchSpinnerArea.setEnabled(true);
 					searchSpinnerType.setEnabled(true);
@@ -269,16 +274,12 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 				goSearch();		 // 단어로 검색 ㄱㄱ 
 			}
 		});
-
-		
-		
-		
 	}
     
 	
 	// 데이터를 화면에 세팅
 	public void setGriding(){
-		imgAdapter = new ImageAdapter(this, entriesFn);
+		imgAdapter = new MemberStoreSearchListAdapter(this, entriesFn);
 		gridView  = (GridView)findViewById(R.id.gridview);
 		gridView.setAdapter(imgAdapter);
 		// 클릭시 상세보기 페이지로
@@ -453,7 +454,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 								connection2.setRequestProperty("Content-Type", "application/json");
 								Thread.sleep(200);
 								OutputStream os2 = connection2.getOutputStream();
-								os2.write(jsonString.getBytes());
+								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
 								Thread.sleep(200);
 								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
@@ -463,12 +464,13 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 									// 조회한 결과를 처리.
 									setBusinessKindList(in);
 								}
+								connection2.disconnect();
 							}catch(Exception e){ 
 								e.printStackTrace();
 								if(reTry>0){
 									reTry = reTry-1;
 									try {
-										Thread.sleep(500);
+										Thread.sleep(100);
 									} catch (InterruptedException e1) {
 										e1.printStackTrace();
 									}
@@ -635,7 +637,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 									connection2.setRequestProperty("Content-Type", "application/json");
 									Thread.sleep(200);
 									OutputStream os2 = connection2.getOutputStream();
-									os2.write(jsonString.getBytes());
+									os2.write(jsonString.getBytes("UTF-8"));
 									os2.flush();
 	//								System.out.println("postUrl      : " + postUrl2);
 									System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
@@ -659,6 +661,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 										).start();
 										isRunning = 0;
 									}
+									connection2.disconnect();
 								}catch(Exception e){ 
 									e.printStackTrace();
 									// 실행중 에러나면 로딩바 없애고 다시 할수 있도록

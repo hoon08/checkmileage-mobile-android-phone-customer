@@ -1,14 +1,50 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 이벤트 알림 리스트 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/push_list_linear"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="이벤트 알림 목록.. "
-        tools:context=".MainActivity" />
+                    android:layout_width="fill_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:text="이벤트 알림 목록" 
+                    android:textSize="17dp"
+                    android:background="#393939"
+                    android:textColor="@android:color/white"
+                    />
+    
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
 
-</RelativeLayout>
+        <ListView
+            android:id="@+id/push_list_listview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+        
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center_vertical|center_horizontal"
+            android:orientation="vertical" >
+            <ProgressBar
+                android:id="@+id/push_list_ProgressBar01"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible" />
+        </LinearLayout>
+        
+        
+        <TextView
+         android:id="@+id/push_list_empty2"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:text="이벤트 정보가 없습니다." />
+    </FrameLayout>
+  
+</LinearLayout>

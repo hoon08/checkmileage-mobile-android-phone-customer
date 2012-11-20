@@ -20,21 +20,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
-import kr.co.bettersoft.checkmileage.activities.GCMIntentService.backgroundUpdateMyGCMtoServer;
-import kr.co.bettersoft.checkmileage.domain.CheckMileageMemberSettings;
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.zxing.BarcodeFormat;
@@ -47,14 +39,9 @@ import com.google.zxing.common.BitMatrix;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -271,8 +258,6 @@ public class MyQRPageActivity extends Activity {
 		super.onResume();
 		app_end = 0;
 		myLocationIs();
-		
-		
 	}
 	
 	/*
@@ -328,7 +313,6 @@ public class MyQRPageActivity extends Activity {
 				myLon = (int) (location.getLongitude()*1000000);	
 				Log.d(TAG, "runOnFirstFix// location1:"+myLat+", "+myLon);			// 37529466 126921069
 				new backgroundUpdateLocationToServer().execute();	// 비동기로 서버에 위치 업뎃		
-				
 			}else{
 				location =  lm.getLastKnownLocation(provider);
 				if(location==null){
@@ -355,7 +339,7 @@ public class MyQRPageActivity extends Activity {
 		@Override protected void onPreExecute() {  
 		} 
 		@Override protected Void doInBackground(Void... params) {  
-			Log.d(TAG,"backgroundUpdateMyGCMtoServer");
+			Log.d(TAG,"backgroundUpdateMyLocationtoServer");
 			updateLocationToServer();
 			return null; 
 		}
@@ -409,7 +393,7 @@ public class MyQRPageActivity extends Activity {
 								connection2.setRequestProperty("Content-Type", "application/json");
 								Thread.sleep(100);
 								OutputStream os2 = connection2.getOutputStream();
-								os2.write(jsonString.getBytes());
+								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
 //								System.out.println("postUrl      : " + postUrl2);
 								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
@@ -419,6 +403,7 @@ public class MyQRPageActivity extends Activity {
 								if(responseCode==200 || responseCode==204){
 //									Log.d(TAG,"S");
 								}
+								connection2.disconnect();
 							}catch(Exception e){ 
 								Log.d(TAG,"updateLocationToServer->fail");
 							}finally{
@@ -462,7 +447,6 @@ public class MyQRPageActivity extends Activity {
 		return nowTime;
 //		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
 	}
-	
 	@Override			// 이 액티비티(인트로)가 종료될때 실행. (액티비티가 넘어갈때 종료됨)
 	protected void onDestroy() {
 		super.onDestroy();
