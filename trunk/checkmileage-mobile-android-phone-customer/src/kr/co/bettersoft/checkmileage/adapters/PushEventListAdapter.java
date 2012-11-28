@@ -1,5 +1,5 @@
 package kr.co.bettersoft.checkmileage.adapters;
-
+// 푸시 이벤트 목록용 아답터
 import java.util.List;
 
 import kr.co.bettersoft.checkmileage.activities.R;

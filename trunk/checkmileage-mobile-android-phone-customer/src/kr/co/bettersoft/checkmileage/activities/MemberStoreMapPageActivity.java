@@ -53,7 +53,6 @@ public class MemberStoreMapPageActivity extends MapActivity {
 			finish();
 		}
 
-
 		mMap=(MapView)findViewById(R.id.mapview);
 		final MapController mapControl = mMap.getController();
 		mapControl.setZoom(13);
@@ -64,7 +63,6 @@ public class MemberStoreMapPageActivity extends MapActivity {
 		List<Overlay> overlays = mMap.getOverlays();
 		Drawable marker=getResources().getDrawable(R.drawable.pos);
 		marker.setBounds(0,0,marker.getIntrinsicWidth() ,marker.getIntrinsicHeight());
-
 
 		overlays.add(mLocation);
 

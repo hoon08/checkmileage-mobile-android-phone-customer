@@ -1,7 +1,7 @@
 package kr.co.bettersoft.checkmileage.activities;
 
 /*
- * 인증 1단계. - 폰번 인증 화면.
+ * 인증 1단계. - 폰번 인증 화면.    -- 사용 안함
  * 어플 실행하여 QR 저장소에 QR이 없을 경우에 실행 된다.
  * 
  * 서버와 통신하여 폰번이 있는지 여부를 체크한다.
@@ -62,8 +62,14 @@ public class CertificationStep1 extends Activity {
 	String TAG = "CertificationStep1";
 	String phoneNum = "";
 	String qrcode ="";
+	
 	int responseCode = 0;
 	String serverName = CommonUtils.serverNames;
+	String controllerName = "";
+	String methodName = "";
+	
+	URL postUrl2;
+	HttpURLConnection connection2 ;
 	
 	// 핸들러
 	Handler handler = new Handler(){
@@ -79,7 +85,7 @@ public class CertificationStep1 extends Activity {
 			}
 		}
 	};
-	public void alertMsg(){
+	public void alertMsg(){			// 인증 실패 메시지
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -136,6 +142,8 @@ public class CertificationStep1 extends Activity {
 	 */
 	public void certificationStep1() throws JSONException, IOException {
     	Log.i("certificationStep1", "certificationStep1");
+    	controllerName = "checkMileageMemberController";
+		methodName = "selectMemberInformationByPhoneNumber";
     	new Thread(
     			new Runnable(){
     				public void run(){
@@ -148,8 +156,8 @@ public class CertificationStep1 extends Activity {
 						}
 						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 						try{
-							  URL postUrl2 = new URL("http:/"+serverName+"/checkMileageMemberController/selectMemberInformationByPhoneNumber");
-					  		  HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+							  postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+							  connection2 = (HttpURLConnection) postUrl2.openConnection();
 					  		  connection2.setDoOutput(true);
 					  		  connection2.setInstanceFollowRedirects(false);
 					  		  connection2.setRequestMethod("POST");

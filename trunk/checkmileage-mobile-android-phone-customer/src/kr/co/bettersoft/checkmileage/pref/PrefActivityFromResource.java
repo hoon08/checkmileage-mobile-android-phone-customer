@@ -59,6 +59,7 @@ import android.widget.Toast;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import kr.co.bettersoft.checkmileage.activities.CommonUtils;
 import kr.co.bettersoft.checkmileage.activities.MainActivity;
 import kr.co.bettersoft.checkmileage.activities.MemberStoreInfoPage;
 import kr.co.bettersoft.checkmileage.activities.MemberStoreListPageActivity;
@@ -78,14 +79,14 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	
 	static String TAG = "PrefActivityFromResource";
 	
-	public Boolean resumeCalled = false;
+	public Boolean resumeCalled = false;  // 처음 열렸는지, 다른 화면 갔다온건지. -- 처음열렸을때만 프리퍼런스 지정하기 위함.
 	
 	SharedPreferences sharedPrefCustom;	// 공용 프립스		 잠금 및 QR (잠금은 메인과 공유  위의 것(default,this)은 메인과 공유되지 않아 이 sharedPref 도 사용한다.)		
 //	PreferenceCategory category1;			// 설정의 카테고리째로 비활성 시킬수 있다. 본 프로젝트에서 사용 안함
 //	WebView mWeb;							// 도움말, 공지 등 볼때 사용하는 웹뷰		--> 다른 액티비티 통해 호출함.
 	
-	SharedPreferences thePrefs;				// 어플 내 자체 프리퍼런스.  Resume 때 이곳에 연결하여 사용(탈퇴때 초기화 용도)-- 이건 사실 위에거랑 같음.. 삽질했음.
-	SharedPreferences defaultPref;			// default --  이것이 자체 프리퍼런스!!. 
+	SharedPreferences thePrefs;				// 어플 내 자체 프리퍼런스.  Resume 때 이곳에 연결하여 사용(탈퇴때 초기화 용도)--  
+	SharedPreferences defaultPref;			// default --   자체 프리퍼런스. 
 	
 	Calendar c = Calendar.getInstance();
 	int todayYear = 0;						// 지금 -  년 월 일 시 분
@@ -99,8 +100,12 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	int birthMonth= 0;
 	int birthDay = 0;
 	
-	int sharePrefsFlag = 1;					// 어플내 자체 프립스를 얻기 위한 미끼. 1,-1 값을 바꿔가며 저장하면 리스너가 낚인다.
+	URL postUrl2 ;
+	HttpURLConnection connection2;
 	
+	int sharePrefsFlag = 1;					// 어플내 자체 프립스를 얻기 위한 미끼. 1,-1 값을 바꿔가며 저장하면 리스너가 동작한다. - 그때 동작하는 프리퍼런스를 잡는다.
+	
+	String serverName = CommonUtils.serverNames;
 	static String controllerName = "";		// JSON 서버 통신명 컨트롤러 명
 	static String methodName = "";			// JSON 서버 통신용 메소드 명
 	static int responseCode = 0;			// JSON 서버 통신 결과
@@ -110,8 +115,8 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	// Locale
     Locale systemLocale = null ;
 //    String strDisplayCountry = "" ;
-    String strCountry = "" ;
-    String strLanguage = "" ;
+    String strCountry = "" ;				// 국가 코드
+    String strLanguage = "" ;				// 언어 코드
 	
 	// GCM 받을지 여부 저장. 메서드용.
 	String strYorN = "";
@@ -132,14 +137,14 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		addPreferencesFromResource(R.xml.settings);
 		
 		/*
-		 *  서버로부터 개인 정보를 가져와서 도메인 같은 곳에 담아둔다. 나중에 업데이트 할때 사용해야 하니까. 업데이트하고 나면 그 도메인 그대로 유지해야 한다..
+		 *  서버로부터 개인 정보를 가져와서 도메인 같은 곳에 담아둔다. 나중에 업데이트 할때 사용 . 업데이트하고 나면 그 도메인 그대로 유지 ..
 		 *  없는거는 null pointer 나므로 ""로 바꿔주는 처리가 필요하다.
 		 */
 		memberInfo = new CheckMileageMembers();
 		getUserInfo();
 		
 		
-		if(!resumeCalled){			// 한번만 하자.. 느리니까
+		if(!resumeCalled){			// 한번만 .. 느리니까
 			getPreferenceScreen().getSharedPreferences() 
 			.registerOnSharedPreferenceChangeListener(this); 
 
@@ -152,9 +157,9 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 					Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
 			sharedPrefCustom.registerOnSharedPreferenceChangeListener(this);			// 여기에도 등록해놔야 리시버가 제대로 반응한다.
 
-			// default 도 한번 테스트
+			// default 도  
 			defaultPref = PreferenceManager.getDefaultSharedPreferences(this);
-			defaultPref.registerOnSharedPreferenceChangeListener(this);			// test 용.. 혹시나..
+			defaultPref.registerOnSharedPreferenceChangeListener(this);			 
 
 			//		category1 = (PreferenceCategory)findPreference("category1");
 			Preference passwordCheck = findPreference("preference_lock_chk");
@@ -166,18 +171,19 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			init2.commit();			
 			// 자체 프리퍼를 지목할 수 있게 됨. 탈퇴 메소드때 초기값 세팅해준다.
 
-			// password 변경하고 온 경우 업뎃 한번 쳐주기.
-			if(updateLv>0){		// 2였던 경우. (업뎃중 또 변경된 경우 한번더)
+			// 설정 변경하고 온 경우 업뎃 한번 쳐주기.
+			if(updateLv>0){		// 2였던 경우= (업뎃중 또 변경된 경우 ->한번더)
 				Log.d(TAG,"Need Update one more time");
 				updateToServer();
 			}
-			updateServerSettingsToPrefs();				// 서버 설정 자체 설정으로 저장 - 테스트
+			updateServerSettingsToPrefs();				// 서버 설정 자체 설정으로 저장 
 			resumeCalled = true;
 		}
 	}
 
+	// 현재 시각 구하기.
 	public String getNow(){
-		// 일단 오늘.
+		c = Calendar.getInstance();
 		todayYear = c.get(Calendar.YEAR);
 		todayMonth = c.get(Calendar.MONTH)+1;			// 꺼내면 0부터 시작이니까 +1 해준다.
 		todayDay = c.get(Calendar.DATE);
@@ -202,7 +208,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	/*
 	 * oncreate 에 있으면 한번밖에 못해서 두번 이상 하려면 Resume 에 둔다..
 	 * 화면으로 올때마다 비번을 꺼낸다. 
-	 * (비번 변경 이후 돌아왔을때 변경된 비번 꺼낼수 있도록 함)
+	 * (비번 변경 이후 돌아왔을때 변경된 비번 꺼낼수 있도록 함)  -- 이제 비번 사용 안하므로..
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onResume()
 	 */
@@ -229,7 +235,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	@Override
 	public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
 			Preference preference) {
-
 		// sub_checkbox란 키를 가지고 있는 Preference항목이 이벤트 발생 시 실행 
 		//		if(preference.equals((CheckBoxPreference)findPreference("sub_checkbox"))) {
 		// Preference 데이터 파일중 "sub_checkbox" 키와 연결된 boolean 값에 따라
@@ -262,11 +267,10 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		 *  modifyDate /		업뎃 - 										현시각. 년월일시분  yyyyMMdd-hh:mm	(그때그때)	/	
  */
 		
-		
 		// 알림 수신 설정 여부.
 		if(preference.equals((CheckBoxPreference)findPreference("preference_alarm_chk"))){
 			//	Toast.makeText(PrefActivityFromResource.this, "preference_lock_password", Toast.LENGTH_SHORT).show();
-			SharedPreferences.Editor saveGCMCustom = sharedPrefCustom.edit();		// 공용으로 비번도 저장해 준다.
+			SharedPreferences.Editor saveGCMCustom = sharedPrefCustom.edit();		// 공용에 저장해 준다.
 			yn = ((CheckBoxPreference)findPreference("preference_alarm_chk")).isChecked();
 			saveGCMCustom.putBoolean("gcmReceive", yn);
 			saveGCMCustom.commit();
@@ -285,6 +289,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			//			Toast.makeText(PrefActivityFromResource.this, "웹뷰 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
 			Intent webIntent = new Intent(PrefActivityFromResource.this, myWebView.class);
 			webIntent.putExtra("loadingURL", "http://www.mcarrot.net/mFaq.do");
+//			webIntent.putExtra("loadingURL", "http://www.mcarrot.net/senchaIndex.do");			// sencha test page
 			startActivity(webIntent);
 		}
 
@@ -346,11 +351,8 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		
 		// 이벤트 알림  pref_push_list
 		if(preference.equals(findPreference("pref_push_list"))){
-			
-			
 //			AlertShow_Message();				// 준비중입니다.
-			
-			// 이벤트 목록 구현 이후 주석 해제.
+			// 이벤트 목록 구현 이후 하단 주석 해제.
 			Intent PushListIntent = new Intent(PrefActivityFromResource.this, kr.co.bettersoft.checkmileage.activities.PushList.class);
 			startActivity(PushListIntent);
 			
@@ -368,7 +370,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	}	
 
 	
-	// 준비중입니다.. -> 이벤트 목록 현재 미구현.
+	// 준비중입니다.. -> 이벤트 목록 미구현 상태일때 알림 용도
 	public void AlertShow_Message(){		//R.string.network_error
 		AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
 		alert_internet_status.setTitle("Carrot");
@@ -408,18 +410,18 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							obj.put("activateYn", "Y");
 							obj.put("checkMileageId", MyQRPageActivity.qrCode);
 							Log.d(TAG,"checkMileageId:"+ MyQRPageActivity.qrCode);
-							
 						}catch(Exception e){
 							e.printStackTrace();
 						}
 						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 						try{
-							URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
-							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);				 
+							connection2 = (HttpURLConnection) postUrl2.openConnection();
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
+							connection2.connect();		// *** 
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
@@ -431,6 +433,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							theData1(in);
 							connection2.disconnect();
 						}catch(Exception e){ 
+							connection2.disconnect();
 							e.printStackTrace();
 						}  
 					}
@@ -481,12 +484,13 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							}
 							String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 							try{
-								URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
-								HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);	 
+								connection2 = (HttpURLConnection) postUrl2.openConnection();
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
+								connection2.connect();		// *** 
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
@@ -507,6 +511,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								}
 								connection2.disconnect();
 							}catch(Exception e){ 
+								connection2.disconnect();
 								e.printStackTrace();
 							}  
 						}
@@ -564,12 +569,13 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							}
 							String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 							try{
-								URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
-								HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);		 
+								connection2 = (HttpURLConnection) postUrl2.openConnection();
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
+								connection2.connect();		// *** 
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
@@ -591,6 +597,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								}
 								connection2.disconnect();
 							}catch(Exception e){ 
+								connection2.disconnect();
 								e.printStackTrace();
 							}  
 						}
@@ -602,7 +609,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	
 	
 	/*
-	 * 회원 탈퇴 전용 메서드.
+	 * 회원 탈퇴 전용 메서드.  --> 기능 제거 됨.
 	 * memberDeactivation
 	 */
 	public void memberDeactivation(){
@@ -632,12 +639,13 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 						}
 						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 						try{
-							URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
-							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);		 
+							connection2 = (HttpURLConnection) postUrl2.openConnection();
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
+							connection2.connect();		// *** 
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
@@ -654,6 +662,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							}
 							connection2.disconnect();
 						}catch(Exception e){ 
+							connection2.disconnect();
 							e.printStackTrace();
 						}  
 					}
@@ -761,7 +770,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			Toast.makeText(PrefActivityFromResource.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 		}
 	}
-	// ...
 
 	
 	// 주 용도는 resume 때 자체 프리퍼런스 전달하여 컨트롤 할 수 있게 하는 것.  추후 단일 프리퍼런스 사용으로 전환도 가능하다(이걸 메인으로). 현재는 프리퍼런스 3개 사용중;;
@@ -789,7 +797,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		}
 	}
 	
-	// 탈퇴 - 어플 내 기본 프리퍼런스 초기화.
+	// 탈퇴 - 어플 내 기본 프리퍼런스 초기화.   -- 탈퇴 기능 사용 안함
 	public void goodBye(SharedPreferences sharedPreferences){
 		/*
 		 * birthYear//2009
@@ -921,7 +929,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	
 	@Override			// 이 액티비티가 종료될때 실행. 
 	protected void onDestroy() {
-		resumeCalled = false;
+		resumeCalled = false;		// 또 불러 주십시오.
 		super.onDestroy();
 	}
 }

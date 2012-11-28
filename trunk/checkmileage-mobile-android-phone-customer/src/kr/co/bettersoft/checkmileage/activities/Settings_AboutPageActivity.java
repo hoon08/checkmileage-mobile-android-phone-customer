@@ -2,8 +2,10 @@ package kr.co.bettersoft.checkmileage.activities;
 // 어플 정보 보기 - 사용
 /*
  *  What is this App.
+ *  
+ *  
+ *  디자인 도착하면 입혀서 사용할 것.
  */
-//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;

@@ -41,7 +41,6 @@ public class MainActivity extends Activity {
 	
 	String controllerName = "";
 	String methodName = "";
-	
 	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
 	
 	// 내 QR 코드
@@ -51,19 +50,12 @@ public class MainActivity extends Activity {
 
 	// 설정 파일 저장소  --> QR 코드도 저장하는걸로..
 	String strForLog = "";
-	public static final String KEY_PREF_STRING_TEST01 = "String test 01";
-	public static final String KEY_PREF_STRING_TEST02 = "String test 02";
 	SharedPreferences sharedPrefForThis;
 	SharedPreferences sharedPrefCustom;
 
 	public static Boolean loginYN = false;
-	
-	AsyncTask<Void, Void, Void> mRegisterTask;
-	public static String REGISTRATION_ID = "";		// 등록아이디
 
-
-	int waitEnd = 0;		// test GCM 대기용
-	int slow = 0;
+//	public static String REGISTRATION_ID;			
 	
 	// 테이블 생성 쿼리.
 	private static final String Q_CREATE_TABLE = "CREATE TABLE user_info (" +
@@ -105,7 +97,7 @@ public class MainActivity extends Activity {
 	            db.execSQL(Q_CREATE_TABLE);
 	      }
 	}
-	public void getDBData(){
+	public void getDBData(){				// db 에 있는 데이터 꺼내어 사용
 		Log.i(TAG, "getDBData");
 		String data_key="";
 		String data_value="";
@@ -114,10 +106,6 @@ public class MainActivity extends Activity {
 //		Log.i(TAG, Integer.toString(c.getCount()));			// qr img
 		if(c.getCount()==0){
 			Log.i(TAG, "saved QR Image NotExist");
-//			ContentValues initialValues = new ContentValues(); 			// 데이터 넣어본거. 사용 안함. 없으면 없는거라...
-//			initialValues.put("key_of_data", "user_img"); 
-//			initialValues.put("key_of_value", "1234"); 
-//			db.insert("user_info", null, initialValues); 
 		}else{
 			Log.i(TAG, "saved QR Image Exist");				// 데이터 있으면 꺼내서 사용함.
 			 c.moveToFirst();                                 // 커서를 첫라인으로 옮김
@@ -126,7 +114,7 @@ public class MainActivity extends Activity {
 				   data_value = c.getString(2);	
 		            c.moveToNext();
 		       }
-//			Log.i(TAG, "key:"+data_key+"/value:"+data_value);		// idx / key / value
+//			Log.i(TAG, "key:"+data_key+"/value:"+data_value);		// idx / key / value				// qr 문자타입 데이터 -> 이미지로 되돌림
 			byte[] decodedString = Base64.decode(data_value, Base64.DEFAULT); 
 			Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 			MyQRPageActivity.savedBMP = decodedByte;
@@ -160,7 +148,7 @@ public class MainActivity extends Activity {
 				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
 		
 
-		// prefs 를 읽어서 비번 입력 창을 띄울지 여부를 결정한다.. 여기가 첫 페이지니까 여기서 한다.. 음...
+		// prefs 를 읽어서 비번 입력 창을 띄울지 여부를 결정한다.. 여기가 첫 페이지니까 여기서 한다.. 
 		//        Toast.makeText(MainActivity.this, "::"+sharedPrefCustom.getBoolean("appLocked", false), Toast.LENGTH_SHORT).show();	
 		//        Toast.makeText(MainActivity.this, "::"+sharedPrefCustom.getString("password", ""), Toast.LENGTH_SHORT).show();	
 		Boolean locked = sharedPrefCustom.getBoolean("appLocked", false);
@@ -180,25 +168,24 @@ public class MainActivity extends Activity {
 		}else{
 //			Toast.makeText(MainActivity.this, "opened", Toast.LENGTH_SHORT).show();	
 			loginYN = false;		// 문단속. 다시 켰을때 또 뜨라고
-			
-			
-			nextProcessing();
+			nextProcessing();		// 다음 단계
 		}
 	}
 
 	public void nextProcessing(){
 		
-//		////////////////////////////////////////////GCM 세팅        ///////////////////////////////////////////////////////////////		
-		readQR();			// 일단 저장된 QR 값이 있는지부터 확인 한다.. 있다면 인증을하지 않는다..
-		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
+//		////////////////////////////////////////////GCM 세팅  --> 안함      ///////////////////////////////////////////////////////////////		
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
 		
 
+		readQR();			// 일단 저장된 QR 값이 있는지부터 확인 한다.. 있다면 인증을하지 않는다..
+		        
 		// 시작. 검사를 통해 다음 진로 결정.
 		new Thread(
 				new Runnable(){
 					public void run(){
 						try{
-							Thread.sleep(2000);		// 초기 로딩 시간.
+							Thread.sleep(2000);		// 초기 로딩 시간. 2초간 인트로 화면 보여줌
 							// 잠금기능 사용시 비번 입력 페이지로 이동.. // 은 아직 미구현.
 
 							/*
@@ -226,21 +213,18 @@ public class MainActivity extends Activity {
 								 *  서버에도 QR 값이 없을 경우에는 2차 인증(인증번호 인증) 후에 QR 생성 선택 창으로 이동한다.
 								 *  1차 인증을 통해 서버에서 QR 값을 받아온 경우 인증 2단계인 [인증번호 확인] 절차를 생략하고 내 QR보기 화면으로 이동한다. 
 								 */
-								// 인증 화면으로 이동한다. (정상 사용)
+								// 인증 화면으로 이동한다. (정상 사용) --> 인증 사용 안함
 								//Log.i("MainActivity", "There is no saved QR code.. Go to Certification");
 								//Intent intent = new Intent(MainActivity.this, CertificationStep1.class);
 
-								// 인증 화면 2로 이동(테스트용)
+								// 인증 화면 2로 이동(테스트용)  -->인증 사용 안함
 //								Log.i("MainActivity", "Test for Certification2");
 //								Intent intent = new Intent(MainActivity.this, CertificationStep2.class);
 								
-								// QR 생성 선택 창으로 이동. (인증 개발 전까지 임시 사용..-test 용도)
+								// QR 생성 선택 창으로 이동. (인증 개발 전까지 임시 사용) -- 인증 사용 안하면서 정상 호출 방식이 됨
 								Log.i("MainActivity", "There is no saved QR code.. Go get QR");
 								Intent intent = new Intent(MainActivity.this, No_QR_PageActivity.class);
 
-								// test 용 설정 화면으로..-test 용도
-								//Log.i("MainActivity", "test -> pref..");
-								//Intent intent = new Intent(MainActivity.this, com.pref.MainActivity.class);
 								if(DummyActivity.count>0){			// 강제 종료하면 다음 액티비티도 없다.
 									startActivity(intent);
 								}
@@ -255,8 +239,7 @@ public class MainActivity extends Activity {
 	}
 
 
-
-	////////////// 설정 파일을 이용한 정보 얻기. 설정 정보를 읽도록 할 예정. QR은 나중에.. ////////////////////////////
+	////////////// 설정 파일을 이용한 정보 얻기. 설정 정보를 읽도록 할 예정. QR. ////////////////////////////
 	public void readQRFromPref(){
 		strForLog = sharedPrefCustom.getString("qrcode", "");		
 		Log.i(TAG,"pref qrcode:"+strForLog);
@@ -270,14 +253,12 @@ public class MainActivity extends Activity {
 
 
 	/////////////////////////////////////// 파일을 이용한 QR 읽기, 쓰기, 초기화 //////////////////////////    
-	// QR 코드 저장소에서 QR 코드를 읽어온다.
+	// QR 코드 저장소에서 QR 코드를 읽어온다. --> 설정파일에서 읽는다
 	public void readQR(){
 		readQRFromPref();
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////   
-
-
 
 	@Override
 	protected void onPause() {

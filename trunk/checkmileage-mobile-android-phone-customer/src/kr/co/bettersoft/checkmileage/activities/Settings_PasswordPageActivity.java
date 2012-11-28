@@ -36,9 +36,10 @@ public class Settings_PasswordPageActivity extends PreferenceActivity implements
 	static String methodName = "";			// JSON 서버 통신용 메소드 명
 	static int responseCode = 0;			// JSON 서버 통신 결과
 	
-	static int updateLv=0;							// 서버에 업뎃 칠지 여부 검사용도. 0이면 안하고, 1이면 한다, 2면 두번한다(업뎃중 값이 바뀐 경우임)
+//	static int updateLv=0;							// 서버에 업뎃 칠지 여부 검사용도. 0이면 안하고, 1이면 한다, 2면 두번한다(업뎃중 값이 바뀐 경우임)
+	    // -> 비번은 서버에 저장하지 않으므로 주석처리함.
 	
-	public boolean getprefYN = false;
+	public boolean getprefYN = false;				// 프리퍼런스 캐치 여부. 
 	
 	
 	@Override
@@ -47,19 +48,18 @@ public class Settings_PasswordPageActivity extends PreferenceActivity implements
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.settings_password);
 		/*
-		 *  서버로부터 개인 정보를 가져와서 도메인 같은 곳에 담아둔다. 나중에 업데이트 할때 사용해야 하니까. 업데이트하고 나면 그 도메인 그대로 유지해야 한다..
-		 *  없는거는 null pointer 나므로 ""로 바꿔주는 처리가 필요하다.
-		 *  리쥼에 넣지 말고 온크에 넣는게 나을까...어차피 유지될 거라면.. 
+		 *  서버로부터 개인 정보를 가져와서 도메인 같은 곳에 담아둔다. 나중에 업데이트 할때 사용. 업데이트하고 나면 그 도메인 그대로 유지..
+		 *  없는거는 null pointer 나므로 ""로 바꿔주는 처리가 필요.
 		 */
 		
-		if(!resumeCalled){			// 한번만 하자.. 느리니까
+		if(!resumeCalled){			// 한번만 호출하기 위함
 			getPreferenceScreen().getSharedPreferences() 
 			.registerOnSharedPreferenceChangeListener(this); 
 			/*
 			 *  비번 잠금 설정은 비번이 있을 경우에만 해준다.	(비번이 없다면 잠금 체크 설정을 사용할 수 없다.)		
 			 *  비번 설정의 경우 리쥼에 넣지 않으면 한번밖에 안읽어서 변경시 적용되지 않는다. (어플 재기동해야 적용)
 			 */
-			// prefs 	// 어플 잠금 설정. 공용으로 쓸것도 필요하다. 
+			// prefs 	// 어플 잠금 설정 용 프리퍼런스. 공용으로 쓸 것도 필요. 
 			sharedPrefCustom = getSharedPreferences("MyCustomePref",
 					Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
 			sharedPrefCustom.registerOnSharedPreferenceChangeListener(this);			// 여기에도 등록해놔야 리시버가 제대로 반응한다.
@@ -73,18 +73,18 @@ public class Settings_PasswordPageActivity extends PreferenceActivity implements
 //				passwordCheck.setEnabled(true);		// 비번이 있다면 잠금 기능을 사용할 수 있다.
 //			}
 			
-			
 			SharedPreferences.Editor init2 = sharedPrefCustom.edit();		// 강제 호출용도  .. 단어명은 의미없다.
-			int someNum = sharedPrefCustom.getInt("pref_app_leave", sharePrefsFlag);	// 이전 값과 같을수 있으므로..
+			int someNum = sharedPrefCustom.getInt("pref_toggle", sharePrefsFlag);	// 이전 값과 같을수 있으므로..
 			someNum = someNum * -1;													// 매번 다른 값이 들어가야 제대로 호출이 된다. 같은 값들어가면 변화 없다고 호출 안됨.			
-			init2.putInt("pref_app_leave", someNum); 		// 프리퍼런스 값 넣어 업데이트 시키면 강제로 리스너 호출.
+			init2.putInt("pref_toggle", someNum); 		// 프리퍼런스 값 넣어 업데이트 시키면 강제로 리스너 호출.
 			init2.commit();			
 			// 자체 프리퍼를 지목할 수 있게 됨. 탈퇴 메소드때 초기값 세팅해준다.
-			Log.w(TAG, "onResume3");
-			// password 변경하고 온 경우 업뎃 한번 쳐주기.
-			if(updateLv>0){		// 2였던 경우. (업뎃중 또 변경된 경우 한번더)
-				Log.d(TAG,"Need Update one more time");
-			}
+//			Log.w(TAG, "onResume3");
+			
+			// password 외 설정 변경하고 온 경우 업뎃 한번 쳐주기.?  // -> 비번 은 서버에 저장하지 않기로..--> 주석 처리함
+//			if(updateLv>0){		// 2였던 경우. (업뎃중 또 변경된 경우 한번더) --> 여기서 사용할 필요 없음. 
+//				Log.d(TAG,"Need Update one more time");
+//			}
 			resumeCalled = true;
 		}
 	}
@@ -115,7 +115,7 @@ public class Settings_PasswordPageActivity extends PreferenceActivity implements
 	@Override 
 	protected void onPause() { 
 	    super.onPause(); 
-	    // Unregister the listener whenever a key changes 
+	    // Unregister the listener whenever a key changes 			// 리스너 해제
 	    getPreferenceScreen().getSharedPreferences() 
 	            .unregisterOnSharedPreferenceChangeListener(this); 
 	} 
@@ -157,16 +157,16 @@ public class Settings_PasswordPageActivity extends PreferenceActivity implements
 	}	
 
 	
-	// 주 용도는 resume 때 자체 프리퍼런스 전달하여 컨트롤 할 수 있게 하는 것.  추후 단일 프리퍼런스 사용으로 전환도 가능하다(이걸 메인으로). 현재는 프리퍼런스 3개 사용중;;
+	// 주 용도는 resume 때 자체 프리퍼런스 전달하여 컨트롤 할 수 있게 하는 것.   
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		if(!getprefYN){				 // 나중에 제대로 저장 안되는거 같을 경우 이곳을 확인 할 것.   리소스상 한번만 실행시키려고 정리한것.
+		if(!getprefYN){				 
 			Log.w(TAG, "onSharedPreferenceChanged");
-			if(key.equals("pref_app_leave")){		// resume 에서 넣은 것과 이름 일치해야 동작한다.
+			if(key.equals("pref_toggle")){		// resume 에서 넣은 것과 이름 일치해야 동작한다.
 				thePrefs = sharedPreferences;
 			}
-			getprefYN = true;				
+			getprefYN = true;				// 프리퍼런스 캐치 완료.
 		}
 	}
 	

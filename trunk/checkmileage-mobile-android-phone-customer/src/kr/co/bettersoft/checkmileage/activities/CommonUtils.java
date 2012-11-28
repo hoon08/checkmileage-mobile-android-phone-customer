@@ -1,5 +1,8 @@
 package kr.co.bettersoft.checkmileage.activities;
-
+/*
+ * 이미지 도메인 및 URL 주소 저장
+ * 
+ */
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -30,7 +33,7 @@ public class CommonUtils extends Activity {
 	static String imgPushDomain = "http://www.mcarrot.net/upload/pushThumb/"; 	
 	
 	
-	static String serverNames = "checkmileage.mcarrot.net";
+	public static String serverNames = "checkmileage.mcarrot.net";
 	
 	public static String packageNames = "kr.co.bettersoft.checkmileage.activities";
 	
