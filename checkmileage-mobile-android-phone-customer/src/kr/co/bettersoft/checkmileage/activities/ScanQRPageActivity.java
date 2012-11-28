@@ -53,6 +53,9 @@ public class ScanQRPageActivity extends Activity {
 	int todayMinute = 0;
 	int todaySecond = 0;
 	
+	URL postUrl2;
+	HttpURLConnection connection2;
+	
 	//Locale
 	Locale systemLocale = null;
 //	String strDisplayCountry = "";
@@ -213,8 +216,8 @@ public class ScanQRPageActivity extends Activity {
 						}
 						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 						try{
-							URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
-							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+							connection2 = (HttpURLConnection) postUrl2.openConnection();
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
@@ -237,6 +240,7 @@ public class ScanQRPageActivity extends Activity {
 							}
 							connection2.disconnect();
 						}catch(Exception e){ 
+							connection2.disconnect();
 							e.printStackTrace();
 							showErrMSG();
 							 Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
@@ -349,9 +353,9 @@ public class ScanQRPageActivity extends Activity {
 						}
 						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 						try{
-							URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
-							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
-							connection2.setConnectTimeout(2000);
+							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+							connection2 = (HttpURLConnection) postUrl2.openConnection();
+							connection2.setConnectTimeout(5000);
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
@@ -371,6 +375,7 @@ public class ScanQRPageActivity extends Activity {
 							}
 							connection2.disconnect();
 						}catch(Exception e){ 
+							connection2.disconnect();
 							e.printStackTrace();
 						}
 					}
@@ -489,8 +494,8 @@ public class ScanQRPageActivity extends Activity {
 						}
 						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 						try{
-							URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
-							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);		 
+							connection2 = (HttpURLConnection) postUrl2.openConnection();
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
@@ -504,15 +509,18 @@ public class ScanQRPageActivity extends Activity {
 							if(responseCode==200||responseCode==204){
 								InputStream in =  connection2.getInputStream();
 								Log.d(TAG, "register user S");
+								connection2.disconnect();
 								goNextPage();				// 다음 페이지로 이동 
 							}else{
 								Log.e(TAG, "register user F");
+								connection2.disconnect();
 								showErrMSG();
 								 Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
 								 startActivity(backToNoQRIntent);
 								 finish();
 							}
 						}catch(Exception e){ 
+							connection2.disconnect();
 							e.printStackTrace();
 							showErrMSG();
 							 Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
@@ -527,6 +535,7 @@ public class ScanQRPageActivity extends Activity {
     // 현시각
     public String getNow(){
 		// 일단 오늘.
+    	c = Calendar.getInstance();
 		todayYear = c.get(Calendar.YEAR);
 		todayMonth = c.get(Calendar.MONTH)+1;			// 꺼내면 0부터 시작이니까 +1 해준다.
 		todayDay = c.get(Calendar.DATE);

@@ -6,10 +6,10 @@ package kr.co.bettersoft.checkmileage.domain;
  * 
  */
 public class CheckMileageMemberSettings {
-	private String email;
-	private String birthday;
-	private String gender;
-	private String receive_notification_yn;
+	private String email;					// 이메일
+	private String birthday;				// 생일
+	private String gender;					// 성별
+	private String receive_notification_yn;	// 알림수신여부
 	public String getEmail() {
 		return email;
 	}

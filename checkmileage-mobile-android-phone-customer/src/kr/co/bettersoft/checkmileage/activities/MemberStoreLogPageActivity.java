@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.co.bettersoft.checkmileage.activities.MemberStoreListPageActivity.backgroundGetMerchantInfo;
 import kr.co.bettersoft.checkmileage.adapters.MileageLogAdapter;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMemberMileageLogs;
 
@@ -23,6 +24,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -41,6 +43,9 @@ public class MemberStoreLogPageActivity extends Activity {
 	String controllerName = "";
 	String methodName = "";
 	String serverName = CommonUtils.serverNames;
+
+	URL postUrl2;
+	HttpURLConnection connection2;
 	
 	public List<CheckMileageMemberMileageLogs> entries;	// 1차적으로 조회한 결과.(리스트)
 	
@@ -66,10 +71,10 @@ public class MemberStoreLogPageActivity extends Activity {
 						emptyText.setText(R.string.no_used_logs);
 					}
 				}
-				if(b.getInt("showErrToast")==1){
+				if(b.getInt("showErrToast")==1){			// 에러 토스트
 					Toast.makeText(MemberStoreLogPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 				}
-			}catch(Exception e){
+			}catch(Exception e){	
 				String tmpstr = getString(R.string.error_occured);
 				Toast.makeText(MemberStoreLogPageActivity.this, tmpstr, Toast.LENGTH_SHORT).show();
 				e.printStackTrace();
@@ -98,17 +103,29 @@ public class MemberStoreLogPageActivity extends Activity {
 	    Intent rIntent = getIntent();
 	    idCheckMileageMileages = rIntent.getStringExtra("idCheckMileageMileages");			// 주요 정보를 받는다. 주요정보는 키 값. idCheckMileageMileages
 	    storeName = rIntent.getStringExtra("storeName");	
-	    try {
-			getMyMileageList();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	    
+	    new backgroundGetMyMileageLogList().execute();		// getMyMileageList 비동기 실행
 		m_list = (ListView) findViewById(R.id.memberstore_log_list);
 		emptyText = (TextView) findViewById(R.id.memberstore_log_list_empty);
 	}
-
+	// 비동기로 마일리지 로그 리스트 가져오는 함수 호출
+	public class backgroundGetMyMileageLogList extends  AsyncTask<Void, Void, Void> { 
+		@Override protected void onPostExecute(Void result) {  
+		} 
+		@Override protected void onPreExecute() {  
+		} 
+		@Override protected Void doInBackground(Void... params) {  
+			Log.d(TAG,"backgroundGetMyMileageList");
+			 try {
+					getMyMileageLogList();		// 마일리지 리스트 가져오기
+				} catch (JSONException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			return null; 
+		}
+	}
 	/*
 	 * 서버와 통신하여 가맹점 이용 내역 로그를 가져온다.
 	 * 그 결과를 List<CheckMileageMemberMileageLogs> Object 로 반환 한다.
@@ -123,7 +140,7 @@ public class MemberStoreLogPageActivity extends Activity {
 	 * |  마일리지 	[ 가 맹 점 이 용 시 각 ]  	   |
 	 * ------------------------------------
 	 */
-	public void getMyMileageList() throws JSONException, IOException {
+	public void getMyMileageLogList() throws JSONException, IOException {
 		Log.i(TAG, "getMyMileageList:::"+idCheckMileageMileages);		// 인덱스 번호..
 		controllerName = "checkMileageMemberMileageLogController";
 		methodName = "selectMemberMileageLogList";
@@ -140,12 +157,13 @@ public class MemberStoreLogPageActivity extends Activity {
 						}
 						String jsonString = "{\"checkMileageMemberMileageLog\":" + obj.toString() + "}";
 						try{
-							URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
-							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+							connection2 = (HttpURLConnection) postUrl2.openConnection();
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
+							connection2.connect();		// *** 
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
@@ -157,10 +175,13 @@ public class MemberStoreLogPageActivity extends Activity {
 							theData1(in);
 							connection2.disconnect();
 						}catch(Exception e){ 
+							connection2.disconnect();
 							e.printStackTrace();
 							try{
-								Thread.sleep(500);		// 쉬었다가 다시
-								getMyMileageList();
+								Thread.sleep(500);		// 쉬었다가 다시 --> 안함
+								showMSG();		// 에러 토스트 보여주고 종료하여 다시 실행하도록함.
+								finish();
+//								getMyMileageLogList();
 							}catch(Exception e1){
 								e1.printStackTrace();
 							}
@@ -225,13 +246,10 @@ public class MemberStoreLogPageActivity extends Activity {
 					}
 				}
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			finally{
-//				getMerchantInfo(entries,max);
-				
-				entriesFn = entries;		// 처리 결과를 밖으로 뺀다.
+				entriesFn = entries;		// 처리 결과를 밖으로 뺀다.		(보여주기용 리스트에 저장한다)
 //				Log.d(TAG,"수신 entriesFn::"+entriesFn.size());
 				showInfo();					// 밖으로 뺀 결과를 가지고 화면에 뿌려주는 작업을 한다.
 			}

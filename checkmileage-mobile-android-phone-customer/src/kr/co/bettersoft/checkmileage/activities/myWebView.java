@@ -1,5 +1,10 @@
 package kr.co.bettersoft.checkmileage.activities;
 
+/*
+ * 설정에서 웹뷰를 사용해서 웹페이지를 보여줘야 할경우 사용되는 웹뷰 액티비티.
+ *  필요한 URL은 전달받은 값을 사용.
+ */
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;

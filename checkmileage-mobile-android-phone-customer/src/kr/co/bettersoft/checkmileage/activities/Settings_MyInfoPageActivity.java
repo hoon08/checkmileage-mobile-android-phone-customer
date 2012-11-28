@@ -68,14 +68,19 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 	
 	int sharePrefsFlag = 1;					// 어플내 자체 프립스를 얻기 위한 미끼. 1,-1 값을 바꿔가며 저장하면 리스너가 낚인다.
 	
+	// 서버 통신 용
+	String serverName = CommonUtils.serverNames;
 	static String controllerName = "";		// JSON 서버 통신명 컨트롤러 명
 	static String methodName = "";			// JSON 서버 통신용 메소드 명
 	static int responseCode = 0;			// JSON 서버 통신 결과
 	
+	URL postUrl2;
+	HttpURLConnection connection2;
+	
 	static int updateLv=0;							// 서버에 업뎃 칠지 여부 검사용도. 0이면 안하고, 1이면 한다, 2면 두번한다(업뎃중 값이 바뀐 경우이다)
 	
 	String updateYN = "";
-	String server_birthday = "";			// 서버에서 받은 설정 파일중 필요한 정보들.
+//	String server_birthday = "";			// 서버에서 받은 설정 파일중 필요한 정보들. 생일,이메일,성별	// 생일은 나누어 저장됨.
 	String server_email = "";
 	String server_gender = "";
 	
@@ -92,11 +97,11 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.settings_myinfo);
 		/*
-		 *  서버로부터 개인 정보를 가져와서 도메인 같은 곳에 담아둔다. 나중에 업데이트 할때 사용해야 하니까. 업데이트하고 나면 그 도메인 그대로 유지해야 한다..
+		 *  서버로부터 개인 정보를 가져와서 도메인 같은 곳에 담아둔다. 나중에 업데이트 할때 사용. 업데이트하고 나면 그 도메인 그대로 유지..
 		 */
 		memberInfo = new CheckMileageMembers();
 		getUserInfo();
-		updateServerSettingsToPrefs();				// 서버 설정 자체 설정으로 저장 - 테스트 *** 
+		updateServerSettingsToPrefs();				// 서버 설정 자체 설정으로 저장 
 		
 		/*
 		 * 성별 변경시 리스너 달아서 서버에 업뎃
@@ -190,11 +195,11 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 	 *  (설정에 값이 있다고 화면에 그대로 보여지지 않기 때문에 화면에 보여지도록 처리해줘야 함)
 	 */
 	public void updateServerSettingsToPrefs(){
-		if(sharedPrefCustom==null){
+		if(sharedPrefCustom==null){								// 프리퍼런스
 			sharedPrefCustom = getSharedPreferences("MyCustomePref",
 					Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
 		}
-		String updateYN = sharedPrefCustom.getString("updateYN2", "N");
+		updateYN = sharedPrefCustom.getString("updateYN2", "N");		// 설정값 세팅 해야하는지 여부
 		if(updateYN.equals("Y")){
 			Log.w(TAG,"need update o");
 			String server_email = sharedPrefCustom.getString("server_email", "");
@@ -230,7 +235,8 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 	
 	
 	public String getNow(){
-		// 일단 오늘.
+		// 현시각
+		c = Calendar.getInstance();	
 		todayYear = c.get(Calendar.YEAR);
 		todayMonth = c.get(Calendar.MONTH)+1;			// 꺼내면 0부터 시작이니까 +1 해준다.
 		todayDay = c.get(Calendar.DATE);
@@ -266,7 +272,7 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 	} 
 	 
 
-	// Preference에서 클릭 발생시 호출되는 call back
+	// Preference에서 클릭 발생시 호출되는 call back    -- 해당 설정창.
 	// Parameters:
 	//  - PreferenceScreen : 이벤트가 발생한 Preference의 root
 	//  - Preference : 이벤트를 발생시킨 Preference 항목
@@ -276,12 +282,12 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 
 		// 개인정보 변경 - 생년월일 pref_user_birth
 		if(preference.equals(findPreference("pref_user_birth"))){
-			// 꺼내서 없으면 오늘.
+			// 꺼내서 없으면 현시각.
 			getNow();
 			birthYear = sharedPrefCustom.getInt("birthYear", todayYear);		
 			birthMonth = sharedPrefCustom.getInt("birthMonth", todayMonth)-1;		// 저장할때 1 더해서 넣었으니 꺼낼때는 1 빼서..	
 			birthDay = sharedPrefCustom.getInt("birthDay", todayDay);
-			Log.e(TAG, "preference .. birthYear::"+birthYear+"//birthMonth::"+birthMonth+"//birthDay::"+birthDay);
+			Log.i(TAG, "preference .. birthYear::"+birthYear+"//birthMonth::"+birthMonth+"//birthDay::"+birthDay);
 			DatePickerDialog DatePickerDialog2 = new DatePickerDialog(this, mDateSetListener, birthYear, birthMonth, birthDay);
 			DatePickerDialog2.setTitle(R.string.set_birth);		// 달력 타이틀 설정
 			DatePickerDialog2.show();
@@ -320,19 +326,18 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 			if(updateLv<2){		// 0또는 1일경우. 1 증가. (최대 2까지)
 				updateLv = updateLv+1;
 				if(updateLv==1){
-					updateToServer();
+					updateToServer();		 // 서버에 업뎃
 				}
 			}
 		}
 	};
 	
 	/*
-	 *  서버로부터 개인 정보를 받아와서 도메인에 저장해 둔다. 나중에 업데이트 할때 사용해야하니까.
+	 *  서버로부터 개인 정보를 받아와서 도메인에 저장. 나중에 업데이트 할때 사용.
 	 *  checkMileageMemberController 컨/ selectMemberInformation  메/ checkMileageMember 도/ 
 	 *  checkMileageId 변<-qrCode , activateYn : Y  /  CheckMileageMember 결과
 	 */
 	public void getUserInfo(){
-		// ...
 		Log.i(TAG, "getUserInfo");
 		controllerName = "checkMileageMemberController";
 		methodName = "selectMemberInformation";
@@ -350,12 +355,13 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 						}
 						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 						try{
-							URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
-							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+							connection2 = (HttpURLConnection) postUrl2.openConnection();
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
+							connection2.connect();		// *** 
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
@@ -367,6 +373,7 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 							theData1(in);
 							connection2.disconnect();
 						}catch(Exception e){ 
+							connection2.disconnect();
 							e.printStackTrace();
 						}  
 					}
@@ -418,12 +425,13 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 							}
 							String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 							try{
-								URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/"+controllerName+"/"+methodName);
-								HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);		 
+								connection2 = (HttpURLConnection) postUrl2.openConnection();
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
+								connection2.connect();		// *** 
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
@@ -444,6 +452,7 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 								}
 								connection2.disconnect();
 							}catch(Exception e){ 
+								connection2.disconnect();
 								e.printStackTrace();
 							}  
 						}

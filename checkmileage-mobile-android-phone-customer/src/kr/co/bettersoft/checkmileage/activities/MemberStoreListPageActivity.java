@@ -109,6 +109,9 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	int indexDataLast = 0;			// 부분 검색 위한 인덱스. 끝점
 	int indexDataTotal = 0;			// 부분 검색 위한 인덱스. 전체 개수
 	
+	URL postUrl2 ;
+	HttpURLConnection connection2;
+	
 	Boolean mIsLast = false;			// 끝까지 갔음. true 라면 더이상의 추가 없음. 새 조회시 false 로 초기화
 	Boolean adding = false;			// 데이터 더하기 진행 중임.
 	Boolean newSearch = false; 		// 새로운 조회인지 여부. 새로운 조회라면 기존 데이터는 지우고 새로 검색한 데이터만 사용. 새로운 조회가 아니라면 기존 데이터에 추가 데이터를 추가.
@@ -211,13 +214,13 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 					}
 					pb2.setVisibility(View.INVISIBLE);
 				}
-				if(b.getInt("showErrToast")==1){
+				if(b.getInt("showErrToast")==1){			// 일반 에러 토스트
 					Toast.makeText(MemberStoreListPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 				}
-				if(b.getInt("showNetErrToast")==1){			
+				if(b.getInt("showNetErrToast")==1){			// 네트워크 에러 토스트
 					Toast.makeText(MemberStoreListPageActivity.this, R.string.network_error, Toast.LENGTH_SHORT).show();
 				}
-				if(b.getInt("setJobsList")==1){
+				if(b.getInt("setJobsList")==1){			// 업종 목록 가져왔을때 스피너에 세팅
 					jobs = tmpJobs;
 					// 스피너 데이터 세팅. 
 					 ArrayAdapter<String> aa2 =  new ArrayAdapter<String>(getThis(), android.R.layout.simple_spinner_item, jobs);
@@ -267,8 +270,6 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		// spinner listener
 		searchSpinnerType.setOnItemSelectedListener(this);
 		
-//		searchBtn.hasFocus();
-//		searchBtn.isFocused()
 		searchBtn.setOnClickListener(new Button.OnClickListener()  {
 			public void onClick(View v)  {
 				goSearch();		 // 단어로 검색 ㄱㄱ 
@@ -276,7 +277,6 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		});
 	}
     
-	
 	// 데이터를 화면에 세팅
 	public void setGriding(){
 		imgAdapter = new MemberStoreSearchListAdapter(this, entriesFn);
@@ -342,8 +342,6 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 				searchText.setEnabled(false); 
 				searchBtn.setEnabled(false);
 			}
-			
-			
 		}
 	};
 	
@@ -388,8 +386,6 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 				}
 		).start();
 	} 
-	
-	
 	
 	
 	/*
@@ -444,14 +440,16 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 								e.printStackTrace();
 							}
 							String jsonString = "{\"checkMileageBusinessKind\":" + obj.toString() + "}";
+							
 							try{
-								URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
-								HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+								connection2 = (HttpURLConnection) postUrl2.openConnection();
 								connection2.setConnectTimeout(3000);
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
+								connection2.connect();		// *** 
 								Thread.sleep(200);
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
@@ -467,6 +465,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 								connection2.disconnect();
 							}catch(Exception e){ 
 								e.printStackTrace();
+								connection2.disconnect();
 								if(reTry>0){
 									reTry = reTry-1;
 									try {
@@ -483,7 +482,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 //									searchSpinnerType.setEnabled(true);
 //									searchText.setEnabled(true); 
 //									searchBtn.setEnabled(true);
-									showInfo();		// 로 대체
+									showInfo();		// 핸들러에서 함께 처리
 									
 								}
 							}
@@ -492,8 +491,6 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			).start();
 		}
 	}
-	
-	
 	
 	/*
 	 * 가맹점 정보 1차 데이터 받음. entries 도메인에 저장. 이후 url 정보를 꺼내 이미지를 받아오는 함수를 호출한다.
@@ -537,7 +534,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			new Thread(
 					new Runnable(){
 						public void run(){
-							Message message = handler.obtainMessage();				
+							Message message = handler.obtainMessage();					// 업종 목록 받아온것 스피너에 세팅..
 							Bundle b = new Bundle();
 							b.putInt("setJobsList", 1);
 							message.setData(b);
@@ -549,8 +546,6 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			e.printStackTrace();
 		}
 	}
-	
-	
 	
 	
 	/*
@@ -628,13 +623,13 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 								}
 								String jsonString = "{\"checkMileageMerchant\":" + obj.toString() + "}";
 								try{
-									URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
-									HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+									postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+									connection2 = (HttpURLConnection) postUrl2.openConnection();
 									connection2.setDoOutput(true);
 									connection2.setInstanceFollowRedirects(false);
 									connection2.setRequestMethod("POST");
-									Thread.sleep(200);
 									connection2.setRequestProperty("Content-Type", "application/json");
+									connection2.connect();		// *** 
 									Thread.sleep(200);
 									OutputStream os2 = connection2.getOutputStream();
 									os2.write(jsonString.getBytes("UTF-8"));
@@ -664,6 +659,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 									connection2.disconnect();
 								}catch(Exception e){ 
 									e.printStackTrace();
+									connection2.disconnect();
 									// 실행중 에러나면 로딩바 없애고 다시 할수 있도록
 									new Thread(
 											new Runnable(){

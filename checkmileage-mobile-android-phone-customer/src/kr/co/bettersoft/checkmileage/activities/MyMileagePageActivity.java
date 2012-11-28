@@ -83,8 +83,9 @@ public class MyMileagePageActivity extends Activity {
 	
 	public static Boolean searched = false;		// 조회 했는가?
 	
-	
-	int reTry = 3;
+	URL postUrl2;
+	HttpURLConnection connection2;
+	int reTry = 3;		// 재시도 횟수
 	
 	int merchantNameMaxLength = 9;			// 가맹점명 표시될 최대 글자수.
 	String newMerchantName="";
@@ -116,7 +117,7 @@ public class MyMileagePageActivity extends Activity {
 	 */
 	////----------------------- SQLite  Query-----------------------//
 	
-	// 테이블 삭제 쿼리 ---> 테이블은 이닛에서 이미 만들었으니 안의 내용만 지우고...다시 하자
+	// 테이블 삭제 쿼리 ---> 테이블은 init 에서 이미 만들었으니 안의 내용만 지우고...다시 하자
 	private static final String Q_INIT_TABLE = "DELETE FROM mileage_info;" ;
 
 	// 테이블 생성 쿼리.
@@ -332,7 +333,7 @@ public class MyMileagePageActivity extends Activity {
 	public Context returnThis(){
 		return this;
 	}
-
+	// 진행바 보임 / 숨김
 	public void showPb(){
 		new Thread(
 				new Runnable(){
@@ -373,7 +374,7 @@ public class MyMileagePageActivity extends Activity {
 		).start();
 	}
 	
-	
+	// 리스트 보여주고 클릭 이벤트 등록 (가맹점 상세 보기)
 	public void setListing(){
 		listView  = (ListView)findViewById(R.id.listview);
 		listView.setAdapter(new MyMileageListAdapter(this, entriesFn));
@@ -400,7 +401,6 @@ public class MyMileagePageActivity extends Activity {
 		// DB 쓸거니까 초기화 해준다.
 		 initDB();
 		 
-		 
 		myQRcode = MyQRPageActivity.qrCode;			// 내 QR 코드. 
 		
 		// 크기 측정
@@ -420,10 +420,10 @@ public class MyMileagePageActivity extends Activity {
 		
 		searched = false;		 
 		
-		if(isRunning<1){								// 이유가 있을것.??;
+		if(isRunning<1){								// 다중 실행 방지. 
 			isRunning = isRunning+1;
 				myQRcode = MyQRPageActivity.qrCode;
-				new backgroundGetMyMileageList().execute();
+				new backgroundGetMyMileageList().execute();	// 비동기. 서버로부터 마일리지 리스트 조회
 		}else{
 			Log.w(TAG, "already running..");
 		}
@@ -450,8 +450,6 @@ public class MyMileagePageActivity extends Activity {
         }
  }
 
-	
-	
 	
 	/*
 	 * 서버와 통신하여 내 마일리지 목록을 가져온다.
@@ -488,13 +486,14 @@ public class MyMileagePageActivity extends Activity {
 							}
 							String jsonString = "{\"checkMileageMileage\":" + obj.toString() + "}";
 							try{
-								URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
-								HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+								connection2 = (HttpURLConnection) postUrl2.openConnection();
 								connection2.setConnectTimeout(5000);
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
+								connection2.connect();		// *** 
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
@@ -507,6 +506,7 @@ public class MyMileagePageActivity extends Activity {
 								connection2.disconnect();
 							}catch(Exception e){ 
 								// 다시
+								connection2.disconnect();
 								if(reTry>0){
 									Log.w(TAG, "fail and retry remain : "+reTry);
 									reTry = reTry-1;
@@ -691,9 +691,8 @@ public class MyMileagePageActivity extends Activity {
 		}
 	}
 	
-	public void alertToUser(){				// 	data 조회가 잘 안됐어요.
+	public void alertToUser(){				// 	data 조회가 잘 안됐어요. // 별도 알림 없이 로그만 찍는다.
 		Log.d(TAG,"Get Data from Server -> Error Occured..");
-		
 	}
 	
 	

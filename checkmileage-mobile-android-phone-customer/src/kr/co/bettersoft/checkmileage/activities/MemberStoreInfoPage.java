@@ -78,8 +78,12 @@ public class MemberStoreInfoPage extends Activity {
 	
 	String latatude = "";
 	String longitude = "";
+	
+	URL postUrl2 = null;
+	HttpURLConnection connection2 = null;
+	
 	int error=0;
-	int reTry = 5;			 
+	int reTry = 3;			 
 	String tmpstr = "";
 	String tmpstr2 = "";
 	int maxPRstr = 200;					// 화면에 보여줄 소개 글의 최대 글자수. 넘어가면 자르고 ... 으로 표시해줌.
@@ -271,7 +275,7 @@ public class MemberStoreInfoPage extends Activity {
 		merchantData.setMerchantID(merchantId);
 		if(merchantId.length()>0){
 			try {
-				getMerchantInfo();
+				getMerchantInfo();				// 가맹점 정보 가져옴
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -280,7 +284,7 @@ public class MemberStoreInfoPage extends Activity {
 				e.printStackTrace();
 			}
 		}else{
-			showMSG();
+			showMSG();		// 에러시 핸들러 통한 토스트
 //			Toast.makeText(MemberStoreInfoPage.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 			finish();
 		}
@@ -357,8 +361,6 @@ public class MemberStoreInfoPage extends Activity {
 							e.printStackTrace();
 						}
 						String jsonString = "{\"checkMileageMerchant\":" + obj.toString() + "}";
-						URL postUrl2 = null;
-						HttpURLConnection connection2 = null;
 						InputStream in = null;
 						try{
 							error = 1;
@@ -368,7 +370,7 @@ public class MemberStoreInfoPage extends Activity {
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
-//							connection2.connect();		// ???
+							connection2.connect();		// ???
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
@@ -382,6 +384,7 @@ public class MemberStoreInfoPage extends Activity {
 							connection2.disconnect();
 						}catch(Exception e){ 
 //							e.printStackTrace();
+							connection2.disconnect();
 							while(error==1){			// 에러 발생시 다시 정보를 가져온다. 될때까지 반복..은 위험.
 								try{
 									if(reTry>1){
@@ -389,7 +392,7 @@ public class MemberStoreInfoPage extends Activity {
 										Log.w(TAG, "error and remain retry : "+reTry);
 									}else{
 										Log.w(TAG, "all retry get failed -- last retry and out.");
-										reTry = 5;
+										reTry = 3;
 										showMSG();
 //										Toast.makeText(MemberStoreInfoPage.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 										error = 0;
@@ -401,6 +404,7 @@ public class MemberStoreInfoPage extends Activity {
 									connection2.setInstanceFollowRedirects(false);
 									connection2.setRequestMethod("POST");
 									connection2.setRequestProperty("Content-Type", "application/json");
+									connection2.connect();		// *** 
 //									System.out.println("postUrl      : " + postUrl2);
 //									connection2.connect();
 									OutputStream os2 = connection2.getOutputStream();
@@ -414,7 +418,9 @@ public class MemberStoreInfoPage extends Activity {
 									// 조회한 결과를 처리.
 									theData1(in);
 									connection2.disconnect();
-								}catch(Exception e2){}
+								}catch(Exception e2){
+									connection2.disconnect();
+								}
 						}  
 					}
 				}
@@ -594,7 +600,7 @@ public class MemberStoreInfoPage extends Activity {
 
 
 	/*
-	 * Bitmap 이미지 리사이즈
+	 * Bitmap 이미지 리사이즈 -- xml 자체 설정으로 대체
 	 * Src : 원본 Bitmap
 	 * newHeight : 새로운 높이
 	 * newWidth : 새로운 넓이
@@ -636,7 +642,7 @@ public class MemberStoreInfoPage extends Activity {
 
 	
 
-	
+	// 전화 걸기
 	public void setCallingPhoneNumber(final String phoneNumber) {
 		handler.post(new Runnable() {
 			public void run() {
@@ -658,7 +664,6 @@ public class MemberStoreInfoPage extends Activity {
 	@Override			// 이 액티비티가 종료될때 실행. 
 	protected void onDestroy() {
 		super.onDestroy();
-		// 서버 무한 접속 중이라면 종료 시켜야 하기때문..
-		error = 0;
+		error = 0;		// 서버 무한 접속 중이라면 종료 시켜야 하기때문..
 	}
 }

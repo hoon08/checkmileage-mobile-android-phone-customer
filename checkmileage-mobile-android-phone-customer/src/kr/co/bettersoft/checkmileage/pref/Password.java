@@ -10,7 +10,9 @@
  */
 
 package kr.co.bettersoft.checkmileage.pref;
-
+/*
+ * 비번 입력 및 설정 및 변경시 나오는 비번 화면
+ */
 import kr.co.bettersoft.checkmileage.activities.R;
 import android.app.Activity; 
 import android.content.Context;
@@ -57,10 +59,11 @@ public class Password extends Activity {
 	private Intent nextActivity;
 //	private EditText passwordForm, passwordConfirmForm;
 	
+	// 비번입력1, 비번확인2
 	LinearLayout password_linear1, password_linear2;
-	
+	// 입력 4칸, 확인 4칸
 	private EditText pwpart1, pwpart2, pwpart3, pwpart4, pw_cnfrmpart1, pw_cnfrmpart2, pw_cnfrmpart3, pw_cnfrmpart4;		// 비번 4칸짜리
-	String pwForms, pw_cnfrmForms;				// 비번 4칸짜리 값 모은 스트링.
+	String pwForms, pw_cnfrmForms;				// 비번 4칸짜리 값 모은 스트링. - 비번 저장용
 	String tempStr1="", tempStr2="", tempStr3="", tempStr4="";		// 비번 4칸짜리 임시 저장용. 비번칸에는 동그라미를 보여주고 값은 임시 저장소에 저장.
 	private String passwordString;
 //	private ViewFlipper passwordFlipper;
@@ -68,22 +71,22 @@ public class Password extends Activity {
 	private TextView textMessage;
 	private TranslateAnimation pushLeftIn, pushLeftOut, shakeAni;
 	
-	int dontTwice = 1;
+	int dontTwice = 1;		// 중복 실행 방지
 	
 	SharedPreferences sharedPrefCustom;	// 공용 프립스
-	Boolean loginYN = false;
+	Boolean loginYN = false;			// 로그인 여부		-- 로그인일 경우 = 비번 입력받고 메인 가야 하는 경우
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.password);
-        sharedPrefCustom = getSharedPreferences("MyCustomePref",
+        sharedPrefCustom = getSharedPreferences("MyCustomePref",		// 프리퍼런스 - 에 비번 저장
 				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
         init();
         initAnimation();
     }
     
-    private Runnable passwordRunnable = new Runnable(){
+    private Runnable passwordRunnable = new Runnable(){		// 스레드로 비번 체크
         @Override
         public void run() {
         	checkPassword();
@@ -114,7 +117,7 @@ public class Password extends Activity {
     			goToNextPhase();
     		}else{																// 입력한  비번이 일치하지 않음.
     			password_linear1.startAnimation(shakeAni);
-                textMessage.setText(R.string.password_not_equals);				// 4자리 초기화하고.. 어쩌고..필요하다.		
+                textMessage.setText(R.string.password_not_equals);				// 4자리 초기화하고 등등 진행 필요...		
                 pwpart4.setFocusableInTouchMode(false);
     	    	pwpart1.setFocusableInTouchMode(true);
     	    	pwpart1.requestFocus();
@@ -127,7 +130,6 @@ public class Password extends Activity {
     		break;
     	case PHASE_CONFIRM_PASSWORD:	// 새 비번 확인 2 및 로그인 확인
     		Log.i("Password", "checkPassword--PHASE_CONFIRM_PASSWORD");
-    		
     		
     		// 1칸용
 //    		EditText currentForm = passwordConfirmForm; 											// 에딧 텍스트. (비번 저장 및 비교용)
@@ -156,7 +158,7 @@ public class Password extends Activity {
         			pwpart1.setFocusableInTouchMode(true);
         			pwpart1.requestFocus();
         		}
-    		}else{																											
+    		}else{									// 인증 아닌 경우. 생성 및 변경																							
     			if( currentPassword.equals(confStr) ){		// 맞아요			// 비번 설정시 재입력(확인용)
         			goToNextPhase();
         		}else{																// 틀려요
@@ -167,24 +169,22 @@ public class Password extends Activity {
         			pw_cnfrmpart1.requestFocus();
         		}
     		}
-    		
-    		
     	}
+    	// 화면에 나온 입력칸 청소
 //    	passwordForm.setText("");			// 1칸용
 //    	passwordConfirmForm.setText("");
-    	
-    	pwpart1.setText("");			// 4칸용
+    	pwpart1.setText("");			// 4칸용		
     	pwpart2.setText("");
     	pwpart3.setText("");
     	pwpart4.setText("");
     	pw_cnfrmpart1.setText("");
     	pw_cnfrmpart2.setText("");
     	pw_cnfrmpart3.setText("");
-    	pw_cnfrmpart4.setText("");
+    	pw_cnfrmpart4.setText("");								
     }
     
     private void goToNextPhase(){
-    	Log.i("Password", "goToNextPhase,, currentMode::"+currentMode);		// 비번 변경 모드 0
+    	Log.i("Password", "goToNextPhase,, currentMode::"+currentMode);		// 비번 변경 모드 : 0
     	switch(currentMode){
     	case PHASE_INIT_PASSWORD:		// 0
     		Log.i("Password", "goToNextPhase--PHASE_INIT_PASSWORD");
@@ -199,7 +199,6 @@ public class Password extends Activity {
 
     		
     		currentMode = PHASE_CONFIRM_PASSWORD;
-    	             
 //    		passwordFlipper.setInAnimation(pushLeftIn);					// 1칸용
 //    		passwordFlipper.setOutAnimation(pushLeftOut);
 //    		passwordFlipper.showPrevious();
@@ -239,14 +238,14 @@ public class Password extends Activity {
         
         initMode = intent.getIntExtra(MODE, MODE_CHECK_PASSWORD);
         Log.i("Password", "initMode::"+initMode);
-        if(initMode==2){		// 로그인일 경우
+        if(initMode==2){		// 로그인일 경우 - 비번 입력받고 메인 가야 하는 경우
         	loginYN = true;
         }
         passwordString = intent.getStringExtra(PASSWORD);
         Log.i("Password", "passwordString::"+passwordString);
         currentMode = initMode;
         currentPassword = passwordString;
-//        passwordLength = 4;		// 비번은 무조건 4글자여야만 한다.
+//        passwordLength = 4;		// 비번은 무조건 4글자여야만 한다.  --> 4칸으로 나눠서 이런 설정 필요하지 않음
         
         // 비번 입력창과 안내 메시지창.
         textMessage = (TextView)findViewById(R.id.password_message);
@@ -307,7 +306,7 @@ public class Password extends Activity {
 //        });
         
         // 4칸짜리. 비번 입력창.
-        pwpart1.setOnKeyListener(new OnKeyListener() {                  
+        pwpart1.setOnKeyListener(new OnKeyListener() {                  // 지우기 버튼 눌렀을때. 앞글자 지우고 커서 이동    (첫칸은 동작없음) 
         	@Override 
         	public boolean onKey(View v, int keyCode, KeyEvent event) { 
 //        		Log.e(TAG,"pwpart1");
@@ -325,11 +324,11 @@ public class Password extends Activity {
         		}
         	}
         }); 
-        pwpart1.addTextChangedListener(new TextWatcher() {
+        pwpart1.addTextChangedListener(new TextWatcher() {		// 첫칸 리스너
         	   @Override
         	   public void onTextChanged(CharSequence s, int start, int before, int count) {
         	    if((pwpart1.length()==1) && !((pwpart1.getText()+"").equals("●"))){  // edit1  값의 제한값을 6이라고 가정했을때
-        	    	tempStr1 = pwpart1.getText()+"";
+        	    	tempStr1 = pwpart1.getText()+"";		// 데이터 꺼내서 저장하고 동그라미로 보여줌
         	    	pwpart1.setText("●");
         	    	pwpart1.setFocusableInTouchMode(false);
         	    	pwpart2.setFocusableInTouchMode(true);
@@ -341,7 +340,7 @@ public class Password extends Activity {
         	   @Override
         	   public void afterTextChanged(Editable s) {}
         	  });
-        pwpart2.setOnKeyListener(new OnKeyListener() {                  
+        pwpart2.setOnKeyListener(new OnKeyListener() {          // 지우기 버튼 눌렀을때. 앞글자 지우고 커서 이동    
         	@Override 
         	public boolean onKey(View v, int keyCode, KeyEvent event) { 
         		//You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_ 
@@ -354,14 +353,14 @@ public class Password extends Activity {
 	        	    	pwpart1.setFocusableInTouchMode(true);
 	        			pwpart1.requestFocus();
         			}
-        			dontTwice = dontTwice * -1;	// 토글. 2번 실시 방지.
+        			dontTwice = dontTwice * -1;	// 토글. 2번 실시 방지. (화면 값을 바꾸면 리스너가 다시 동작되기 때문)
         			return true; 
         		}else{
         			return false;
         		}     
         	}
         }); 
-        pwpart2.addTextChangedListener(new TextWatcher() {
+        pwpart2.addTextChangedListener(new TextWatcher() {			 // 두번째칸 리스너
      	   @Override
      	   public void onTextChanged(CharSequence s, int start, int before, int count) {
      		   
@@ -378,7 +377,7 @@ public class Password extends Activity {
      	   @Override
      	   public void afterTextChanged(Editable s) {}
      	  });
-        pwpart3.setOnKeyListener(new OnKeyListener() {                  
+        pwpart3.setOnKeyListener(new OnKeyListener() {                  // 지우기 버튼 눌렀을때. 앞글자 지우고 커서 이동    
         	@Override 
         	public boolean onKey(View v, int keyCode, KeyEvent event) { 
         		//You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_ 
@@ -413,7 +412,7 @@ public class Password extends Activity {
       	   @Override
       	   public void afterTextChanged(Editable s) {}
       	  });
-        pwpart4.setOnKeyListener(new OnKeyListener() {                  
+        pwpart4.setOnKeyListener(new OnKeyListener() {                  // 지우기 버튼 눌렀을때. 앞글자 지우고 커서 이동    
         	@Override 
         	public boolean onKey(View v, int keyCode, KeyEvent event) { 
         		//You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_ 
@@ -454,7 +453,7 @@ public class Password extends Activity {
         
         
         // 4칸짜리 비번 확인창.
-        pw_cnfrmpart1.setOnKeyListener(new OnKeyListener() {                  
+        pw_cnfrmpart1.setOnKeyListener(new OnKeyListener() {             // 지우기 버튼 눌렀을때. 앞글자 지우고 커서 이동(첫칸이라 동작 없음)     
         	@Override 
         	public boolean onKey(View v, int keyCode, KeyEvent event) { 
         		Log.d(TAG,"pw_cnfrmpart1");
@@ -472,7 +471,7 @@ public class Password extends Activity {
         		}    
         	}
         }); 
-        pw_cnfrmpart1.addTextChangedListener(new TextWatcher() {
+        pw_cnfrmpart1.addTextChangedListener(new TextWatcher() {		
         	   @Override
         	   public void onTextChanged(CharSequence s, int start, int before, int count) {					
         	    if((pw_cnfrmpart1.length()==1) && !((pw_cnfrmpart1.getText()+"").equals("●"))){  // edit1  값의 제한값을 6이라고 가정했을때
@@ -508,7 +507,7 @@ public class Password extends Activity {
         		}     
         	}
         }); 
-        pw_cnfrmpart2.addTextChangedListener(new TextWatcher() {
+        pw_cnfrmpart2.addTextChangedListener(new TextWatcher() {		// 지우기 버튼 눌렀을때. 앞글자 지우고 커서 이동    
      	   @Override
      	   public void onTextChanged(CharSequence s, int start, int before, int count) {
      		  if((pw_cnfrmpart2.length()==1) && !((pw_cnfrmpart2.getText()+"").equals("●"))){  // edit1  값의 제한값을 6이라고 가정했을때
@@ -524,7 +523,7 @@ public class Password extends Activity {
      	   @Override
      	   public void afterTextChanged(Editable s) {}
      	  });
-        pw_cnfrmpart3.setOnKeyListener(new OnKeyListener() {                  
+        pw_cnfrmpart3.setOnKeyListener(new OnKeyListener() {               		// 지우기 버튼 눌렀을때. 앞글자 지우고 커서 이동       
         	@Override 
         	public boolean onKey(View v, int keyCode, KeyEvent event) { 
         		//You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_ 
@@ -559,7 +558,7 @@ public class Password extends Activity {
       	   @Override
       	   public void afterTextChanged(Editable s) {}
       	  });
-        pw_cnfrmpart4.setOnKeyListener(new OnKeyListener() {                  
+        pw_cnfrmpart4.setOnKeyListener(new OnKeyListener() {              // 지우기 버튼 눌렀을때. 앞글자 지우고 커서 이동    
         	@Override 
         	public boolean onKey(View v, int keyCode, KeyEvent event) { 
         		//You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_ 
@@ -579,7 +578,7 @@ public class Password extends Activity {
         		}      
         	}
         }); 
-        pw_cnfrmpart4.addTextChangedListener(new TextWatcher() {
+        pw_cnfrmpart4.addTextChangedListener(new TextWatcher() {	// 값 입력시 리스너. 값 저장후 동그라미로 변경
        	   @Override
        	   public void onTextChanged(CharSequence s, int start, int before, int count) {
        		if((pw_cnfrmpart4.length()==1) && !((pw_cnfrmpart4.getText()+"").equals("●"))){  // edit1  값의 제한값을 6이라고 가정했을때
@@ -598,7 +597,7 @@ public class Password extends Activity {
        	   public void afterTextChanged(Editable s) {}
        	  });
     }
-    
+    // 애니메이션 효과.
     private void initAnimation(){
     	pushLeftIn = new TranslateAnimation(
                 TranslateAnimation.RELATIVE_TO_SELF, 1.0f,   	// 등장.새 비번 입력 받는 창이 나타난다. 
@@ -616,7 +615,7 @@ public class Password extends Activity {
     	pushLeftOut.setDuration(200);
     	pushLeftOut.setFillAfter(true);
     	
-    	shakeAni = new TranslateAnimation(
+    	shakeAni = new TranslateAnimation(						// 흔들기. 틀렸을때.
                 TranslateAnimation.RELATIVE_TO_SELF, 0.0f,   
                 TranslateAnimation.RELATIVE_TO_SELF, 0.05f,
                 TranslateAnimation.RELATIVE_TO_SELF, 0.0f,

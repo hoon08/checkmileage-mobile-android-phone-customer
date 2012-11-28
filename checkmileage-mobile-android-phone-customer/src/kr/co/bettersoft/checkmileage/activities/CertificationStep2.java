@@ -1,6 +1,6 @@
 package kr.co.bettersoft.checkmileage.activities;
 /*
- * 인증2단계.
+ * 인증2단계.     -- 사용 안함
  * 신규 유저일 경우 서버에서 인증번호를 SMS 로 발송해 준다.
  * 모바일에서는 인증번호 요청 화면에서 인증번호 확인 화면(현재 화면) 으로 변경된다.
  * 

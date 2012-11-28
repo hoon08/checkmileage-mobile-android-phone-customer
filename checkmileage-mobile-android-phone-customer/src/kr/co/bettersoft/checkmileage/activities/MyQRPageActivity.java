@@ -57,32 +57,32 @@ import android.widget.Toast;
 
 public class MyQRPageActivity extends Activity {
 	String TAG = "MyQRPageActivity";
+	
+	// 서버 통신 용 
 	String controllerName="";
 	String methodName="";
 	String serverName = CommonUtils.serverNames;
-	
+	URL postUrl2 ;
+	HttpURLConnection connection2;
 	int responseCode= 0;
 	int isUpdating = 0;
-	
 	int app_end = 0;			// 뒤로가기 버튼으로 닫을때 2번만에 닫히도록
 	
 	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
 	MainActivity mainActivity = (MainActivity)MainActivity.mainActivity;
-	
-	
+
+	// 내 좌표 업뎃용
 	int myLat = 0;
 	int myLon = 0;
-	
-	static Bitmap savedBMP = null;
-	int qrSize =300;
-	
-	int deviceSize = 0;
-	
-	/** Called when the activity is first created. */
-	static Bitmap bmp =null;
+
+	// QR 관련
+	static Bitmap savedBMP = null;				// db 저장된 이미지 (전달받음)
+	int qrSize =300;							// QR이미지 크기
+	int deviceSize = 0;		
+	static Bitmap bmp =null;					// 이미지 생성용도
 	 static Bitmap bmp2 =null;
 	static ImageView imgView;
-	public static String qrCode = "";
+	public static String qrCode = "";			// qr 아이디
 	
 	// 핸들러 등록
 	Handler handler = new Handler(){
@@ -91,12 +91,12 @@ public class MyQRPageActivity extends Activity {
     		Bundle b = msg.getData();
     		int showQR =  b.getInt("showQR");		// 값을 넣지 않으면 0 을 꺼내었다.
     		if(showQR==1){
-    			imgView.setImageBitmap(bmp);
+    			imgView.setImageBitmap(bmp);		// 화면에 QR 보여준다.
     		}
     	}
     };
     
-    public Bitmap createQRself(String qrCode){
+    public Bitmap createQRself(String qrCode){		// 자체 QR 생성
     	try { 
     	    // generate a 200x200 QR code 
     	    Bitmap bm = encodeAsBitmap(qrCode, BarcodeFormat.QR_CODE, 200, 200); 
@@ -111,9 +111,7 @@ public class MyQRPageActivity extends Activity {
     }
     
     
-    
-    
-    
+    // 자체 QR 생성 용도
     private static final int WHITE = 0xFFFFFFFF;  
     private static final int BLACK = 0xFF000000;
     static Bitmap encodeAsBitmap(String contents,
@@ -164,6 +162,9 @@ public class MyQRPageActivity extends Activity {
         						bmp = downloadBitmap("http://chart.apis.google.com/chart?cht=qr&chs="+qrSize+"x"+qrSize+"&choe=UTF-8&chld=H&chl="+qrCode);		// 웹 통신하여 가져옴 
         						if(bmp==null){
         							Log.d(TAG,"bmp2==null");
+        							finish();
+        						}else{
+        							saveBMPtoDB(bmp);
         						}
         						// QR 이미지 생성 실패. 처리 필요 *** no qr img 로 가야 할듯.? 재실행?;
         					}else{
@@ -172,7 +173,6 @@ public class MyQRPageActivity extends Activity {
         				}else{
         					bmp = savedBMP;
         				}
-        				
 						// showQR
         				Message message = handler.obtainMessage();
 						Bundle b = new Bundle();
@@ -384,8 +384,8 @@ public class MyQRPageActivity extends Activity {
 							}
 							String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 							try{
-								URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
-								HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+								connection2 = (HttpURLConnection) postUrl2.openConnection();
 								connection2.setConnectTimeout(1000);
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
@@ -405,6 +405,7 @@ public class MyQRPageActivity extends Activity {
 								}
 								connection2.disconnect();
 							}catch(Exception e){ 
+								connection2.disconnect();
 								Log.d(TAG,"updateLocationToServer->fail");
 							}finally{
 								isUpdating = 0;

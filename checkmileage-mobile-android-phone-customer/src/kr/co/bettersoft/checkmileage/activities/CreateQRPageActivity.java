@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,9 +17,9 @@ import java.net.URL;
 import java.util.Calendar;
 import java.util.Locale;
 
-import org.json.JSONObject;
+import kr.co.bettersoft.checkmileage.activities.MemberStoreListPageActivity.backgroundGetMerchantInfo;
 
-//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
+import org.json.JSONObject;
 
 /* 
  * QR 을 생성하고 바로 다음단계인 나의 QR 코드 보기액티비티로 넘어간다.
@@ -33,12 +34,15 @@ public class CreateQRPageActivity extends Activity {
 	String serverName = CommonUtils.serverNames;
 	
 	static int qrResult = 0;
-	String qrcode = "test1234";
-//	String qrcode = "createdNewQRCodeOne";
+	String qrcode = "";		 
+//	String qrcode = "createdNewQRCodeOne";		// test
 	String phoneNumber = "";
 	String tmpStr = "";
 	// 시간 관련
 	Calendar c = Calendar.getInstance();
+	
+	URL postUrl2;
+	HttpURLConnection connection2;
 	
 	int todayYear = 0;						// 지금 -  년 월 일 시 분
 	int todayMonth = 0;
@@ -60,7 +64,7 @@ public class CreateQRPageActivity extends Activity {
 		public void handleMessage(Message msg){
 			Bundle b = msg.getData();
 			try{
-				if(b.getInt("showErrToast")==1){
+				if(b.getInt("showErrToast")==1){				// 화면에 에러 토스트 띄움
 					Toast.makeText(CreateQRPageActivity.this,b.getString("msg"), Toast.LENGTH_SHORT).show();
 				}
 			}catch(Exception e){
@@ -68,7 +72,7 @@ public class CreateQRPageActivity extends Activity {
 			}
 		}
 	};
-	public void alertMsg(final String alrtmsg){
+	public void alertMsg(final String alrtmsg){						// 에러 토스트 함수화
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -100,13 +104,9 @@ public class CreateQRPageActivity extends Activity {
 	    if(tmpStr!=null && tmpStr.length()>0){
 	    	phoneNumber = rIntent.getStringExtra("phoneNumber");
 	    }
-	    
+//	    qrcode = "test1234";		// test
 	    qrcode = timeID;			// 이 줄을  주석 처리하면 기본 값 test1234 사용 - test용도. , 주석 풀면 새로 만든 시간 아이디 사용- 실제 사용 용도.. *** 
 	    
-        
-        
-        
-        
 	    /*
 	     *  서버와 통신하여 QR 생성.
 	     */
@@ -118,13 +118,8 @@ public class CreateQRPageActivity extends Activity {
 	     * QR 저장소 파일에 저장.
 	     */
 	    Log.i("CreateQRPageActivity", "save qrcode to file : "+qrcode);
-	    
-//	    CommonUtils.writeQRstr = qrcode;	// qr 저장소 사용안함.
-//	    saveQR();							// qr 저장소 사용 안함.
-	    saveQRforPref(qrcode);				// 설정 파일 사용함.
 
-	    saveQRtoServer();					// 서버에도 저장함.			// test1234 아이디로 테스트시에 주석처리하지 않으면 에러가 발생한다.
-	    
+	    new backgroundSaveQRforPref().execute();		// 비동기 실행 - 설정에 저장 -- 끝나면 서버에 저장
 	    
 	    /*
 	     * MyQR페이지에 생성된 QR로 QR이미지 받아서 보여줌.
@@ -137,7 +132,7 @@ public class CreateQRPageActivity extends Activity {
 	    		new Runnable(){
 	    			public void run(){
 	    				try{
-	    					Thread.sleep(1000);
+	    					Thread.sleep(300);
 	    					Log.i("CreateQRPageActivity", "qrResult::"+qrResult);		// 읽기 결과 받음.
 	    					// 나의 QR 코드 보기로 이동.
 	    					Log.i("CreateQRPageActivity", "QR registered Success");
@@ -152,22 +147,41 @@ public class CreateQRPageActivity extends Activity {
 	    ).start();
 	}
 	
-	
-	// QR 코드 저장소에 QR 코드를 저장한다. 
-    public void saveQR(){		
-    	CommonUtils.callCode = 22;		// 쓰기 모드
-    	Intent saveQRintent = new Intent(CreateQRPageActivity.this, CommonUtils.class);			// 호출
-    	startActivity(saveQRintent);
-    }
-    // pref 에 QR 저장 방식. 위에거 대신 쓸것.
+	// 비동기로 호출. 설정에 저장
+	public class backgroundSaveQRforPref extends  AsyncTask<Void, Void, Void> { 			
+		@Override protected void onPostExecute(Void result) {  
+		} 
+		@Override protected void onPreExecute() {  
+		} 
+		@Override protected Void doInBackground(Void... params) {  
+			Log.d(TAG,"backgroundSaveQRforPref");
+			saveQRforPref(qrcode);				// 설정 파일 사용함.
+			return null; 
+		}
+	}
+    // pref 에 QR 저장 방식.
     public void saveQRforPref(String qrCode){
     	sharedPrefCustom = getSharedPreferences("MyCustomePref",
     			Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
     	SharedPreferences.Editor saveQR = sharedPrefCustom.edit();
     	saveQR.putString("qrcode", qrCode);
     	saveQR.commit();
+    	
+    	new backgroundSaveQRtoServer().execute();		// 설정에 저장 끝나면 .. 비동기 실행 - 서버에 저장
     }
     
+ // 비동기로 호출. 서버에 저장
+	public class backgroundSaveQRtoServer extends  AsyncTask<Void, Void, Void> { 			
+		@Override protected void onPostExecute(Void result) {  
+		} 
+		@Override protected void onPreExecute() {  
+		} 
+		@Override protected Void doInBackground(Void... params) {  
+			Log.d(TAG,"backgroundSaveQRtoServer");
+			saveQRtoServer();					// 서버에도 저장함.			// test1234 아이디로 테스트시에 주석처리하지 않으면 에러가 발생한다.
+			return null; 
+		}
+	}
     /*
      *  서버에 생성한 QR 저장
      *  checkMileageMemberController registerMember 
@@ -220,12 +234,13 @@ public class CreateQRPageActivity extends Activity {
 						}
 						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 						try{
-							URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
-							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+							connection2 = (HttpURLConnection) postUrl2.openConnection();
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
+							connection2.connect();		// *** 
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
@@ -233,14 +248,11 @@ public class CreateQRPageActivity extends Activity {
 							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 							int responseCode = connection2.getResponseCode();
 							if(responseCode==200||responseCode==204){
-//								InputStream in =  connection2.getInputStream();
-								// 조회한 결과를 처리.
-//								theData1(in);
 								Log.e(TAG, "register user S");
 							}else{
 								Log.e(TAG, "register user F");		// 오류 발생시 에러 창 띄우고 돌아간다.. 통신에러 발생할수 있다.
 								String alrtMsg = getString(R.string.error_message);
-								alertMsg(alrtMsg);
+								alertMsg(alrtMsg);		// toast 사용시 에러 발생하므로 핸들러 통한 토스트
 //								Toast.makeText(CreateQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();			
 								Intent backToNoQRIntent = new Intent(CreateQRPageActivity.this, No_QR_PageActivity.class);
 								 startActivity(backToNoQRIntent);
@@ -248,9 +260,10 @@ public class CreateQRPageActivity extends Activity {
 							}
 							connection2.disconnect();
 						}catch(Exception e){ 
+							connection2.disconnect();
 							 e.printStackTrace();			// 오류 발생시 에러 창 띄우고 돌아간다.. 통신에러 발생할수 있다.
 							 String alrtMsg = getString(R.string.error_message);
-							 alertMsg(alrtMsg);
+							 alertMsg(alrtMsg);		// toast 사용시 에러 발생하므로 핸들러 통한 토스트
 //							 Toast.makeText(CreateQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 							 Intent backToNoQRIntent = new Intent(CreateQRPageActivity.this, No_QR_PageActivity.class);
 							 startActivity(backToNoQRIntent);
@@ -263,7 +276,7 @@ public class CreateQRPageActivity extends Activity {
     
     // 현시각
     public String getNow(){
-		// 일단 오늘.
+    	c = Calendar.getInstance();
 		todayYear = c.get(Calendar.YEAR);
 		todayMonth = c.get(Calendar.MONTH)+1;			// 꺼내면 0부터 시작이니까 +1 해준다.
 		todayDay = c.get(Calendar.DATE);

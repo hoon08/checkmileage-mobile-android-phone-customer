@@ -47,13 +47,13 @@ public class PushDetail extends Activity {
 	
 	Button closeBtn;
 	public CheckMileagePushEvent checkMileagePushEvent = new CheckMileagePushEvent();
-	String subject="";
-	String content="";
-	String imageFileUrl="";
-	String imageFileStr="";
-	String modifyDate="";
-	String companyName="";
-	Bitmap imageFile= null;
+	String subject="";				// 제목
+	String content="";				// 내용
+	String imageFileUrl="";			// 이미지 URL
+	String imageFileStr="";			// 문자열로 바꾼 이미지
+	String modifyDate="";			// 수정일 
+	String companyName="";			// 가맹점명
+	Bitmap imageFile= null;			// 이미지 파일
 	
 	TextView subjectView;
 	ImageView imageFileView ;
@@ -222,59 +222,59 @@ public class PushDetail extends Activity {
 
 
 	/*
-	 * Bitmap 이미지 리사이즈
+	 * Bitmap 이미지 리사이즈   // 본페이지에서 사용 안함
 	 * Src : 원본 Bitmap
 	 * newHeight : 새로운 높이
 	 * newWidth : 새로운 넓이
 	 * 참고 소스 : http://skyswim42.egloos.com/3477279 ( webview 에서 capture 화면 resizing 하는 source 도 있음 )
 	 */
-	private BitmapDrawable BitmapResizePrc(Bitmap Src, float newHeight, float newWidth)
-	{
-		BitmapDrawable Result = null;
-		int width = Src.getWidth();
-		int height = Src.getHeight();
-
-		// calculate the scale - in this case = 0.4f
-		float scaleWidth = ((float) newWidth) / width;
-		float scaleHeight = ((float) newHeight) / height;
-
-		// createa matrix for the manipulation
-		Matrix matrix = new Matrix();
-
-		// resize the bit map
-		matrix.postScale(scaleWidth, scaleHeight);
-
-		// rotate the Bitmap 회전 시키려면 주석 해제!
-		//matrix.postRotate(45);
-
-		// recreate the new Bitmap
-		Bitmap resizedBitmap = Bitmap.createBitmap(Src, 0, 0, width, height, matrix, true);
-
-		// check
-		width = resizedBitmap.getWidth();
-		height = resizedBitmap.getHeight();
-//		Log.i("ImageResize", "Image Resize Result : " + Boolean.toString((newHeight==height)&&(newWidth==width)) );
-
-		// make a Drawable from Bitmap to allow to set the BitMap
-		// to the ImageView, ImageButton or what ever
-		Result = new BitmapDrawable(resizedBitmap);
-		return Result;
-	}
+//	private BitmapDrawable BitmapResizePrc(Bitmap Src, float newHeight, float newWidth)
+//	{
+//		BitmapDrawable Result = null;
+//		int width = Src.getWidth();
+//		int height = Src.getHeight();
+//
+//		// calculate the scale - in this case = 0.4f
+//		float scaleWidth = ((float) newWidth) / width;
+//		float scaleHeight = ((float) newHeight) / height;
+//
+//		// createa matrix for the manipulation
+//		Matrix matrix = new Matrix();
+//
+//		// resize the bit map
+//		matrix.postScale(scaleWidth, scaleHeight);
+//
+//		// rotate the Bitmap 회전 시키려면 주석 해제!
+//		//matrix.postRotate(45);
+//
+//		// recreate the new Bitmap
+//		Bitmap resizedBitmap = Bitmap.createBitmap(Src, 0, 0, width, height, matrix, true);
+//
+//		// check
+//		width = resizedBitmap.getWidth();
+//		height = resizedBitmap.getHeight();
+////		Log.i("ImageResize", "Image Resize Result : " + Boolean.toString((newHeight==height)&&(newWidth==width)) );
+//
+//		// make a Drawable from Bitmap to allow to set the BitMap
+//		// to the ImageView, ImageButton or what ever
+//		Result = new BitmapDrawable(resizedBitmap);
+//		return Result;
+//	}
 
 	
 	// 이벤트 이미지 : URL 에서 이미지 받아와서 도메인에 저장하는 부분.
 	// 비동기로 이벤트 목록 가져오는 함수 호출.
 	public class backgroundLoadImage extends   AsyncTask<Void, Void, Void> {
-        @Override protected void onPostExecute(Void result) { 
-       }
-        @Override protected void onPreExecute() { 
-       }
-        @Override protected Void doInBackground(Void... params) { 
-        	Log. d(TAG,"backgroundLoadImage");
-        	imageFile = LoadImage(imageFileUrl);
-        	return null ;
-        }
- }
+		@Override protected void onPostExecute(Void result) { 
+		}
+		@Override protected void onPreExecute() { 
+		}
+		@Override protected Void doInBackground(Void... params) { 
+			Log. d(TAG,"backgroundLoadImage");
+			imageFile = LoadImage(imageFileUrl);
+			return null ;
+		}
+	}
 	private Bitmap LoadImage( String $imagePath ) {
 		InputStream inputStream = OpenHttpConnection( $imagePath ) ;
 		Bitmap bm = BitmapFactory.decodeStream( inputStream ) ;

@@ -58,6 +58,9 @@ public class GCMIntentService extends GCMBaseIntentService {
 	Context localContext;
 	String localRegistrationId;
 	
+	URL postUrl2 ;
+	HttpURLConnection connection2;
+	
     private static final String TAG = "GCMIntentService";
 
     public GCMIntentService() {
@@ -68,12 +71,10 @@ public class GCMIntentService extends GCMBaseIntentService {
     public void onRegistered(Context context, String registrationId) {
         Log.i(TAG, "Device registered: regId = " + registrationId);
         if(dontTwice){			// 한번 하고 막는다.
-        	MainActivity.REGISTRATION_ID = registrationId;
+//        	MainActivity.REGISTRATION_ID = registrationId;
             regIdGCM = registrationId;
-            
             new backgroundUpdateMyGCMtoServer().execute();	// 비동기로 전환 - 서버에 GCM 아이디 저장	
 //            displayMessage(context, getString(R.string.gcm_registered));			// 브로드 케스트로 보내줌.. 리시버가 잡음. (노티는 없음)
-            
             localContext = context;
 			localRegistrationId = registrationId;
 //            new backgroundServerRegister().execute();
@@ -81,7 +82,7 @@ public class GCMIntentService extends GCMBaseIntentService {
         }
     }
     
-    // 비동기로 서버에 레지스터..
+    // 비동기로 gcm 서버에 레지스터.. 두번 할 필요 없음
     public class backgroundServerRegister extends  AsyncTask<Void, Void, Void> { 
 		@Override protected void onPostExecute(Void result) {  
 		} 
@@ -94,7 +95,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		}
 	} 
 
-	// 비동기로 GCM 아이디 업뎃 호출
+	// 비동기로 GCM 아이디 업뎃 호출  -- 캐럿 서버에 gcm 아이디 업뎃
 	public class backgroundUpdateMyGCMtoServer extends  AsyncTask<Void, Void, Void> { 
 		@Override protected void onPostExecute(Void result) {  
 		} 
@@ -103,7 +104,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		@Override protected Void doInBackground(Void... params) {  
 			Log.d(TAG,"backgroundUpdateMyGCMtoServer");
 			updateMyGCMtoServer();
-//			try {
+//			try {						// gcm 확인용
 //				testGCM(regIdGCM);
 //			} catch (JSONException e) {
 //				e.printStackTrace();
@@ -136,13 +137,14 @@ public class GCMIntentService extends GCMBaseIntentService {
 						}
 						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 						try{
-							URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
-							HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
-							connection2.setConnectTimeout(2000);
+							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+							connection2 = (HttpURLConnection) postUrl2.openConnection();
+							connection2.setConnectTimeout(5000);
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
+							connection2.connect();		// *** 
 							Thread.sleep(100);
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
@@ -152,19 +154,19 @@ public class GCMIntentService extends GCMBaseIntentService {
 							int responseCode = connection2.getResponseCode();
 							if(responseCode==200||responseCode==204){
 								Log.i(TAG, "S to update GCM ID to server");
-								// 조회한 결과를 처리.
 							}else{
 								Log.i(TAG, "F to update GCM ID to server");
 							}
 							connection2.disconnect();
 						}catch(Exception e){ 
+							connection2.disconnect();
 							e.printStackTrace();
 						}
 					}
 				}
 		).start();
 	}
-    
+    // GCM 테스트 용
 	public void testGCM(String registrationId) throws JSONException, IOException {
 		  Log.i(TAG, "testGCM");
 		  JSONObject jsonMember = new JSONObject();
@@ -174,26 +176,27 @@ public class GCMIntentService extends GCMBaseIntentService {
 		  Log.i(TAG, "jsonMember : " + jsonString);
 		 
 		  try {
-		   URL postUrl2 = new URL("http://checkmileage.onemobileservice.com/checkMileageMemberController/testGCM");
-		   HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
+		   postUrl2 = new URL("http://checkmileage.onemobileservice.com/checkMileageMemberController/testGCM");		 // test 용..
+		   connection2 = (HttpURLConnection) postUrl2.openConnection();
 		         connection2.setDoOutput(true);
 		         connection2.setInstanceFollowRedirects(false);
 		         connection2.setRequestMethod("POST");
 		         connection2.setRequestProperty("Content-Type", "application/json");
+		         connection2.connect();		// *** 
 		         OutputStream os2 = connection2.getOutputStream();
 		         os2.write(jsonString.getBytes("UTF-8"));
 		         os2.flush();
 		         System.out.println("postUrl      : " + postUrl2);
 		         System.out.println("responseCode : " + connection2.getResponseCode());
+		         connection2.disconnect();
 		  } catch (Exception e) {
-		   // TODO: handle exception
-		//   resultGatheringMessage.setResult("FAIL");
+			  connection2.disconnect();
 		   Log.e(TAG, "Fail to register category.");
 		  }
 		}
 	
+	// 현시각 구하기
 	public String getNow(){
-		// 일단 오늘.
 		Calendar c = Calendar.getInstance();
 		int todayYear = c.get(Calendar.YEAR);
 		int todayMonth = c.get(Calendar.MONTH)+1;			// 꺼내면 0부터 시작이니까 +1 해준다.
@@ -242,10 +245,12 @@ public class GCMIntentService extends GCMBaseIntentService {
 //        if(intent.getStringExtra("MESSAGE").equals("Check Mileage 로 부터 새로운 메시지가 도착했습니다.")){
 //        	// ...Log.i(TAG, "112233");		// 동작함.
 //        }
+        
         /*
          * MILEAGE : 새로운 마일리지가 등록되거나 기존 마일리지가 업데이트되었다.
          * MARKETING : 가맹점이나 서비스에서 마케팅정보나 기타 알림메시지가 수신되었다.
          * Check Mileage 로 부터 새로운 메시지가 도착했습니다. : test 메시지..
+         * 그 외 : 마케팅 메시지
          */
 //        if(intent.getStringExtra("MESSAGE").contains("MILEAGE")){
         	// noti 는 필요 없고.. 내 마일리지 목록 갔을때 재 조회 되도록 변수 값만 변경해준다. -- 아직 미구현 상태이다..
@@ -343,7 +348,7 @@ public class GCMIntentService extends GCMBaseIntentService {
             notificationManager.notify(0, notification);
         }else if(message.equals("MARKETING")){
         	Log.d(TAG,"noti event push");
-//        	notificationIntent = new Intent(context, MainActivity.class);		// 이걸 띄워서 문제가 된다면..
+//        	notificationIntent = new Intent(context, MainActivity.class);		// 이걸 띄워서 문제가 된다면 더미 통한 호출..
             notificationIntent = new Intent(context, DummyActivity.class);	
             notificationIntent.putExtra("RunMode", "MARKETING");
             notificationIntent.putExtra("MESSAGE", "New Event");
@@ -360,7 +365,7 @@ public class GCMIntentService extends GCMBaseIntentService {
             notificationManager.notify(0, notification);
         }else{							// 마케팅 직구.
         	Log.d(TAG,"noti event push");
-//        	notificationIntent = new Intent(context, MainActivity.class);		// 이걸 띄워서 문제가 된다면..
+//        	notificationIntent = new Intent(context, MainActivity.class);		// 이걸 띄워서 문제가 된다면 더미 통한 호출..
             notificationIntent = new Intent(context, DummyActivity.class);	
             notificationIntent.putExtra("RunMode", "MARKETING");
             notificationIntent.putExtra("MESSAGE", message);

@@ -54,16 +54,8 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 	
 	static String myQR = "";
 
-	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
+	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;			// 종료시 더미도 함께 종료 시키기 위함
 	
-	/*
-	 * // 각 페이지에서 제거하는게 확실하므로..주석처리함. 
-	 * (실행후 푸시 선택시 각 페이지의 onDesroy 가 올바르게 실행되지 않는 현상이 있음)
-	 * //	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;			
-		//	MainActivity mainActivity = (MainActivity)MainActivity.mainActivity;
-	 * 
-	 */
-
 	static String barCode = "";
 	public static TabHost tabhost;
 
@@ -82,9 +74,9 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 		public void handleMessage(Message msg){
 			Bundle b = msg.getData();
 			try{
-				if(b.getInt("unregGCM")==1){
-					Log.d(TAG,"unregGCM");
-					unregisterReceiver(mMyBroadcastReceiver);
+				if(b.getInt("unregGCM")==1){				//GCM  unreg -- > 사용 안함. 
+					Log.d(TAG,"unregGCM - do nothing");
+					unregisterReceiver(mMyBroadcastReceiver);				// unregister 안함.
 					GCMRegistrar.unregister(getThis());
 				}
 			}catch(Exception e){
@@ -98,12 +90,12 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature( Window.FEATURE_NO_TITLE );		// no title
-//		requestWindowFeature(Window.FEATURE_LEFT_ICON);		// 왼쪽에 아이콘 넣기- 안됨.			FEATURE_NO_TITLE 됨   FEATURE_RIGHT_ICON ..
+//		requestWindowFeature(Window.FEATURE_LEFT_ICON);		// 타이틀 왼쪽에 아이콘 넣기- 안됨.			FEATURE_NO_TITLE 됨   FEATURE_RIGHT_ICON ..
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_tabs);
 		main_TabsActivity = Main_TabsActivity.this;		// 다른데서 여기 종료시키기 위함.
 		
-		Intent receiveIntent = getIntent();
+		Intent receiveIntent = getIntent();							// 인텐트 통해 전달 받은 값 꺼내기.
 		if(myQR.length()<1){
 			myQR = receiveIntent.getStringExtra("myQR");
 		}
@@ -112,12 +104,13 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 		if(RunMode==null){
 			RunMode="";
 		}
-		nextProcessing();
-
+		nextProcessing();			// GCM 세팅 
+		registerReceiver(mMyBroadcastReceiver, new IntentFilter(DISPLAY_MESSAGE_ACTION));		//  gcm reg..
+		
 //		tabhost = (TabHost) findViewById(android.R.id.tabhost);
 		tabhost = getTabHost();
 		
-		tabhost.setOnTabChangedListener(this);		// 이걸 해줘야 체인지 효과가..
+		tabhost.setOnTabChangedListener(this);		// 이걸 해줘야 onTabChanged() 체인지 효과가 있다
 		
 		// 설정
 		tabhost.addTab(
@@ -142,7 +135,7 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu4))
 				.setContent(new Intent(this, kr.co.bettersoft.checkmileage.pref.PrefActivityFromResource.class)));  
 		
-		// Tab에 색 지정
+		// Tab에 색상 지정
         for(int i = 0; i < tabhost.getTabWidget().getChildCount(); i++) {
          tabhost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#393939"));
         }
@@ -152,15 +145,15 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
      // 마일리지 통한 실행시에 대한 조치 사항
 		if(RunMode.length()>0){
 			if(RunMode.equals("MILEAGE")){
-				tabhost.setCurrentTab(1);		// 시작 탭 설정을 원할 경우..
-			}else if(RunMode.equals("MARKETING")){
+				tabhost.setCurrentTab(1);		// 시작 탭 설정을 원할 경우.. --> 시작부터 마일리지 탭
+			}else if(RunMode.equals("MARKETING")){		// 마케팅이면 푸시 리스트만 추가로 띄움
 				Intent PushListIntent = new Intent(Main_TabsActivity.this, kr.co.bettersoft.checkmileage.activities.PushList.class);
 				MyQRPageActivity.qrCode = myQR;
 				startActivity(PushListIntent);
 			}
 		}
 		
-		// locale
+		// locale 얻기.
 		getLocale();
 	}
 
@@ -214,7 +207,7 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 	}
 
 	public String getNow(){
-		// 일단 오늘.
+		// 현 시각
 		Calendar c = Calendar.getInstance();
 		int todayYear = c.get(Calendar.YEAR);
 		int todayMonth = c.get(Calendar.MONTH)+1;			// 꺼내면 0부터 시작이니까 +1 해준다.
@@ -254,23 +247,23 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 	protected void onResume() {
 //		Log.i(TAG, "onResume");
 //		registerReceiver(mMyBroadcastReceiver, new IntentFilter("receive받을 이름"));
-		registerReceiver(mMyBroadcastReceiver, new IntentFilter(DISPLAY_MESSAGE_ACTION));
+//		registerReceiver(mMyBroadcastReceiver, new IntentFilter(DISPLAY_MESSAGE_ACTION));			// oncreate 로 옮김
 		super.onResume();
 	};
 
 	@Override
 	protected void onPause() {
-		new Thread(
-				new Runnable(){
-					public void run(){
-						Message message = handler.obtainMessage();				
-						Bundle b = new Bundle();
-						b.putInt("unregGCM", 1);
-						message.setData(b);
-						handler.sendMessage(message);
-					}
-				}
-		).start();		
+//		new Thread(			// unreg 안함
+//				new Runnable(){
+//					public void run(){
+//						Message message = handler.obtainMessage();				
+//						Bundle b = new Bundle();
+//						b.putInt("unregGCM", 1);
+//						message.setData(b);
+//						handler.sendMessage(message);
+//					}
+//				}
+//		).start();		
 		super.onPause();
 		 // 홈버튼 눌렀을때 종료 여부..
       if(!isForeGround()){

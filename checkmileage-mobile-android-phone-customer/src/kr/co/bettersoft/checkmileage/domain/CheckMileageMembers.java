@@ -8,28 +8,28 @@ package kr.co.bettersoft.checkmileage.domain;
  *       
  */
 public class CheckMileageMembers {
-	private String checkMileage;
-	private String merchantId;
-	private String viewName;
-	private String registerDate;
+	private String checkMileage;		// 마일리지
+	private String merchantId;			// 가맹점 아이디
+	private String viewName;			// 
+	private String registerDate;		// 등록일
 	
-	private String checkMileageId;
-	private String password;
-	private String phoneNumber;
-	private String email;
-	private String birthday;
-	private String gender;
-	private String latitude;
-	private String longitude;
-	private String deviceType;
-	private String registrationId;
-	private String activateYn;
-	private String modifyDate;
+	private String checkMileageId;		// 고객 아이디
+	private String password;			// 비번 -> 현재 사용 안함
+	private String phoneNumber;			// 전번 -> 현재 사용 안함
+	private String email;				// 이멜 주소
+	private String birthday;			// 생일
+	private String gender;				// 성별
+	private String latitude;			// 좌표-위도
+	private String longitude;			// 좌표-경도
+	private String deviceType;			// 기기 타입 (받아서 다시 되돌려줌)
+	private String registrationId;		// 등록 ID
+	private String activateYn;			
+	private String modifyDate;			// 수정일.
 	
-	private String receiveNotificationYn;
+	private String receiveNotificationYn;	// 알림수신여부
 	
-	private String countryCode;
-	private String languageCode;
+	private String countryCode;			// 국가코드
+	private String languageCode;		// 언어코드
 	
 	public String getCheckMileage() {
 		return checkMileage;
