@@ -73,9 +73,9 @@ public class MyMileageListAdapter extends BaseAdapter {
 				.findViewById(R.id.merchantName);
 		textViewMerchantName.setText(((CheckMileageMileage)entries.get(position)).getMerchantName());
 		// set value into textview
-		TextView textViewMerchantPhone = (TextView) listView
-				.findViewById(R.id.merchantPhone);
-		textViewMerchantPhone.setText(((CheckMileageMileage)entries.get(position)).getModifyDate());		// 처음엔 전번이었으나 실제 값은 마지막 이용 일시로 한다.
+		TextView textViewMerchantDate = (TextView) listView
+				.findViewById(R.id.merchantDate);
+		textViewMerchantDate.setText(((CheckMileageMileage)entries.get(position)).getModifyDate());		// 처음엔 전번이었으나 실제 값은 마지막 이용 일시로 한다.
 		
 		TextView textViewMerchantIntro = (TextView) listView
 		.findViewById(R.id.merchantIntro);

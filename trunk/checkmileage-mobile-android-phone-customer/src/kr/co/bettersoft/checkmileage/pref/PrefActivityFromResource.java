@@ -38,6 +38,7 @@ import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
@@ -61,6 +62,7 @@ import java.util.regex.Pattern;
 
 import kr.co.bettersoft.checkmileage.activities.CommonUtils;
 import kr.co.bettersoft.checkmileage.activities.MainActivity;
+import kr.co.bettersoft.checkmileage.activities.Main_TabsActivity;
 import kr.co.bettersoft.checkmileage.activities.MemberStoreInfoPage;
 import kr.co.bettersoft.checkmileage.activities.MemberStoreListPageActivity;
 import kr.co.bettersoft.checkmileage.activities.MyMileagePageActivity;
@@ -68,6 +70,7 @@ import kr.co.bettersoft.checkmileage.activities.MyQRPageActivity;
 import kr.co.bettersoft.checkmileage.activities.R;
 import kr.co.bettersoft.checkmileage.activities.Settings_AboutPageActivity;
 import kr.co.bettersoft.checkmileage.activities.myWebView;
+import kr.co.bettersoft.checkmileage.activities.GCMIntentService.backgroundUpdateMyGCMtoServer;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMembers;
 
 
@@ -141,9 +144,8 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		 *  없는거는 null pointer 나므로 ""로 바꿔주는 처리가 필요하다.
 		 */
 		memberInfo = new CheckMileageMembers();
-		getUserInfo();
 		
-		
+		 new backgroundGetUserInfo().execute();	
 		if(!resumeCalled){			// 한번만 .. 느리니까
 			getPreferenceScreen().getSharedPreferences() 
 			.registerOnSharedPreferenceChangeListener(this); 
@@ -389,7 +391,25 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	
 	
 	
-	
+	// 비동기로 GCM 아이디 업뎃 호출  -- 캐럿 서버에 gcm 아이디 업뎃
+	public class backgroundGetUserInfo extends  AsyncTask<Void, Void, Void> { 
+		@Override protected void onPostExecute(Void result) {  
+		} 
+		@Override protected void onPreExecute() {  
+		} 
+		@Override protected Void doInBackground(Void... params) {  
+			Log.d(TAG,"backgroundUpdateMyGCMtoServer");
+        		getUserInfo();
+//			try {						// gcm 확인용
+//				testGCM(regIdGCM);
+//			} catch (JSONException e) {
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+			return null; 
+		}
+	}
 	/*
 	 *  서버로부터 개인 정보를 받아와서 도메인에 저장해 둔다. 나중에 업데이트 할때 사용해야하니까.
 	 *  checkMileageMemberController 컨/ selectMemberInformation  메/ checkMileageMember 도/ 

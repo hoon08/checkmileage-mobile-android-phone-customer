@@ -54,6 +54,7 @@ public class MainActivity extends Activity {
 	SharedPreferences sharedPrefCustom;
 
 	public static Boolean loginYN = false;
+	Boolean finishApp = false;
 
 //	public static String REGISTRATION_ID;			
 	
@@ -187,48 +188,54 @@ public class MainActivity extends Activity {
 						try{
 							Thread.sleep(2000);		// 초기 로딩 시간. 2초간 인트로 화면 보여줌
 							// 잠금기능 사용시 비번 입력 페이지로 이동.. // 은 아직 미구현.
-
-							/*
-							 * QR 을 파일을 통한 읽기 쓰기시 사용.  PREF 설정을 사용할 예정 이므로  사용 안함.
-							 */
-							Log.i("MainActivity", "qrResult::"+qrResult);		// 읽기 결과 받음.
-							//--------------------------------------------------------------------------------------//
-
-							// QR 코드가 있다면 QR 화면으로 이동하고, QR 코드가 없다면 QR 등록 화면으로 이동한다.
-							if(myQR.length()>0){ // QR코드가 있는지 확인. 있으면 바로 내 QR 페이지로 이동.
-								Log.i("MainActivity", "QR code checked success, Go Main Pages::"+myQR);
-								
-								Intent intent = new Intent(MainActivity.this, Main_TabsActivity.class);
-								intent.putExtra("RunMode", RunMode);
-								intent.putExtra("myQR", myQR);
-								if(DummyActivity.count>0){		// 강제 종료하면 다음 액티비티도 없다.
-									startActivity(intent);
-								}
-								finish();		// 다른 액티비티를 호출하고 자신은 종료. 
-							}else {				// QR 코드가 없으면 설치후 최초 실행하는 사람. 
+							if(finishApp){							// 로딩중 뒤로가기 누르면 다른 행동 안하고 조용히 끝남.
+								Log.d(TAG,"finishApp"+DummyActivity.count);
+								DummyActivity.count=0;
+								finishApp = false;
+								finish();
+							}else{
 								/*
-								 *  기존에 인증 받은 사용자인지 확인이 필요하다.
-								 *  QR 저장 파일에 QR 값이 없을 시에는 어플 설치 후 최초 실행이므로 인증을 받아야 한다..
-								 *  인증 1단계인 [휴대폰 번호 인증]으로  서버와 통신을 하여 이전 등록된 사용자인지 확인을 한다. (이전 등록된 사용자라면 이전 등록한 QR 코드를 받아서 그대로 사용) 
-								 *  서버에도 QR 값이 없을 경우에는 2차 인증(인증번호 인증) 후에 QR 생성 선택 창으로 이동한다.
-								 *  1차 인증을 통해 서버에서 QR 값을 받아온 경우 인증 2단계인 [인증번호 확인] 절차를 생략하고 내 QR보기 화면으로 이동한다. 
+								 * QR 을 파일을 통한 읽기 쓰기시 사용.  PREF 설정을 사용할 예정 이므로  사용 안함.
 								 */
-								// 인증 화면으로 이동한다. (정상 사용) --> 인증 사용 안함
-								//Log.i("MainActivity", "There is no saved QR code.. Go to Certification");
-								//Intent intent = new Intent(MainActivity.this, CertificationStep1.class);
+								Log.i("MainActivity", "qrResult::"+qrResult);		// 읽기 결과 받음.
+								//--------------------------------------------------------------------------------------//
 
-								// 인증 화면 2로 이동(테스트용)  -->인증 사용 안함
-//								Log.i("MainActivity", "Test for Certification2");
-//								Intent intent = new Intent(MainActivity.this, CertificationStep2.class);
-								
-								// QR 생성 선택 창으로 이동. (인증 개발 전까지 임시 사용) -- 인증 사용 안하면서 정상 호출 방식이 됨
-								Log.i("MainActivity", "There is no saved QR code.. Go get QR");
-								Intent intent = new Intent(MainActivity.this, No_QR_PageActivity.class);
+								// QR 코드가 있다면 QR 화면으로 이동하고, QR 코드가 없다면 QR 등록 화면으로 이동한다.
+								if(myQR.length()>0){ // QR코드가 있는지 확인. 있으면 바로 내 QR 페이지로 이동.
+									Log.i("MainActivity", "QR code checked success, Go Main Pages::"+myQR);
+									
+									Intent intent = new Intent(MainActivity.this, Main_TabsActivity.class);
+									intent.putExtra("RunMode", RunMode);
+									intent.putExtra("myQR", myQR);
+									if(DummyActivity.count>0){		// 강제 종료하면 다음 액티비티도 없다.
+										startActivity(intent);
+									}
+									finish();		// 다른 액티비티를 호출하고 자신은 종료. 
+								}else {				// QR 코드가 없으면 설치후 최초 실행하는 사람. 
+									/*
+									 *  기존에 인증 받은 사용자인지 확인이 필요하다.
+									 *  QR 저장 파일에 QR 값이 없을 시에는 어플 설치 후 최초 실행이므로 인증을 받아야 한다..
+									 *  인증 1단계인 [휴대폰 번호 인증]으로  서버와 통신을 하여 이전 등록된 사용자인지 확인을 한다. (이전 등록된 사용자라면 이전 등록한 QR 코드를 받아서 그대로 사용) 
+									 *  서버에도 QR 값이 없을 경우에는 2차 인증(인증번호 인증) 후에 QR 생성 선택 창으로 이동한다.
+									 *  1차 인증을 통해 서버에서 QR 값을 받아온 경우 인증 2단계인 [인증번호 확인] 절차를 생략하고 내 QR보기 화면으로 이동한다. 
+									 */
+									// 인증 화면으로 이동한다. (정상 사용) --> 인증 사용 안함
+									//Log.i("MainActivity", "There is no saved QR code.. Go to Certification");
+									//Intent intent = new Intent(MainActivity.this, CertificationStep1.class);
 
-								if(DummyActivity.count>0){			// 강제 종료하면 다음 액티비티도 없다.
-									startActivity(intent);
+									// 인증 화면 2로 이동(테스트용)  -->인증 사용 안함
+//									Log.i("MainActivity", "Test for Certification2");
+//									Intent intent = new Intent(MainActivity.this, CertificationStep2.class);
+									
+									// QR 생성 선택 창으로 이동. (인증 개발 전까지 임시 사용) -- 인증 사용 안하면서 정상 호출 방식이 됨
+									Log.i("MainActivity", "There is no saved QR code.. Go get QR");
+									Intent intent = new Intent(MainActivity.this, No_QR_PageActivity.class);
+
+									if(DummyActivity.count>0){			// 강제 종료하면 다음 액티비티도 없다.
+										startActivity(intent);
+									}
+									finish();		// 다른 액티비티를 호출하고 자신은 종료.
 								}
-								finish();		// 다른 액티비티를 호출하고 자신은 종료.
 							}
 						}catch(InterruptedException ie){
 							ie.printStackTrace();
@@ -237,7 +244,6 @@ public class MainActivity extends Activity {
 				}
 		).start();
 	}
-
 
 	////////////// 설정 파일을 이용한 정보 얻기. 설정 정보를 읽도록 할 예정. QR. ////////////////////////////
 	public void readQRFromPref(){
@@ -290,9 +296,10 @@ public class MainActivity extends Activity {
            return rtn;
     }
      
-     // 로딩중에 취소버튼으로 종료 못하게 막음. 종료해도 메인 페이지가 뜨기 때문.
+     // 로딩중에 취소버튼으로 종료 못하게 막음. 종료해도 메인 페이지가 뜨기 때문.		// --< 종료하면 로딩끝나고 종료하도록 함.
      @Override
  	public void onBackPressed() {
+    	 finishApp = true;
  		Log.i("MainActivity", "onBackPressed");		
  	}
 }

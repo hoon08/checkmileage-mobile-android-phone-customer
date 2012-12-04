@@ -37,8 +37,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
-//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
-
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.gcm.GCMRegistrar;
 
@@ -77,7 +75,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 //            displayMessage(context, getString(R.string.gcm_registered));			// 브로드 케스트로 보내줌.. 리시버가 잡음. (노티는 없음)
             localContext = context;
 			localRegistrationId = registrationId;
-//            new backgroundServerRegister().execute();
+            new backgroundServerRegister().execute();
         	dontTwice = false;
         }
     }
@@ -103,7 +101,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		} 
 		@Override protected Void doInBackground(Void... params) {  
 			Log.d(TAG,"backgroundUpdateMyGCMtoServer");
-			updateMyGCMtoServer();
+        		updateMyGCMtoServer();
 //			try {						// gcm 확인용
 //				testGCM(regIdGCM);
 //			} catch (JSONException e) {
@@ -139,7 +137,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 						try{
 							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 							connection2 = (HttpURLConnection) postUrl2.openConnection();
-							connection2.setConnectTimeout(5000);
+//							connection2.setConnectTimeout(5000);
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");

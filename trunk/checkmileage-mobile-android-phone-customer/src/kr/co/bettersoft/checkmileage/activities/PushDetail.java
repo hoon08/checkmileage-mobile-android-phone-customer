@@ -92,7 +92,7 @@ public class PushDetail extends Activity {
 					pb1.setVisibility(View.INVISIBLE);
 				}
 				if(b.getInt("showErrToast")==1){
-					Toast.makeText(PushDetail.this, "장애가 발생하였습니다.\n잠시 후 다시 시도해 주십시오.", Toast.LENGTH_SHORT).show();
+					Toast.makeText(PushDetail.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 				}
 			}catch(Exception e){
 				e.printStackTrace();

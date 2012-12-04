@@ -25,6 +25,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnKeyListener;
 import android.view.animation.CycleInterpolator;
 import android.view.animation.TranslateAnimation;
@@ -79,6 +80,7 @@ public class Password extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature( Window.FEATURE_NO_TITLE );		// no title
         setContentView(R.layout.password);
         sharedPrefCustom = getSharedPreferences("MyCustomePref",		// 프리퍼런스 - 에 비번 저장
 				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);

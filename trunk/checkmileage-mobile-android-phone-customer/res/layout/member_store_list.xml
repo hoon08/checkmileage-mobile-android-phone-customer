@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/member_store_list_parent_layout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="center"
-    android:orientation="vertical" >
-
+    android:orientation="vertical" 
+    android:background="@drawable/design_bg_search"
+    >
     <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="50dp"
-                    android:gravity="center"
-                    android:text="@string/member_store_list_title" 
-                    android:textSize="17dp"
-                    android:background="#393939"
-                    android:textColor="@android:color/white"
-                    />
-    
-    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/design_bg_titlebar"
+        android:gravity="center"
+        android:text="@string/member_store_list_title"
+        android:textColor="@android:color/white"
+        android:textSize="17dp" />
+<LinearLayout
         android:id="@+id/LinearLayout123"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
@@ -43,7 +43,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="34"
             android:text=""
-            android:textSize="10dp" />
+            android:textSize="15dp" 
+            />
         <Button 
             android:id="@+id/store_search_btn"
             android:layout_width="0dp"
@@ -51,7 +52,8 @@
             android:gravity="center"
             android:layout_weight="14"
             android:textSize="8dp"
-            android:text="@string/search" />
+            android:text="@string/search" 
+            />
 		<Spinner
             android:id="@+id/searchSpinnerArea"
             android:layout_width="0dp"

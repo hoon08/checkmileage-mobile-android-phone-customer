@@ -112,4 +112,7 @@
     <string name="set_birth">생년월일 설정</string>
     <string name="search">검색</string>
     <string name="mileage_noti">캐럿이 변경되었습니다.</string>
+    
+    <string name="event_list">이벤트 알림 목록</string>
+    <string name="event_no_event_list">이벤트 정보가 없습니다.</string>
 </resources>

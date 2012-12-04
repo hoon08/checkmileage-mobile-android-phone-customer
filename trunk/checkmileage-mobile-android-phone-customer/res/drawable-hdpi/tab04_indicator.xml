@@ -2,9 +2,9 @@
  
 <selector xmlns:android="http://schemas.android.com/apk/res/android" >
  
-    <item android:state_selected="false" android:drawable="@drawable/tab04" />
+    <item android:state_selected="false" android:drawable="@drawable/design_menu_setting_off" />
  
-    <item android:state_selected="true" android:drawable="@drawable/tab04ov" />
+    <item android:state_selected="true" android:drawable="@drawable/design_menu_setting_on" />
  
     <item android:drawable="@drawable/tab04" />
  

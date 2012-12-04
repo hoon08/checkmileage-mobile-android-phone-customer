@@ -439,7 +439,8 @@ public class MyMileagePageActivity extends Activity {
        }
         @Override protected Void doInBackground(Void... params) { 
         	Log. d(TAG,"backgroundGetMyMileageList");
-        	try {
+        	showPb();
+			try {
 				getMyMileageList();
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -488,7 +489,7 @@ public class MyMileagePageActivity extends Activity {
 							try{
 								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 								connection2 = (HttpURLConnection) postUrl2.openConnection();
-								connection2.setConnectTimeout(5000);
+//								connection2.setConnectTimeout(5000);
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
@@ -872,5 +873,8 @@ public class MyMileagePageActivity extends Activity {
 			}
 			return connected;
 		}
- 
+		@Override			// 이 액티비티(인트로)가 종료될때 실행. (액티비티가 넘어갈때 종료됨)
+		protected void onDestroy() {
+			super.onDestroy();
+		}
 }

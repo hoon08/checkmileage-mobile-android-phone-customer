@@ -39,7 +39,7 @@
 					<TextView
                         xmlns:android="http://schemas.android.com/apk/res/android"
                         android:id="@+id/merchantName"
-                        android:layout_weight="10"
+                        android:layout_weight="8"
                         android:layout_width="170dp"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
@@ -56,8 +56,8 @@
                         android:layout_height="wrap_content"
                         android:padding="2dp"
                         android:textSize="20dp"
-                        android:background="#ffff0000"
-                        android:textColor="#ffffffff"
+	                    android:background="@drawable/design_mileage_box01"
+                        android:textColor="#ff4800"
                         android:gravity="center" />
 
                     
@@ -73,11 +73,13 @@
                 android:textSize="13dp" />
 				<TextView
                 xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/merchantPhone"
+                android:id="@+id/merchantDate"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:padding="2dp"
-                android:textSize="13dp" />
+                android:textSize="13dp" 
+                android:textColor="#7f40ff"
+                />
             
         </LinearLayout>
             

@@ -27,6 +27,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.zxing.BarcodeFormat;
@@ -67,7 +68,6 @@ public class MyQRPageActivity extends Activity {
 	int responseCode= 0;
 	int isUpdating = 0;
 	int app_end = 0;			// 뒤로가기 버튼으로 닫을때 2번만에 닫히도록
-	
 	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
 	MainActivity mainActivity = (MainActivity)MainActivity.mainActivity;
 
@@ -257,7 +257,7 @@ public class MyQRPageActivity extends Activity {
 	public void onResume(){
 		super.onResume();
 		app_end = 0;
-		myLocationIs();
+//		myLocationIs();
 	}
 	
 	/*
@@ -340,7 +340,7 @@ public class MyQRPageActivity extends Activity {
 		} 
 		@Override protected Void doInBackground(Void... params) {  
 			Log.d(TAG,"backgroundUpdateMyLocationtoServer");
-			updateLocationToServer();
+        		updateLocationToServer();
 			return null; 
 		}
 	}
@@ -386,7 +386,7 @@ public class MyQRPageActivity extends Activity {
 							try{
 								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 								connection2 = (HttpURLConnection) postUrl2.openConnection();
-								connection2.setConnectTimeout(1000);
+//								connection2.setConnectTimeout(1000);
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");

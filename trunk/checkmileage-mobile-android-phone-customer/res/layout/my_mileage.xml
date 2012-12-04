@@ -11,8 +11,8 @@
                     android:gravity="center"
                     android:text="@string/my_mileage_title" 
                     android:textSize="17dp"
-                    android:background="#393939"
                     android:textColor="@android:color/white"
+                    android:background="@drawable/design_bg_titlebar"
                     />
     
     <FrameLayout
