@@ -7,12 +7,12 @@
  
     <item 
         android:state_selected="false" 
-        android:drawable="@drawable/tab02" 
+        android:drawable="@drawable/design_menu_mileage_off" 
         />
  
     <item 
         android:state_selected="true" 
-        android:drawable="@drawable/tab02ov" 
+        android:drawable="@drawable/design_menu_mileage_on" 
         />
  
     <item 

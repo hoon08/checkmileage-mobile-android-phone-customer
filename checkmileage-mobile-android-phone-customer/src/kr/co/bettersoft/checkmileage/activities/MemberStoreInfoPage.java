@@ -57,6 +57,9 @@ import android.widget.Toast;
 
 public class MemberStoreInfoPage extends Activity {
 	String TAG = "MemberStoreInfoPage";
+	public static final int VISIBLE = 0x00000000;
+	public static final int INVISIBLE = 0x00000004;
+	public static final int GONE = 0x00000008;
 	
 	Button callBtn ;
 	Button mapBtn;
@@ -107,11 +110,18 @@ public class MemberStoreInfoPage extends Activity {
 					ImageView titleImg = (ImageView)findViewById(R.id.prImage);
 					TextView name = (TextView)findViewById(R.id.name);	
 					TextView phone = (TextView)findViewById(R.id.phone);
+					TextView pre_phone = (TextView)findViewById(R.id.pre_phone);
+					String tmpstr1 = pre_phone.getText()+" : ";
+					pre_phone.setText(tmpstr1);
 					TextView addr = (TextView)findViewById(R.id.addr);	
 					TextView pr = (TextView)findViewById(R.id.pr);
 					TextView companyName = (TextView)findViewById(R.id.merchantName2);	
 					hidePb();
-					mileage.setText("  "+myMileage+"  ");
+					mileage.setText(myMileage);
+					mileage.setVisibility(VISIBLE);
+					if(merchantData.getWorkPhoneNumber().length()>0){
+						pre_phone.setVisibility(VISIBLE);
+					}
 					//					type.setText(text);
 //					BitmapDrawable bmpResize = BitmapResizePrc(merchantData.getMerchantImage(), fImgSize, (float)(fImgSize*1.5));  // height, width
 //					BitmapDrawable bmpResize = BitmapResizePrc(merchantData.getMerchantImage(), 400, 700);  		
@@ -124,14 +134,15 @@ public class MemberStoreInfoPage extends Activity {
 					tmpstr = getString(R.string.representative);
 					name.setText(tmpstr+" : "+merchantData.getName());
 					tmpstr = getString(R.string.phone_num);
-					phone.setText(tmpstr+" : "+merchantData.getWorkPhoneNumber());
+//					phone.setText(tmpstr+" : "+merchantData.getWorkPhoneNumber());
+					phone.setText(merchantData.getWorkPhoneNumber());
 					tmpstr = getString(R.string.addr);
 					addr.setText(tmpstr+" : "+merchantData.getAddress01());
-					tmpstr = getString(R.string.pr_str);
-					pr.setText(tmpstr+" : "+merchantData.getPrSentence());
+//					tmpstr = getString(R.string.pr_str);	// 앞에 소개: 를 붙이지 않음.
+					pr.setText(merchantData.getPrSentence());
 					member_store_title.setText(merchantData.getCompanyName());			// 상단 타이틀 안에 가맹점 이름.
-					tmpstr = getString(R.string.shop_name);
-					companyName.setText(tmpstr+" : "+merchantData.getCompanyName());
+//					tmpstr = getString(R.string.shop_name);
+//					companyName.setText(tmpstr+" : "+merchantData.getCompanyName());	// 가맹점 이름 - 상단 타이틀 바로 대체.
 
 					callBtn.setOnClickListener(new Button.OnClickListener()  {
 						public void onClick(View v)  {
@@ -172,7 +183,7 @@ public class MemberStoreInfoPage extends Activity {
 						mapBtn.setVisibility(View.VISIBLE);  // 	VISIBLE = 0;  INVISIBLE = 4;  GONE = 8;
 					}
 					
-					logListBtn.setVisibility(View.VISIBLE);
+//					logListBtn.setVisibility(View.VISIBLE);			// 사용하려면 이줄 주석 풀어서 사용
 //					serviceListBtn.setVisibility(View.VISIBLE);		// 서비스 내역 보기..
 					closeBtn.setVisibility(View.VISIBLE);
 					
@@ -243,10 +254,12 @@ public class MemberStoreInfoPage extends Activity {
 		serviceListBtn = (Button)findViewById(R.id.serviceListBtn);
 		closeBtn = (Button)findViewById(R.id.closeBtn);
 		
-		callBtn.setVisibility(View.INVISIBLE);
-		mapBtn.setVisibility(View.INVISIBLE);
-		logListBtn.setVisibility(View.INVISIBLE);
-		serviceListBtn.setVisibility(View.INVISIBLE);
+		callBtn.setVisibility(View.GONE);
+		mapBtn.setVisibility(View.GONE);
+
+		logListBtn.setVisibility(View.GONE);		// 사용하려면 이 두 줄을 INVISIBLE 로 바꿈.  
+		serviceListBtn.setVisibility(View.GONE);		// 사용하지 않으려면 GONE 으로 바꿈. 그리고 VISIBLE로 돌려놓지 않음. 
+		
 		closeBtn.setVisibility(View.INVISIBLE);
 		
 		// progress bar

@@ -5,14 +5,20 @@ package kr.co.bettersoft.checkmileage.activities;
  *  필요한 URL은 전달받은 값을 사용.
  */
 
+import java.util.Locale;
+
+import org.apache.http.util.EncodingUtils;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -28,6 +34,12 @@ public class myWebView extends Activity {
 	WebView mWeb;
 	String loadingURL = "";
 	
+	// 로케일
+	Locale systemLocale = null;
+	String strCountry = "";
+	String strLanguage = "";
+	
+	String postData;
 	// 진행바
 	ProgressBar pb1;		// 중단 로딩 진행바
 	// 핸들러
@@ -64,6 +76,11 @@ public class myWebView extends Activity {
 	    loadingURL = rIntent.getStringExtra("loadingURL");			// URL 정보를 받음.
 	    mWeb = (WebView)findViewById(R.id.web);
 	    
+	  //사용자 지역, 언어
+	    systemLocale = getResources().getConfiguration().locale;
+		strCountry = systemLocale.getCountry();
+		strLanguage = systemLocale.getLanguage();
+		
 	 // 이미지 확대/축소/스크롤 금지. -> 허용으로 수정.  --> 금지
 //		mWeb.getSettings().setUseWideViewPort(true);		
 	    mWeb.setWebViewClient(new MyWebViewClient());  // WebViewClient 지정          
@@ -75,11 +92,28 @@ public class myWebView extends Activity {
 //		webSet.setSupportZoom(true);
 //		webSet.setBuiltInZoomControls(true);
 		if(loadingURL.length()>0){
-			mWeb.loadUrl(loadingURL);		// url
+			postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// 파라미터 : Merchant-Language / Merchant-Country
+			mWeb.postUrl(loadingURL, EncodingUtils.getBytes(postData, "BASE64"));
+//			new backgroundWebView().execute();		// 비동기로 URL 오픈 실행
+//			mWeb.loadUrl(loadingURL);		// url
 		}else{
 			Toast.makeText(myWebView.this, R.string.cant_find_url, Toast.LENGTH_SHORT).show();
 		}
 	}
+	
+	// 비동기 실행
+	public class backgroundWebView extends  AsyncTask<Void, Void, Void> { 
+		@Override protected void onPostExecute(Void result) {  
+		} 
+		@Override protected void onPreExecute() {  
+		} 
+		@Override protected Void doInBackground(Void... params) {  
+			postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// 파라미터 : Merchant-Language / Merchant-Country
+			mWeb.postUrl(loadingURL, EncodingUtils.getBytes(postData, "BASE64"));
+			return null; 
+		}
+	}
+	
 	
 	@Override 
     public boolean onKeyDown(int keyCode, KeyEvent event) { 			// 취소버튼 누르면 웹뷰의 백버튼

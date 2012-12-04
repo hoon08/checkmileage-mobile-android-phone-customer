@@ -43,6 +43,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -365,6 +366,7 @@ public class PushList extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature( Window.FEATURE_NO_TITLE );		// no title
 		pb1 = (ProgressBar) findViewById(R.id.push_list_ProgressBar01);
 		// DB 쓸거니까 초기화 해준다.
 		 initDB();

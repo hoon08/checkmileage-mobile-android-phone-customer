@@ -40,7 +40,10 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TabHost;
+import android.widget.TabHost.TabSpec;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 
@@ -117,30 +120,63 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 				tabhost.newTabSpec("tab_1")
 				//        		.setIndicator("내QR코드", getResources().getDrawable(R.drawable.tab01_indicator))
 //				.setIndicator((View)tvTab1)
-				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu1))			// 하단 버튼을 이미지 사용함.
+//				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu1))			// 하단 버튼을 이미지 사용함.
+//				.setIndicator("12345678901234567890", getResources().getDrawable(R.drawable.tab01_indicator))			// 하단 버튼을 이미지 사용함.
+				.setIndicator(getResources().getString(R.string.my_qr_title), getResources().getDrawable(R.drawable.tab01_indicator))			// 하단 버튼을 이미지 사용함.
 				.setContent(new Intent(this, MyQRPageActivity.class)));
 		// Optimizer.class 소스는 tab_1 탭에에 속함. Optimizer.java
 		//         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
 		tabhost.addTab(tabhost.newTabSpec("tab_2")
 //				.setIndicator((View)tvTab2)
-				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu2))
+//				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu2))
+				.setIndicator(getResources().getString(R.string.my_mileage_title), getResources().getDrawable(R.drawable.tab02_indicator))
 				.setContent(new Intent(this, MyMileagePageActivity.class)));  
 		tabhost.addTab(tabhost.newTabSpec("tab_3")
 //				.setIndicator((View)tvTab3)
-				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu3))
+//				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu3))
+				.setIndicator(getResources().getString(R.string.search), getResources().getDrawable(R.drawable.tab03_indicator))
 				.setContent(new Intent(this, MemberStoreListPageActivity.class)));
 		
 		tabhost.addTab(tabhost.newTabSpec("tab_4")
 //				.setIndicator((View)tvTab4)
-				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu4))
+//				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu4))
+				.setIndicator(getResources().getString(R.string.menu_settings), getResources().getDrawable(R.drawable.tab04_indicator))
 				.setContent(new Intent(this, kr.co.bettersoft.checkmileage.pref.PrefActivityFromResource.class)));  
 		
+////		tabhost.getTabWidget().setBackgroundDrawable( getResources().getDrawable(R.drawable.bluenavbar)); 
+//		TextView txtTab = new TextView(this); 
+//		txtTab.setText(getString(R.string.my_qr_title)); 
+//		txtTab.setPadding(8, 9, 8, 9); 
+//////		txtTab.setTextColor(Color.WHITE); 
+//		txtTab.setTextSize(8); 
+//////		txtTab.setTypeface(localTypeface1); 
+////		txtTab.setGravity(Gravity.CENTER_HORIZONTAL| Gravity.CENTER_VERTICAL); 
+//		txtTab.setBackgroundResource(R.drawable.tab01_indicator); 
+//		// Initialize a TabSpec for each tab and add it to the TabHost 
+//		TabSpec spec = tabhost.newTabSpec("spec")
+//				 .setIndicator(txtTab)
+//				 .setContent(new Intent(this, MyQRPageActivity.class)
+//				 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+//		tabhost.addTab(spec); 
+
+		
 		// Tab에 색상 지정
-        for(int i = 0; i < tabhost.getTabWidget().getChildCount(); i++) {
-         tabhost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#393939"));
-        }
-        tabhost.getTabWidget().setCurrentTab(0);
-        tabhost.getTabWidget().getChildAt(0).setBackgroundColor(Color.parseColor("#595959"));
+		new Thread(			// unreg 안함
+				new Runnable(){
+					public void run(){
+						for(int i = 0; i < tabhost.getTabWidget().getChildCount(); i++) {
+							tabhost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#393939"));
+//							RelativeLayout relLayout = (RelativeLayout)tabhost.getTabWidget().getChildAt(i); 
+//							TextView tv = (TextView)relLayout.getChildAt(i); 
+//							tv.setTextSize(8);
+						}
+						tabhost.getTabWidget().setCurrentTab(0);
+						tabhost.getTabWidget().getChildAt(0).setBackgroundColor(Color.parseColor("#595959"));
+					}
+				}
+		).start();		
+
+        
         
      // 마일리지 통한 실행시에 대한 조치 사항
 		if(RunMode.length()>0){
@@ -152,7 +188,6 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 				startActivity(PushListIntent);
 			}
 		}
-		
 		// locale 얻기.
 		getLocale();
 	}
@@ -236,7 +271,7 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 	BroadcastReceiver mMyBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Log.w(TAG,"intent.getExtras().getString(EXTRA_MESSAGE):"+intent.getStringExtra("MESSAGE"));
+			Log.w(TAG,"EXTRA_MESSAGE:"+intent.getStringExtra("MESSAGE"));
 			//		if(intent.getAction().equals(DISPLAY_MESSAGE_ACTION)) {
 			// Broadcast를 들으면 할 일
 			//			Toast.makeText(Main_TabsActivity.this, "(테스트)메시지가 도착하였습니다."+intent.getExtras().getString(EXTRA_MESSAGE), Toast.LENGTH_SHORT).show();

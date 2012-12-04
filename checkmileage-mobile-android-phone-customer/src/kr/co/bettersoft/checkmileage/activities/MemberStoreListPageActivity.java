@@ -54,6 +54,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
@@ -104,6 +105,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	
 	TextView searchText;			//검색어
 	Button searchBtn;				//검색버튼
+	View parentLayout;			// 키보드 자동 숨김용도
 	InputMethodManager imm;
 	int indexDataFirst = 0;			// 부분 검색 위한 인덱스. 시작점
 	int indexDataLast = 0;			// 부분 검색 위한 인덱스. 끝점
@@ -117,7 +119,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	Boolean newSearch = false; 		// 새로운 조회인지 여부. 새로운 조회라면 기존 데이터는 지우고 새로 검색한 데이터만 사용. 새로운 조회가 아니라면 기존 데이터에 추가 데이터를 추가.
 	Boolean jobKindSearched = false;
 	Bitmap bm = null;
-	int reTry = 5;
+	int reTry = 3;
 	
 	private MemberStoreSearchListAdapter imgAdapter;
 	
@@ -246,8 +248,21 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		// 내 QR 코드. 
 		myQRcode = MyQRPageActivity.qrCode;		
 		entriesFn = new ArrayList<CheckMileageMerchants>();
+		
+		parentLayout = findViewById(R.id.member_store_list_parent_layout);		// 부모 레이아웃- 리스너를 달아서 키보드 자동 숨김에 사용
 		imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE); 	// 가상키보드 닫기위함
 		
+		// 부모 레이아웃 리스너 - 외부 터치 시 키보드 숨김 용도
+	    parentLayout.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+//				Log.w(TAG,"parentLayout click");
+				imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm .hideSoftInputFromWindow(searchText.getWindowToken(), 0);
+			}
+		});
+	    
+	    
 		// 크기 측정
 		float screenWidth = this.getResources().getDisplayMetrics().widthPixels;
 		Log.i("screenWidth : ", "" + screenWidth);
@@ -345,7 +360,33 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		}
 	};
 	
-	
+	// 중단 프로그래스바 보임, 숨김
+	public void showPb(){
+		new Thread( 
+				new Runnable(){
+					public void run(){
+						Message message = handler .obtainMessage();
+						Bundle b = new Bundle();
+						b.putInt( "order" , 1);
+						message.setData(b);
+						handler .sendMessage(message);
+					}
+				}
+		).start();
+	}
+	public void hidePb(){
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Message message = handler .obtainMessage();
+						Bundle b = new Bundle();
+						b.putInt( "order" , 2);
+						message.setData(b);
+						handler .sendMessage(message);
+					}
+				}
+		).start();
+	}
 	// 하단 프로그래스바 보임, 숨김
 	public void showPb2(){
 		new Thread( 
@@ -444,7 +485,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 							try{
 								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 								connection2 = (HttpURLConnection) postUrl2.openConnection();
-								connection2.setConnectTimeout(3000);
+//								connection2.setConnectTimeout(10000);
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
@@ -476,9 +517,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 									getBusinessKindList();
 								}else{
 									Log.w(TAG,"reTry failed. -- init reTry");
-									reTry = 5;	
+									reTry = 3;	
 									showMSG();
-									
 //									searchSpinnerType.setEnabled(true);
 //									searchText.setEnabled(true); 
 //									searchBtn.setEnabled(true);
@@ -683,7 +723,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 									}else{
 										Log.w(TAG,"reTry failed. -- init reTry");
 										try{
-											reTry = 5;	
+											reTry = 3;	
 										}catch(Exception e1){
 											e1.printStackTrace();
 										}
@@ -723,7 +763,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);
 		StringBuilder builder = new StringBuilder();
 		String line =null;
-		reTry = 5;			
+		reTry = 3;			
 		try {
 			while((line=reader.readLine())!=null){
 				builder.append(line).append("\n");
@@ -999,7 +1039,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		// 가맹점 업종 목록 가져오기.
 		if((!jobKindSearched) && (isRunning==0)){				// 업종 검색이 완료되지 않았고, 실행중인 작업이 없을 경우.
 			isRunning = 1;		// 연속 실행 방지 (다른 실행 거부)
-			
+			showPb();
 //			getBusinessKindList();
 			new backgroundGetBusinessKindList().execute();			// 비동기로 변환
 		}
@@ -1234,4 +1274,9 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 //		});
 //		alert_internet_status.show();
 //	}
+
+    @Override			// 이 액티비티(인트로)가 종료될때 실행. (액티비티가 넘어갈때 종료됨)
+    protected void onDestroy() {
+    	super.onDestroy();
+    }
 }

@@ -9,7 +9,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="50dp"
                     android:gravity="center"
-                    android:text="이벤트 알림 목록" 
+                    android:text="@string/event_list" 
                     android:textSize="17dp"
                     android:background="#393939"
                     android:textColor="@android:color/white"
@@ -44,7 +44,7 @@
         android:layout_height="fill_parent"
         android:layout_gravity="center"
         android:visibility="gone"
-        android:text="이벤트 정보가 없습니다." />
+        android:text="@string/event_no_event_list" />
     </FrameLayout>
   
 </LinearLayout>
