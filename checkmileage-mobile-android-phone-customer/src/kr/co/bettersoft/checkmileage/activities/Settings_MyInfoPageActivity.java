@@ -567,9 +567,11 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
         return m.matches();
     }
 	
-	@Override			// 이 액티비티가 종료될때 실행. 
-	protected void onDestroy() {
-//		resumeCalled = false;
+    @Override
+	public void onDestroy(){
 		super.onDestroy();
+		try{
+		connection2.disconnect();
+		}catch(Exception e){}
 	}
 }

@@ -137,7 +137,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 						try{
 							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 							connection2 = (HttpURLConnection) postUrl2.openConnection();
-//							connection2.setConnectTimeout(5000);
+							connection2.setConnectTimeout(10000);
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
@@ -381,4 +381,12 @@ public class GCMIntentService extends GCMBaseIntentService {
             notificationManager.notify(0, notification);
         }
     }
+    
+    @Override
+	public void onDestroy(){
+		super.onDestroy();
+		try{
+		connection2.disconnect();
+		}catch(Exception e){}
+	}
 }

@@ -3,10 +3,6 @@ package kr.co.bettersoft.checkmileage.activities;
 import static kr.co.bettersoft.checkmileage.activities.CommonUtilities.DISPLAY_MESSAGE_ACTION;
 import static kr.co.bettersoft.checkmileage.activities.CommonUtilities.SENDER_ID;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -81,6 +77,10 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 					Log.d(TAG,"unregGCM - do nothing");
 					unregisterReceiver(mMyBroadcastReceiver);				// unregister 안함.
 					GCMRegistrar.unregister(getThis());
+				}
+				if(b.getInt("set_tab_0")==1){				//GCM  unreg -- > 사용 안함. 
+					Log.d(TAG,"set_tab_0");
+					tabhost.setCurrentTab(1);		// 시작 탭 설정을 원할 경우.. --> 시작부터 마일리지 탭
 				}
 			}catch(Exception e){
 				e.printStackTrace();
@@ -165,29 +165,34 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 				new Runnable(){
 					public void run(){
 						for(int i = 0; i < tabhost.getTabWidget().getChildCount(); i++) {
-							tabhost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#393939"));
+							tabhost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#000000"));
 //							RelativeLayout relLayout = (RelativeLayout)tabhost.getTabWidget().getChildAt(i); 
 //							TextView tv = (TextView)relLayout.getChildAt(i); 
 //							tv.setTextSize(8);
 						}
-						tabhost.getTabWidget().setCurrentTab(0);
-						tabhost.getTabWidget().getChildAt(0).setBackgroundColor(Color.parseColor("#595959"));
+//						tabhost.getTabWidget().setCurrentTab(0);
+//						tabhost.getTabWidget().getChildAt(0).setBackgroundColor(Color.parseColor("#000000"));
+
+					     // 마일리지 통한 실행시에 대한 조치 사항
+						if(RunMode.length()>0){
+							if(RunMode.equals("MILEAGE")){
+								Message message = handler.obtainMessage();				
+								Bundle b = new Bundle();
+								b.putInt("set_tab_0", 1);
+								message.setData(b);
+								handler.sendMessage(message);
+							}else if(RunMode.equals("MARKETING")){		// 마케팅이면 푸시 리스트만 추가로 띄움
+								Intent PushListIntent = new Intent(Main_TabsActivity.this, kr.co.bettersoft.checkmileage.activities.PushList.class);
+								MyQRPageActivity.qrCode = myQR;
+								startActivity(PushListIntent);
+							}
+						}
 					}
 				}
 		).start();		
 
         
         
-     // 마일리지 통한 실행시에 대한 조치 사항
-		if(RunMode.length()>0){
-			if(RunMode.equals("MILEAGE")){
-				tabhost.setCurrentTab(1);		// 시작 탭 설정을 원할 경우.. --> 시작부터 마일리지 탭
-			}else if(RunMode.equals("MARKETING")){		// 마케팅이면 푸시 리스트만 추가로 띄움
-				Intent PushListIntent = new Intent(Main_TabsActivity.this, kr.co.bettersoft.checkmileage.activities.PushList.class);
-				MyQRPageActivity.qrCode = myQR;
-				startActivity(PushListIntent);
-			}
-		}
 		// locale 얻기.
 		getLocale();
 	}
@@ -210,10 +215,10 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 //        Toast.makeText( this, strMsg, Toast.LENGTH_SHORT ).show();
 		
 		// tab 색상 변경
-		for(int i=0; i<tabhost.getTabWidget().getChildCount(); i++){
-			tabhost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#393939"));
-		}
-		tabhost.getTabWidget().getChildAt(tabhost.getCurrentTab()).setBackgroundColor(Color.parseColor("#595959"));
+//		for(int i=0; i<tabhost.getTabWidget().getChildCount(); i++){
+//			tabhost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#393939"));
+//		}
+//		tabhost.getTabWidget().getChildAt(tabhost.getCurrentTab()).setBackgroundColor(Color.parseColor("#595959"));
 		
 	}
 

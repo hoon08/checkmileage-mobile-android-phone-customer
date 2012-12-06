@@ -13,7 +13,7 @@
             android:id="@+id/push_detail_title"
             android:layout_width="fill_parent"
             android:layout_height="50dp"
-            android:background="#393939"
+            android:background="@drawable/design_bg_titlebar"
             android:gravity="center"
             android:textColor="@android:color/white"
             android:textSize="17dp" />
@@ -39,6 +39,7 @@
                     android:id="@+id/push_detail_store_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor ="#ff4800"
                     android:textSize="20dp" />
 
                 <ScrollView
@@ -49,7 +50,7 @@
                         android:id="@+id/push_detail_content"
                         android:layout_width="wrap_content"
                         android:layout_height="140dp"
-                        android:textSize="17dp" />
+                        android:textSize="16dp" />
                 </ScrollView>
 
                 <LinearLayout
@@ -59,11 +60,12 @@
                     >
                     <Button
                         android:id="@+id/push_detail_closebtn"
-                        android:layout_width="80dp"
+                        android:layout_width="fill_parent"
                         android:layout_height="40dp"
                         android:gravity="center"
                         android:text="@string/closebtn"
-                        android:textSize="15dp" />
+                        android:background="@drawable/design_btn_close"
+                        android:textSize="25dp" />
                 </LinearLayout>
             </LinearLayout>
 

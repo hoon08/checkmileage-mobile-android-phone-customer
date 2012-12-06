@@ -222,6 +222,7 @@ public class ScanQRPageActivity extends Activity {
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
+							connection2.connect();
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
@@ -360,6 +361,7 @@ public class ScanQRPageActivity extends Activity {
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
+							connection2.connect();
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
@@ -557,4 +559,11 @@ public class ScanQRPageActivity extends Activity {
 //		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
 	}
     
+    @Override
+	public void onDestroy(){
+		super.onDestroy();
+		try{
+		connection2.disconnect();
+		}catch(Exception e){}
+	}
 }

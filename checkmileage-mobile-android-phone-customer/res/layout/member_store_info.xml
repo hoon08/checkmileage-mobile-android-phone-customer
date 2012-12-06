@@ -37,17 +37,20 @@
 
                 <TextView
                     android:id="@+id/merchantName2"
+                    android:layout_marginTop="-5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="17dp" />
 
                 <TextView
                     android:id="@+id/name"
+                    android:layout_marginTop="-3dp"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textSize="17dp" />
 
                 <LinearLayout
+                    android:layout_marginTop="-3dp"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -80,16 +83,18 @@
 
                     <Button
                         android:id="@+id/callBtn"
+                        android:layout_marginRight="3dp"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:layout_weight="1"
-                        android:background="@drawable/design_btn_call_map"
+                        android:background="@drawable/design_btn_call"
                         android:gravity="center"
-                        android:text="@string/calling"
+                        android:text=""
                         android:textSize="10dp" />
                 </LinearLayout>
 
                 <LinearLayout
+                    android:layout_marginTop="-3dp"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:gravity="fill_horizontal"
@@ -105,12 +110,13 @@
 
                     <Button
                         android:id="@+id/mapBtn"
+                        android:layout_marginRight="3dp"
                         android:layout_width="80dp"
                         android:layout_height="30dp"
                         android:layout_weight="1"
-                        android:background="@drawable/design_btn_call_map"
+                        android:background="@drawable/design_btn_map"
                         android:gravity="center"
-                        android:text="@string/viewmap"
+                        android:text=""
                         android:textSize="10dp" />
                 </LinearLayout>
 
@@ -120,11 +126,13 @@
                     android:layout_height="85dp"
                     android:textColor="#666565"
                     android:textSize="12dp" />
-
-                <LinearLayout
+            </LinearLayout>
+			<LinearLayout
+                    android:layout_marginBottom="3dp"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:layout_gravity="bottom"
+                    android:gravity="bottom"
                     android:orientation="horizontal" >
 
                     <Button
@@ -146,24 +154,28 @@
 
                     <Button
                         android:id="@+id/closeBtn"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
                         android:layout_width="80dp"
                         android:layout_height="30dp"
                         android:layout_weight="1"
                         android:background="@drawable/design_btn_close"
                         android:gravity="center"
                         android:text="@string/closebtn"
-                        android:textSize="15dp" />
+                        android:textSize="20dp" 
+                        android:textColor="@android:color/white"
+                        />
                 </LinearLayout>
-            </LinearLayout>
-
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:gravity="top|right"
+                android:gravity="top|left"
                 android:orientation="vertical" >
 
                 <TextView
                     android:id="@+id/mileage"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="3dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/design_mileage_box02"
