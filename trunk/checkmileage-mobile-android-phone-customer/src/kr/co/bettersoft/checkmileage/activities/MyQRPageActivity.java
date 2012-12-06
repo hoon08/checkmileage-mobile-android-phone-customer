@@ -391,6 +391,7 @@ public class MyQRPageActivity extends Activity {
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
+								connection2.connect();
 								Thread.sleep(100);
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
@@ -448,9 +449,12 @@ public class MyQRPageActivity extends Activity {
 		return nowTime;
 //		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
 	}
-	@Override			// 이 액티비티(인트로)가 종료될때 실행. (액티비티가 넘어갈때 종료됨)
-	protected void onDestroy() {
+	@Override
+	public void onDestroy(){
 		super.onDestroy();
+		try{
+		connection2.disconnect();
+		}catch(Exception e){}
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

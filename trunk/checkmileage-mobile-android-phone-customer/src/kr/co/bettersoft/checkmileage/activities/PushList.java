@@ -730,6 +730,8 @@ public class PushList extends Activity {
 		public void onDestroy(){
 			super.onDestroy();
 			db.close();
+			try{
+				connection2.disconnect();
+				}catch(Exception e){}
 		}
-		
 }

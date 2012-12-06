@@ -3,6 +3,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" 
     android:background ="@drawable/design_intro"
+	android:id="@+id/settings_about_parent"
     >
-
+	
+    <LinearLayout
+			android:layout_marginBottom="5dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:orientation="vertical" >
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="100dp"
+                android:layout_weight="80"
+            />    
+        <TextView 
+                android:id="@+id/settings_about_text1"
+                android:layout_marginLeft="10dp"
+				android:layout_marginRight="10dp"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="@string/settings_about_what_is_carrot_text1"
+                android:textSize="13dp"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                android:layout_weight="5"
+                 />
+        <TextView 
+                android:id="@+id/settings_about_text2"
+                android:layout_marginLeft="10dp"
+				android:layout_marginRight="10dp"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="@string/settings_about_what_is_carrot_text2"
+                android:textSize="13dp"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                android:layout_weight="10"
+                 />
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="10dp"
+                android:layout_weight="5"
+            />
+        </LinearLayout>
+    
+    
 </RelativeLayout>

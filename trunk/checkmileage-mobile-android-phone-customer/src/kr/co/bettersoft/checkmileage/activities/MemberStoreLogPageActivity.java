@@ -287,4 +287,13 @@ public class MemberStoreLogPageActivity extends Activity {
 				}
 		).start();
 	} 
+	
+	
+	@Override
+	public void onDestroy(){
+		super.onDestroy();
+		try{
+		connection2.disconnect();
+		}catch(Exception e){}
+	}
 }

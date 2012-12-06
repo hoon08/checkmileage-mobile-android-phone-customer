@@ -37,10 +37,9 @@
                         android:layout_height = "wrap_content"
                         android:singleLine ="true"
                         android:ellipsize ="end"
-                        android:background ="#ffff0000"
                         android:gravity ="center"
                         android:padding ="2dp"
-                        android:textColor ="#ffffffff"
+                        android:textColor ="#ff4800"
                         android:textSize ="20dp" />
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -79,7 +78,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:padding="2dp"
-                    android:textSize="13dp" />
+                    android:textSize="13dp" 
+                    android:textColor="#7f40ff"/>
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>

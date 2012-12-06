@@ -14,6 +14,9 @@
             android:id="@+id/button1"
             android:layout_width="match_parent"
             android:layout_height="150dp"
+            android:text="@string/no_qr_create"
+            android:textSize="20dp"
+            android:padding="10dp"
             android:ems="10"
             android:background="@drawable/design_btn_register_qr"
             >
@@ -23,6 +26,9 @@
             android:id="@+id/button2"
             android:layout_width="match_parent"
             android:layout_height="150dp"
+            android:text="@string/no_qr_scan"
+            android:textSize="20dp"
+            android:padding="10dp"
             android:ems="10"
             android:background="@drawable/design_btn_register_qr"
              />

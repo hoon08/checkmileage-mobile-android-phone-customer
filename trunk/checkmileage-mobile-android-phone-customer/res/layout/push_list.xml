@@ -11,7 +11,7 @@
                     android:gravity="center"
                     android:text="@string/event_list" 
                     android:textSize="17dp"
-                    android:background="#393939"
+                    android:background="@drawable/design_bg_titlebar"
                     android:textColor="@android:color/white"
                     />
     

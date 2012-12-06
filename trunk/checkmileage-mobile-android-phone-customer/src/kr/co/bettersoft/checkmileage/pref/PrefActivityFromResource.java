@@ -472,7 +472,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		Log.i(TAG, "updateToServer");
 		controllerName = "checkMileageMemberController";
 		methodName = "updateMemberInformation";
-		if(updateLv>0){
+		if(updateLv>0 &&(memberInfo.getPassword()!=null)){
 			new Thread(
 					new Runnable(){
 						public void run(){
@@ -514,8 +514,8 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
-								System.out.println("postUrl      : " + postUrl2);
-								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+//								System.out.println("postUrl      : " + postUrl2);
+//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 								responseCode = connection2.getResponseCode();
 								InputStream in =  connection2.getInputStream();
 								// 조회한 결과를 처리.
@@ -783,11 +783,13 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 				}catch(Exception e){ memberInfo.setLanguageCode(strLanguage); }
 				
 				// 그 외 activateYn 는 수동 조작. 이시점에 저장 완료.
-			} catch (JSONException e) {
+			} catch (JSONException e) {		
 				e.printStackTrace();
+				Log.w(TAG,tempstr.length()+"");		// 0 이면 서버에 정보 없음.
+
 			} 
 		}else{			// 요청 실패시	 토스트 띄우고 화면 유지.
-			Toast.makeText(PrefActivityFromResource.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+//			Toast.makeText(PrefActivityFromResource.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -951,5 +953,9 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	protected void onDestroy() {
 		resumeCalled = false;		// 또 불러 주십시오.
 		super.onDestroy();
+		try{
+			connection2.disconnect();
+			}catch(Exception e){}
 	}
+	
 }

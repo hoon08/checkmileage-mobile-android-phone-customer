@@ -3,7 +3,7 @@
     <string name="app_name">Check Mileage</string>
     <string name="hello_world">Hello world!</string>
     
-    <string name="menu_settings">Settings</string>
+    <string name="menu_settings">設定</string>
     
     <string name="title_activity_main">Check Mileage</string>
     <string name="AppName">Crazy Carrot</string>
@@ -27,7 +27,7 @@
     <string name="options_exit">Exit</string>
     
     <string name="my_qr_title">QR</string>
-    <string name="pref_app_what_title">What is this App?</string>
+    <string name="pref_app_what_title">What is Carrot?</string>
     
     <string name="sex_female">女性</string>
     <string name="sex_male">男性</string>
@@ -112,4 +112,10 @@
     <string name="last_update">最終利用日</string>
     <string name="search">検索</string>
     <string name="mileage_noti">キャロットが変更されました.</string>
+    
+    <string name="settings_about_what_is_carrot_text1">新しいもモバイルマイレージ積立てサービス </string>
+    <string name="settings_about_what_is_carrot_text2">よりスマートなマイレージ管理でより賢明な消費生活を楽しんでください。</string>
+    
+    <string name="event_list">イベント知らせ目録</string>
+    <string name="event_no_event_list">イベント情報がありません。</string>
 </resources>

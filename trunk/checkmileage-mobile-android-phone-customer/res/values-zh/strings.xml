@@ -3,7 +3,7 @@
     <string name="app_name">Check Mileage</string>
     <string name="hello_world">Hello world!</string>
     
-    <string name="menu_settings">Settings</string>
+    <string name="menu_settings">设定</string>
     
     <string name="title_activity_main">Check Mileage</string>
     <string name="AppName">Crazy Carrot</string>
@@ -27,7 +27,7 @@
     <string name="options_exit">Exit</string>
     
     <string name="my_qr_title">QR</string>
-    <string name="pref_app_what_title">What is this App?</string>
+    <string name="pref_app_what_title">What is Carrot?</string>
     
     <string name="sex_female">女性</string>
     <string name="sex_male">男性</string>
@@ -112,4 +112,10 @@
     <string name="set_birth">设置出生年月日</string>
     <string name="search">搜索</string>
     <string name="mileage_noti">carrot 已更改.</string>
+    
+    <string name="settings_about_what_is_carrot_text1">新的移动 积攒积分服务</string>
+    <string name="settings_about_what_is_carrot_text2">利用更智能化的管理积分方式，去享受优质的消费生活.</string>
+    
+    <string name="event_list">促销活动通知目录</string>
+    <string name="event_no_event_list">没有促销情报.</string>
 </resources>

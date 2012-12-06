@@ -29,8 +29,8 @@ public class No_QR_PageActivity extends Activity {
         
 //        button1.setText("새로운 QR 코드를 생성하시려면 여기를 클릭하십시오.");
 //        button2.setText("가맹점에서 받은 QR 카드를 등록하시려면 여기를 클릭하십시오.");
-        button1.setText(R.string.no_qr_create);
-        button2.setText(R.string.no_qr_scan);
+//        button1.setText(R.string.no_qr_create);
+//        button2.setText(R.string.no_qr_scan);
 	    // TODO Auto-generated method stub
         
         // QR 생성 버튼 클릭시.

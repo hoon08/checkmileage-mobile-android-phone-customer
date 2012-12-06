@@ -85,7 +85,7 @@ public class MyMileagePageActivity extends Activity {
 	
 	URL postUrl2;
 	HttpURLConnection connection2;
-	int reTry = 3;		// 재시도 횟수
+	int reTry = 1;		// 재시도 횟수
 	
 	int merchantNameMaxLength = 9;			// 가맹점명 표시될 최대 글자수.
 	String newMerchantName="";
@@ -489,7 +489,7 @@ public class MyMileagePageActivity extends Activity {
 							try{
 								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 								connection2 = (HttpURLConnection) postUrl2.openConnection();
-//								connection2.setConnectTimeout(5000);
+								connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
@@ -512,14 +512,14 @@ public class MyMileagePageActivity extends Activity {
 									Log.w(TAG, "fail and retry remain : "+reTry);
 									reTry = reTry-1;
 									try {
-										Thread.sleep(500);
+										Thread.sleep(200);
 										getMyMileageList();
 									} catch (Exception e1) {
 										Log.w(TAG,"again is failed() and again... ;");
 									}	
 								}else{
 									Log.w(TAG,"reTry failed - init reTry");
-									reTry = 3;
+									reTry = 1;
 									hidePb();
 									isRunning = isRunning-1;
 									getDBData();						// 5회 재시도에도 실패하면 db에서 꺼내서 보여준다.
@@ -873,8 +873,11 @@ public class MyMileagePageActivity extends Activity {
 			}
 			return connected;
 		}
-		@Override			// 이 액티비티(인트로)가 종료될때 실행. (액티비티가 넘어갈때 종료됨)
-		protected void onDestroy() {
+		@Override
+		public void onDestroy(){
 			super.onDestroy();
+			try{
+			connection2.disconnect();
+			}catch(Exception e){}
 		}
 }

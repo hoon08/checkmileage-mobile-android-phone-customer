@@ -672,11 +672,13 @@ public class MemberStoreInfoPage extends Activity {
 			
 		});
 	}
-
 	
 	@Override			// 이 액티비티가 종료될때 실행. 
 	protected void onDestroy() {
 		super.onDestroy();
 		error = 0;		// 서버 무한 접속 중이라면 종료 시켜야 하기때문..
+		try{
+			connection2.disconnect();
+			}catch(Exception e){}
 	}
 }

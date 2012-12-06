@@ -119,7 +119,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	Boolean newSearch = false; 		// 새로운 조회인지 여부. 새로운 조회라면 기존 데이터는 지우고 새로 검색한 데이터만 사용. 새로운 조회가 아니라면 기존 데이터에 추가 데이터를 추가.
 	Boolean jobKindSearched = false;
 	Bitmap bm = null;
-	int reTry = 3;
+	int reTry = 2;
 	
 	private MemberStoreSearchListAdapter imgAdapter;
 	
@@ -485,7 +485,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 							try{
 								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 								connection2 = (HttpURLConnection) postUrl2.openConnection();
-//								connection2.setConnectTimeout(10000);
+								connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
@@ -723,7 +723,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 									}else{
 										Log.w(TAG,"reTry failed. -- init reTry");
 										try{
-											reTry = 3;	
+											reTry = 2;	
 										}catch(Exception e1){
 											e1.printStackTrace();
 										}
@@ -1275,8 +1275,11 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 //		alert_internet_status.show();
 //	}
 
-    @Override			// 이 액티비티(인트로)가 종료될때 실행. (액티비티가 넘어갈때 종료됨)
-    protected void onDestroy() {
-    	super.onDestroy();
-    }
+		    @Override
+			public void onDestroy(){
+				super.onDestroy();
+				try{
+				connection2.disconnect();
+				}catch(Exception e){}
+			}
 }

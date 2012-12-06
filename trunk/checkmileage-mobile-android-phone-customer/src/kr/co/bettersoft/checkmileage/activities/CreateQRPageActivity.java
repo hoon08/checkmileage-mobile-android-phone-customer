@@ -297,4 +297,13 @@ public class CreateQRPageActivity extends Activity {
 		return nowTime;
 //		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
 	}
+    
+    
+    @Override
+	public void onDestroy(){
+		super.onDestroy();
+		try{
+		connection2.disconnect();
+		}catch(Exception e){}
+	}
 }
