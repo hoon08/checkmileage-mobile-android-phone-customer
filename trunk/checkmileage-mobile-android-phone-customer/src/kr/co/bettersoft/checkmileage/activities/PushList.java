@@ -44,10 +44,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.AdapterView;
+
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class PushList extends Activity {
@@ -499,7 +500,7 @@ public class PushList extends Activity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//		Log.d(TAG,"수신::"+builder.toString());
+		Log.d(TAG,"수신::"+builder.toString());
 		String tempstr = builder.toString();		
 		JSONArray jsonArray2 = null;
 		try {

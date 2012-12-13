@@ -16,6 +16,8 @@
         android:textColor="@android:color/white"
         android:textSize="17dp" />
 <LinearLayout
+    android:layout_marginLeft="2dp"
+    android:layout_marginRight="2dp"
         android:id="@+id/LinearLayout123"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
@@ -49,14 +51,11 @@
             />
         <Button 
             android:id="@+id/store_search_btn"
-            android:layout_marginTop="3dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginLeft ="4dp"
-            android:layout_marginBottom="4dp"	
+            android:layout_marginLeft ="2dp"
+            android:layout_marginBottom="1dp"	
             android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_height="30dp"
             android:gravity="center"
-            
             android:textSize="8dp"
             android:text="" 
             android:background="@drawable/design_btn_search"

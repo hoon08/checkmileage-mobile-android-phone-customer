@@ -780,7 +780,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//		Log.d(TAG,"수신::"+builder.toString());
+		Log.d(TAG,"수신::"+builder.toString());
 		String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다
 		// // // // // // // 바로 바로 화면에 add 하고 터치시 값 가져다가 상세 정보 보도록....
 		
