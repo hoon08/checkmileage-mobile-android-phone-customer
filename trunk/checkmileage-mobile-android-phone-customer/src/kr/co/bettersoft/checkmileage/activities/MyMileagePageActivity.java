@@ -203,7 +203,7 @@ public class MyMileagePageActivity extends Activity {
 					initialValues.put("companyName", dbInEntries.get(i).getMerchantName()); 
 					initialValues.put("introduction", dbInEntries.get(i).getIntroduction()); 
 					initialValues.put("workPhoneNumber", dbInEntries.get(i).getWorkPhoneNumber()); 
-					initialValues.put("profileThumbnailImageUrl", dbInEntries.get(i).getMerchantImg()); 
+					initialValues.put("profileThumbnailImageUrl", dbInEntries.get(i).getMerchantImg()); 		
 					// img 는 문자열로 바꿔서 넣는다. 꺼낼땐 역순임.			 // BMP -> 문자열 		
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();   
 					String bitmapToStr = "";
@@ -385,6 +385,13 @@ public class MyMileagePageActivity extends Activity {
 				intent.putExtra("checkMileageMerchantsMerchantID", entriesFn.get(position).getCheckMileageMerchantsMerchantID());		// 가맹점 아이디
 				intent.putExtra("idCheckMileageMileages", entriesFn.get(position).getIdCheckMileageMileages());		// 고유 식별 번호. (상세보기 조회용도)
 				intent.putExtra("myMileage", entriesFn.get(position).getMileage());									// 내 마일리지    // 가맹점에 대한 내 마일리지
+//				// img 는 문자열로 바꿔서 넣는다. 꺼낼땐 역순임.			 // BMP -> 문자열 		
+//				ByteArrayOutputStream baos = new ByteArrayOutputStream();   
+//				String bitmapToStr = "";
+//				entriesFn.get(position).getMerchantImage().compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object    
+//				byte[] b = baos.toByteArray();  
+//				bitmapToStr = Base64.encodeToString(b, Base64.DEFAULT); 
+//				intent.putExtra("imageFileStr", bitmapToStr);	
 				startActivity(intent);
 			}
 		});
@@ -495,18 +502,22 @@ public class MyMileagePageActivity extends Activity {
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
 								connection2.connect();		// *** 
+								Thread.sleep(200);
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
+								Thread.sleep(200);
 //								System.out.println("postUrl      : " + postUrl2);
-								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 								responseCode = connection2.getResponseCode();
 								InputStream in =  connection2.getInputStream();
+								os2.close();
 								// 조회한 결과를 처리.
 								theData1(in);
 								connection2.disconnect();
 							}catch(Exception e){ 
 								// 다시
+								e.printStackTrace();
 								connection2.disconnect();
 								if(reTry>0){
 									Log.w(TAG, "fail and retry remain : "+reTry);
@@ -645,7 +656,7 @@ public class MyMileagePageActivity extends Activity {
 							bm = dw.getBitmap();
 						}
 						if(bm==null){		//  없을때.. 
-							dbSaveEnable = false;
+//							dbSaveEnable = false;
 							BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.empty_60_60);
 							bm = dw.getBitmap();
 						}
@@ -662,7 +673,6 @@ public class MyMileagePageActivity extends Activity {
 								bm
 								// 그 외 섬네일 이미지, 가맹점 이름
 						));
-						
 					}
 				}
 			}catch (JSONException e) {
@@ -671,7 +681,7 @@ public class MyMileagePageActivity extends Activity {
 				e.printStackTrace();
 			}finally{
 				dbInEntries = entries; 
-				reTry = 3;				// 재시도 횟수 복구
+				reTry = 1;				// 재시도 횟수 복구
 				searched = true;
 				// db 에 데이터를 넣는다.
 				try{
@@ -745,7 +755,7 @@ public class MyMileagePageActivity extends Activity {
 	public void onResume(){
 		super.onResume();
 		app_end = 0;
-		
+		dbSaveEnable = true;
 		if(!searched){
 			Log.w(TAG,"onResume, search");
 			if(dontTwice==0){
@@ -877,7 +887,9 @@ public class MyMileagePageActivity extends Activity {
 		public void onDestroy(){
 			super.onDestroy();
 			try{
-			connection2.disconnect();
+				if(connection2!=null){
+					connection2.disconnect();
+				}
 			}catch(Exception e){}
 		}
 }

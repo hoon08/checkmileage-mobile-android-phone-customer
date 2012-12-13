@@ -32,7 +32,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -116,6 +118,25 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 		tabhost.setOnTabChangedListener(this);		// 이걸 해줘야 onTabChanged() 체인지 효과가 있다
 		
 		// 설정
+		
+////		tabhost.getTabWidget().setBackgroundDrawable( getResources().getDrawable(R.drawable.bluenavbar)); 
+//		TextView txtTab = new TextView(this); 
+//		txtTab.setText(getString(R.string.my_qr_title)); 
+//		txtTab.setPadding(0, 0, 0, 0); 
+//		txtTab.setTextColor(Color.WHITE); 
+//		txtTab.setTextSize(8); 
+//////		txtTab.setTypeface(localTypeface1); 
+//		txtTab.setGravity(Gravity.CENTER_HORIZONTAL| Gravity.CENTER_VERTICAL); 
+//		txtTab.setBackgroundResource(R.drawable.tab01_indicator); 
+//		// Initialize a TabSpec for each tab and add it to the TabHost 
+//		TabSpec spec = tabhost.newTabSpec("spec")
+//				 .setIndicator(txtTab)
+//				 .setContent(new Intent(this, MyQRPageActivity.class)
+//				 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+//		
+//		tabhost.addTab(spec); 
+		
+		
 		tabhost.addTab(
 				tabhost.newTabSpec("tab_1")
 				//        		.setIndicator("내QR코드", getResources().getDrawable(R.drawable.tab01_indicator))
@@ -126,6 +147,9 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 				.setContent(new Intent(this, MyQRPageActivity.class)));
 		// Optimizer.class 소스는 tab_1 탭에에 속함. Optimizer.java
 		//         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
+		
+		
+		
 		tabhost.addTab(tabhost.newTabSpec("tab_2")
 //				.setIndicator((View)tvTab2)
 //				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu2))
@@ -142,22 +166,10 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 //				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu4))
 				.setIndicator(getResources().getString(R.string.menu_settings), getResources().getDrawable(R.drawable.tab04_indicator))
 				.setContent(new Intent(this, kr.co.bettersoft.checkmileage.pref.PrefActivityFromResource.class)));  
+
+
 		
-////		tabhost.getTabWidget().setBackgroundDrawable( getResources().getDrawable(R.drawable.bluenavbar)); 
-//		TextView txtTab = new TextView(this); 
-//		txtTab.setText(getString(R.string.my_qr_title)); 
-//		txtTab.setPadding(8, 9, 8, 9); 
-//////		txtTab.setTextColor(Color.WHITE); 
-//		txtTab.setTextSize(8); 
-//////		txtTab.setTypeface(localTypeface1); 
-////		txtTab.setGravity(Gravity.CENTER_HORIZONTAL| Gravity.CENTER_VERTICAL); 
-//		txtTab.setBackgroundResource(R.drawable.tab01_indicator); 
-//		// Initialize a TabSpec for each tab and add it to the TabHost 
-//		TabSpec spec = tabhost.newTabSpec("spec")
-//				 .setIndicator(txtTab)
-//				 .setContent(new Intent(this, MyQRPageActivity.class)
-//				 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-//		tabhost.addTab(spec); 
+
 
 		
 		// Tab에 색상 지정
@@ -165,7 +177,8 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 				new Runnable(){
 					public void run(){
 						for(int i = 0; i < tabhost.getTabWidget().getChildCount(); i++) {
-							tabhost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#000000"));
+//							tabhost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#000000"));
+							tabhost.getTabWidget().getChildAt(i).setBackgroundDrawable(getResources().getDrawable(R.drawable.design_bg_tab_menu));
 //							RelativeLayout relLayout = (RelativeLayout)tabhost.getTabWidget().getChildAt(i); 
 //							TextView tv = (TextView)relLayout.getChildAt(i); 
 //							tv.setTextSize(8);
@@ -331,5 +344,9 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
           }
            return rtn;
     }
-
+     @Override
+		public void onDestroy(){
+			android.os.Process.killProcess(android.os.Process.myPid()); 
+			super.onDestroy();
+		}
 }

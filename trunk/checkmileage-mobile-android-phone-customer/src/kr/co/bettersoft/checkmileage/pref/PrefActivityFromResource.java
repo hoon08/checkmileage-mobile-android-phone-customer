@@ -437,18 +437,22 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 						try{
 							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);				 
 							connection2 = (HttpURLConnection) postUrl2.openConnection();
+							connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
 							connection2.connect();		// *** 
+							Thread.sleep(200);	
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
+							Thread.sleep(200);
 //							System.out.println("postUrl      : " + postUrl2);
-							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 							responseCode = connection2.getResponseCode();
 							InputStream in =  connection2.getInputStream();
+							os2.close();
 							// 조회한 결과를 처리.
 							theData1(in);
 							connection2.disconnect();
@@ -506,18 +510,22 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							try{
 								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);	 
 								connection2 = (HttpURLConnection) postUrl2.openConnection();
+								connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
 								connection2.connect();		// *** 
+								Thread.sleep(200);
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
+								Thread.sleep(200);
 //								System.out.println("postUrl      : " + postUrl2);
 //								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 								responseCode = connection2.getResponseCode();
 								InputStream in =  connection2.getInputStream();
+								os2.close();
 								// 조회한 결과를 처리.
 								if(responseCode==200 || responseCode == 204){	// 성공이라 딱히..
 //									theData1(in);		// 서버 결과 가지고 재 세팅하면안됨 <- 는 멤버 정보 받아서 처리하는 녀석임 호출 금지
@@ -591,18 +599,22 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							try{
 								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);		 
 								connection2 = (HttpURLConnection) postUrl2.openConnection();
+								connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
 								connection2.connect();		// *** 
+								Thread.sleep(200);
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
-								System.out.println("postUrl      : " + postUrl2);
-								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+								Thread.sleep(200);
+//								System.out.println("postUrl      : " + postUrl2);
+//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 								responseCode = connection2.getResponseCode();
 								InputStream in =  connection2.getInputStream();
+								os2.close();
 								// 조회한 결과를 처리.
 								if(responseCode==200 || responseCode == 204){	// 성공이라 딱히..
 //									theData1(in);		// 서버 결과 가지고 재 세팅하면안됨 <- 는 멤버 정보 받아서 처리하는 녀석임 호출 금지
@@ -661,18 +673,22 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 						try{
 							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);		 
 							connection2 = (HttpURLConnection) postUrl2.openConnection();
+							connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
 							connection2.connect();		// *** 
+							Thread.sleep(200);
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
-							System.out.println("postUrl      : " + postUrl2);
-							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+							Thread.sleep(200);
+//							System.out.println("postUrl      : " + postUrl2);
+//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 							responseCode = connection2.getResponseCode();
 							InputStream in =  connection2.getInputStream();
+							os2.close();
 							// 조회한 결과를 처리.
 							if(responseCode==200 || responseCode == 204){	// 성공이라 딱히..
 								//									theData1(in);		// 서버 결과 가지고 재 세팅하면안됨 <- 는 멤버 정보 받아서 처리하는 녀석임 호출 금지
