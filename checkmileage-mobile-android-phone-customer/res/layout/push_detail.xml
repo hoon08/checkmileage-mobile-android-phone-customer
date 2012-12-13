@@ -48,6 +48,8 @@
                     android:layout_height="140dp" >
                     <TextView
                         android:id="@+id/push_detail_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
                         android:layout_width="wrap_content"
                         android:layout_height="140dp"
                         android:textSize="16dp" />
@@ -62,10 +64,13 @@
                         android:id="@+id/push_detail_closebtn"
                         android:layout_width="fill_parent"
                         android:layout_height="40dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
                         android:gravity="center"
                         android:text="@string/closebtn"
+                        android:textColor="@android:color/white"
                         android:background="@drawable/design_btn_close"
-                        android:textSize="25dp" />
+                        android:textSize="15dp" />
                 </LinearLayout>
             </LinearLayout>
 

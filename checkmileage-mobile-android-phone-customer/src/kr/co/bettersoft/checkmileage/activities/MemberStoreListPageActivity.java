@@ -5,6 +5,7 @@ package kr.co.bettersoft.checkmileage.activities;
  *  
  */
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -51,6 +52,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -119,7 +121,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	Boolean newSearch = false; 		// 새로운 조회인지 여부. 새로운 조회라면 기존 데이터는 지우고 새로 검색한 데이터만 사용. 새로운 조회가 아니라면 기존 데이터에 추가 데이터를 추가.
 	Boolean jobKindSearched = false;
 	Bitmap bm = null;
-	int reTry = 2;
+	int reTry = 1;
 	
 	private MemberStoreSearchListAdapter imgAdapter;
 	
@@ -309,6 +311,13 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 				intent.putExtra("checkMileageMerchantsMerchantID", entriesFn.get(position).getMerchantID());		// 가맹점 아이디
 				intent.putExtra("idCheckMileageMileages", entriesFn.get(position).getIdCheckMileageMileages());		// 고유 식별 번호. (상세보기 조회용도)
 				intent.putExtra("myMileage", entriesFn.get(position).getMileage());									// 내 마일리지
+//				// img 는 문자열로 바꿔서 넣는다. 꺼낼땐 역순임.			 // BMP -> 문자열 		 // 섬네일과 프로필 이미지는 다르므로 넣지 않음.
+//				ByteArrayOutputStream baos = new ByteArrayOutputStream();   
+//				String bitmapToStr = "";
+//				entriesFn.get(position).getMerchantImage().compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object    
+//				byte[] b = baos.toByteArray();  
+//				bitmapToStr = Base64.encodeToString(b, Base64.DEFAULT); 
+//				intent.putExtra("imageFileStr", bitmapToStr);	
 				startActivity(intent);
 			}
 		});
@@ -496,8 +505,9 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
 								Thread.sleep(200);
-								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 								responseCode = connection2.getResponseCode();
+								os2.close();
 								if(responseCode==200||responseCode==204){
 									InputStream in =  connection2.getInputStream();
 									// 조회한 결과를 처리.
@@ -517,13 +527,12 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 									getBusinessKindList();
 								}else{
 									Log.w(TAG,"reTry failed. -- init reTry");
-									reTry = 3;	
+									reTry = 1;	
 									showMSG();
 //									searchSpinnerType.setEnabled(true);
 //									searchText.setEnabled(true); 
 //									searchBtn.setEnabled(true);
 									showInfo();		// 핸들러에서 함께 처리
-									
 								}
 							}
 						}
@@ -1279,7 +1288,9 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			public void onDestroy(){
 				super.onDestroy();
 				try{
-				connection2.disconnect();
+					if(connection2!=null){
+						connection2.disconnect();
+					}
 				}catch(Exception e){}
 			}
 }

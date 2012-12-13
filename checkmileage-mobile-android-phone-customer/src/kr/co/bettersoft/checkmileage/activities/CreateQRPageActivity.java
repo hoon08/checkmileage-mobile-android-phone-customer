@@ -236,6 +236,7 @@ public class CreateQRPageActivity extends Activity {
 						try{
 							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 							connection2 = (HttpURLConnection) postUrl2.openConnection();
+							connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
@@ -244,21 +245,25 @@ public class CreateQRPageActivity extends Activity {
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
-							System.out.println("postUrl      : " + postUrl2);
-							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+							Thread.sleep(200);	
+							
+//							System.out.println("postUrl      : " + postUrl2);
+//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 							int responseCode = connection2.getResponseCode();
+							os2.close();
 							if(responseCode==200||responseCode==204){
 								Log.e(TAG, "register user S");
+								connection2.disconnect();
 							}else{
 								Log.e(TAG, "register user F");		// 오류 발생시 에러 창 띄우고 돌아간다.. 통신에러 발생할수 있다.
 								String alrtMsg = getString(R.string.error_message);
 								alertMsg(alrtMsg);		// toast 사용시 에러 발생하므로 핸들러 통한 토스트
-//								Toast.makeText(CreateQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();			
+//								Toast.makeText(CreateQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+								connection2.disconnect();
 								Intent backToNoQRIntent = new Intent(CreateQRPageActivity.this, No_QR_PageActivity.class);
 								 startActivity(backToNoQRIntent);
 								 finish();
 							}
-							connection2.disconnect();
 						}catch(Exception e){ 
 							connection2.disconnect();
 							 e.printStackTrace();			// 오류 발생시 에러 창 띄우고 돌아간다.. 통신에러 발생할수 있다.

@@ -61,6 +61,10 @@ public class myWebView extends Activity {
 					}
 					pb1.setVisibility(View.INVISIBLE);
 				}
+				if(b.getInt("showErrToast")==1){
+					Toast.makeText(myWebView.this, getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+					// 페이지를 불러오는데 실패했습니다.\n잠시후 다시 시도해주시기 바랍니다.		
+				}
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -70,7 +74,7 @@ public class myWebView extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-	    requestWindowFeature(Window.FEATURE_NO_TITLE );	// 타이틀바 제거
+//	    requestWindowFeature(Window.FEATURE_NO_TITLE );	// 타이틀바 제거
 	    setContentView(R.layout.my_web_view);
 	    Intent rIntent = getIntent();
 	    loadingURL = rIntent.getStringExtra("loadingURL");			// URL 정보를 받음.
@@ -144,8 +148,28 @@ public class myWebView extends Activity {
 		public void onPageStarted(WebView view, String url, Bitmap favicon) {
 			super.onPageStarted(view, url, favicon);
 			showPb();
+			new Thread(new Runnable() {
+	            @Override
+	            public void run() {
+	                try {
+	                    Thread.sleep(CommonUtils.serverConnectTimeOut);
+	                } catch (InterruptedException e) {
+	                    e.printStackTrace();
+	                }
+	                checkMyWebViewLoaded();
+	            }
+	        }).start();
 		}
 	}
+    public void checkMyWebViewLoaded(){
+    	if(mWeb.getProgress()<100) {
+            // do what you want
+        	mWeb.stopLoading();
+        	hidePb();
+        	showErrMsg();
+        	finish();
+        }
+    }
 	/**
 	 * WebChromeClient 를 상속하는 클래스이다.
 	 * alert 이나 윈도우 닫기 등의 web 브라우저 이벤트를 구하기 위한 클래스이다.
@@ -197,4 +221,27 @@ public class myWebView extends Activity {
 				}
 		).start();
 	}
+	
+	public void showErrMsg(){			
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Message message = handler.obtainMessage();				
+						Bundle b = new Bundle();
+						b.putInt("showErrToast", 1);
+						message.setData(b);
+						handler.sendMessage(message);
+					}
+				}
+		).start();
+	} 
+	
+	@Override
+	public void onStop(){
+		if(mWeb!=null){
+			mWeb.stopLoading();
+		}
+		super.onStop();
+	}
+	
 }

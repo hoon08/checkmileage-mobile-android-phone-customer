@@ -75,7 +75,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 //            displayMessage(context, getString(R.string.gcm_registered));			// 브로드 케스트로 보내줌.. 리시버가 잡음. (노티는 없음)
             localContext = context;
 			localRegistrationId = registrationId;
-            new backgroundServerRegister().execute();
+//            new backgroundServerRegister().execute();
         	dontTwice = false;
         }
     }
@@ -137,19 +137,20 @@ public class GCMIntentService extends GCMBaseIntentService {
 						try{
 							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 							connection2 = (HttpURLConnection) postUrl2.openConnection();
-							connection2.setConnectTimeout(10000);
+							connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
 							connection2.connect();		// *** 
-							Thread.sleep(100);
+							Thread.sleep(200);
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
-							System.out.println("postUrl      : " + postUrl2);
-							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+//							System.out.println("postUrl      : " + postUrl2);
+//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 							int responseCode = connection2.getResponseCode();
+							os2.close();
 							if(responseCode==200||responseCode==204){
 								Log.i(TAG, "S to update GCM ID to server");
 							}else{
@@ -386,7 +387,9 @@ public class GCMIntentService extends GCMBaseIntentService {
 	public void onDestroy(){
 		super.onDestroy();
 		try{
-		connection2.disconnect();
+			if(connection2!=null){
+				connection2.disconnect();
+			}
 		}catch(Exception e){}
 	}
 }

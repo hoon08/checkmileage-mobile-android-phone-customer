@@ -159,18 +159,22 @@ public class MemberStoreLogPageActivity extends Activity {
 						try{
 							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 							connection2 = (HttpURLConnection) postUrl2.openConnection();
+							connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
 							connection2.connect();		// *** 
+							Thread.sleep(200);
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
-							System.out.println("postUrl      : " + postUrl2);
-							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+							Thread.sleep(200);
+//							System.out.println("postUrl      : " + postUrl2);
+//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 							responseCode = connection2.getResponseCode();
 							InputStream in =  connection2.getInputStream();
+							os2.close();
 							// 조회한 결과를 처리.
 							theData1(in);
 							connection2.disconnect();
@@ -178,7 +182,7 @@ public class MemberStoreLogPageActivity extends Activity {
 							connection2.disconnect();
 							e.printStackTrace();
 							try{
-								Thread.sleep(500);		// 쉬었다가 다시 --> 안함
+								Thread.sleep(100);		// 쉬었다가 다시 --> 안함
 								showMSG();		// 에러 토스트 보여주고 종료하여 다시 실행하도록함.
 								finish();
 //								getMyMileageLogList();

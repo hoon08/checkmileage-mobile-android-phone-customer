@@ -28,7 +28,7 @@ public class CommonUtils extends Activity {
 	static int callCode = 0;		// 호출 모드 . 읽기:1, 쓰기:2, 초기화:3
 	static int qrResult = 0;		// 처리 결과값. 성공:1, 실패:: 파일없음:-3,입출력오류:-2,그외:-1
 	
-	static int serverConnectTimeOut = 10000;
+	public static int serverConnectTimeOut = 10000;
 	
 	static String imgDomain = "http://www.mcarrot.net/upload/profile/"; 	
 	static String imgthumbDomain = "http://www.mcarrot.net/upload/thumb/"; 	

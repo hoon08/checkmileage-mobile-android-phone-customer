@@ -438,19 +438,22 @@ public class PushList extends Activity {
 							try{
 								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 								connection2 = (HttpURLConnection) postUrl2.openConnection();
-//								connection2.setConnectTimeout(5000);
+								connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
 								connection2.connect();		// *** 
+								Thread.sleep(200);	
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
+								Thread.sleep(200);
 //								System.out.println("postUrl      : " + postUrl2);
-								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 								responseCode = connection2.getResponseCode();
 								InputStream in =  connection2.getInputStream();
+								os2.close();
 								// 조회한 결과를 처리.
 								getMyEventListResult(in);
 								connection2.disconnect();

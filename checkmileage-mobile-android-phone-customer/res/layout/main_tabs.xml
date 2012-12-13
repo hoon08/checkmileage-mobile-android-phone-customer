@@ -23,8 +23,12 @@
 		    android:windowSoftInputMode="adjustPan"
 		    android:layout_width="fill_parent"
 		    android:layout_height="49dp"
+		    
 		    android:gravity="center"
 		    android:tabStripEnabled="false"
+		    
+		    android:background = "@drawable/design_bg_tab_menu"
+		   
 		     >
         </TabWidget>
     </LinearLayout>
