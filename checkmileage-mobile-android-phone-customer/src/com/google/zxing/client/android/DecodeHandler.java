@@ -18,7 +18,7 @@ package com.google.zxing.client.android;
 
 import java.util.Hashtable;
 
-import kr.co.bettersoft.checkmileage.activities.R;
+import kr.co.bettersoft.carrot.activities.R;
 
 import android.os.Bundle;
 import android.os.Handler;
