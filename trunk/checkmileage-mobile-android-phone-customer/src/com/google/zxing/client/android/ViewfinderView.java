@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import kr.co.bettersoft.carrot.activities.No_QR_PageActivity;
-import kr.co.bettersoft.carrot.activities.ScanQRPageActivity;
+import kr.co.bettersoft.checkmileage.activities.No_QR_PageActivity;
+import kr.co.bettersoft.checkmileage.activities.ScanQRPageActivity;
 
 import android.content.Context;
 import android.content.Intent;
