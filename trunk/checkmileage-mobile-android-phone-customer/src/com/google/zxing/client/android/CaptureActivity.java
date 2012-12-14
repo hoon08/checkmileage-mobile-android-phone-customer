@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
-import kr.co.bettersoft.checkmileage.activities.R;
+import kr.co.bettersoft.carrot.activities.R;
 
 
 import android.app.Activity;
