@@ -116,4 +116,12 @@
     
     <string name="event_list">Event notification List</string>
     <string name="event_no_event_list">Not exist event information.</string>
+    
+    <string name="year">year</string>
+    <string name="month">month</string>
+    <string name="day">day</string>
+    <string name="am">AM</string>
+    <string name="pm">PM</string>
+    <string name="hour">hour</string>
+    <string name="minute">minute</string>
 </resources>
