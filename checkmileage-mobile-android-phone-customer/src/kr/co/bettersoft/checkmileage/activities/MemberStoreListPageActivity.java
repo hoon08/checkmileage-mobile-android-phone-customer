@@ -122,7 +122,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	Boolean newSearch = false; 		// 새로운 조회인지 여부. 새로운 조회라면 기존 데이터는 지우고 새로 검색한 데이터만 사용. 새로운 조회가 아니라면 기존 데이터에 추가 데이터를 추가.
 	Boolean jobKindSearched = false;
 	Bitmap bm = null;
-	int reTry = 1;
+//	int reTry = 1;
 	
 	private MemberStoreSearchListAdapter imgAdapter;
 	
@@ -495,6 +495,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 							try{
 								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 								connection2 = (HttpURLConnection) postUrl2.openConnection();
+								Thread.sleep(200);
 								connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
@@ -518,23 +519,23 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 							}catch(Exception e){ 
 								e.printStackTrace();
 								connection2.disconnect();
-								if(reTry>0){
-									reTry = reTry-1;
-									try {
-										Thread.sleep(100);
-									} catch (InterruptedException e1) {
-										e1.printStackTrace();
-									}
-									getBusinessKindList();
-								}else{
-									Log.w(TAG,"reTry failed. -- init reTry");
-									reTry = 1;	
+//								if(reTry>0){
+//									reTry = reTry-1;
+//									try {
+//										Thread.sleep(100);
+//									} catch (InterruptedException e1) {
+//										e1.printStackTrace();
+//									}
+//									getBusinessKindList();
+//								}else{
+//									Log.w(TAG,"reTry failed. -- init reTry");
+//									reTry = 1;	
 									showMSG();
 //									searchSpinnerType.setEnabled(true);
 //									searchText.setEnabled(true); 
 //									searchBtn.setEnabled(true);
 									showInfo();		// 핸들러에서 함께 처리
-								}
+//								}
 							}
 						}
 					}
@@ -675,6 +676,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 								try{
 									postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 									connection2 = (HttpURLConnection) postUrl2.openConnection();
+									Thread.sleep(200);
 									connection2.setDoOutput(true);
 									connection2.setInstanceFollowRedirects(false);
 									connection2.setRequestMethod("POST");
@@ -723,20 +725,20 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 											}
 									).start();
 									isRunning = 0;
-									if(reTry>0){
-										try{
-											Log.w(TAG,"failed, retry all again. remain retry : "+reTry);
-											reTry = reTry -1;
-											Thread.sleep(200);		// 재시도?
-											getMemberStoreList();
-										}catch(Exception e2){}
-									}else{
-										Log.w(TAG,"reTry failed. -- init reTry");
-										try{
-											reTry = 2;	
-										}catch(Exception e1){
-											e1.printStackTrace();
-										}
+//									if(reTry>0){
+//										try{
+//											Log.w(TAG,"failed, retry all again. remain retry : "+reTry);
+//											reTry = reTry -1;
+//											Thread.sleep(200);		// 재시도?
+//											getMemberStoreList();
+//										}catch(Exception e2){}
+//									}else{
+//										Log.w(TAG,"reTry failed. -- init reTry");
+//										try{
+//											reTry = 2;	
+//										}catch(Exception e1){
+//											e1.printStackTrace();
+//										}
 										new Thread(	
 												new Runnable(){
 													public void run(){
@@ -753,7 +755,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 //										searchBtn.setEnabled(true);
 										showMSG();
 //										Toast.makeText(MemberStoreListPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
-									}
+//									}
 									
 								}
 							}
@@ -773,7 +775,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);
 		StringBuilder builder = new StringBuilder();
 		String line =null;
-		reTry = 3;			
+//		reTry = 3;			
 		try {
 			while((line=reader.readLine())!=null){
 				builder.append(line).append("\n");

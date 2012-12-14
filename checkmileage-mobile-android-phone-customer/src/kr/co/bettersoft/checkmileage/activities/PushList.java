@@ -79,6 +79,7 @@ public class PushList extends Activity {
 	String tmp_content = "";
 	String tmp_imageFileUrl = "";
 	String tmp_modifyDate = "";
+	String tmpstr2 = "";
 	String tmp_companyName = "";
 	Bitmap tmp_imageFile = null;
 	
@@ -548,6 +549,27 @@ public class PushList extends Activity {
 						}
 						try{
 							tmp_modifyDate = jsonObj.getString("modifyDate");
+							if(tmp_modifyDate!=null && tmp_modifyDate.length()>15){
+								Log.d(TAG,"tmp_modifyDate:"+tmp_modifyDate);
+								Log.d(TAG,"tmp_modifyDate.substring(0, 4):"+tmp_modifyDate.substring(0, 4)+"//tmp_modifyDate.substring(5, 7):"+tmp_modifyDate.substring(5, 7)+"//tmp_modifyDate.substring(8, 10):"+tmp_modifyDate.substring(8, 10));
+								Log.d(TAG,"tmp_modifyDate.substring(11, 13):"+tmp_modifyDate.substring(11, 13)+"//tmp_modifyDate.substring(14, 16):"+tmp_modifyDate.substring(14, 16));
+								tmpstr2 = tmp_modifyDate.substring(0, 4)+ getString(R.string.year) 		// 년
+								+ tmp_modifyDate.substring(5, 7)+ getString(R.string.month) 					// 월
+								+ tmp_modifyDate.substring(8, 10)+ getString(R.string.day) 					// 일
+								+ tmp_modifyDate.substring(11, 13)+ getString(R.string.hour)					// 시
+								+ tmp_modifyDate.substring(14, 16)+ getString(R.string.minute)					// 분
+								;
+								
+							}
+							
+							
+							tmpstr2 = tmp_modifyDate.substring(0, 4)+ getString(R.string.year) 		// 년
+							+ tmp_modifyDate.substring(5, 7)+ getString(R.string.month) 					// 월
+							+ tmp_modifyDate.substring(8, 10)+ getString(R.string.day) 					// 일
+//							+ tmp_modifyDate.substring(0, 4)+ getString(R.string.year)					// 시
+//							+ tmp_modifyDate.substring(0, 4)+ getString(R.string.year)					// 분
+							;
+							tmp_modifyDate = tmpstr2;
 						}catch(Exception e){
 							Log.d(TAG,"modifyDate F");
 							tmp_modifyDate = "";

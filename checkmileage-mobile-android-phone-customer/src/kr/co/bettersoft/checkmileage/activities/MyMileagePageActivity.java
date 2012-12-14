@@ -497,6 +497,7 @@ public class MyMileagePageActivity extends Activity {
 							try{
 								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 								connection2 = (HttpURLConnection) postUrl2.openConnection();
+								Thread.sleep(200);
 								connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
@@ -578,6 +579,7 @@ public class MyMileagePageActivity extends Activity {
 				String tmp_mileage = "";
 				String tmp_modifyDate = "";
 				String tmp_shortDate = "";
+				String tmpstr2 = "";
 				String tmp_checkMileageMembersCheckMileageId = "";
 				String tmp_checkMileageMerchantsMerchantId = "";
 				String tmp_companyName = "";
@@ -600,10 +602,19 @@ public class MyMileagePageActivity extends Activity {
 						}
 						try{
 							tmp_modifyDate = jsonObj.getString("modifyDate");
+//							Log.d(TAG,"tmp_modifyDate:"+tmp_modifyDate);
 							String tmpstr = getString(R.string.last_update);
 							if(tmp_modifyDate.length()>9){
-								tmp_shortDate = tmp_modifyDate.substring(0, 10);
-								tmp_modifyDate = tmp_shortDate;
+//								tmp_shortDate = tmp_modifyDate.substring(0, 10);
+//								tmp_modifyDate = tmp_shortDate;
+//								Log.d(TAG,"tmp_modifyDate.substring(0, 4):"+tmp_modifyDate.substring(0, 4)+"//tmp_modifyDate.substring(5, 7):"+tmp_modifyDate.substring(5, 7)+"//tmp_modifyDate.substring(8, 10):"+tmp_modifyDate.substring(8, 10));
+								tmpstr2 = tmp_modifyDate.substring(0, 4)+ getString(R.string.year) 		// 년
+								+ tmp_modifyDate.substring(5, 7)+ getString(R.string.month) 					// 월
+								+ tmp_modifyDate.substring(8, 10)+ getString(R.string.day) 					// 일
+//								+ tmp_modifyDate.substring(0, 4)+ getString(R.string.year)					// 시
+//								+ tmp_modifyDate.substring(0, 4)+ getString(R.string.year)					// 분
+								;
+								tmp_modifyDate = tmpstr2;
 							}
 							tmp_modifyDate = tmpstr+":"+tmp_modifyDate;
 						}catch(Exception e){

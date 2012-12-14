@@ -116,4 +116,12 @@
     
     <string name="event_list">イベント知らせ目録</string>
     <string name="event_no_event_list">イベント情報がありません。</string>
+    
+        <string name="year">年</string>
+    <string name="month">月</string>
+    <string name="day">日</string>
+    <string name="am">午前</string>
+    <string name="pm">午後</string>
+    <string name="hour">市</string>
+    <string name="minute">分</string>
 </resources>
