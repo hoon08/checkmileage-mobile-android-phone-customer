@@ -1,11 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="kr.co.bettersoft.carrot.activities"
-    android:versionCode="2"
-    android:versionName="1.0" >
+    package="kr.co.bettersoft.checkmileage.activities"
+    android:versionCode="3"
+    android:versionName="1.0.1" >
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <permission android:name="kr.co.bettersoft.carrot.activities.permission.C2D_MESSAGE"
+    <permission android:name="kr.co.bettersoft.checkmileage.activities.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
-    <uses-permission android:name="kr.co.bettersoft.carrot.activities.permission.C2D_MESSAGE" />
+    <uses-permission android:name="kr.co.bettersoft.checkmileage.activities.permission.C2D_MESSAGE" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
 	<uses-permission android:name="android.permission.GET_TASKS" />
@@ -88,10 +88,10 @@
 		<activity android:name="CommonUtils"></activity>
 		
 		
-		<activity android:name="kr.co.bettersoft.carrot.pref.MainActivity_disabled" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-		<activity android:name="kr.co.bettersoft.carrot.pref.Password" android:windowSoftInputMode="stateAlwaysVisible"  android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-		<activity android:name="kr.co.bettersoft.carrot.pref.Profile" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-		<activity android:name="kr.co.bettersoft.carrot.pref.PrefActivityFromResource" android:screenOrientation="portrait"  android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="kr.co.bettersoft.checkmileage.pref.MainActivity_disabled" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="kr.co.bettersoft.checkmileage.pref.Password" android:windowSoftInputMode="stateAlwaysVisible"  android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="kr.co.bettersoft.checkmileage.pref.Profile" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="kr.co.bettersoft.checkmileage.pref.PrefActivityFromResource" android:screenOrientation="portrait"  android:theme="@android:style/Theme.Light" ></activity>
 		<activity android:name="PrefActivityFromIntent" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
 		
 		<receiver
@@ -102,7 +102,7 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <!-- Receives the registration id. -->
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-                <category android:name="kr.co.bettersoft.carrot.activities" />
+                <category android:name="kr.co.bettersoft.checkmileage.activities" />
             </intent-filter>
         </receiver>
 
@@ -113,12 +113,12 @@
           By default, it must be named .GCMIntentService, unless the
           application uses a custom BroadcastReceiver that redefines its name.
         -->
-        <service android:name="kr.co.bettersoft.carrot.activities.GCMIntentService" />
+        <service android:name="kr.co.bettersoft.checkmileage.activities.GCMIntentService" />
         <activity android:name="CertificationStep1" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
         <activity android:name="CertificationStep2" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
         <activity android:name="myWebView" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
         
-        <activity android:name="kr.co.bettersoft.carrot.pref.DummyActivity"   >
+        <activity android:name="kr.co.bettersoft.checkmileage.pref.DummyActivity"   >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -126,7 +126,7 @@
         </activity>
         <activity android:name="UpdateLocationToServerActivity"  ></activity>
         <activity android:name="PushList" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-        <activity android:name="kr.co.bettersoft.carrot.activities.PushDetail" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+        <activity android:name="kr.co.bettersoft.checkmileage.activities.PushDetail" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
         
         
 	</application>

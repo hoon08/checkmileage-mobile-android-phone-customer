@@ -6,8 +6,9 @@
     >
 
     <LinearLayout
+        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="match_parent"
         android:orientation="vertical" >
 
         <Button
@@ -16,7 +17,6 @@
             android:layout_height="150dp"
             android:text="@string/no_qr_create"
             android:textSize="20dp"
-            android:layout_marginTop="10dp"
             android:padding="10dp"
             android:ems="10"
             android:background="@drawable/design_btn_register_qr"

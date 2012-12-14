@@ -33,7 +33,7 @@ import android.util.Log;
 
 import java.util.Vector;
 
-import kr.co.bettersoft.carrot.activities.R;
+import kr.co.bettersoft.checkmileage.activities.R;
 
 /**
  * This class handles all the messaging which comprises the state machine for capture.
