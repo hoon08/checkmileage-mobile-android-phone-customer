@@ -97,16 +97,19 @@ public class myWebView extends Activity {
 		// 확대/축소 금지. -> 허용으로 수정.  --> 금지
 //		webSet.setSupportZoom(true);
 //		webSet.setBuiltInZoomControls(true);
+		
 		if(loadingURL.length()>0){
-			postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// 파라미터 : Merchant-Language / Merchant-Country
-			mWeb.postUrl(loadingURL, EncodingUtils.getBytes(postData, "BASE64"));
-//			new backgroundWebView().execute();		// 비동기로 URL 오픈 실행
+////			postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// 파라미터 : Merchant-Language / Merchant-Country
+////			mWeb.postUrl(loadingURL, EncodingUtils.getBytes(postData, "BASE64"));
+//			mWeb.getSettings().setJavaScriptEnabled(true);
+			
+			
+			new backgroundWebView().execute();		// 비동기로 URL 오픈 실행
 //			mWeb.loadUrl(loadingURL);		// url
 		}else{
 			Toast.makeText(myWebView.this, R.string.cant_find_url, Toast.LENGTH_SHORT).show();
 		}
 	}
-	
 	// 비동기 실행
 	public class backgroundWebView extends  AsyncTask<Void, Void, Void> { 
 		@Override protected void onPostExecute(Void result) {  
@@ -114,8 +117,15 @@ public class myWebView extends Activity {
 		@Override protected void onPreExecute() {  
 		} 
 		@Override protected Void doInBackground(Void... params) {  
-			postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// 파라미터 : Merchant-Language / Merchant-Country
-			mWeb.postUrl(loadingURL, EncodingUtils.getBytes(postData, "BASE64"));
+			runOnUiThread(new Runnable(){
+				public void run(){
+					postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// 파라미터 : Merchant-Language / Merchant-Country
+					mWeb.postUrl(loadingURL, EncodingUtils.getBytes(postData, "BASE64"));
+					mWeb.getSettings().setJavaScriptEnabled(true);
+					}
+			});
+//			postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// 파라미터 : Merchant-Language / Merchant-Country
+//			mWeb.postUrl(loadingURL, EncodingUtils.getBytes(postData, "BASE64"));
 			return null; 
 		}
 	}
@@ -164,13 +174,19 @@ public class myWebView extends Activity {
 		}
 	}
     public void checkMyWebViewLoaded(){
-    	if(mWeb.getProgress()<100) {
-            // do what you want
-        	mWeb.stopLoading();
-        	hidePb();
-        	showErrMsg();
-        	finish();
-        }
+    	runOnUiThread(new Runnable(){
+			public void run(){
+				if(mWeb.getProgress()<100) {
+		            // do what you want
+		        	mWeb.stopLoading();
+		        	hidePb();
+		        	showErrMsg();
+		        	finish();
+		        }
+			}
+		});
+    	
+    	
     }
 	/**
 	 * WebChromeClient 를 상속하는 클래스이다.
@@ -241,7 +257,12 @@ public class myWebView extends Activity {
 	@Override
 	public void onStop(){
 		if(mWeb!=null){
-			mWeb.stopLoading();
+			runOnUiThread(new Runnable(){
+				public void run(){
+					mWeb.stopLoading();
+				}
+			});
+			
 		}
 		super.onStop();
 	}
