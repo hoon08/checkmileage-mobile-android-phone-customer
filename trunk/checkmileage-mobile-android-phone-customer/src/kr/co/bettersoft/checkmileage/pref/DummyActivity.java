@@ -97,10 +97,10 @@ public class DummyActivity extends Activity {
     	List<RunningAppProcessInfo> list = actMng.getRunningAppProcesses();
     	for(RunningAppProcessInfo rap : list)
     	{
-    		Log.e("Log","rap.processName:"+rap.processName+"/packageName:"+packageName);
+//    		Log.e("Log","rap.processName:"+rap.processName+"/packageName:"+packageName);
     		if(rap.processName.equals(packageName))
     		{
-    			Log.d("Log","packageName=packageName/"+packageName);
+//    			Log.d("Log","packageName=packageName/"+packageName);
     			isRunning = true;
     			count= count+1;		// 실행중인 캐럿수 (중복 실행 방지 용)
     			Log.d("Log","count:"+count);
