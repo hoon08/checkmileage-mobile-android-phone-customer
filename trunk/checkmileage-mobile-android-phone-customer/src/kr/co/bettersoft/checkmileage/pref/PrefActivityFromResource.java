@@ -220,6 +220,8 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		app_end = 0;
 //		Log.i(TAG, "onResume");		// yyyyMMdd
 		    // Set up a listener whenever a key changes 
+		 getPreferenceScreen().getSharedPreferences() 
+         .registerOnSharedPreferenceChangeListener(this); 
 	}
 
 	@Override 
