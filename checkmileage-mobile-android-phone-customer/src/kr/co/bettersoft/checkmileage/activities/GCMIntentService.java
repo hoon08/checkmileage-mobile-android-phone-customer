@@ -143,7 +143,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
-							connection2.connect();		// *** 
+//							connection2.connect();		// *** 
 							Thread.sleep(200);
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
@@ -157,9 +157,9 @@ public class GCMIntentService extends GCMBaseIntentService {
 							}else{
 								Log.i(TAG, "F to update GCM ID to server");
 							}
-							connection2.disconnect();
+//							connection2.disconnect();
 						}catch(Exception e){ 
-							connection2.disconnect();
+//							connection2.disconnect();
 							e.printStackTrace();
 						}
 					}
@@ -182,15 +182,15 @@ public class GCMIntentService extends GCMBaseIntentService {
 		         connection2.setInstanceFollowRedirects(false);
 		         connection2.setRequestMethod("POST");
 		         connection2.setRequestProperty("Content-Type", "application/json");
-		         connection2.connect();		// *** 
+//		         connection2.connect();		// *** 
 		         OutputStream os2 = connection2.getOutputStream();
 		         os2.write(jsonString.getBytes("UTF-8"));
 		         os2.flush();
 		         System.out.println("postUrl      : " + postUrl2);
 		         System.out.println("responseCode : " + connection2.getResponseCode());
-		         connection2.disconnect();
+//		         connection2.disconnect();
 		  } catch (Exception e) {
-			  connection2.disconnect();
+//			  connection2.disconnect();
 		   Log.e(TAG, "Fail to register category.");
 		  }
 		}
@@ -387,10 +387,10 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Override
 	public void onDestroy(){
 		super.onDestroy();
-		try{
-			if(connection2!=null){
-				connection2.disconnect();
-			}
-		}catch(Exception e){}
+//		try{
+//			if(connection2!=null){
+//				connection2.disconnect();
+//			}
+//		}catch(Exception e){}
 	}
 }

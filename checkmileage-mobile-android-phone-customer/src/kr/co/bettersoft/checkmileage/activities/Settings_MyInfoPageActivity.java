@@ -363,7 +363,7 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
-							connection2.connect();		// *** 
+//							connection2.connect();		// *** 
 							Thread.sleep(200);
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
@@ -375,9 +375,9 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 							InputStream in =  connection2.getInputStream();
 							// 조회한 결과를 처리.
 							theData1(in);
-							connection2.disconnect();
+//							connection2.disconnect();
 						}catch(Exception e){ 
-							connection2.disconnect();
+//							connection2.disconnect();
 							e.printStackTrace();
 						}  
 					}
@@ -435,12 +435,12 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
-								connection2.connect();		// *** 
+//								connection2.connect();		// *** 
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
-								System.out.println("postUrl      : " + postUrl2);
-								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+//								System.out.println("postUrl      : " + postUrl2);
+//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 								responseCode = connection2.getResponseCode();
 								InputStream in =  connection2.getInputStream();
 								// 조회한 결과를 처리.
@@ -454,9 +454,9 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 								}else{
 									Log.e(TAG,"fail to update");
 								}
-								connection2.disconnect();
+//								connection2.disconnect();
 							}catch(Exception e){ 
-								connection2.disconnect();
+//								connection2.disconnect();
 								e.printStackTrace();
 							}  
 						}
@@ -574,8 +574,8 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
     @Override
 	public void onDestroy(){
 		super.onDestroy();
-		try{
-		connection2.disconnect();
-		}catch(Exception e){}
+//		try{
+//		connection2.disconnect();
+//		}catch(Exception e){}
 	}
 }

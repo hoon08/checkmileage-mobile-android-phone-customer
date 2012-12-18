@@ -242,7 +242,7 @@ public class CreateQRPageActivity extends Activity {
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
-							connection2.connect();		// *** 
+//							connection2.connect();		// *** 
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
@@ -253,19 +253,19 @@ public class CreateQRPageActivity extends Activity {
 //							os2.close();		// 
 							if(responseCode==200||responseCode==204){
 								Log.e(TAG, "register user S");
-								connection2.disconnect();
+//								connection2.disconnect();
 							}else{
 								Log.e(TAG, "register user F");		// 오류 발생시 에러 창 띄우고 돌아간다.. 통신에러 발생할수 있다.
 								String alrtMsg = getString(R.string.error_message);
 								alertMsg(alrtMsg);		// toast 사용시 에러 발생하므로 핸들러 통한 토스트
 //								Toast.makeText(CreateQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
-								connection2.disconnect();
+//								connection2.disconnect();
 								Intent backToNoQRIntent = new Intent(CreateQRPageActivity.this, No_QR_PageActivity.class);
 								 startActivity(backToNoQRIntent);
 								 finish();
 							}
 						}catch(Exception e){ 
-							connection2.disconnect();
+//							connection2.disconnect();
 							 e.printStackTrace();			// 오류 발생시 에러 창 띄우고 돌아간다.. 통신에러 발생할수 있다.
 							 String alrtMsg = getString(R.string.error_message);
 							 alertMsg(alrtMsg);		// toast 사용시 에러 발생하므로 핸들러 통한 토스트
@@ -307,8 +307,8 @@ public class CreateQRPageActivity extends Activity {
     @Override
 	public void onDestroy(){
 		super.onDestroy();
-		try{
-		connection2.disconnect();
-		}catch(Exception e){}
+//		try{
+//		connection2.disconnect();
+//		}catch(Exception e){}
 	}
 }
