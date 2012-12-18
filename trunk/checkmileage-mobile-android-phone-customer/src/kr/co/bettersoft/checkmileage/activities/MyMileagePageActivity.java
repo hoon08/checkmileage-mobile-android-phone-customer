@@ -302,7 +302,7 @@ public class MyMileagePageActivity extends Activity {
 						listView.setVisibility(8);			//   0 visible   4 invisible   8 gone
 						emptyView.setVisibility(0);
 					}
-					isRunning = isRunning -1;
+					isRunning = 0;
 				}
 				if(b.getInt("order")==1){
 					// 러닝바 실행
@@ -429,7 +429,7 @@ public class MyMileagePageActivity extends Activity {
 		searched = false;		 
 		
 		if(isRunning<1){								// 다중 실행 방지. 
-			isRunning = isRunning+1;
+			isRunning = 1;
 				myQRcode = MyQRPageActivity.qrCode;
 				new backgroundGetMyMileageList().execute();	// 비동기. 서버로부터 마일리지 리스트 조회
 		}else{
@@ -503,7 +503,7 @@ public class MyMileagePageActivity extends Activity {
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
-								connection2.connect();		// *** 
+//								connection2.connect();		// *** 
 								Thread.sleep(200);
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
@@ -516,11 +516,11 @@ public class MyMileagePageActivity extends Activity {
 //								os2.close();
 								// 조회한 결과를 처리.
 								theData1(in);
-								connection2.disconnect();
+//								connection2.disconnect();
 							}catch(Exception e){ 
 								// 다시
 								e.printStackTrace();
-								connection2.disconnect();
+//								connection2.disconnect();
 								if(reTry>0){
 									Log.w(TAG, "fail and retry remain : "+reTry);
 									reTry = reTry-1;
@@ -534,7 +534,7 @@ public class MyMileagePageActivity extends Activity {
 									Log.w(TAG,"reTry failed - init reTry");
 									reTry = 1;
 									hidePb();
-									isRunning = isRunning-1;
+									isRunning = 0;
 									getDBData();						// 5회 재시도에도 실패하면 db에서 꺼내서 보여준다.
 								}
 							}
@@ -542,7 +542,7 @@ public class MyMileagePageActivity extends Activity {
 					}
 			).start();
 		}else{
-			isRunning = isRunning-1;		// 작업중인 카운팅-1
+			isRunning = 0;		// 작업중인 카운팅-1
 		}
 	}
 
@@ -772,7 +772,7 @@ public class MyMileagePageActivity extends Activity {
 			Log.w(TAG,"onResume, search");
 			if(dontTwice==0){
 				if(isRunning<1){
-					isRunning = isRunning+1;
+					isRunning = 1;
 						myQRcode = MyQRPageActivity.qrCode;
 						new backgroundGetMyMileageList().execute();
 				}else{
@@ -842,7 +842,7 @@ public class MyMileagePageActivity extends Activity {
 	      switch(item.getItemId()){
 	      case Menu. FIRST+1:
 	    	  if(isRunning<1){
-	  			isRunning = isRunning+1;
+	  			isRunning = 1;
 	  				myQRcode = MyQRPageActivity.qrCode;
 	  				new backgroundGetMyMileageList().execute();
 	  		}else{
@@ -898,10 +898,10 @@ public class MyMileagePageActivity extends Activity {
 		@Override
 		public void onDestroy(){
 			super.onDestroy();
-			try{
-				if(connection2!=null){
-					connection2.disconnect();
-				}
-			}catch(Exception e){}
+//			try{
+//				if(connection2!=null){
+//					connection2.disconnect();
+//				}
+//			}catch(Exception e){}
 		}
 }

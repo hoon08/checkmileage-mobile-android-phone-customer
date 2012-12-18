@@ -392,7 +392,7 @@ public class MyQRPageActivity extends Activity {
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
-								connection2.connect();
+//								connection2.connect();
 								Thread.sleep(200);
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
@@ -407,9 +407,9 @@ public class MyQRPageActivity extends Activity {
 								if(responseCode==200 || responseCode==204){
 //									Log.d(TAG,"S");
 								}
-								connection2.disconnect();
+//								connection2.disconnect();
 							}catch(Exception e){ 
-								connection2.disconnect();
+//								connection2.disconnect();
 								Log.d(TAG,"updateLocationToServer->fail");
 							}finally{
 								isUpdating = 0;
@@ -455,11 +455,11 @@ public class MyQRPageActivity extends Activity {
 	@Override
 	public void onDestroy(){
 		super.onDestroy();
-		try{
-			if(connection2!=null){
-				connection2.disconnect();
-			}
-		}catch(Exception e){}
+//		try{
+//			if(connection2!=null){
+//				connection2.disconnect();
+//			}
+//		}catch(Exception e){}
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

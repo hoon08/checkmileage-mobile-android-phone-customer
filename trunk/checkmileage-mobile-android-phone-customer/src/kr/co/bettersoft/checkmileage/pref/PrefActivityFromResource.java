@@ -444,7 +444,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
-							connection2.connect();		// *** 
+//							connection2.connect();		// *** 
 							Thread.sleep(200);	
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
@@ -457,9 +457,9 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 //							os2.close();
 							// 조회한 결과를 처리.
 							theData1(in);
-							connection2.disconnect();
+//							connection2.disconnect();
 						}catch(Exception e){ 
-							connection2.disconnect();
+//							connection2.disconnect();
 							e.printStackTrace();
 						}  
 					}
@@ -517,7 +517,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
-								connection2.connect();		// *** 
+//								connection2.connect();		// *** 
 								Thread.sleep(200);
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
@@ -539,9 +539,9 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								}else{
 									Log.w(TAG,"fail to update");
 								}
-								connection2.disconnect();
+//								connection2.disconnect();
 							}catch(Exception e){ 
-								connection2.disconnect();
+//								connection2.disconnect();
 								e.printStackTrace();
 							}  
 						}
@@ -606,7 +606,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
-								connection2.connect();		// *** 
+//								connection2.connect();		// *** 
 								Thread.sleep(200);
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
@@ -629,9 +629,9 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								}else{
 									Log.w(TAG,"fail to update");
 								}
-								connection2.disconnect();
+//								connection2.disconnect();
 							}catch(Exception e){ 
-								connection2.disconnect();
+//								connection2.disconnect();
 								e.printStackTrace();
 							}  
 						}
@@ -680,7 +680,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
-							connection2.connect();		// *** 
+//							connection2.connect();		// *** 
 							Thread.sleep(200);
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
@@ -698,9 +698,9 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							}else{
 								Log.w(TAG,"fail to update");
 							}
-							connection2.disconnect();
+//							connection2.disconnect();
 						}catch(Exception e){ 
-							connection2.disconnect();
+//							connection2.disconnect();
 							e.printStackTrace();
 						}  
 					}
@@ -971,9 +971,9 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	protected void onDestroy() {
 		resumeCalled = false;		// 또 불러 주십시오.
 		super.onDestroy();
-		try{
-			connection2.disconnect();
-			}catch(Exception e){}
+//		try{
+//			connection2.disconnect();
+//			}catch(Exception e){}
 	}
 	
 }

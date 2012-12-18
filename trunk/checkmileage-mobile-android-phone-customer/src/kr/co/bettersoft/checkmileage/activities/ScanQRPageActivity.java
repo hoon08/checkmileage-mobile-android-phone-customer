@@ -223,7 +223,7 @@ public class ScanQRPageActivity extends Activity {
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
-							connection2.connect();
+//							connection2.connect();
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
@@ -240,9 +240,9 @@ public class ScanQRPageActivity extends Activity {
 								 startActivity(backToNoQRIntent);
 								 finish();
 							}
-							connection2.disconnect();
+//							connection2.disconnect();
 						}catch(Exception e){ 
-							connection2.disconnect();
+//							connection2.disconnect();
 							e.printStackTrace();
 							showErrMSG();
 							 Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
@@ -362,7 +362,7 @@ public class ScanQRPageActivity extends Activity {
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
-							connection2.connect();
+//							connection2.connect();
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
@@ -376,9 +376,9 @@ public class ScanQRPageActivity extends Activity {
 							}else{
 								showErrMSG();
 							}
-							connection2.disconnect();
+//							connection2.disconnect();
 						}catch(Exception e){ 
-							connection2.disconnect();
+//							connection2.disconnect();
 							e.printStackTrace();
 						}
 					}
@@ -512,18 +512,18 @@ public class ScanQRPageActivity extends Activity {
 							if(responseCode==200||responseCode==204){
 								InputStream in =  connection2.getInputStream();
 								Log.d(TAG, "register user S");
-								connection2.disconnect();
+//								connection2.disconnect();
 								goNextPage();				// 다음 페이지로 이동 
 							}else{
 								Log.e(TAG, "register user F");
-								connection2.disconnect();
+//								connection2.disconnect();
 								showErrMSG();
 								 Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
 								 startActivity(backToNoQRIntent);
 								 finish();
 							}
 						}catch(Exception e){ 
-							connection2.disconnect();
+//							connection2.disconnect();
 							e.printStackTrace();
 							showErrMSG();
 							 Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
@@ -563,8 +563,8 @@ public class ScanQRPageActivity extends Activity {
     @Override
 	public void onDestroy(){
 		super.onDestroy();
-		try{
-		connection2.disconnect();
-		}catch(Exception e){}
+//		try{
+//		connection2.disconnect();
+//		}catch(Exception e){}
 	}
 }

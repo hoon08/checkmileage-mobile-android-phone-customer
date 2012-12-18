@@ -396,7 +396,7 @@ public class MemberStoreInfoPage extends Activity {
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
-							connection2.connect();		// ???
+//							connection2.connect();		// ???
 							Thread.sleep(200);	
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
@@ -408,10 +408,10 @@ public class MemberStoreInfoPage extends Activity {
 //							os2.close();
 							// 조회한 결과를 처리.
 							theData1(in);
-							connection2.disconnect();
+//							connection2.disconnect();
 						}catch(Exception e){ 
 							//							e.printStackTrace();
-							connection2.disconnect();
+//							connection2.disconnect();
 						}  
 					}
 				}).start();
@@ -643,10 +643,10 @@ public class MemberStoreInfoPage extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		error = 0;		// 서버 무한 접속 중이라면 종료 시켜야 하기때문..
-		try{
-			if(connection2!=null){
-				connection2.disconnect();
-			}
-		}catch(Exception e){}
+//		try{
+//			if(connection2!=null){
+//				connection2.disconnect();
+//			}
+//		}catch(Exception e){}
 	}
 }

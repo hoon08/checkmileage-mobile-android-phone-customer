@@ -446,7 +446,7 @@ public class PushList extends Activity {
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
-								connection2.connect();		// *** 
+//								connection2.connect();		// *** 
 								Thread.sleep(200);	
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
@@ -459,9 +459,9 @@ public class PushList extends Activity {
 //								os2.close();
 								// 조회한 결과를 처리.
 								getMyEventListResult(in);
-								connection2.disconnect();
+//								connection2.disconnect();
 							}catch(Exception e){ 
-								connection2.disconnect();
+//								connection2.disconnect();
 								// 다시
 //								if(reTry>0){
 //									Log.w(TAG, "fail and retry remain : "+reTry);
@@ -755,10 +755,10 @@ public class PushList extends Activity {
 		
 		@Override
 		public void onDestroy(){
-			super.onDestroy();
 			db.close();
-			try{
-				connection2.disconnect();
-				}catch(Exception e){}
+			super.onDestroy();
+//			try{
+//				connection2.disconnect();
+//				}catch(Exception e){}
 		}
 }

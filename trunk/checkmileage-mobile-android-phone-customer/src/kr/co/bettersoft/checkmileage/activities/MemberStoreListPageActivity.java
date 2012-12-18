@@ -501,7 +501,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
-								connection2.connect();		// *** 
+//								connection2.connect();		// *** 
 								Thread.sleep(200);
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
@@ -515,10 +515,10 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 									// 조회한 결과를 처리.
 									setBusinessKindList(in);
 								}
-								connection2.disconnect();
+//								connection2.disconnect();
 							}catch(Exception e){ 
 								e.printStackTrace();
-								connection2.disconnect();
+//								connection2.disconnect();
 //								if(reTry>0){
 //									reTry = reTry-1;
 //									try {
@@ -681,7 +681,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 									connection2.setInstanceFollowRedirects(false);
 									connection2.setRequestMethod("POST");
 									connection2.setRequestProperty("Content-Type", "application/json");
-									connection2.connect();		// *** 
+//									connection2.connect();		// *** 
 									Thread.sleep(200);
 									OutputStream os2 = connection2.getOutputStream();
 									os2.write(jsonString.getBytes("UTF-8"));
@@ -708,10 +708,10 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 										).start();
 										isRunning = 0;
 									}
-									connection2.disconnect();
+//									connection2.disconnect();
 								}catch(Exception e){ 
 									e.printStackTrace();
-									connection2.disconnect();
+//									connection2.disconnect();
 									// 실행중 에러나면 로딩바 없애고 다시 할수 있도록
 									new Thread(
 											new Runnable(){
@@ -1290,10 +1290,10 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		    @Override
 			public void onDestroy(){
 				super.onDestroy();
-				try{
-					if(connection2!=null){
-						connection2.disconnect();
-					}
-				}catch(Exception e){}
+//				try{
+//					if(connection2!=null){
+//						connection2.disconnect();
+//					}
+//				}catch(Exception e){}
 			}
 }
