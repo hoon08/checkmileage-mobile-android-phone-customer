@@ -341,7 +341,7 @@ public class MyQRPageActivity extends Activity {
 		} 
 		@Override protected Void doInBackground(Void... params) {  
 			Log.d(TAG,"backgroundUpdateMyLocationtoServer");
-        		updateLocationToServer();
+        		updateLocationToServer_pre();
 			return null; 
 		}
 	}
@@ -352,6 +352,26 @@ public class MyQRPageActivity extends Activity {
 	 * //checkMileageMemberController  updateMemberLocation   checkMileageMember  
 	 *	// checkMileageId  latitude  longitude  activateYn  modifyDate
 	 */
+	public void updateLocationToServer_pre(){
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Log.d(TAG,"updateLocationToServer_pre");
+						try{
+							Thread.sleep(CommonUtils.threadWaitngTime);
+						}catch(Exception e){
+						}finally{
+							if(CommonUtils.usingNetwork<1){
+								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+								updateLocationToServer();
+							}else{
+								updateLocationToServer_pre();
+							}
+						}
+					}
+				}
+			).start();
+	}
 	public void updateLocationToServer(){
 		if(isUpdating==0){
 			isUpdating = 1;
@@ -413,6 +433,10 @@ public class MyQRPageActivity extends Activity {
 								Log.d(TAG,"updateLocationToServer->fail");
 							}finally{
 								isUpdating = 0;
+								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+									CommonUtils.usingNetwork = 0;
+								}
 							}
 						}
 					}

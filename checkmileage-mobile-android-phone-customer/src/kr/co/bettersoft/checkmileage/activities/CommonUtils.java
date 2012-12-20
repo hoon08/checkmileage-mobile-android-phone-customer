@@ -41,6 +41,11 @@ public class CommonUtils extends Activity {
 	
 //	public static String prefPath = "kr.co.bettersoft.checkmileage.pref";
 	
+	
+	public static int usingNetwork = 0;
+	
+	public static int threadWaitngTime = 500;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

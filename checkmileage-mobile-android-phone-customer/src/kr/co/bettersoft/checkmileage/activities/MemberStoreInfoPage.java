@@ -300,15 +300,16 @@ public class MemberStoreInfoPage extends Activity {
 		idCheckMileageMileages = rIntent.getStringExtra("idCheckMileageMileages");		// 내 아디
 		merchantData.setMerchantID(merchantId);
 		if(merchantId.length()>0){
-			try {
-				getMerchantInfo();				// 가맹점 정보 가져옴
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			getMerchantInfo_pre();
+//			try {
+//				getMerchantInfo();				// 가맹점 정보 가져옴
+//			} catch (JSONException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		}else{
 			showMSG();		// 에러시 핸들러 통한 토스트
 			//			Toast.makeText(MemberStoreInfoPage.this, R.string.error_message, Toast.LENGTH_SHORT).show();
@@ -369,6 +370,35 @@ public class MemberStoreInfoPage extends Activity {
 	 *  받는 파라미터 : CheckMileageMerchant
 	 *    
 	 */
+	public void getMerchantInfo_pre(){
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Log.d(TAG,"getMerchantInfo_pre");
+						try{
+							Thread.sleep(CommonUtils.threadWaitngTime);
+						}catch(Exception e){
+						}finally{
+							if(CommonUtils.usingNetwork<1){
+								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+								try {
+									getMerchantInfo();				// 가맹점 정보 가져옴
+								} catch (JSONException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}else{
+								getMerchantInfo_pre();
+							}
+						}
+					}
+				}
+			).start();
+	}
+	
 	public void getMerchantInfo() throws JSONException, IOException {
 		Log.i(TAG, "getMerchantInfo");
 		controllerName = "checkMileageMerchantController";
@@ -413,6 +443,10 @@ public class MemberStoreInfoPage extends Activity {
 							//							e.printStackTrace();
 //							connection2.disconnect();
 						}  
+						CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+						if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+							CommonUtils.usingNetwork = 0;
+						}
 					}
 				}).start();
 	}

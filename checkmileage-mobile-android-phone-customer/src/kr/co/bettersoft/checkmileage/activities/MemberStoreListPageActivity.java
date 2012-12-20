@@ -448,6 +448,26 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	 *   앞의 두개는 모바일에서 값을 꺼내서 사용한다. 액티브는 Y 값을 사용.
 	 *   결과 값 : List<checkMileageBusinessKind>  의 content 를 사용한다.
 	 */
+	public void getBusinessKindList_pre(){
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Log.d(TAG,"getBusinessKindList_pre");
+						try{
+							Thread.sleep(CommonUtils.threadWaitngTime);
+						}catch(Exception e){
+						}finally{
+							if(CommonUtils.usingNetwork<1){
+								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+								getBusinessKindList();
+							}else{
+								getBusinessKindList_pre();
+							}
+						}
+					}
+				}
+			).start();
+	}
 	public void getBusinessKindList(){
 		if(CheckNetwork()){
 			Log.i(TAG, "getBusinessKindList");
@@ -536,6 +556,10 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 //									searchBtn.setEnabled(true);
 									showInfo();		// 핸들러에서 함께 처리
 //								}
+							}
+							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+								CommonUtils.usingNetwork = 0;
 							}
 						}
 					}
@@ -677,6 +701,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 									postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 									connection2 = (HttpURLConnection) postUrl2.openConnection();
 									Thread.sleep(200);
+									connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
 									connection2.setDoOutput(true);
 									connection2.setInstanceFollowRedirects(false);
 									connection2.setRequestMethod("POST");
@@ -783,7 +808,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		Log.d(TAG,"수신::"+builder.toString());
+//		Log.d(TAG,"수신::"+builder.toString());
 		String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다
 		// // // // // // // 바로 바로 화면에 add 하고 터치시 값 가져다가 상세 정보 보도록....
 		
@@ -1147,7 +1172,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		} 
 		@Override protected Void doInBackground(Void... params) {  
 			Log.d(TAG,"backgroundGetBusinessKindList");
-			getBusinessKindList();
+			getBusinessKindList_pre();
 			return null; 
 		}
 	}

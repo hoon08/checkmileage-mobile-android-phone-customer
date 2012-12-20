@@ -6,6 +6,6 @@
  
     <item android:state_selected="true" android:drawable="@drawable/design_menu_search_on" />
  
-    <item android:drawable="@drawable/tab03" />
+    <item android:drawable="@drawable/design_menu_search_off" />
  
 </selector>
