@@ -86,7 +86,7 @@ public class MyMileagePageActivity extends Activity {
 	
 	URL postUrl2;
 	HttpURLConnection connection2;
-	int reTry = 1;		// 재시도 횟수
+//	int reTry = 1;		// 재시도 횟수
 	
 	int merchantNameMaxLength = 9;			// 가맹점명 표시될 최대 글자수.
 	String newMerchantName="";
@@ -448,13 +448,14 @@ public class MyMileagePageActivity extends Activity {
         @Override protected Void doInBackground(Void... params) { 
         	Log. d(TAG,"backgroundGetMyMileageList");
         	showPb();
-			try {
-				getMyMileageList();
-			} catch (JSONException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+        	getMyMileageList_pre();
+//			try {
+//				getMyMileageList();
+//			} catch (JSONException e) {
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
         	return null ;
         }
  }
@@ -474,6 +475,34 @@ public class MyMileagePageActivity extends Activity {
 	 * |[이미지 하]	[ 가 맹 점 이 용 시 각 ]    |  전번. 
 	 * ------------------------------------
 	 */
+	public void getMyMileageList_pre(){
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Log.d(TAG,"getMyMileageList_pre");
+						try{
+							Thread.sleep(CommonUtils.threadWaitngTime);
+						}catch(Exception e){
+						}finally{
+							if(CommonUtils.usingNetwork<1){
+								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+								try {
+									getMyMileageList();
+								} catch (JSONException e) {
+									e.printStackTrace();
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+							}else{
+								getMyMileageList_pre();
+							}
+						}
+					}
+				}
+			).start();
+	}
+	
+	
 	public void getMyMileageList() throws JSONException, IOException {
 //		Log.i(TAG, "getMyMileageList");
 		if(CheckNetwork()){
@@ -521,22 +550,26 @@ public class MyMileagePageActivity extends Activity {
 								// 다시
 								e.printStackTrace();
 //								connection2.disconnect();
-								if(reTry>0){
-									Log.w(TAG, "fail and retry remain : "+reTry);
-									reTry = reTry-1;
-									try {
-										Thread.sleep(200);
-										getMyMileageList();
-									} catch (Exception e1) {
-										Log.w(TAG,"again is failed() and again... ;");
-									}	
-								}else{
-									Log.w(TAG,"reTry failed - init reTry");
-									reTry = 1;
+//								if(reTry>0){
+//									Log.w(TAG, "fail and retry remain : "+reTry);
+//									reTry = reTry-1;
+//									try {
+//										Thread.sleep(200);
+//										getMyMileageList();
+//									} catch (Exception e1) {
+//										Log.w(TAG,"again is failed() and again... ;");
+//									}	
+//								}else{
+//									Log.w(TAG,"reTry failed - init reTry");
+//									reTry = 1;
 									hidePb();
 									isRunning = 0;
 									getDBData();						// 5회 재시도에도 실패하면 db에서 꺼내서 보여준다.
-								}
+//								}
+							}
+							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+								CommonUtils.usingNetwork = 0;
 							}
 						}
 					}
@@ -693,7 +726,7 @@ public class MyMileagePageActivity extends Activity {
 				e.printStackTrace();
 			}finally{
 				dbInEntries = entries; 
-				reTry = 1;				// 재시도 횟수 복구
+//				reTry = 1;				// 재시도 횟수 복구
 				searched = true;
 				// db 에 데이터를 넣는다.
 				try{

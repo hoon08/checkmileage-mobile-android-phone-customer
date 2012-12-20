@@ -16,7 +16,7 @@
         />
  
     <item 
-        android:drawable="@drawable/tab02"
+        android:drawable="@drawable/design_menu_mileage_off"
          />
  
 </selector>

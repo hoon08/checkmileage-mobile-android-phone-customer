@@ -400,13 +400,7 @@ public class PushList extends Activity {
 		}
 		@Override protected Void doInBackground(Void... params) { 
 			Log. d(TAG,"backgroundGetMyEventList");
-			try {
-				getMyEventList();
-			} catch (JSONException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			getMyEventList_pre();
 			return null ;
 		}
 	}
@@ -419,6 +413,32 @@ public class PushList extends Activity {
 	 * 보내는 파라미터 : checkMileageId  activateYn
 	 * 받는 데이터 : List<CheckMileageMerchantMarketing>
 	 */
+	public void getMyEventList_pre(){
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Log.d(TAG,"getMyEventList_pre");
+						try{
+							Thread.sleep(CommonUtils.threadWaitngTime);
+						}catch(Exception e){
+						}finally{
+							if(CommonUtils.usingNetwork<1){
+								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+								try {
+									getMyEventList();
+								} catch (JSONException e) {
+									e.printStackTrace();
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+							}else{
+								getMyEventList_pre();
+							}
+						}
+					}
+				}
+			).start();
+	}
 	public void getMyEventList() throws JSONException, IOException {
 		Log.i(TAG, "getMyEventList");
 		if(CheckNetwork()){
@@ -479,6 +499,10 @@ public class PushList extends Activity {
 //									isRunning = isRunning-1;
 //									getEventDBData();						// n회 재시도에도 실패하면 db에서 꺼내서 보여준다.
 //								}
+							}
+							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+								CommonUtils.usingNetwork = 0;
 							}
 						}
 					}
