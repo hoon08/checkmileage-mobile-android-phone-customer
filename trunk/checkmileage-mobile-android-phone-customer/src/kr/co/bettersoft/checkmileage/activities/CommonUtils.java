@@ -43,7 +43,6 @@ public class CommonUtils extends Activity {
 	
 	
 	public static int usingNetwork = 0;
-	
 	public static int threadWaitngTime = 500;
 	
 	@Override
