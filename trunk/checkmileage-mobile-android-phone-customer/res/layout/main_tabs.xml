@@ -2,15 +2,14 @@
 <TabHost xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/tabhost"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" 
-    >
+    android:layout_height="fill_parent" >
 
     <LinearLayout
         android:id="@+id/tapParent"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical" >
-        
+
         <FrameLayout
             android:id="@android:id/tabcontent"
             android:layout_width="fill_parent"
@@ -18,18 +17,99 @@
             android:layout_weight="0.22" >
         </FrameLayout>
 
-		<TabWidget
-		    android:id="@android:id/tabs"
-		    android:windowSoftInputMode="adjustPan"
-		    android:layout_width="fill_parent"
-		    android:layout_height="49dp"
-		    
-		    android:gravity="center"
-		    android:tabStripEnabled="false"
-		    
-		    android:background = "@drawable/design_bg_tab_menu"
-		   
-		     >
-        </TabWidget>
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="fill_parent"
+                android:layout_height="49dp"
+                android:background="@drawable/design_bg_tab_menu"
+                android:gravity="center"
+                android:tabStripEnabled="false"
+                android:windowSoftInputMode="adjustPan" >
+            </TabWidget>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="49dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="49dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="0dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_weight="25"
+                    android:gravity="right|top"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="49dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="0dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_weight="25"
+                    android:gravity="center_horizontal|top"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                    	android:layout_marginTop="2dp"
+                        android:text=" 100 "
+                        android:textColor="#FFFFFF"
+                        android:background="@drawable/design_bg_badge"
+                        android:textSize="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="49dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="0dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_weight="25"
+                    android:gravity="right|top"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="49dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="0dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_weight="25"
+                    android:gravity="right|top"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="10dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
     </LinearLayout>
+
 </TabHost>
