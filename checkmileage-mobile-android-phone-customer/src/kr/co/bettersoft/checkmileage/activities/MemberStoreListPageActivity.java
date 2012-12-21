@@ -469,7 +469,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 //			).start();
 //	}
 	public void getBusinessKindList(){
-		if(CheckNetwork()){
+		if(true){
+//		if(CheckNetwork()){
 			Log.i(TAG, "getBusinessKindList");
 			// 로딩중입니다..  
 			new Thread(	
@@ -640,7 +641,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	 *  
 	 */
 	public void getMemberStoreList() throws JSONException, IOException {
-		if(CheckNetwork()){
+		if(true){
+//		if(CheckNetwork()){
 			Log.i(TAG, "getMemberStoreList");
 			controllerName = "checkMileageMerchantController";
 			methodName = "selectSearchMerchantList";
