@@ -142,6 +142,9 @@ public class MainActivity extends Activity {
 		mainActivity = MainActivity.this;		// 다른데서 여기 종료시키기 위함.
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.intro);
+		
+//		CommonUtils.usingNetwork = 0;		// 서버 통신 카운터 초기화
+		
 		initDB();
 		getDBData();
 		db.close();

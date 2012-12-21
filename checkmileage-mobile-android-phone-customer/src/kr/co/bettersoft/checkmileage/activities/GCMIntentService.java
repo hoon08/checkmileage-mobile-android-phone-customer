@@ -102,7 +102,8 @@ public class GCMIntentService extends GCMBaseIntentService {
 		} 
 		@Override protected Void doInBackground(Void... params) {  
 			Log.d(TAG,"backgroundUpdateMyGCMtoServer");
-        		updateMyGCMtoServer_pre();
+//        		updateMyGCMtoServer_pre();
+        		updateMyGCMtoServer();
 //			try {						// gcm 확인용
 //				testGCM(regIdGCM);
 //			} catch (JSONException e) {
@@ -114,26 +115,26 @@ public class GCMIntentService extends GCMBaseIntentService {
 		}
 	}
 
-	public void updateMyGCMtoServer_pre(){
-		new Thread(
-			new Runnable(){
-				public void run(){
-					Log.d(TAG,"updateMyGCMtoServer_pre");
-					try{
-						Thread.sleep(CommonUtils.threadWaitngTime);
-					}catch(Exception e){
-					}finally{
-						if(CommonUtils.usingNetwork<1){
-							CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-							updateMyGCMtoServer();
-						}else{
-							updateMyGCMtoServer_pre();
-						}
-					}
-				}
-			}
-		).start();
-	}
+//	public void updateMyGCMtoServer_pre(){
+//		new Thread(
+//			new Runnable(){
+//				public void run(){
+//					Log.d(TAG,"updateMyGCMtoServer_pre");
+//					try{
+//						Thread.sleep(CommonUtils.threadWaitngTime);
+//					}catch(Exception e){
+//					}finally{
+//						if(CommonUtils.usingNetwork<1){
+//							CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+//							updateMyGCMtoServer();
+//						}else{
+//							updateMyGCMtoServer_pre();
+//						}
+//					}
+//				}
+//			}
+//		).start();
+//	}
 	
 	
 	//서버에 GCM 아이디 업뎃한다.
@@ -185,10 +186,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 //							connection2.disconnect();
 							e.printStackTrace();
 						}
-						CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-						if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-							CommonUtils.usingNetwork = 0;
-						}
+//						CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+//						if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+//							CommonUtils.usingNetwork = 0;
+//						}
 					}
 				}
 		).start();
