@@ -109,6 +109,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	TextView searchText;			//검색어
 	Button searchBtn;				//검색버튼
 	View parentLayout;			// 키보드 자동 숨김용도
+//	View parentLayout2;			// 키보드 자동 숨김용도
 	InputMethodManager imm;
 	int indexDataFirst = 0;			// 부분 검색 위한 인덱스. 시작점
 	int indexDataLast = 0;			// 부분 검색 위한 인덱스. 끝점
@@ -140,7 +141,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	ProgressBar pb2;		// 하단 추가 진행바
 	
 	// ListView에 뿌릴 Data 를 위한 스피너 데이터들. --> 나중에 서버 통신하여 처음에 가져와서 만들어 지도록 한다.
-	String[] areas = {"전지역", "홍대", "신촌", "영등포", "신림", "강남", "종로", "건대", "노원", "대학로", "여의도"};			// 나중에 조회 해 올 것..
+//	String[] areas = {"전지역", "홍대", "신촌", "영등포", "신림", "강남", "종로", "건대", "노원", "대학로", "여의도"};			// 나중에 조회 해 올 것..
 	String[] jobs = {"", ""};
 	String[] tmpJobs = null;
 	GridView gridView;
@@ -253,18 +254,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		entriesFn = new ArrayList<CheckMileageMerchants>();
 		
 		parentLayout = findViewById(R.id.member_store_list_parent_layout);		// 부모 레이아웃- 리스너를 달아서 키보드 자동 숨김에 사용
+//		parentLayout2 = findViewById(R.id.member_store_list_parent_layout2);		// 부모 레이아웃- 리스너를 달아서 키보드 자동 숨김에 사용
 		imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE); 	// 가상키보드 닫기위함
-		
-		// 부모 레이아웃 리스너 - 외부 터치 시 키보드 숨김 용도
-	    parentLayout.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-//				Log.w(TAG,"parentLayout click");
-				imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-				imm .hideSoftInputFromWindow(searchText.getWindowToken(), 0);
-			}
-		});
-	    
 	    
 		// 크기 측정
 		float screenWidth = this.getResources().getDisplayMetrics().widthPixels;
@@ -288,6 +279,23 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		// spinner listener
 		searchSpinnerType.setOnItemSelectedListener(this);
 		
+		// 부모 레이아웃 리스너 - 외부 터치 시 키보드 숨김 용도
+	    parentLayout.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.w(TAG,"parentLayout click");
+				imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm .hideSoftInputFromWindow(searchText.getWindowToken(), 0);
+			}
+		});
+//	    parentLayout2.setOnClickListener(new OnClickListener() {
+//		@Override
+//		public void onClick(View v) {
+//			Log.w(TAG,"parentLayout2 click");
+//			imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//			imm .hideSoftInputFromWindow(searchText.getWindowToken(), 0);
+//		}
+//		});
 		searchBtn.setOnClickListener(new Button.OnClickListener()  {
 			public void onClick(View v)  {
 				goSearch();		 // 단어로 검색 ㄱㄱ 
@@ -300,6 +308,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		imgAdapter = new MemberStoreSearchListAdapter(this, entriesFn);
 		gridView  = (GridView)findViewById(R.id.gridview);
 		gridView.setAdapter(imgAdapter);
+		
 		// 클릭시 상세보기 페이지로
 		gridView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View v,

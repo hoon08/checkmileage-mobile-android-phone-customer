@@ -3,10 +3,10 @@
     android:id="@+id/member_store_list_parent_layout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:gravity="center"
-    android:orientation="vertical" 
     android:background="@drawable/design_bg_search"
-    >
+    android:gravity="center"
+    android:orientation="vertical" >
+
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="50dp"
@@ -15,21 +15,23 @@
         android:text="@string/member_store_list_title"
         android:textColor="@android:color/white"
         android:textSize="17dp" />
-<LinearLayout
-    android:layout_marginLeft="2dp"
-    android:layout_marginRight="2dp"
-    android:layout_marginTop="5dp"
-        android:id="@+id/LinearLayout123"
+
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="45dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginTop="5dp"
         android:gravity="center_vertical"
         android:orientation="horizontal" >
-		<TextView
+
+        <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text=" "
             android:textSize="20dp" />
+
         <Spinner
             android:id="@+id/searchSpinnerType"
             android:layout_width="0dp"
@@ -44,52 +46,54 @@
             android:layout_weight="2"
             android:text=" "
             android:textSize="20dp" />
-        
-        <EditText 
+
+        <EditText
             android:id="@+id/store_search_text"
-			android:layout_marginTop="1dp"		
-			android:layout_marginBottom="1dp"	
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:layout_marginTop="1dp"
             android:layout_weight="30"
             android:text=""
-            android:textSize="12dp" 
-            />
+            android:textSize="12dp" />
+
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:text=" "
             android:textSize="20dp" />
-        <Button 
+
+        <Button
             android:id="@+id/store_search_btn"
-            android:layout_marginBottom="1dp"	
             android:layout_width="38dp"
             android:layout_height="38dp"
-            android:gravity="center"
-            android:textSize="8dp"
-            android:text="" 
+            android:layout_marginBottom="1dp"
             android:background="@drawable/design_btn_search"
-            />
+            android:gravity="center"
+            android:text=""
+            android:textSize="8dp" />
+
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text=" "
             android:textSize="20dp" />
-		<Spinner
+
+        <Spinner
             android:id="@+id/searchSpinnerArea"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0"
             android:gravity="center"
             android:textSize="15dp" />
-        
     </LinearLayout>
 
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
+
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -107,32 +111,27 @@
 
             <TextView
                 android:id="@+id/empty1"
-                android:layout_marginLeft="5dp"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
                 android:text="@string/no_shop_info"
                 android:visibility="gone" />
         </LinearLayout>
-        
-		<LinearLayout
+
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:gravity="center_vertical|center_horizontal"
-            android:orientation="vertical" 
-            >
+            android:orientation="vertical" >
 
             <ProgressBar
                 android:id="@+id/memberstore_list_ProgressBar01"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="invisible" 
-                />
+                android:visibility="invisible" />
         </LinearLayout>
-        
-        
-        
-        
+
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
