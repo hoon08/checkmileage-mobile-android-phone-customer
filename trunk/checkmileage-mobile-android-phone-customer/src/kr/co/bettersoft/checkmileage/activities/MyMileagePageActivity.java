@@ -503,7 +503,8 @@ public class MyMileagePageActivity extends Activity {
 //	}
 	public void getMyMileageList() throws JSONException, IOException {
 //		Log.i(TAG, "getMyMileageList");
-		if(CheckNetwork()){
+		if(true){
+//		if(CheckNetwork()){
 			controllerName = "checkMileageMileageController";
 			methodName = "selectMemberMerchantMileageList";
 			showPb();

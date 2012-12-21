@@ -104,31 +104,35 @@ public class myWebView extends Activity {
 //			mWeb.getSettings().setJavaScriptEnabled(true);
 			
 			
-			new backgroundWebView().execute();		// 비동기로 URL 오픈 실행
+//			new backgroundWebView().execute();		// 비동기로 URL 오픈 실행
+			// 비동기 -> 바로 열도록 수정
+			postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// 파라미터 : Merchant-Language / Merchant-Country
+			mWeb.postUrl(loadingURL, EncodingUtils.getBytes(postData, "BASE64"));
+			mWeb.getSettings().setJavaScriptEnabled(true);
 //			mWeb.loadUrl(loadingURL);		// url
 		}else{
 			Toast.makeText(myWebView.this, R.string.cant_find_url, Toast.LENGTH_SHORT).show();
 		}
 	}
 	// 비동기 실행
-	public class backgroundWebView extends  AsyncTask<Void, Void, Void> { 
-		@Override protected void onPostExecute(Void result) {  
-		} 
-		@Override protected void onPreExecute() {  
-		} 
-		@Override protected Void doInBackground(Void... params) {  
-			runOnUiThread(new Runnable(){
-				public void run(){
-					postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// 파라미터 : Merchant-Language / Merchant-Country
-					mWeb.postUrl(loadingURL, EncodingUtils.getBytes(postData, "BASE64"));
-					mWeb.getSettings().setJavaScriptEnabled(true);
-					}
-			});
-//			postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// 파라미터 : Merchant-Language / Merchant-Country
-//			mWeb.postUrl(loadingURL, EncodingUtils.getBytes(postData, "BASE64"));
-			return null; 
-		}
-	}
+//	public class backgroundWebView extends  AsyncTask<Void, Void, Void> { 
+//		@Override protected void onPostExecute(Void result) {  
+//		} 
+//		@Override protected void onPreExecute() {  
+//		} 
+//		@Override protected Void doInBackground(Void... params) {  
+//			runOnUiThread(new Runnable(){
+//				public void run(){
+//					postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// 파라미터 : Merchant-Language / Merchant-Country
+//					mWeb.postUrl(loadingURL, EncodingUtils.getBytes(postData, "BASE64"));
+//					mWeb.getSettings().setJavaScriptEnabled(true);
+//					}
+//			});
+////			postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// 파라미터 : Merchant-Language / Merchant-Country
+////			mWeb.postUrl(loadingURL, EncodingUtils.getBytes(postData, "BASE64"));
+//			return null; 
+//		}
+//	}
 	
 	
 	@Override 
