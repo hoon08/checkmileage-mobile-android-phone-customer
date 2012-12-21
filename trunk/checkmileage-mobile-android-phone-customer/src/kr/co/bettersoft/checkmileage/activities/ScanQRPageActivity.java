@@ -182,7 +182,8 @@ public class ScanQRPageActivity extends Activity {
 						}
 				).start();
 				
-				checkAlreadyExistID_pre();		// 서버에 아이디 있는지 확인해서 없으면 등록하고,  있으면 설정 정보를 가져와서 로컬에 저장한다.
+//				checkAlreadyExistID_pre();		// 서버에 아이디 있는지 확인해서 없으면 등록하고,  있으면 설정 정보를 가져와서 로컬에 저장한다.
+				checkAlreadyExistID();		// 서버에 아이디 있는지 확인해서 없으면 등록하고,  있으면 설정 정보를 가져와서 로컬에 저장한다.
 			} else if(resultCode == RESULT_CANCELED) {
 				// 취소 또는 실패시 이전화면으로.
 				showErrMSG();
@@ -199,26 +200,26 @@ public class ScanQRPageActivity extends Activity {
 	 *  아이디로 서버에 조회해서 이미 등록된 아이디인지 확인한다.
 	 *    이미 등록된 아이디인 경우 추가 등록할 필요가 없다. 대신 설정 정보를 가져와서 로컬에 저장한다.
 	 */
-	public void checkAlreadyExistID_pre(){
-		new Thread(
-				new Runnable(){
-					public void run(){
-						Log.d(TAG,"updateMyGCMtoServer_pre");
-						try{
-							Thread.sleep(CommonUtils.threadWaitngTime);
-						}catch(Exception e){
-						}finally{
-							if(CommonUtils.usingNetwork<1){
-								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-								checkAlreadyExistID();
-							}else{
-								checkAlreadyExistID_pre();
-							}
-						}
-					}
-				}
-			).start();
-	}
+//	public void checkAlreadyExistID_pre(){
+//		new Thread(
+//				new Runnable(){
+//					public void run(){
+//						Log.d(TAG,"updateMyGCMtoServer_pre");
+//						try{
+//							Thread.sleep(CommonUtils.threadWaitngTime);
+//						}catch(Exception e){
+//						}finally{
+//							if(CommonUtils.usingNetwork<1){
+//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+//								checkAlreadyExistID();
+//							}else{
+//								checkAlreadyExistID_pre();
+//							}
+//						}
+//					}
+//				}
+//			).start();
+//	}
 	public void checkAlreadyExistID(){
 		Log.i(TAG, "checkAlreadyExistID");
 		controllerName = "checkMileageMemberController";
@@ -254,16 +255,16 @@ public class ScanQRPageActivity extends Activity {
 								InputStream in =  connection2.getInputStream();
 								// 조회한 결과를 처리.
 								checkUserID(in);
-								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-									CommonUtils.usingNetwork = 0;
-								}
+//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+//									CommonUtils.usingNetwork = 0;
+//								}
 							}else{
 								showErrMSG();
-								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-									CommonUtils.usingNetwork = 0;
-								}
+//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+//									CommonUtils.usingNetwork = 0;
+//								}
 								 Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
 								 startActivity(backToNoQRIntent);
 								 finish();
@@ -271,10 +272,10 @@ public class ScanQRPageActivity extends Activity {
 //							connection2.disconnect();
 						}catch(Exception e){ 
 //							connection2.disconnect();
-							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-								CommonUtils.usingNetwork = 0;
-							}
+//							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+//							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+//								CommonUtils.usingNetwork = 0;
+//							}
 							e.printStackTrace();
 							showErrMSG();
 							 Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
@@ -311,7 +312,8 @@ public class ScanQRPageActivity extends Activity {
 					idExist = "0";
 				}
 				if(idExist.equals("0")){		// 서버에 아이디가 없으면 업데이트 해준다. 
-					saveQRtoServer_pre();		
+//					saveQRtoServer_pre();		
+					saveQRtoServer();		
 				}else{							// 서버에 아이디가 있으면 설정을 받아와서 저장해야 한다.
 					Log.d(TAG,"idExist, getSettingsFromServer = T");
 					//설정 정보를 가져와서 저장 함.  핸들러를 이용한다.
@@ -357,7 +359,8 @@ public class ScanQRPageActivity extends Activity {
         @Override protected void onPreExecute() {  }
         @Override protected Void doInBackground(Void... params) { 
         	Log. d(TAG,"backgroundGetUserSettingsFromServer");
-        	getUserSettingsFromServer_pre();
+//        	getUserSettingsFromServer_pre();
+        	getUserSettingsFromServer();
         	return null ;
         }
 	}
@@ -366,26 +369,26 @@ public class ScanQRPageActivity extends Activity {
 	 *     이전 사용자일 경우 서버로부터 사용자 설정 정보를 가져와서 모바일의 설정 정보에 대입시킨다..
 	 *     비번의 경우 분실시 어플 삭제후 재설치.. 재 인증 받는다. 그럼 비번 초기화.
 	 */
-	public void getUserSettingsFromServer_pre(){
-		new Thread(
-				new Runnable(){
-					public void run(){
-						Log.d(TAG,"getUserSettingsFromServer_pre");
-						try{
-							Thread.sleep(CommonUtils.threadWaitngTime);
-						}catch(Exception e){
-						}finally{
-							if(CommonUtils.usingNetwork<1){
-								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-								getUserSettingsFromServer();
-							}else{
-								getUserSettingsFromServer_pre();
-							}
-						}
-					}
-				}
-			).start();
-	}
+//	public void getUserSettingsFromServer_pre(){
+//		new Thread(
+//				new Runnable(){
+//					public void run(){
+//						Log.d(TAG,"getUserSettingsFromServer_pre");
+//						try{
+//							Thread.sleep(CommonUtils.threadWaitngTime);
+//						}catch(Exception e){
+//						}finally{
+//							if(CommonUtils.usingNetwork<1){
+//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+//								getUserSettingsFromServer();
+//							}else{
+//								getUserSettingsFromServer_pre();
+//							}
+//						}
+//					}
+//				}
+//			).start();
+//	}
 	public void getUserSettingsFromServer(){		// 서버로부터 설정 정보를 받는다.  아이디를 사용.모든데이터.  CheckMileageMember
 		Log.d(TAG, "getUserSettingsFromServer");
 		controllerName = "checkMileageMemberController";
@@ -430,10 +433,10 @@ public class ScanQRPageActivity extends Activity {
 //							connection2.disconnect();
 							e.printStackTrace();
 						}
-						CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-						if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-							CommonUtils.usingNetwork = 0;
-						}
+//						CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+//						if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+//							CommonUtils.usingNetwork = 0;
+//						}
 					}
 				}
 		).start();
@@ -512,26 +515,26 @@ public class ScanQRPageActivity extends Activity {
      *   서버에 생성한 QR 아이디를 등록.(서버에 등록되어있지 않은경우 호출)
      *   
      */
-	public void saveQRtoServer_pre(){
-		new Thread(
-				new Runnable(){
-					public void run(){
-						Log.d(TAG,"saveQRtoServer_pre");
-						try{
-							Thread.sleep(CommonUtils.threadWaitngTime);
-						}catch(Exception e){
-						}finally{
-							if(CommonUtils.usingNetwork<1){
-								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-								saveQRtoServer();
-							}else{
-								saveQRtoServer_pre();
-							}
-						}
-					}
-				}
-			).start();
-	}
+//	public void saveQRtoServer_pre(){
+//		new Thread(
+//				new Runnable(){
+//					public void run(){
+//						Log.d(TAG,"saveQRtoServer_pre");
+//						try{
+//							Thread.sleep(CommonUtils.threadWaitngTime);
+//						}catch(Exception e){
+//						}finally{
+//							if(CommonUtils.usingNetwork<1){
+//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+//								saveQRtoServer();
+//							}else{
+//								saveQRtoServer_pre();
+//							}
+//						}
+//					}
+//				}
+//			).start();
+//	}
     public void saveQRtoServer(){
     	Log.i(TAG, "saveQRtoServer");
 		controllerName = "checkMileageMemberController";
@@ -586,28 +589,28 @@ public class ScanQRPageActivity extends Activity {
 								InputStream in =  connection2.getInputStream();
 								Log.d(TAG, "register user S");
 //								connection2.disconnect();
-								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-									CommonUtils.usingNetwork = 0;
-								}
+//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+//									CommonUtils.usingNetwork = 0;
+//								}
 								goNextPage();				// 다음 페이지로 이동 
 							}else{
 								Log.e(TAG, "register user F");
 //								connection2.disconnect();
 								showErrMSG();
-								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-									CommonUtils.usingNetwork = 0;
-								}
+//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+//									CommonUtils.usingNetwork = 0;
+//								}
 								 Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
 								 startActivity(backToNoQRIntent);
 								 finish();
 							}
 						}catch(Exception e){ 
-							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-								CommonUtils.usingNetwork = 0;
-							}
+//							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+//							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+//								CommonUtils.usingNetwork = 0;
+//							}
 //							connection2.disconnect();
 							e.printStackTrace();
 							showErrMSG();

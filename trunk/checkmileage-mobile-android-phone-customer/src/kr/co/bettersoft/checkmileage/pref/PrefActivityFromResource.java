@@ -176,7 +176,8 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			// 설정 변경하고 온 경우 업뎃 한번 쳐주기.
 			if(updateLv>0){		// 2였던 경우= (업뎃중 또 변경된 경우 ->한번더)
 				Log.d(TAG,"Need Update one more time");
-				updateToServer_pre();
+//				updateToServer_pre();
+				updateToServer();
 			}
 			updateServerSettingsToPrefs();				// 서버 설정 자체 설정으로 저장 
 			resumeCalled = true;
@@ -282,7 +283,8 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			if(updateLv<2){		// 0또는 1일경우. 1 증가. (최대 2까지)
 				updateLv = updateLv+1;
 				if(updateLv==1){
-					updateGCMToServer_pre(yn);
+//					updateGCMToServer_pre(yn);
+					updateGCMToServer(yn);
 				}
 			}
 		}
@@ -293,6 +295,8 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			//			Toast.makeText(PrefActivityFromResource.this, "웹뷰 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
 			Intent webIntent = new Intent(PrefActivityFromResource.this, myWebView.class);
 			webIntent.putExtra("loadingURL", "http://www.mcarrot.net/mFaq.do");
+//			webIntent.putExtra("loadingURL", memberInfo.getCountryCode());
+//			webIntent.putExtra("loadingURL", memberInfo.getLanguageCode());
 //			webIntent.putExtra("loadingURL", "http://www.mcarrot.net/senchaIndex.do");			// sencha test page
 			startActivity(webIntent);
 		}
@@ -401,7 +405,8 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		} 
 		@Override protected Void doInBackground(Void... params) {  
 			Log.d(TAG,"backgroundUpdateMyGCMtoServer");
-        		getUserInfo_pre();
+//        		getUserInfo_pre();
+        		getUserInfo();
 //			try {						// gcm 확인용
 //				testGCM(regIdGCM);
 //			} catch (JSONException e) {
@@ -417,27 +422,27 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	 *  checkMileageMemberController 컨/ selectMemberInformation  메/ checkMileageMember 도/ 
 	 *  checkMileageId 변<-qrCode , activateYn : Y  /  CheckMileageMember 결과
 	 */
-	public void getUserInfo_pre(){
-		new Thread(
-				new Runnable(){
-					public void run(){
-						Log.d(TAG,"getUserInfo_pre");
-						try{
-							Thread.sleep(CommonUtils.threadWaitngTime);
-						}catch(Exception e){
-						}finally{
-							if(CommonUtils.usingNetwork<1){
-								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-								getUserInfo1();
-							}else{
-								getUserInfo_pre();
-							}
-						}
-					}
-				}
-			).start();
-	}
-	public void getUserInfo1(){
+//	public void getUserInfo_pre(){
+//		new Thread(
+//				new Runnable(){
+//					public void run(){
+//						Log.d(TAG,"getUserInfo_pre");
+//						try{
+//							Thread.sleep(CommonUtils.threadWaitngTime);
+//						}catch(Exception e){
+//						}finally{
+//							if(CommonUtils.usingNetwork<1){
+//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+//								getUserInfo();
+//							}else{
+//								getUserInfo_pre();
+//							}
+//						}
+//					}
+//				}
+//			).start();
+//	}
+	public void getUserInfo(){
 		// ...
 		Log.i(TAG, "getUserInfo");
 		controllerName = "checkMileageMemberController";
@@ -481,12 +486,13 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 						}catch(Exception e){ 
 //							connection2.disconnect();
 							e.printStackTrace();
-						}finally{
-							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-								CommonUtils.usingNetwork = 0;
-							}
 						}
+//						finally{
+//							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+//							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+//								CommonUtils.usingNetwork = 0;
+//							}
+//						}
 					}
 				}
 		).start();
@@ -499,26 +505,26 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	 *    2일경우 아무것도 하지 않는다. 
 	 *    업뎃 치고 나서 1을 내리고 나서 확인 -> 0이 아닐 경우 다시 업뎃 친다.
 	 */
-	public void updateToServer_pre(){
-		new Thread(
-				new Runnable(){
-					public void run(){
-						Log.d(TAG,"updateToServer_pre");
-						try{
-							Thread.sleep(CommonUtils.threadWaitngTime);
-						}catch(Exception e){
-						}finally{
-							if(CommonUtils.usingNetwork<1){
-								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-								updateToServer();
-							}else{
-								updateToServer_pre();
-							}
-						}
-					}
-				}
-			).start();
-	}
+//	public void updateToServer_pre(){
+//		new Thread(
+//				new Runnable(){
+//					public void run(){
+//						Log.d(TAG,"updateToServer_pre");
+//						try{
+//							Thread.sleep(CommonUtils.threadWaitngTime);
+//						}catch(Exception e){
+//						}finally{
+//							if(CommonUtils.usingNetwork<1){
+//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+//								updateToServer();
+//							}else{
+//								updateToServer_pre();
+//							}
+//						}
+//					}
+//				}
+//			).start();
+//	}
 	public void updateToServer(){
 		Log.i(TAG, "updateToServer");
 		controllerName = "checkMileageMemberController";
@@ -588,12 +594,13 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							}catch(Exception e){ 
 //								connection2.disconnect();
 								e.printStackTrace();
-							}finally{
-								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-									CommonUtils.usingNetwork = 0;
-								}
 							}
+//							finally{
+//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+//									CommonUtils.usingNetwork = 0;
+//								}
+//							}
 						}
 					}
 			).start();
@@ -608,26 +615,26 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	 *    2일경우 아무것도 하지 않는다. 
 	 *    업뎃 치고 나서 1을 내리고 나서 확인 -> 0이 아닐 경우 다시 업뎃 친다.
 	 */
-	public void updateGCMToServer_pre(final Boolean checked){
-		new Thread(
-				new Runnable(){
-					public void run(){
-						Log.d(TAG,"updateGCMToServer_pre");
-						try{
-							Thread.sleep(CommonUtils.threadWaitngTime);
-						}catch(Exception e){
-						}finally{
-							if(CommonUtils.usingNetwork<1){
-								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-								updateGCMToServer(checked);
-							}else{
-								updateGCMToServer_pre(checked);
-							}
-						}
-					}
-				}
-			).start();
-	}
+//	public void updateGCMToServer_pre(final Boolean checked){
+//		new Thread(
+//				new Runnable(){
+//					public void run(){
+//						Log.d(TAG,"updateGCMToServer_pre");
+//						try{
+//							Thread.sleep(CommonUtils.threadWaitngTime);
+//						}catch(Exception e){
+//						}finally{
+//							if(CommonUtils.usingNetwork<1){
+//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+//								updateGCMToServer(checked);
+//							}else{
+//								updateGCMToServer_pre(checked);
+//							}
+//						}
+//					}
+//				}
+//			).start();
+//	}
 	public void updateGCMToServer(Boolean checked){  
 		Log.i(TAG, "updateGCMToServer");
 		controllerName = "checkMileageMemberController";
@@ -694,7 +701,8 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 									updateLv = updateLv-1;
 									if(updateLv>0){		// 2였던 경우. (업뎃중 또 변경된 경우 한번더)
 										Log.d(TAG,"Need Update one more time");
-										updateGCMToServer_pre(yn);
+//										updateGCMToServer_pre(yn);
+										updateGCMToServer(yn);
 									}
 								}else{
 									Log.w(TAG,"fail to update");
@@ -703,12 +711,13 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							}catch(Exception e){ 
 //								connection2.disconnect();
 								e.printStackTrace();
-							}finally{
-								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-									CommonUtils.usingNetwork = 0;
-								}
 							}
+//							finally{
+//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+//									CommonUtils.usingNetwork = 0;
+//								}
+//							}
 						}
 					}
 			).start();

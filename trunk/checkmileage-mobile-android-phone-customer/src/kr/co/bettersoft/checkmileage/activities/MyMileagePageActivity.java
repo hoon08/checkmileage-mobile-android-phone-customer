@@ -448,14 +448,14 @@ public class MyMileagePageActivity extends Activity {
         @Override protected Void doInBackground(Void... params) { 
         	Log. d(TAG,"backgroundGetMyMileageList");
         	showPb();
-        	getMyMileageList_pre();
-//			try {
-//				getMyMileageList();
-//			} catch (JSONException e) {
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
+//        	getMyMileageList_pre();
+			try {
+				getMyMileageList();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
         	return null ;
         }
  }
@@ -475,34 +475,32 @@ public class MyMileagePageActivity extends Activity {
 	 * |[이미지 하]	[ 가 맹 점 이 용 시 각 ]    |  전번. 
 	 * ------------------------------------
 	 */
-	public void getMyMileageList_pre(){
-		new Thread(
-				new Runnable(){
-					public void run(){
-						Log.d(TAG,"getMyMileageList_pre");
-						try{
-							Thread.sleep(CommonUtils.threadWaitngTime);
-						}catch(Exception e){
-						}finally{
-							if(CommonUtils.usingNetwork<1){
-								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-								try {
-									getMyMileageList();
-								} catch (JSONException e) {
-									e.printStackTrace();
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
-							}else{
-								getMyMileageList_pre();
-							}
-						}
-					}
-				}
-			).start();
-	}
-	
-	
+//	public void getMyMileageList_pre(){
+//		new Thread(
+//				new Runnable(){
+//					public void run(){
+//						Log.d(TAG,"getMyMileageList_pre");
+//						try{
+//							Thread.sleep(CommonUtils.threadWaitngTime);
+//						}catch(Exception e){
+//						}finally{
+//							if(CommonUtils.usingNetwork<1){
+//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+//								try {
+//									getMyMileageList();
+//								} catch (JSONException e) {
+//									e.printStackTrace();
+//								} catch (IOException e) {
+//									e.printStackTrace();
+//								}
+//							}else{
+//								getMyMileageList_pre();
+//							}
+//						}
+//					}
+//				}
+//			).start();
+//	}
 	public void getMyMileageList() throws JSONException, IOException {
 //		Log.i(TAG, "getMyMileageList");
 		if(CheckNetwork()){
@@ -567,10 +565,10 @@ public class MyMileagePageActivity extends Activity {
 									getDBData();						// 5회 재시도에도 실패하면 db에서 꺼내서 보여준다.
 //								}
 							}
-							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-								CommonUtils.usingNetwork = 0;
-							}
+//							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+//							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+//								CommonUtils.usingNetwork = 0;
+//							}
 						}
 					}
 			).start();

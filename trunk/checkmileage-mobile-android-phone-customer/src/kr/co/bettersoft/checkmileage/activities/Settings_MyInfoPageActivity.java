@@ -101,7 +101,8 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 		 *  서버로부터 개인 정보를 가져와서 도메인 같은 곳에 담아둔다. 나중에 업데이트 할때 사용. 업데이트하고 나면 그 도메인 그대로 유지..
 		 */
 		memberInfo = new CheckMileageMembers();
-		getUserInfo_pre();
+//		getUserInfo_pre();
+		getUserInfo();
 		updateServerSettingsToPrefs();				// 서버 설정 자체 설정으로 저장 
 		
 		/*
@@ -338,26 +339,26 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 	 *  checkMileageMemberController 컨/ selectMemberInformation  메/ checkMileageMember 도/ 
 	 *  checkMileageId 변<-qrCode , activateYn : Y  /  CheckMileageMember 결과
 	 */
-	public void getUserInfo_pre(){
-		new Thread(
-				new Runnable(){
-					public void run(){
-						Log.d(TAG,"getUserInfo_pre");
-						try{
-							Thread.sleep(CommonUtils.threadWaitngTime);
-						}catch(Exception e){
-						}finally{
-							if(CommonUtils.usingNetwork<1){
-								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-								getUserInfo();
-							}else{
-								getUserInfo_pre();
-							}
-						}
-					}
-				}
-			).start();
-	}
+//	public void getUserInfo_pre(){
+//		new Thread(
+//				new Runnable(){
+//					public void run(){
+//						Log.d(TAG,"getUserInfo_pre");
+//						try{
+//							Thread.sleep(CommonUtils.threadWaitngTime);
+//						}catch(Exception e){
+//						}finally{
+//							if(CommonUtils.usingNetwork<1){
+//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+//								getUserInfo();
+//							}else{
+//								getUserInfo_pre();
+//							}
+//						}
+//					}
+//				}
+//			).start();
+//	}
 	public void getUserInfo(){
 		Log.i(TAG, "getUserInfo");
 		controllerName = "checkMileageMemberController";
@@ -399,12 +400,13 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 						}catch(Exception e){ 
 //							connection2.disconnect();
 							e.printStackTrace();
-						}  finally{
-							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-								CommonUtils.usingNetwork = 0;
-							}
-						}
+						}  
+//						finally{
+//							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+//							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+//								CommonUtils.usingNetwork = 0;
+//							}
+//						}
 					}
 				}
 		).start();
@@ -417,26 +419,27 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 	 *    2일경우 아무것도 하지 않는다. 
 	 *    업뎃 치고 나서 1을 내리고 나서 확인 -> 0이 아닐 경우 다시 업뎃 친다.
 	 */
-	public void updateToServer_pre(){
-		new Thread(
-				new Runnable(){
-					public void run(){
-						Log.d(TAG,"updateToServer_pre");
-						try{
-							Thread.sleep(CommonUtils.threadWaitngTime);
-						}catch(Exception e){
-						}finally{
-							if(CommonUtils.usingNetwork<1){
-								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-								updateToServer();
-							}else{
-								updateToServer_pre();
-							}
-						}
-					}
-				}
-			).start();
-	}
+//	public void updateToServer_pre(){
+//		new Thread(
+//				new Runnable(){
+//					public void run(){
+//						Log.d(TAG,"updateToServer_pre");
+//						try{
+//							Thread.sleep(CommonUtils.threadWaitngTime);
+//						}catch(Exception e){
+//						}
+//						finally{
+//							if(CommonUtils.usingNetwork<1){
+//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+//								updateToServer();
+//							}else{
+//								updateToServer_pre();
+//							}
+//						}
+//					}
+//				}
+//			).start();
+//	}
 	public void updateToServer(){
 		Log.i(TAG, "updateToServer");
 		controllerName = "checkMileageMemberController";
@@ -494,7 +497,8 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 									updateLv = updateLv-1;
 									if(updateLv>0){		// 2였던 경우. (업뎃중 또 변경된 경우 한번더)
 										Log.d(TAG,"Need Update one more time");
-										updateToServer_pre();
+//										updateToServer_pre();
+										updateToServer();
 									}
 								}else{
 									Log.e(TAG,"fail to update");
@@ -503,12 +507,13 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 							}catch(Exception e){ 
 //								connection2.disconnect();
 								e.printStackTrace();
-							}finally{
-								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-									CommonUtils.usingNetwork = 0;
-								}
 							}
+//							finally{
+//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+//									CommonUtils.usingNetwork = 0;
+//								}
+//							}
 						}
 					}
 			).start();
