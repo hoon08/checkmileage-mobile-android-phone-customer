@@ -1,5 +1,9 @@
 package kr.co.bettersoft.checkmileage.activities;
-// 가맹점 상세 - 지도 보기
+/**
+ * MemberStoreMapPageActivity
+ * 가맹점 상세 - 지도 보기
+ * 
+ */
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,12 +86,20 @@ public class MemberStoreMapPageActivity extends MapActivity {
 
 				myLat = mLocation.getMyLocation().getLatitudeE6();				// 현위치의 좌표 획득 *** 로그용
 				myLon = mLocation.getMyLocation().getLongitudeE6();
-				Log.i("runOnFirstFix", "location:"+myLat+", "+myLon);			// 37529466 126921069
+				Log.i("runOnFirstFix", "location:"+myLat+", "+myLon);			//ex) 37529466 126921069
 
 			}
 		});
 	}
 
+	/**
+	 * getPoint
+	 *  좌표 단위 수정한다
+	 *
+	 * @param lat
+	 * @param lon
+	 * @return 
+	 */
 	private GeoPoint getPoint(double lat, double lon) {
 		return (new GeoPoint((int) (lat * 1000000.0), (int) (lon * 1000000.0)));
 	}
@@ -109,17 +121,27 @@ public class MemberStoreMapPageActivity extends MapActivity {
 		mLocation.disableCompass();
 	}
 
+	/**
+	 * MyLocationOverlay2
+	 *  맵위에 오버레이 (터치시 이벤트)
+	 *
+	 */
 	class MyLocationOverlay2 extends MyLocationOverlay{
 		public MyLocationOverlay2(Context context,MapView mapView){
 			super(context,mapView);
 		}
 		protected boolean dispatchTap(){	// 안에있어야 동작. 터치시 토스트. 
 			Toast.makeText(MemberStoreMapPageActivity.this, R.string.its_user_location, Toast.LENGTH_SHORT).show();
-//			Toast.makeText(MemberStoreMapPageActivity.this, "여기가 사용자위치입니다:"+myLat+","+myLon, Toast.LENGTH_SHORT).show();
+			//			Toast.makeText(MemberStoreMapPageActivity.this, "여기가 사용자위치입니다:"+myLat+","+myLon, Toast.LENGTH_SHORT).show();
 			return false;
 		}
 	}
 
+	/**
+	 * SitesOverlay
+	 *  맵위에 가맹점 마커를 추가한다.
+	 *
+	 */
 	private class SitesOverlay extends ItemizedOverlay<OverlayItem> {
 		private Drawable marker = null;
 		private List<OverlayItem> items = new ArrayList<OverlayItem>();
@@ -129,10 +151,10 @@ public class MemberStoreMapPageActivity extends MapActivity {
 			this.marker = marker;
 			String shop_loc_msg = getString(R.string.its_shop_location);
 			items.add(new OverlayItem(new GeoPoint(storeLat,storeLon), "Store", shop_loc_msg));
-//			items.add(new OverlayItem(getPoint(40.748963847316034,-73.96807193756104), "UN", "United Nations"));
-//			items.add(new OverlayItem(getPoint(40.76866299974387,-73.98268461227417), "Lincoln Center","Home of Jazz at Lincoln Center"));
-//			items.add(new OverlayItem(getPoint(40.765136435316755,-73.97989511489868), "Carnegie Hall","Where you go with practice, practice, practice"));
-//			items.add(new OverlayItem(getPoint(40.70686417491799,-74.01572942733765), "The Downtown Club","Original home of the Heisman Trophy"));
+			//			items.add(new OverlayItem(getPoint(40.748963847316034,-73.96807193756104), "UN", "United Nations"));
+			//			items.add(new OverlayItem(getPoint(40.76866299974387,-73.98268461227417), "Lincoln Center","Home of Jazz at Lincoln Center"));
+			//			items.add(new OverlayItem(getPoint(40.765136435316755,-73.97989511489868), "Carnegie Hall","Where you go with practice, practice, practice"));
+			//			items.add(new OverlayItem(getPoint(40.70686417491799,-74.01572942733765), "The Downtown Club","Original home of the Heisman Trophy"));
 			// 생성된 OverlayItem 을 목록으로 지정
 			populate();
 		}
@@ -154,7 +176,6 @@ public class MemberStoreMapPageActivity extends MapActivity {
 
 
 		@Override
-
 		protected boolean onTap(int i) {
 			Toast.makeText(MemberStoreMapPageActivity.this, items.get(i).getSnippet(),Toast.LENGTH_SHORT).show();
 			return true;
@@ -166,5 +187,5 @@ public class MemberStoreMapPageActivity extends MapActivity {
 			return items.size();
 		}
 	}
-	
+
 }

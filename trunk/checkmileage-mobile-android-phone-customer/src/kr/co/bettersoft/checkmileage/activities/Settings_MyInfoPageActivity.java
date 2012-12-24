@@ -1,9 +1,8 @@
 package kr.co.bettersoft.checkmileage.activities;
-// 개인정보 변경
-
-/*
- * 설정 화면. -- 하위. 내 정보 설정.
+/**
+ * Settings_MyInfoPageActivity
  * 
+ * 설정 화면. -- 하위. 내 정보 설정.
  */
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -44,17 +43,17 @@ import kr.co.bettersoft.checkmileage.activities.R;
 import kr.co.bettersoft.checkmileage.activities.MyQRPageActivity;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMembers;
 
-
+//개인정보 변경
 public class Settings_MyInfoPageActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener{
-	
+
 	static String TAG = "Settings_MyInfoPageActivity";
-	
-//	public Boolean resumeCalled = false;		// (설정 정보가져와서 저장하는 등의 처리를 )한번만 실행 되도록 하기 위해서. -> 최초 1회 실행 후 true 가 됨.
-	
+
+	//	public Boolean resumeCalled = false;		// (설정 정보가져와서 저장하는 등의 처리를 )한번만 실행 되도록 하기 위해서. -> 최초 1회 실행 후 true 가 됨.
+
 	SharedPreferences sharedPrefCustom;		// 공용 프립스		 잠금 및 QR (잠금은 메인과 공유  위의 것(default,this)은 메인과 공유되지 않아 이 sharedPref 도 사용한다.)		
-	
 	SharedPreferences defaultPref;			// default --  자체 프리퍼런스. 
-	
+
+	// 시간 관련
 	Calendar c = Calendar.getInstance();	
 	int todayYear = 0;						// 지금 -  년 월 일 시 분
 	int todayMonth = 1;
@@ -62,35 +61,33 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 	int todayHour = 0;
 	int todayMinute = 0;
 	int todaySecond = 0;
-	
 	int birthYear = 0;						// 생년월일 - 년 /월/ 일
 	int birthMonth= 0;
 	int birthDay = 0;
-	
+
 	int sharePrefsFlag = 1;					// 어플내 자체 프립스를 얻기 위한 미끼. 1,-1 값을 바꿔가며 저장하면 리스너가 낚인다.
-	
+
 	// 서버 통신 용
 	String serverName = CommonUtils.serverNames;
 	static String controllerName = "";		// JSON 서버 통신명 컨트롤러 명
 	static String methodName = "";			// JSON 서버 통신용 메소드 명
 	static int responseCode = 0;			// JSON 서버 통신 결과
-	
 	URL postUrl2;
 	HttpURLConnection connection2;
-	
+
 	static int updateLv=0;							// 서버에 업뎃 칠지 여부 검사용도. 0이면 안하고, 1이면 한다, 2면 두번한다(업뎃중 값이 바뀐 경우이다)
-	
+
 	String updateYN = "";
-//	String server_birthday = "";			// 서버에서 받은 설정 파일중 필요한 정보들. 생일,이메일,성별	// 생일은 나누어 저장됨.
+	//	String server_birthday = "";			// 서버에서 받은 설정 파일중 필요한 정보들. 생일,이메일,성별	// 생일은 나누어 저장됨.
 	String server_email = "";
 	String server_gender = "";
-	
+
 	// Locale
-    Locale systemLocale = null ;
-//    String strDisplayCountry = "" ;
-    String strCountry = "" ;
-    String strLanguage = "" ;
-	
+	Locale systemLocale = null ;
+	//    String strDisplayCountry = "" ;
+	String strCountry = "" ;
+	String strLanguage = "" ;
+
 	// 케릭 설정 정보 저장해 놓을 도메인. 항상 최신 정보를 유지해야 한다.
 	static CheckMileageMembers memberInfo;
 	@Override
@@ -101,10 +98,10 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 		 *  서버로부터 개인 정보를 가져와서 도메인 같은 곳에 담아둔다. 나중에 업데이트 할때 사용. 업데이트하고 나면 그 도메인 그대로 유지..
 		 */
 		memberInfo = new CheckMileageMembers();
-//		getUserInfo_pre();
+		//		getUserInfo_pre();
 		getUserInfo();
 		updateServerSettingsToPrefs();				// 서버 설정 자체 설정으로 저장 
-		
+
 		/*
 		 * 성별 변경시 리스너 달아서 서버에 업뎃
 		 */
@@ -125,8 +122,8 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 					memberInfo.setGender("ETC");
 				}
 				// TODO Auto-generated method stub
-//				Log.e(TAG, "arg0::"+arg0+",,arg1::"+arg1);		// 변경된 값을 받아옴.
-				
+				//				Log.e(TAG, "arg0::"+arg0+",,arg1::"+arg1);		// 변경된 값을 받아옴.
+
 				if(updateLv<2){		// 0또는 1일경우. 1 증가. (최대 2까지)
 					updateLv = updateLv+1;
 					if(updateLv==1){
@@ -136,8 +133,8 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 				return true;		// 자체 설정도 먹도록 해줌. false 일땐 자체 설정이 먹지 않음.
 			}
 		});
-		
-		
+
+
 		/*
 		 * 메일 변경시. 서버에 업뎃.
 		 */
@@ -162,39 +159,44 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 				}
 			}
 		});
-		
-//		if(!resumeCalled){			// 한번만 실행시키기 위해서 flag 사용
-			getPreferenceScreen().getSharedPreferences() 
-			.registerOnSharedPreferenceChangeListener(this); 
 
-			/*
-			 *  비번 잠금 설정은 비번이 있을 경우에만 해준다.	(비번이 없다면 잠금 체크 설정을 사용할 수 없다.)		
-			 *  비번 설정의 경우 리쥼에 넣지 않으면 한번밖에 안읽어서 변경시 적용되지 않는다. (어플 재기동해야 적용)
-			 */
-			// prefs 	// 어플 잠금 설정. 공용으로 쓸것도 필요 
-			sharedPrefCustom = getSharedPreferences("MyCustomePref",
-					Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
-			sharedPrefCustom.registerOnSharedPreferenceChangeListener(this);			// 여기에도 등록해놔야 리시버가 제대로 반응한다.
-			// default pref
-			defaultPref = PreferenceManager.getDefaultSharedPreferences(this);
-			defaultPref.registerOnSharedPreferenceChangeListener(this);			
+		//		if(!resumeCalled){			// 한번만 실행시키기 위해서 flag 사용
+		getPreferenceScreen().getSharedPreferences() 
+		.registerOnSharedPreferenceChangeListener(this); 
 
-			SharedPreferences.Editor init2 = sharedPrefCustom.edit();		// 강제 호출용도  .. 단어명은 의미없음.
-			int someNum = sharedPrefCustom.getInt("someNum", sharePrefsFlag);	// 이전 값과 같을수 있으므로..
-			someNum = someNum * -1;													// 매번 다른 값이 들어가야 제대로 호출이 된다. 같은 값들어가면 변화 없다고 호출 안됨.			
-			init2.putInt("someNum", someNum); 		// 프리퍼런스 값 넣어 업데이트 시키면 강제로 리스너 호출.
-			init2.commit();			
-			// 자체 프리퍼를 지목할 수 있게 됨. 탈퇴 메소드때 초기값 세팅해준다.
-			
-//			resumeCalled = true;
-		}
-//	}
+		/*
+		 *  비번 잠금 설정은 비번이 있을 경우에만 해준다.	(비번이 없다면 잠금 체크 설정을 사용할 수 없다.)		
+		 *  비번 설정의 경우 리쥼에 넣지 않으면 한번밖에 안읽어서 변경시 적용되지 않는다. (어플 재기동해야 적용)
+		 */
+		// prefs 	// 어플 잠금 설정. 공용으로 쓸것도 필요 
+		sharedPrefCustom = getSharedPreferences("MyCustomePref",
+				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
+		sharedPrefCustom.registerOnSharedPreferenceChangeListener(this);			// 여기에도 등록해놔야 리시버가 제대로 반응한다.
+		// default pref
+		defaultPref = PreferenceManager.getDefaultSharedPreferences(this);
+		defaultPref.registerOnSharedPreferenceChangeListener(this);			
 
-	
+		SharedPreferences.Editor init2 = sharedPrefCustom.edit();		// 강제 호출용도  .. 단어명은 의미없음.
+		int someNum = sharedPrefCustom.getInt("someNum", sharePrefsFlag);	// 이전 값과 같을수 있으므로..
+		someNum = someNum * -1;													// 매번 다른 값이 들어가야 제대로 호출이 된다. 같은 값들어가면 변화 없다고 호출 안됨.			
+		init2.putInt("someNum", someNum); 		// 프리퍼런스 값 넣어 업데이트 시키면 강제로 리스너 호출.
+		init2.commit();			
+		// 자체 프리퍼를 지목할 수 있게 됨. 탈퇴 메소드때 초기값 세팅해준다.
+
+		//			resumeCalled = true;
+	}
+	//	}
+
+
 	/**
+	 * updateServerSettingsToPrefs
 	 *  공용설정에서 업뎃 여부 확인 이후, y 이면 자체 설정에 업뎃 친다. 아니면 말고.  비번은 해당사항 없다.
 	 *  설정에서 값을 꺼내어 화면에 세팅한다. 
 	 *  (설정에 값이 있다고 화면에 그대로 보여지지 않기 때문에 화면에 보여지도록 처리해줘야 함)
+	 *  
+	 * @param
+	 * @param
+	 * @return
 	 */
 	public void updateServerSettingsToPrefs(){
 		if(sharedPrefCustom==null){								// 프리퍼런스
@@ -230,12 +232,19 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 			updateDone.commit();
 			Log.i(TAG,"update settings to mobile step2 done");
 		}else{
-//			Log.e(TAG,"업뎃 필요 x");
+			//			Log.e(TAG,"업뎃 필요 x");
 		}
 	}
-	
-	
-	
+
+
+	/**
+	 * getNow
+	 * 현시각을 구한다
+	 *
+	 * @param
+	 * @param
+	 * @return nowTime
+	 */
 	public String getNow(){
 		// 현시각
 		c = Calendar.getInstance();	
@@ -257,27 +266,36 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 		if(tempSecond.length()==1) tempSecond = "0"+tempSecond;
 		String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute+":"+tempSecond;
 		return nowTime;
-//		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
+		//		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
 	}
-	
+
 	@Override
 	public void onResume(){		
 		super.onResume();
 	}
 
+
 	@Override 
 	protected void onPause() { 
-	    super.onPause(); 
-	    // Unregister the listener whenever a key changes 
-	    getPreferenceScreen().getSharedPreferences() 
-	            .unregisterOnSharedPreferenceChangeListener(this); 
+		super.onPause(); 
+		// Unregister the listener whenever a key changes 	
+		getPreferenceScreen().getSharedPreferences() 		
+		.unregisterOnSharedPreferenceChangeListener(this); 
 	} 
-	 
+
 
 	// Preference에서 클릭 발생시 호출되는 call back    -- 해당 설정창.
 	// Parameters:
 	//  - PreferenceScreen : 이벤트가 발생한 Preference의 root
 	//  - Preference : 이벤트를 발생시킨 Preference 항목
+	/**
+	 * onPreferenceTreeClick
+	 *  Preference에서 클릭 발생시 호출된다. 생년월일 변경 메뉴로 들어가면 기존 생일 또는 오늘 날짜를 기본값으로 날짜피커를 보여준다.
+	 *
+	 * @param preferenceScreen
+	 * @param preference
+	 * @return
+	 */
 	@Override
 	public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
 			Preference preference) {
@@ -299,19 +317,24 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 	}	
 
 	// 개인정보 - 날짜 선택시 프리퍼런스에 저장.
+	/**
+	 * mDateSetListener
+	 *  개인정보 - 날짜 선택시 프리퍼런스에 저장하는 리스너이다
+	 *
+	 */
 	DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener()
 	{
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth)
 		{
 			///실제적으로 선택된 날짜를 Set하는 등의 명령
-//			Toast.makeText(Settings_MyInfoPageActivity.this, year+"."+(monthOfYear+1)+"."+dayOfMonth, Toast.LENGTH_SHORT).show();
+			//			Toast.makeText(Settings_MyInfoPageActivity.this, year+"."+(monthOfYear+1)+"."+dayOfMonth, Toast.LENGTH_SHORT).show();
 			SharedPreferences.Editor birthDate = sharedPrefCustom.edit();
 			birthDate.putInt("birthYear", year);
 			birthDate.putInt("birthMonth", monthOfYear+1);
 			birthDate.putInt("birthDay", dayOfMonth);
 			birthDate.commit();
-			
+
 			// 도메인의 birthday 를 업데이트.
 			String tempMonth = Integer.toString(monthOfYear+1);
 			String tempDay = Integer.toString(dayOfMonth);
@@ -333,32 +356,41 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 			}
 		}
 	};
-	
+
 	/*
 	 *  서버로부터 개인 정보를 받아와서 도메인에 저장. 나중에 업데이트 할때 사용.
 	 *  checkMileageMemberController 컨/ selectMemberInformation  메/ checkMileageMember 도/ 
 	 *  checkMileageId 변<-qrCode , activateYn : Y  /  CheckMileageMember 결과
 	 */
-//	public void getUserInfo_pre(){
-//		new Thread(
-//				new Runnable(){
-//					public void run(){
-//						Log.d(TAG,"getUserInfo_pre");
-//						try{
-//							Thread.sleep(CommonUtils.threadWaitngTime);
-//						}catch(Exception e){
-//						}finally{
-//							if(CommonUtils.usingNetwork<1){
-//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-//								getUserInfo();
-//							}else{
-//								getUserInfo_pre();
-//							}
-//						}
-//					}
-//				}
-//			).start();
-//	}
+	//	public void getUserInfo_pre(){
+	//		new Thread(
+	//				new Runnable(){
+	//					public void run(){
+	//						Log.d(TAG,"getUserInfo_pre");
+	//						try{
+	//							Thread.sleep(CommonUtils.threadWaitngTime);
+	//						}catch(Exception e){
+	//						}finally{
+	//							if(CommonUtils.usingNetwork<1){
+	//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+	//								getUserInfo();
+	//							}else{
+	//								getUserInfo_pre();
+	//							}
+	//						}
+	//					}
+	//				}
+	//			).start();
+	//	}
+
+	/**
+	 * getUserInfo
+	 *  서버로부터 개인 정보를 받아와서 도메인에 저장한다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void getUserInfo(){
 		Log.i(TAG, "getUserInfo");
 		controllerName = "checkMileageMemberController";
@@ -384,34 +416,34 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
-//							connection2.connect();		// *** 
+							//							connection2.connect();		// *** 
 							Thread.sleep(200);
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
 							Thread.sleep(200);
-//							System.out.println("postUrl      : " + postUrl2);
-//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+							//							System.out.println("postUrl      : " + postUrl2);
+							//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 							responseCode = connection2.getResponseCode();
 							InputStream in =  connection2.getInputStream();
 							// 조회한 결과를 처리.
 							theData1(in);
-//							connection2.disconnect();
+							//							connection2.disconnect();
 						}catch(Exception e){ 
-//							connection2.disconnect();
+							//							connection2.disconnect();
 							e.printStackTrace();
 						}  
-//						finally{
-//							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-//							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-//								CommonUtils.usingNetwork = 0;
-//							}
-//						}
+						//						finally{
+						//							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+						//							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+						//								CommonUtils.usingNetwork = 0;
+						//							}
+						//						}
 					}
 				}
 		).start();
 	}
-	
+
 	/*
 	 *  서버로 변경된 설정 등을 업데이트 한다. 그때그때 해줘야 한다. 기존 도메인에 세팅하고 도메인 채로 업데이트 친다. 
 	 *    플래그 값을 두어 0->1로 바꾸고 업뎃 친다. 
@@ -419,27 +451,35 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 	 *    2일경우 아무것도 하지 않는다. 
 	 *    업뎃 치고 나서 1을 내리고 나서 확인 -> 0이 아닐 경우 다시 업뎃 친다.
 	 */
-//	public void updateToServer_pre(){
-//		new Thread(
-//				new Runnable(){
-//					public void run(){
-//						Log.d(TAG,"updateToServer_pre");
-//						try{
-//							Thread.sleep(CommonUtils.threadWaitngTime);
-//						}catch(Exception e){
-//						}
-//						finally{
-//							if(CommonUtils.usingNetwork<1){
-//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-//								updateToServer();
-//							}else{
-//								updateToServer_pre();
-//							}
-//						}
-//					}
-//				}
-//			).start();
-//	}
+	//	public void updateToServer_pre(){
+	//		new Thread(
+	//				new Runnable(){
+	//					public void run(){
+	//						Log.d(TAG,"updateToServer_pre");
+	//						try{
+	//							Thread.sleep(CommonUtils.threadWaitngTime);
+	//						}catch(Exception e){
+	//						}
+	//						finally{
+	//							if(CommonUtils.usingNetwork<1){
+	//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+	//								updateToServer();
+	//							}else{
+	//								updateToServer_pre();
+	//							}
+	//						}
+	//					}
+	//				}
+	//			).start();
+	//	}
+	/**
+	 * updateToServer
+	 *  서버로 변경된 설정 등을 업데이트 한다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void updateToServer(){
 		Log.i(TAG, "updateToServer");
 		controllerName = "checkMileageMemberController";
@@ -462,13 +502,13 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 								obj.put("deviceType", memberInfo.getDeviceType());
 								obj.put("registrationId", memberInfo.getRegistrationId());
 								obj.put("activateYn", memberInfo.getActivateYn());
-								
+
 								obj.put("countryCode", memberInfo.getCountryCode());
 								obj.put("languageCode", memberInfo.getLanguageCode());
-								
+
 								obj.put("receiveNotificationYn", memberInfo.getReceiveNotificationYn());
 								Log.i(TAG, "activateYn::"+memberInfo.getActivateYn());
-								
+
 								String nowTime = getNow();
 								Log.i(TAG, "nowTime::"+nowTime);
 								obj.put("modifyDate", nowTime);		// 지금 시간으로.
@@ -483,45 +523,53 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
-//								connection2.connect();		// *** 
+								//								connection2.connect();		// *** 
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
-//								System.out.println("postUrl      : " + postUrl2);
-//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+								//								System.out.println("postUrl      : " + postUrl2);
+								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 								responseCode = connection2.getResponseCode();
 								InputStream in =  connection2.getInputStream();
 								// 조회한 결과를 처리.
 								if(responseCode==200 || responseCode == 204){	// 성공이라 딱히..
-//									theData1(in);		// 서버 결과 가지고 재 세팅하면안됨 <- 는 멤버 정보 받아서 처리하는 녀석임 호출 금지
+									//									theData1(in);		// 서버 결과 가지고 재 세팅하면안됨 <- 는 멤버 정보 받아서 처리하는 녀석임 호출 금지
 									updateLv = updateLv-1;
 									if(updateLv>0){		// 2였던 경우. (업뎃중 또 변경된 경우 한번더)
 										Log.d(TAG,"Need Update one more time");
-//										updateToServer_pre();
+										//										updateToServer_pre();
 										updateToServer();
 									}
 								}else{
 									Log.e(TAG,"fail to update");
 								}
-//								connection2.disconnect();
+								//								connection2.disconnect();
 							}catch(Exception e){ 
-//								connection2.disconnect();
+								//								connection2.disconnect();
 								e.printStackTrace();
 							}
-//							finally{
-//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-//									CommonUtils.usingNetwork = 0;
-//								}
-//							}
+							//							finally{
+							//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+							//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+							//									CommonUtils.usingNetwork = 0;
+							//								}
+							//							}
 						}
 					}
 			).start();
 		}
 	}
-	
+
 	/*
 	 * 서버로부터 받아온 개인 정보를 파싱해서 도메인에 저장하는 부분. 업뎃, 탈퇴할때 호출하면 안됨. 멤버 데이터 모두 날아감
+	 */
+	/**
+	 * theData1
+	 *  서버로부터 받아온 개인 정보를 파싱해서 도메인에 저장한다
+	 *
+	 * @param in
+	 * @param
+	 * @return
 	 */
 	public void theData1(InputStream in){
 		Log.d(TAG,"theData1");
@@ -529,13 +577,13 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 		StringBuilder builder = new StringBuilder();
 		String line =null;
 		JSONObject jsonObject;
-		
+
 		// Locale
-	      systemLocale = getResources().getConfiguration(). locale;
-//      strDisplayCountry = systemLocale.getDisplayCountry();
-         strCountry = systemLocale .getCountry();
-         strLanguage = systemLocale .getLanguage();
-		
+		systemLocale = getResources().getConfiguration(). locale;
+		//      strDisplayCountry = systemLocale.getDisplayCountry();
+		strCountry = systemLocale .getCountry();
+		strLanguage = systemLocale .getLanguage();
+
 		try {
 			while((line=reader.readLine())!=null){
 				builder.append(line).append("\n");
@@ -543,14 +591,14 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//		Log.d(TAG,"서버에서 받은 고객 상세정보::"+builder.toString());
+		//		Log.d(TAG,"서버에서 받은 고객 상세정보::"+builder.toString());
 		String tempstr = builder.toString();		
 		if(responseCode==200 || responseCode==204){
 			try {
 				jsonObject = new JSONObject(tempstr);
 				JSONObject jsonobj2 = jsonObject.getJSONObject("checkMileageMember");
 				try{  // 아이디
-//					Log.i(TAG, "checkMileageId:::"+jsonobj2.getString("checkMileageId"));
+					//					Log.i(TAG, "checkMileageId:::"+jsonobj2.getString("checkMileageId"));
 					memberInfo.setCheckMileageId(jsonobj2.getString("checkMileageId"));				
 				}catch(Exception e){ memberInfo.setCheckMileageId(""); }
 				try{  // 비번
@@ -604,33 +652,36 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 		}
 	}
 
-	
+
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
 		if(key.equals("someNum")){		// resume 에서 넣은 것과 이름 일치해야 동작한다.
+			sharedPrefCustom = sharedPreferences;		// 프리퍼런스 동기화
 		}
 	}
-	
-	
+
+
 	/**
-     * 이메일주소 유효검사
-     * 
-     * @author   Sehwan Noh <sehnoh@gmail.com>
-     * @version  1.0 - 2006. 08. 22
-     * @since    JDK 1.4
-     */
-    public static boolean isValidEmail(String email) {
-        Pattern p = Pattern.compile("^(?:\\w+\\.?)*\\w+@(?:\\w+\\.)+\\w+$");
-        Matcher m = p.matcher(email);
-        return m.matches();
-    }
-	
-    @Override
+	 * isValidEmail
+	 * 이메일주소 유효검사
+	 * 
+	 * @author   Sehwan Noh <sehnoh@gmail.com>
+	 * @version  1.0 - 2006. 08. 22
+	 * @since    JDK 1.4
+	 * @param email
+	 */
+	public static boolean isValidEmail(String email) {
+		Pattern p = Pattern.compile("^(?:\\w+\\.?)*\\w+@(?:\\w+\\.)+\\w+$");
+		Matcher m = p.matcher(email);
+		return m.matches();
+	}
+
+	@Override
 	public void onDestroy(){
 		super.onDestroy();
-//		try{
-//		connection2.disconnect();
-//		}catch(Exception e){}
+		//		try{
+		//		connection2.disconnect();
+		//		}catch(Exception e){}
 	}
 }

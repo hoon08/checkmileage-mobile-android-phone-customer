@@ -1,5 +1,8 @@
 package kr.co.bettersoft.checkmileage.activities;
-// 메인 메뉴들. 탭1:내QR보기 , 탭2:내마일리지, 탭3:가맹점목록, 탭4:설정
+/**
+ * Main_TabsActivity
+ *  메인 메뉴들. 탭1:내QR보기 , 탭2:내마일리지, 탭3:가맹점목록, 탭4:설정
+ */
 import static kr.co.bettersoft.checkmileage.activities.CommonUtilities.DISPLAY_MESSAGE_ACTION;
 import static kr.co.bettersoft.checkmileage.activities.CommonUtilities.SENDER_ID;
 
@@ -49,27 +52,27 @@ import android.widget.TabHost.OnTabChangeListener;
 public class Main_TabsActivity extends TabActivity implements OnTabChangeListener {
 	String TAG ="Main_TabsActivity";
 	public static Activity main_TabsActivity;
-	
+
 	String controllerName = "";
 	String methodName = "";
 	String serverName = CommonUtils.serverNames;
-	
+
 	static String myQR = "";
 
 	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;			// 종료시 더미도 함께 종료 시키기 위함
-	
+
 	static String barCode = "";
 	public static TabHost tabhost;
 
 	////////////////////////////////////  // GCM 
 	AsyncTask<Void, Void, Void> mRegisterTask;
 	public static String REGISTRATION_ID = "";		// 등록아이디
-	
+
 	int waitEnd = 0;		// test GCM 대기용
-	
+
 	String RunMode = "";		// push 통한 실행을 위한 조치
-	
-	
+
+
 	// 핸들러
 	Handler handler = new Handler(){
 		@Override
@@ -90,104 +93,104 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 			}
 		}
 	};
-	
-	
+
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature( Window.FEATURE_NO_TITLE );		// no title
-//		requestWindowFeature(Window.FEATURE_LEFT_ICON);		// 타이틀 왼쪽에 아이콘 넣기- 안됨.			FEATURE_NO_TITLE 됨   FEATURE_RIGHT_ICON ..
+		//		requestWindowFeature(Window.FEATURE_LEFT_ICON);		// 타이틀 왼쪽에 아이콘 넣기- 안됨.			FEATURE_NO_TITLE 됨   FEATURE_RIGHT_ICON ..
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_tabs);
 		main_TabsActivity = Main_TabsActivity.this;		// 다른데서 여기 종료시키기 위함.
-		
+
 		Intent receiveIntent = getIntent();							// 인텐트 통해 전달 받은 값 꺼내기.
 		if(myQR.length()<1){
 			myQR = receiveIntent.getStringExtra("myQR");
 		}
-		
+
 		RunMode = receiveIntent.getStringExtra("RunMode");	
 		if(RunMode==null){
 			RunMode="";
 		}
 		nextProcessing();			// GCM 세팅 
 		registerReceiver(mMyBroadcastReceiver, new IntentFilter(DISPLAY_MESSAGE_ACTION));		//  gcm reg..
-		
-//		tabhost = (TabHost) findViewById(android.R.id.tabhost);
+
+		//		tabhost = (TabHost) findViewById(android.R.id.tabhost);
 		tabhost = getTabHost();
-		
+
 		tabhost.setOnTabChangedListener(this);		// 이걸 해줘야 onTabChanged() 체인지 효과가 있다
-		
+
 		// 설정
-		
-////		tabhost.getTabWidget().setBackgroundDrawable( getResources().getDrawable(R.drawable.bluenavbar)); 
-//		TextView txtTab = new TextView(this); 
-//		txtTab.setText(getString(R.string.my_qr_title)); 
-//		txtTab.setPadding(0, 0, 0, 0); 
-//		txtTab.setTextColor(Color.WHITE); 
-//		txtTab.setTextSize(8); 
-//////		txtTab.setTypeface(localTypeface1); 
-//		txtTab.setGravity(Gravity.CENTER_HORIZONTAL| Gravity.CENTER_VERTICAL); 
-//		txtTab.setBackgroundResource(R.drawable.tab01_indicator); 
-//		// Initialize a TabSpec for each tab and add it to the TabHost 
-//		TabSpec spec = tabhost.newTabSpec("spec")
-//				 .setIndicator(txtTab)
-//				 .setContent(new Intent(this, MyQRPageActivity.class)
-//				 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-//		
-//		tabhost.addTab(spec); 
-		
-		
+
+		////		tabhost.getTabWidget().setBackgroundDrawable( getResources().getDrawable(R.drawable.bluenavbar)); 
+		//		TextView txtTab = new TextView(this); 
+		//		txtTab.setText(getString(R.string.my_qr_title)); 
+		//		txtTab.setPadding(0, 0, 0, 0); 
+		//		txtTab.setTextColor(Color.WHITE); 
+		//		txtTab.setTextSize(8); 
+		//////		txtTab.setTypeface(localTypeface1); 
+		//		txtTab.setGravity(Gravity.CENTER_HORIZONTAL| Gravity.CENTER_VERTICAL); 
+		//		txtTab.setBackgroundResource(R.drawable.tab01_indicator); 
+		//		// Initialize a TabSpec for each tab and add it to the TabHost 
+		//		TabSpec spec = tabhost.newTabSpec("spec")
+		//				 .setIndicator(txtTab)
+		//				 .setContent(new Intent(this, MyQRPageActivity.class)
+		//				 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+		//		
+		//		tabhost.addTab(spec); 
+
+
 		tabhost.addTab(
 				tabhost.newTabSpec("tab_1")
 				//        		.setIndicator("내QR코드", getResources().getDrawable(R.drawable.tab01_indicator))
-//				.setIndicator((View)tvTab1)
-//				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu1))			// 하단 버튼을 이미지 사용함.
-//				.setIndicator("12345678901234567890", getResources().getDrawable(R.drawable.tab01_indicator))			// 하단 버튼을 이미지 사용함.
+				//				.setIndicator((View)tvTab1)
+				//				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu1))			// 하단 버튼을 이미지 사용함.
+				//				.setIndicator("12345678901234567890", getResources().getDrawable(R.drawable.tab01_indicator))			// 하단 버튼을 이미지 사용함.
 				.setIndicator(getResources().getString(R.string.my_qr_title), getResources().getDrawable(R.drawable.tab01_indicator))			// 하단 버튼을 이미지 사용함.
 				.setContent(new Intent(this, MyQRPageActivity.class)));
 		// Optimizer.class 소스는 tab_1 탭에에 속함. Optimizer.java
 		//         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
-		
-		
-		
+
+
+
 		tabhost.addTab(tabhost.newTabSpec("tab_2")
-//				.setIndicator((View)tvTab2)
-//				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu2))
+				//				.setIndicator((View)tvTab2)
+				//				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu2))
 				.setIndicator(getResources().getString(R.string.my_mileage_title), getResources().getDrawable(R.drawable.tab02_indicator))
 				.setContent(new Intent(this, MyMileagePageActivity.class)));  
 		tabhost.addTab(tabhost.newTabSpec("tab_3")
-//				.setIndicator((View)tvTab3)
-//				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu3))
+				//				.setIndicator((View)tvTab3)
+				//				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu3))
 				.setIndicator(getResources().getString(R.string.search), getResources().getDrawable(R.drawable.tab03_indicator))
 				.setContent(new Intent(this, MemberStoreListPageActivity.class)));
-		
+
 		tabhost.addTab(tabhost.newTabSpec("tab_4")
-//				.setIndicator((View)tvTab4)
-//				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu4))
+				//				.setIndicator((View)tvTab4)
+				//				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu4))
 				.setIndicator(getResources().getString(R.string.menu_settings), getResources().getDrawable(R.drawable.tab04_indicator))
 				.setContent(new Intent(this, kr.co.bettersoft.checkmileage.pref.PrefActivityFromResource.class)));  
 
 
-		
 
 
-		
+
+
 		// Tab에 색상 지정
 		new Thread(			// unreg 안함
 				new Runnable(){
 					public void run(){
 						for(int i = 0; i < tabhost.getTabWidget().getChildCount(); i++) {
-//							tabhost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#000000"));
+							//							tabhost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#000000"));
 							tabhost.getTabWidget().getChildAt(i).setBackgroundDrawable(getResources().getDrawable(R.drawable.design_bg_tab_menu));
-//							RelativeLayout relLayout = (RelativeLayout)tabhost.getTabWidget().getChildAt(i); 
-//							TextView tv = (TextView)relLayout.getChildAt(i); 
-//							tv.setTextSize(8);
+							//							RelativeLayout relLayout = (RelativeLayout)tabhost.getTabWidget().getChildAt(i); 
+							//							TextView tv = (TextView)relLayout.getChildAt(i); 
+							//							tv.setTextSize(8);
 						}
-//						tabhost.getTabWidget().setCurrentTab(0);
-//						tabhost.getTabWidget().getChildAt(0).setBackgroundColor(Color.parseColor("#000000"));
+						//						tabhost.getTabWidget().setCurrentTab(0);
+						//						tabhost.getTabWidget().getChildAt(0).setBackgroundColor(Color.parseColor("#000000"));
 
-					     // 마일리지 통한 실행시에 대한 조치 사항
+						// 마일리지 통한 실행시에 대한 조치 사항
 						if(RunMode.length()>0){
 							if(RunMode.equals("MILEAGE")){
 								Message message = handler.obtainMessage();				
@@ -205,12 +208,20 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 				}
 		).start();		
 
-        
-        
+
+
 		// locale 얻기.
 		getLocale();
 	}
 
+	/**
+	 * getLocale
+	 *  디바이스에서 국가,언어 코드 얻는다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void getLocale(){
 		Locale systemLocale = getResources().getConfiguration().locale;
 		String strDisplayCountry = systemLocale.getDisplayCountry();
@@ -218,25 +229,33 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 		String strLanguage = systemLocale.getLanguage();
 		Log.d(TAG,"strDisplayCountry:"+strDisplayCountry+"/strCountry:"+strCountry+"/strLanguage:"+strLanguage);
 	}
-	
-	
-	
+
+
+
 	@Override
 	public void onTabChanged(String tabId) {
-//		Log.d(TAG, "onTabChanged");
-//		String strMsg;
-//        strMsg = "onTabChanged : " + tabId;
-//        Toast.makeText( this, strMsg, Toast.LENGTH_SHORT ).show();
-		
+		//		Log.d(TAG, "onTabChanged");
+		//		String strMsg;
+		//        strMsg = "onTabChanged : " + tabId;
+		//        Toast.makeText( this, strMsg, Toast.LENGTH_SHORT ).show();
+
 		// tab 색상 변경
-//		for(int i=0; i<tabhost.getTabWidget().getChildCount(); i++){
-//			tabhost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#393939"));
-//		}
-//		tabhost.getTabWidget().getChildAt(tabhost.getCurrentTab()).setBackgroundColor(Color.parseColor("#595959"));
-		
+		//		for(int i=0; i<tabhost.getTabWidget().getChildCount(); i++){
+		//			tabhost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#393939"));
+		//		}
+		//		tabhost.getTabWidget().getChildAt(tabhost.getCurrentTab()).setBackgroundColor(Color.parseColor("#595959"));
+
 	}
 
-	////////////////////////////////////////////GCM 세팅        ///////////////////////////////////////////////////////////////		
+	////////////////////////////////////////////GCM 세팅        ///////////////////////////////////////////////////////////////
+	/**
+	 * nextProcessing
+	 *  GCM 세팅하여 등록한다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void nextProcessing(){
 		////////////////////////////////////////////GCM 세팅        ///////////////////////////////////////////////////////////////		
 		GCMRegistrar.checkDevice(this);					// 임시 중지  ->해제
@@ -256,10 +275,26 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 		mRegisterTask.execute(null, null, null);
 	}
 	///////////////////////////////////////// GCM 등록 위한 메소드들 //////////////////////////////////    
+	/**
+	 * getThis
+	 *  컨택스트 리턴한다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public Context getThis(){
 		return this;
 	}
 
+	/**
+	 * getNow
+	 *  현시각 구한다
+	 *
+	 * @param
+	 * @param
+	 * @return nowTime
+	 */
 	public String getNow(){
 		// 현 시각
 		Calendar c = Calendar.getInstance();
@@ -269,7 +304,7 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 		int todayHour = c.get(Calendar.HOUR_OF_DAY);
 		int todayMinute = c.get(Calendar.MINUTE);
 		int todaySecond = c.get(Calendar.SECOND);
-		
+
 		String tempMonth = Integer.toString(todayMonth);
 		String tempDay = Integer.toString(todayDay);
 		String tempHour = Integer.toString(todayHour);
@@ -279,13 +314,13 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 		if(tempDay.length()==1) tempDay = "0"+tempDay;
 		if(tempHour.length()==1) tempHour = "0"+tempHour;
 		if(tempMinute.length()==1) tempMinute = "0"+tempMinute;
-		
+
 		String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute+":"+tempSecond;
 		return nowTime;
 		//Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
 	}
 
-	
+
 	// 리시버 등록, 해제하여 시작시 나오는 리시버 해제했냐는 질문 로그가 나오지 않도록 한다. 실제 푸시 받는것은 서비스단에서..
 	BroadcastReceiver mMyBroadcastReceiver = new BroadcastReceiver() {
 		@Override
@@ -299,55 +334,78 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 	};
 	@Override
 	protected void onResume() {
-//		Log.i(TAG, "onResume");
-//		registerReceiver(mMyBroadcastReceiver, new IntentFilter("receive받을 이름"));
-//		registerReceiver(mMyBroadcastReceiver, new IntentFilter(DISPLAY_MESSAGE_ACTION));			// oncreate 로 옮김
+		//		Log.i(TAG, "onResume");
+		//		registerReceiver(mMyBroadcastReceiver, new IntentFilter("receive받을 이름"));
+		//		registerReceiver(mMyBroadcastReceiver, new IntentFilter(DISPLAY_MESSAGE_ACTION));			// oncreate 로 옮김
 		super.onResume();
 	};
-
+	/**
+	 * onPause
+	 *  홈버튼 누르면 종료시킨다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	@Override
 	protected void onPause() {
-//		new Thread(			// unreg 안함
-//				new Runnable(){
-//					public void run(){
-//						Message message = handler.obtainMessage();				
-//						Bundle b = new Bundle();
-//						b.putInt("unregGCM", 1);
-//						message.setData(b);
-//						handler.sendMessage(message);
-//					}
-//				}
-//		).start();		
+		//		new Thread(			// unreg 안함
+		//				new Runnable(){
+		//					public void run(){
+		//						Message message = handler.obtainMessage();				
+		//						Bundle b = new Bundle();
+		//						b.putInt("unregGCM", 1);
+		//						message.setData(b);
+		//						handler.sendMessage(message);
+		//					}
+		//				}
+		//		).start();		
 		super.onPause();
-		 // 홈버튼 눌렀을때 종료 여부..
-      if(!isForeGround()){
-            Log.d(TAG,"go home, bye");
-            dummyActivity.finish();		// 더미도 종료
+		// 홈버튼 눌렀을때 종료 여부..
+		if(!isForeGround()){
+			Log.d(TAG,"go home, bye");
+			dummyActivity.finish();		// 더미도 종료
 			DummyActivity.count = 0;		// 개수 0으로 초기화 시켜준다. 다시 실행될수 있도록
-            finish();
-      }
-	}
-	
-	/*
-     * 프로세스가 최상위로 실행중인지 검사.
-     * @return true = 최상위
-     */
-     public Boolean isForeGround(){
-          ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE );
-          List<RunningTaskInfo> list = am.getRunningTasks(1);
-          ComponentName cn = list.get(0). topActivity;
-          String name = cn.getPackageName();
-          Boolean rtn = false;
-           if(name.indexOf(getPackageName()) > -1){
-                rtn = true;
-          } else{
-                rtn = false;
-          }
-           return rtn;
-    }
-     @Override
-		public void onDestroy(){
-			android.os.Process.killProcess(android.os.Process.myPid()); 
-			super.onDestroy();
+			finish();
 		}
+	}
+
+	/*
+	 * 프로세스가 최상위로 실행중인지 검사.
+	 * @return true = 최상위
+	 */
+	/**
+	 * isForeGround
+	 *  프로세스가 최상위로 실행중인지 검사한다. (홈버튼 눌렀는지 여부 확인용)
+	 *
+	 * @param
+	 * @param
+	 * @return rtn
+	 */
+	public Boolean isForeGround(){
+		ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE );
+		List<RunningTaskInfo> list = am.getRunningTasks(1);
+		ComponentName cn = list.get(0). topActivity;
+		String name = cn.getPackageName();
+		Boolean rtn = false;
+		if(name.indexOf(getPackageName()) > -1){
+			rtn = true;
+		} else{
+			rtn = false;
+		}
+		return rtn;
+	}
+	/**
+	 * onDestroy
+	 *  종료시 정상 종료 한다
+	 *
+	 * @param
+	 * @param
+	 * @return 
+	 */
+	@Override
+	public void onDestroy(){
+		android.os.Process.killProcess(android.os.Process.myPid()); 
+		super.onDestroy();
+	}
 }

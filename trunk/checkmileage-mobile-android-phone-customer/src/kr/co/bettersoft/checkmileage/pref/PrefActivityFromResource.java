@@ -1,8 +1,10 @@
 package kr.co.bettersoft.checkmileage.pref;
-/*
+/**
+ * PrefActivityFromResource
+ * 
  * 설정 화면. 
  * 
- * 터치시 이벤트 설정도 여기서
+ * 터치시 이벤트 설정도 여기서한다
  */
 import java.io.BufferedReader;
 
@@ -76,21 +78,22 @@ import kr.co.bettersoft.checkmileage.domain.CheckMileageMembers;
 
 public class PrefActivityFromResource extends PreferenceActivity implements OnSharedPreferenceChangeListener{
 	int app_end = 0;	// 뒤로가기 버튼으로 닫을때 2번만에 닫히도록
-	
+
 	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
 	MainActivity mainActivity = (MainActivity)MainActivity.mainActivity;
-	
+
 	static String TAG = "PrefActivityFromResource";
-	
+
 	public Boolean resumeCalled = false;  // 처음 열렸는지, 다른 화면 갔다온건지. -- 처음열렸을때만 프리퍼런스 지정하기 위함.
-	
+
 	SharedPreferences sharedPrefCustom;	// 공용 프립스		 잠금 및 QR (잠금은 메인과 공유  위의 것(default,this)은 메인과 공유되지 않아 이 sharedPref 도 사용한다.)		
-//	PreferenceCategory category1;			// 설정의 카테고리째로 비활성 시킬수 있다. 본 프로젝트에서 사용 안함
-//	WebView mWeb;							// 도움말, 공지 등 볼때 사용하는 웹뷰		--> 다른 액티비티 통해 호출함.
-	
+	//	PreferenceCategory category1;			// 설정의 카테고리째로 비활성 시킬수 있다. 본 프로젝트에서 사용 안함
+	//	WebView mWeb;							// 도움말, 공지 등 볼때 사용하는 웹뷰		--> 다른 액티비티 통해 호출함.
+
 	SharedPreferences thePrefs;				// 어플 내 자체 프리퍼런스.  Resume 때 이곳에 연결하여 사용(탈퇴때 초기화 용도)--  
 	SharedPreferences defaultPref;			// default --   자체 프리퍼런스. 
-	
+
+	// 시간관련
 	Calendar c = Calendar.getInstance();
 	int todayYear = 0;						// 지금 -  년 월 일 시 분
 	int todayMonth = 0;
@@ -98,29 +101,29 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	int todayHour = 0;
 	int todayMinute = 0;
 	int todaySecond = 0;
-	
 	int birthYear = 0;						// 생년월일 - 년 월 일
 	int birthMonth= 0;
 	int birthDay = 0;
-	
-	URL postUrl2 ;
-	HttpURLConnection connection2;
-	
+
+
 	int sharePrefsFlag = 1;					// 어플내 자체 프립스를 얻기 위한 미끼. 1,-1 값을 바꿔가며 저장하면 리스너가 동작한다. - 그때 동작하는 프리퍼런스를 잡는다.
-	
+
+	// 서버 통신 관련
 	String serverName = CommonUtils.serverNames;
 	static String controllerName = "";		// JSON 서버 통신명 컨트롤러 명
 	static String methodName = "";			// JSON 서버 통신용 메소드 명
 	static int responseCode = 0;			// JSON 서버 통신 결과
-	
+	URL postUrl2 ;
+	HttpURLConnection connection2;
+
 	static int updateLv=0;							// 서버에 업뎃 칠지 여부 검사용도. 0이면 안하고, 1이면 한다, 2면 두번한다(업뎃중 값이 바뀐 경우임)
-	
+
 	// Locale
-    Locale systemLocale = null ;
-//    String strDisplayCountry = "" ;
-    String strCountry = "" ;				// 국가 코드
-    String strLanguage = "" ;				// 언어 코드
-	
+	Locale systemLocale = null ;
+	//    String strDisplayCountry = "" ;
+	String strCountry = "" ;				// 국가 코드
+	String strLanguage = "" ;				// 언어 코드
+
 	// GCM 받을지 여부 저장. 메서드용.
 	String strYorN = "";
 	Boolean yn = false;
@@ -129,7 +132,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		getNow();
 		//		Toast.makeText(PrefActivityFromResource.this, "Year:"+todayYear+",Month:"+todayMonth+",Day:"+todayDay, Toast.LENGTH_SHORT).show();
 
@@ -138,17 +141,17 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		// 3. \data\data\패키지이름\shared_prefs\패키지이름_preferences.xml 생성
 		// 4. 이 후 Preference에 변경 사항이 생기면 파일에 자동 저장
 		addPreferencesFromResource(R.xml.settings);
-		
+
 		/*
 		 *  서버로부터 개인 정보를 가져와서 도메인 같은 곳에 담아둔다. 나중에 업데이트 할때 사용 . 업데이트하고 나면 그 도메인 그대로 유지 ..
 		 *  없는거는 null pointer 나므로 ""로 바꿔주는 처리가 필요하다.
 		 */
 		memberInfo = new CheckMileageMembers();
-		
-		 new backgroundGetUserInfo().execute();	
+
+		new backgroundGetUserInfo().execute();	
 		if(!resumeCalled){			// 한번만 .. 느리니까
 			getPreferenceScreen().getSharedPreferences() 
-			.registerOnSharedPreferenceChangeListener(this); 
+			.registerOnSharedPreferenceChangeListener(this);		// 리스너 등록 
 
 			/*
 			 *  비번 잠금 설정은 비번이 있을 경우에만 해준다.	(비번이 없다면 잠금 체크 설정을 사용할 수 없다.)		
@@ -159,13 +162,14 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 					Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
 			sharedPrefCustom.registerOnSharedPreferenceChangeListener(this);			// 여기에도 등록해놔야 리시버가 제대로 반응한다.
 
-			// default 도  
+			// default 도  등록해야 함
 			defaultPref = PreferenceManager.getDefaultSharedPreferences(this);
 			defaultPref.registerOnSharedPreferenceChangeListener(this);			 
 
 			//		category1 = (PreferenceCategory)findPreference("category1");
-			Preference passwordCheck = findPreference("preference_lock_chk");
+			//			Preference passwordCheck = findPreference("preference_lock_chk");
 
+			// 프리퍼런스 동기화 (공유용 - 디폴트 간 동기화)
 			SharedPreferences.Editor init2 = sharedPrefCustom.edit();		// 강제 호출용도  .. 단어명은 의미없다.
 			int someNum = sharedPrefCustom.getInt("pref_app_hi", sharePrefsFlag);	// 이전 값과 같을수 있으므로..
 			someNum = someNum * -1;													// 매번 다른 값이 들어가야 제대로 호출이 된다. 같은 값들어가면 변화 없다고 호출 안됨.			
@@ -176,15 +180,23 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			// 설정 변경하고 온 경우 업뎃 한번 쳐주기.
 			if(updateLv>0){		// 2였던 경우= (업뎃중 또 변경된 경우 ->한번더)
 				Log.d(TAG,"Need Update one more time");
-//				updateToServer_pre();
+				//				updateToServer_pre();
 				updateToServer();
 			}
-			updateServerSettingsToPrefs();				// 서버 설정 자체 설정으로 저장 
+			updateServerSettingsToPrefs();				// 서버에서 가져온 정보를 프리퍼런스에 저장 
 			resumeCalled = true;
 		}
 	}
 
 	// 현재 시각 구하기.
+	/**
+	 * getNow
+	 *  현재 시각 구한다
+	 *
+	 * @param
+	 * @param
+	 * @return nowTime
+	 */
 	public String getNow(){
 		c = Calendar.getInstance();
 		todayYear = c.get(Calendar.YEAR);
@@ -205,9 +217,9 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		if(tempSecond.length()==1) tempSecond = "0"+tempSecond;
 		String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute+":"+tempSecond;
 		return nowTime;
-//		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
+		//		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
 	}
-	
+
 	/*
 	 * oncreate 에 있으면 한번밖에 못해서 두번 이상 하려면 Resume 에 둔다..
 	 * 화면으로 올때마다 비번을 꺼낸다. 
@@ -219,24 +231,32 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	public void onResume(){		
 		super.onResume();
 		app_end = 0;
-//		Log.i(TAG, "onResume");		// yyyyMMdd
-		    // Set up a listener whenever a key changes 
-		 getPreferenceScreen().getSharedPreferences() 
-         .registerOnSharedPreferenceChangeListener(this); 
+		//		Log.i(TAG, "onResume");		// yyyyMMdd
+		// Set up a listener whenever a key changes 
+		getPreferenceScreen().getSharedPreferences() 
+		.registerOnSharedPreferenceChangeListener(this); 		// 리스너 등록
 	}
 
 	@Override 
 	protected void onPause() { 
-	    super.onPause(); 
-	    // Unregister the listener whenever a key changes 
-	    getPreferenceScreen().getSharedPreferences() 
-	            .unregisterOnSharedPreferenceChangeListener(this); 
+		super.onPause(); 
+		// Unregister the listener whenever a key changes 
+		getPreferenceScreen().getSharedPreferences() 
+		.unregisterOnSharedPreferenceChangeListener(this); 		// 리스너 해제
 	} 
 
 	// Preference에서 클릭 발생시 호출되는 call back
 	// Parameters:
 	//  - PreferenceScreen : 이벤트가 발생한 Preference의 root
 	//  - Preference : 이벤트를 발생시킨 Preference 항목
+	/**
+	 * onPreferenceTreeClick
+	 *  프리퍼런스 클릭시 호출되는 콜백메서드이다. 설정 값 변화 또는 설정 메뉴 호출 등이 있다.
+	 *
+	 * @param preferenceScreen
+	 * @param preference
+	 * @return
+	 */
 	@Override
 	public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
 			Preference preference) {
@@ -257,8 +277,8 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		//			}
 		//테스트용 . ////
 		//		}
-/*
- * 		 *  checkMileageId /		 그냥 쓰기.
+		/*
+		 * 		 *  checkMileageId /		 그냥 쓰기.
 		 *  password /			업뎃											비번에서 별도.	 처리						.
 		 *  phoneNumber /			그냥 쓰기.
 		 *  email /				업뎃											pref_user_email						//
@@ -270,8 +290,8 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		 *  registrationId /		그냥 쓰기.
 		 *  activateYn /		업뎃 (탈퇴시)																		//
 		 *  modifyDate /		업뎃 - 										현시각. 년월일시분  yyyyMMdd-hh:mm	(그때그때)	/	
- */
-		
+		 */
+
 		// 알림 수신 설정 여부.
 		if(preference.equals((CheckBoxPreference)findPreference("preference_alarm_chk"))){
 			//	Toast.makeText(PrefActivityFromResource.this, "preference_lock_password", Toast.LENGTH_SHORT).show();
@@ -283,21 +303,21 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			if(updateLv<2){		// 0또는 1일경우. 1 증가. (최대 2까지)
 				updateLv = updateLv+1;
 				if(updateLv==1){
-//					updateGCMToServer_pre(yn);
+					//					updateGCMToServer_pre(yn);
 					updateGCMToServer(yn);
 				}
 			}
 		}
-		
+
 
 		// 자주 묻는 질문 등의 경우 인텐트로 웹뷰 실시
 		if(preference.equals(findPreference("pref_app_qna"))){
 			//			Toast.makeText(PrefActivityFromResource.this, "웹뷰 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
 			Intent webIntent = new Intent(PrefActivityFromResource.this, myWebView.class);
 			webIntent.putExtra("loadingURL", "http://www.mcarrot.net/mFaq.do");
-//			webIntent.putExtra("loadingURL", memberInfo.getCountryCode());
-//			webIntent.putExtra("loadingURL", memberInfo.getLanguageCode());
-//			webIntent.putExtra("loadingURL", "http://www.mcarrot.net/senchaIndex.do");			// sencha test page
+			//			webIntent.putExtra("loadingURL", memberInfo.getCountryCode());
+			//			webIntent.putExtra("loadingURL", memberInfo.getLanguageCode());
+			//			webIntent.putExtra("loadingURL", "http://www.mcarrot.net/senchaIndex.do");			// sencha test page
 			startActivity(webIntent);
 		}
 
@@ -317,68 +337,68 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			startActivity(webIntent);
 		}
 
-//		// 탈퇴.  pref_app_leave
-//		if(preference.equals(findPreference("pref_app_leave"))){
-//		//	//		//	Toast.makeText(PrefActivityFromResource.this, R.string.leave_toast_message, Toast.LENGTH_SHORT).show();
-//			new AlertDialog.Builder(this)
-//			.setTitle("회원 탈퇴")
-//			.setMessage("탈퇴 시 기존 마일리지가 소멸됩니다.\n정말로 탈퇴하시겠습니까?")
-//			.setIcon(android.R.drawable.ic_dialog_alert)
-//			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-//				public void onClick(DialogInterface dialog, int whichButton) {
-//					memberInfo.setActivateYn("N");	// 서버에 비활성화 시킨다.
-//					memberDeactivation();
-//					// 모바일 내에서도 QR코드,비번 설정 등을 날려 버린다. 그 외 정보들은 인증 받으면서 서버에서 받은걸로 업뎃 해준다....
-//					SharedPreferences.Editor init = sharedPrefCustom.edit();
-//					init.putString("qrcode", "");		init.putBoolean("appLocked", false);	
-//					init.putString("password", "");
-//					init.commit();
-//					goodBye(thePrefs);
-//					// db 의 사용자 테이블 드랍.
-//					try{
-//						SQLiteDatabase db = null;
-//						db= openOrCreateDatabase( "sqlite_carrotDB.db",             
-//						          SQLiteDatabase.CREATE_IF_NECESSARY ,null );
-//						db.execSQL("DROP TABLE user_info");
-//						db.close();
-//					}catch(Exception e){
-//						e.printStackTrace();
-//					}
-//					Toast.makeText(PrefActivityFromResource.this, "이용해 주셔서 감사합니다.", Toast.LENGTH_SHORT).show(); 
-//					finish();
-//				}
-//			})
-//			.setNegativeButton(android.R.string.no, null).show();
+		//		// 탈퇴.  pref_app_leave
+		//		if(preference.equals(findPreference("pref_app_leave"))){
+		//		//	//		//	Toast.makeText(PrefActivityFromResource.this, R.string.leave_toast_message, Toast.LENGTH_SHORT).show();
+		//			new AlertDialog.Builder(this)
+		//			.setTitle("회원 탈퇴")
+		//			.setMessage("탈퇴 시 기존 마일리지가 소멸됩니다.\n정말로 탈퇴하시겠습니까?")
+		//			.setIcon(android.R.drawable.ic_dialog_alert)
+		//			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+		//				public void onClick(DialogInterface dialog, int whichButton) {
+		//					memberInfo.setActivateYn("N");	// 서버에 비활성화 시킨다.
+		//					memberDeactivation();
+		//					// 모바일 내에서도 QR코드,비번 설정 등을 날려 버린다. 그 외 정보들은 인증 받으면서 서버에서 받은걸로 업뎃 해준다....
+		//					SharedPreferences.Editor init = sharedPrefCustom.edit();
+		//					init.putString("qrcode", "");		init.putBoolean("appLocked", false);	
+		//					init.putString("password", "");
+		//					init.commit();
+		//					goodBye(thePrefs);
+		//					// db 의 사용자 테이블 드랍.
+		//					try{
+		//						SQLiteDatabase db = null;
+		//						db= openOrCreateDatabase( "sqlite_carrotDB.db",             
+		//						          SQLiteDatabase.CREATE_IF_NECESSARY ,null );
+		//						db.execSQL("DROP TABLE user_info");
+		//						db.close();
+		//					}catch(Exception e){
+		//						e.printStackTrace();
+		//					}
+		//					Toast.makeText(PrefActivityFromResource.this, "이용해 주셔서 감사합니다.", Toast.LENGTH_SHORT).show(); 
+		//					finish();
+		//				}
+		//			})
+		//			.setNegativeButton(android.R.string.no, null).show();
 
-			//			Intent webIntent = new Intent(PrefActivityFromResource.this, myWebView.class);
-			//			webIntent.putExtra("loadingURL", "http://m.naver.com");
-			//			startActivity(webIntent);
-//		}
+		//			Intent webIntent = new Intent(PrefActivityFromResource.this, myWebView.class);
+		//			webIntent.putExtra("loadingURL", "http://m.naver.com");
+		//			startActivity(webIntent);
+		//		}
 
-		
-		
+
+
 		// 이벤트 알림  pref_push_list
 		if(preference.equals(findPreference("pref_push_list"))){
-//			AlertShow_Message();				// 준비중입니다.
+			//			AlertShow_Message();				// 준비중입니다.
 			// 이벤트 목록 구현 이후 하단 주석 해제.
 			Intent PushListIntent = new Intent(PrefActivityFromResource.this, kr.co.bettersoft.checkmileage.activities.PushList.class);
 			startActivity(PushListIntent);
-			
+
 		}
-		
+
 		// 이 앱은 ? pref_app_what
 		if(preference.equals(findPreference("pref_app_what"))){
 			//			Toast.makeText(PrefActivityFromResource.this, "웹뷰 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
 			Intent aboutIntent = new Intent(PrefActivityFromResource.this, Settings_AboutPageActivity.class);
-//			webIntent.putExtra("loadingURL", "http://m.naver.com");
+			//			webIntent.putExtra("loadingURL", "http://m.naver.com");
 			startActivity(aboutIntent);
 		}
-		
+
 		return super.onPreferenceTreeClick(preferenceScreen, preference);
 	}	
 
-	
-	// 준비중입니다.. -> 이벤트 목록 미구현 상태일때 알림 용도
+
+	// 준비중입니다.. -> 이벤트 목록 미구현 상태일때 알림 용도 --> 현재는사용하지 않음
 	public void AlertShow_Message(){		//R.string.network_error
 		AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
 		alert_internet_status.setTitle("Carrot");
@@ -388,16 +408,24 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
-//				finish();
+				//				finish();
 			}
 		});
 		alert_internet_status.show();
 	}
-	
-	
-	
-	
-	// 비동기로 GCM 아이디 업뎃 호출  -- 캐럿 서버에 gcm 아이디 업뎃
+
+
+
+
+	// 비동기로 사용자 정보를 업뎃 호출  -- 캐럿 서버에 사용자 정보를 업뎃
+	/**
+	 * backgroundGetUserInfo
+	 * 비동기로 사용자 정보를 업뎃하는 함수를 호출한다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public class backgroundGetUserInfo extends  AsyncTask<Void, Void, Void> { 
 		@Override protected void onPostExecute(Void result) {  
 		} 
@@ -405,15 +433,15 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		} 
 		@Override protected Void doInBackground(Void... params) {  
 			Log.d(TAG,"backgroundUpdateMyGCMtoServer");
-//        		getUserInfo_pre();
-        		getUserInfo();
-//			try {						// gcm 확인용
-//				testGCM(regIdGCM);
-//			} catch (JSONException e) {
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
+			//        		getUserInfo_pre();
+			getUserInfo();
+			//			try {						// gcm 확인용
+			//				testGCM(regIdGCM);
+			//			} catch (JSONException e) {
+			//				e.printStackTrace();
+			//			} catch (IOException e) {
+			//				e.printStackTrace();
+			//			}
 			return null; 
 		}
 	}
@@ -422,26 +450,34 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	 *  checkMileageMemberController 컨/ selectMemberInformation  메/ checkMileageMember 도/ 
 	 *  checkMileageId 변<-qrCode , activateYn : Y  /  CheckMileageMember 결과
 	 */
-//	public void getUserInfo_pre(){
-//		new Thread(
-//				new Runnable(){
-//					public void run(){
-//						Log.d(TAG,"getUserInfo_pre");
-//						try{
-//							Thread.sleep(CommonUtils.threadWaitngTime);
-//						}catch(Exception e){
-//						}finally{
-//							if(CommonUtils.usingNetwork<1){
-//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-//								getUserInfo();
-//							}else{
-//								getUserInfo_pre();
-//							}
-//						}
-//					}
-//				}
-//			).start();
-//	}
+	//	public void getUserInfo_pre(){
+	//		new Thread(
+	//				new Runnable(){
+	//					public void run(){
+	//						Log.d(TAG,"getUserInfo_pre");
+	//						try{
+	//							Thread.sleep(CommonUtils.threadWaitngTime);
+	//						}catch(Exception e){
+	//						}finally{
+	//							if(CommonUtils.usingNetwork<1){
+	//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+	//								getUserInfo();
+	//							}else{
+	//								getUserInfo_pre();
+	//							}
+	//						}
+	//					}
+	//				}
+	//			).start();
+	//	}
+	/**
+	 * getUserInfo
+	 * 서버로부터 개인 정보를 받아와서 도메인에 저장해 둔다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void getUserInfo(){
 		// ...
 		Log.i(TAG, "getUserInfo");
@@ -469,35 +505,35 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
-//							connection2.connect();		// *** 
+							//							connection2.connect();		// *** 
 							Thread.sleep(200);	
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
 							Thread.sleep(200);
-//							System.out.println("postUrl      : " + postUrl2);
-//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+							//							System.out.println("postUrl      : " + postUrl2);
+							//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 							responseCode = connection2.getResponseCode();
 							InputStream in =  connection2.getInputStream();
-//							os2.close();
+							//							os2.close();
 							// 조회한 결과를 처리.
 							theData1(in);
-//							connection2.disconnect();
+							//							connection2.disconnect();
 						}catch(Exception e){ 
-//							connection2.disconnect();
+							//							connection2.disconnect();
 							e.printStackTrace();
 						}
-//						finally{
-//							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-//							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-//								CommonUtils.usingNetwork = 0;
-//							}
-//						}
+						//						finally{
+						//							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+						//							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+						//								CommonUtils.usingNetwork = 0;
+						//							}
+						//						}
 					}
 				}
 		).start();
 	}
-	
+
 	/*
 	 *  서버로 변경된 설정 등을 업데이트 한다. 그때그때 해줘야 한다. 기존 도메인에 세팅하고 도메인 채로 업데이트 친다. 
 	 *    플래그 값을 두어 0->1로 바꾸고 업뎃 친다. 
@@ -505,26 +541,36 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	 *    2일경우 아무것도 하지 않는다. 
 	 *    업뎃 치고 나서 1을 내리고 나서 확인 -> 0이 아닐 경우 다시 업뎃 친다.
 	 */
-//	public void updateToServer_pre(){
-//		new Thread(
-//				new Runnable(){
-//					public void run(){
-//						Log.d(TAG,"updateToServer_pre");
-//						try{
-//							Thread.sleep(CommonUtils.threadWaitngTime);
-//						}catch(Exception e){
-//						}finally{
-//							if(CommonUtils.usingNetwork<1){
-//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-//								updateToServer();
-//							}else{
-//								updateToServer_pre();
-//							}
-//						}
-//					}
-//				}
-//			).start();
-//	}
+	//	public void updateToServer_pre(){
+	//		new Thread(
+	//				new Runnable(){
+	//					public void run(){
+	//						Log.d(TAG,"updateToServer_pre");
+	//						try{
+	//							Thread.sleep(CommonUtils.threadWaitngTime);
+	//						}catch(Exception e){
+	//						}finally{
+	//							if(CommonUtils.usingNetwork<1){
+	//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+	//								updateToServer();
+	//							}else{
+	//								updateToServer_pre();
+	//							}
+	//						}
+	//					}
+	//				}
+	//			).start();
+	//	}
+
+
+	/**
+	 * updateToServer
+	 *  서버로 변경된 설정 등을 업데이트 한다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void updateToServer(){
 		Log.i(TAG, "updateToServer");
 		controllerName = "checkMileageMemberController";
@@ -547,10 +593,10 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								obj.put("deviceType", memberInfo.getDeviceType());
 								obj.put("registrationId", memberInfo.getRegistrationId());
 								obj.put("activateYn", memberInfo.getActivateYn());
-								
+
 								obj.put("countryCode", memberInfo.getCountryCode());
 								obj.put("languageCode", memberInfo.getLanguageCode());
-								
+
 								obj.put("receiveNotificationYn", memberInfo.getReceiveNotificationYn());
 								Log.i(TAG, "activateYn::"+memberInfo.getActivateYn());
 								String nowTime = getNow();
@@ -568,20 +614,20 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
-//								connection2.connect();		// *** 
+								//								connection2.connect();		// *** 
 								Thread.sleep(200);
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
 								Thread.sleep(200);
-//								System.out.println("postUrl      : " + postUrl2);
-//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+								//								System.out.println("postUrl      : " + postUrl2);
+								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 								responseCode = connection2.getResponseCode();
-//								InputStream in =  connection2.getInputStream();
-//								os2.close();
+								//								InputStream in =  connection2.getInputStream();
+								//								os2.close();
 								// 조회한 결과를 처리.
 								if(responseCode==200 || responseCode == 204){	// 성공이라 딱히..
-//									theData1(in);		// 서버 결과 가지고 재 세팅하면안됨 <- 는 멤버 정보 받아서 처리하는 녀석임 호출 금지
+									//									theData1(in);		// 서버 결과 가지고 재 세팅하면안됨 <- 는 멤버 정보 받아서 처리하는 녀석임 호출 금지
 									updateLv = updateLv-1;
 									if(updateLv>0){		// 2였던 경우. (업뎃중 또 변경된 경우 한번더)
 										Log.d(TAG,"Need Update one more time");
@@ -590,24 +636,24 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								}else{
 									Log.w(TAG,"fail to update");
 								}
-//								connection2.disconnect();
+								//								connection2.disconnect();
 							}catch(Exception e){ 
-//								connection2.disconnect();
+								//								connection2.disconnect();
 								e.printStackTrace();
 							}
-//							finally{
-//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-//									CommonUtils.usingNetwork = 0;
-//								}
-//							}
+							//							finally{
+							//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+							//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+							//									CommonUtils.usingNetwork = 0;
+							//								}
+							//							}
 						}
 					}
 			).start();
 		}
 		// ...
 	}
-	
+
 	/*
 	 *  서버로 알림 수신 설정 업뎃.
 	 *    플래그 값을 두어 0->1로 바꾸고 업뎃 친다. 
@@ -615,26 +661,35 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	 *    2일경우 아무것도 하지 않는다. 
 	 *    업뎃 치고 나서 1을 내리고 나서 확인 -> 0이 아닐 경우 다시 업뎃 친다.
 	 */
-//	public void updateGCMToServer_pre(final Boolean checked){
-//		new Thread(
-//				new Runnable(){
-//					public void run(){
-//						Log.d(TAG,"updateGCMToServer_pre");
-//						try{
-//							Thread.sleep(CommonUtils.threadWaitngTime);
-//						}catch(Exception e){
-//						}finally{
-//							if(CommonUtils.usingNetwork<1){
-//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-//								updateGCMToServer(checked);
-//							}else{
-//								updateGCMToServer_pre(checked);
-//							}
-//						}
-//					}
-//				}
-//			).start();
-//	}
+	//	public void updateGCMToServer_pre(final Boolean checked){
+	//		new Thread(
+	//				new Runnable(){
+	//					public void run(){
+	//						Log.d(TAG,"updateGCMToServer_pre");
+	//						try{
+	//							Thread.sleep(CommonUtils.threadWaitngTime);
+	//						}catch(Exception e){
+	//						}finally{
+	//							if(CommonUtils.usingNetwork<1){
+	//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+	//								updateGCMToServer(checked);
+	//							}else{
+	//								updateGCMToServer_pre(checked);
+	//							}
+	//						}
+	//					}
+	//				}
+	//			).start();
+	//	}
+
+	/**
+	 * updateGCMToServer
+	 *  서버에 알림 수신 설정 값을 업뎃한다
+	 *
+	 * @param checked
+	 * @param
+	 * @return
+	 */
 	public void updateGCMToServer(Boolean checked){  
 		Log.i(TAG, "updateGCMToServer");
 		controllerName = "checkMileageMemberController";
@@ -651,7 +706,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							JSONObject obj = new JSONObject();
 							try{
 								// 사용자 정보 업뎃.
-								
+
 								/*
 								 * checkMileageId
 									receiveNotificationYn
@@ -662,15 +717,15 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								obj.put("checkMileageId", memberInfo.getCheckMileageId());
 								obj.put("receiveNotificationYn", strYorN);						// 정해서 넣어.
 								obj.put("activateYn", memberInfo.getActivateYn());
-								
+
 								String nowTime = getNow();
 								obj.put("modifyDate", nowTime);		// 지금 시간으로.
-								
+
 								Log.i(TAG, "checkMileageId::"+memberInfo.getCheckMileageId());
 								Log.i(TAG, "receiveNotificationYn::"+strYorN);
 								Log.i(TAG, "activateYn::"+memberInfo.getActivateYn());
 								Log.i(TAG, "nowTime::"+nowTime);
-								
+
 							}catch(Exception e){
 								e.printStackTrace();
 							}
@@ -683,49 +738,49 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
-//								connection2.connect();		// *** 
+								//								connection2.connect();		// *** 
 								Thread.sleep(200);
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
 								Thread.sleep(200);
-//								System.out.println("postUrl      : " + postUrl2);
-//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+								//								System.out.println("postUrl      : " + postUrl2);
+								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 								responseCode = connection2.getResponseCode();
-//								InputStream in =  connection2.getInputStream();
-//								os2.close();
+								//								InputStream in =  connection2.getInputStream();
+								//								os2.close();
 								// 조회한 결과를 처리.
 								if(responseCode==200 || responseCode == 204){	// 성공이라 딱히..
-//									theData1(in);		// 서버 결과 가지고 재 세팅하면안됨 <- 는 멤버 정보 받아서 처리하는 녀석임 호출 금지
+									//									theData1(in);		// 서버 결과 가지고 재 세팅하면안됨 <- 는 멤버 정보 받아서 처리하는 녀석임 호출 금지
 									Log.d(TAG, "S to receive GCM option update");
 									updateLv = updateLv-1;
 									if(updateLv>0){		// 2였던 경우. (업뎃중 또 변경된 경우 한번더)
 										Log.d(TAG,"Need Update one more time");
-//										updateGCMToServer_pre(yn);
+										//										updateGCMToServer_pre(yn);
 										updateGCMToServer(yn);
 									}
 								}else{
 									Log.w(TAG,"fail to update");
 								}
-//								connection2.disconnect();
+								//								connection2.disconnect();
 							}catch(Exception e){ 
-//								connection2.disconnect();
+								//								connection2.disconnect();
 								e.printStackTrace();
 							}
-//							finally{
-//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-//									CommonUtils.usingNetwork = 0;
-//								}
-//							}
+							//							finally{
+							//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+							//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+							//									CommonUtils.usingNetwork = 0;
+							//								}
+							//							}
 						}
 					}
 			).start();
 		}
 		// ...
 	}
-	
-	
+
+
 	/*
 	 * 회원 탈퇴 전용 메서드.  --> 기능 제거 됨.
 	 * memberDeactivation
@@ -764,17 +819,17 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
-//							connection2.connect();		// *** 
+							//							connection2.connect();		// *** 
 							Thread.sleep(200);
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
 							Thread.sleep(200);
-//							System.out.println("postUrl      : " + postUrl2);
-//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+							//							System.out.println("postUrl      : " + postUrl2);
+							//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 							responseCode = connection2.getResponseCode();
-//							InputStream in =  connection2.getInputStream();
-//							os2.close();
+							//							InputStream in =  connection2.getInputStream();
+							//							os2.close();
 							// 조회한 결과를 처리.
 							if(responseCode==200 || responseCode == 204){	// 성공이라 딱히..
 								//									theData1(in);		// 서버 결과 가지고 재 세팅하면안됨 <- 는 멤버 정보 받아서 처리하는 녀석임 호출 금지
@@ -782,17 +837,26 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							}else{
 								Log.w(TAG,"fail to update");
 							}
-//							connection2.disconnect();
+							//							connection2.disconnect();
 						}catch(Exception e){ 
-//							connection2.disconnect();
+							//							connection2.disconnect();
 							e.printStackTrace();
 						}  
 					}
 				}
 		).start();
 	}
+
 	/*
 	 * 서버로부터 받아온 개인 정보를 파싱해서 도메인에 저장하는 부분. 업뎃, 탈퇴에서 호출하면 안됨. 멤버 데이터 모두 날아감
+	 */
+	/**
+	 * theData1
+	 *  서버로부터 받아온 개인 정보를 파싱해서 도메인에 저장한다
+	 *
+	 * @param in
+	 * @param
+	 * @return
 	 */
 	public void theData1(InputStream in){
 		Log.d(TAG,"theData1");
@@ -800,12 +864,12 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		StringBuilder builder = new StringBuilder();
 		String line =null;
 		JSONObject jsonObject;
-		
+
 		// Locale
-	      systemLocale = getResources().getConfiguration(). locale;
-//        strDisplayCountry = systemLocale.getDisplayCountry();
-           strCountry = systemLocale .getCountry();
-           strLanguage = systemLocale .getLanguage();
+		systemLocale = getResources().getConfiguration(). locale;
+		//        strDisplayCountry = systemLocale.getDisplayCountry();
+		strCountry = systemLocale .getCountry();
+		strLanguage = systemLocale .getLanguage();
 
 		try {
 			while((line=reader.readLine())!=null){
@@ -824,14 +888,14 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		 *   업데이트 할 것들.  도메인에 저장.
 		 *  checkMileageId /password /phoneNumber /email /birthday /gender /latitude /longitude /deviceType /registrationId /activateYn /modifyDate /
 		 */
-//		Log.d(TAG,"서버에서 받은 고객 상세정보::"+builder.toString());
+		//		Log.d(TAG,"서버에서 받은 고객 상세정보::"+builder.toString());
 		String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다
 		// // // // // // // 바로 바로 화면에 add 하고 터치시 값 가져다가 상세 정보 보도록....
 		if(responseCode==200 || responseCode==204){
 			try {
 				jsonObject = new JSONObject(tempstr);
 				JSONObject jsonobj2 = jsonObject.getJSONObject("checkMileageMember");
-//				Bitmap bm = null;
+				//				Bitmap bm = null;
 				// 데이터를 전역 변수 도메인에 저장하고 핸들러를 통해 도메인-> 화면에 보여준다..
 				try{  // 아이디
 					Log.i(TAG, "checkMileageId:::"+jsonobj2.getString("checkMileageId"));
@@ -876,14 +940,14 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 				try{	// 알림 수신 여부 
 					memberInfo.setReceiveNotificationYn(jsonobj2.getString("receiveNotificationYn"));				
 				}catch(Exception e){ memberInfo.setReceiveNotificationYn(""); }
-				
+
 				try{	// 국가 코드
 					memberInfo.setCountryCode(jsonobj2.getString("countryCode"));				
 				}catch(Exception e){ memberInfo.setCountryCode(strCountry); }
 				try{	// 언어 코드
 					memberInfo.setLanguageCode(jsonobj2.getString("languageCode"));				
 				}catch(Exception e){ memberInfo.setLanguageCode(strLanguage); }
-				
+
 				// 그 외 activateYn 는 수동 조작. 이시점에 저장 완료.
 			} catch (JSONException e) {		
 				e.printStackTrace();
@@ -891,17 +955,26 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 
 			} 
 		}else{			// 요청 실패시	 토스트 띄우고 화면 유지.
-//			Toast.makeText(PrefActivityFromResource.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+			//			Toast.makeText(PrefActivityFromResource.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 		}
 	}
 
-	
-	// 주 용도는 resume 때 자체 프리퍼런스 전달하여 컨트롤 할 수 있게 하는 것.  추후 단일 프리퍼런스 사용으로 전환도 가능하다(이걸 메인으로). 현재는 프리퍼런스 3개 사용중;;
+
+	// 주 용도는 resume 때 자체 프리퍼런스 전달하여 컨트롤 할 수 있게 하는 것. 
+	/**
+	 * onSharedPreferenceChanged
+	 *  default 프리퍼런스 변화가 있을때의 콜백 메서드 이다.
+	 *   default 프리퍼런스와 공유 preference 간 동기화를 위한 작업을 한다
+	 *
+	 * @param sharedPreferences
+	 * @param key
+	 * @return
+	 */
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
 		if(key.equals("pref_app_hi")){		// resume 에서 넣은 것과 이름 일치해야 동작한다.
-//			Toast.makeText(PrefActivityFromResource.this, "???"+key, Toast.LENGTH_SHORT).show();
+			//			Toast.makeText(PrefActivityFromResource.this, "???"+key, Toast.LENGTH_SHORT).show();
 			/*  // 테스트용
 			Map<String, ?> map = sharedPreferences.getAll();
 			Log.e(TAG, "map.size"+map.size());	
@@ -916,11 +989,11 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 //				iivalue  = (String)obj;
 				Log.e(TAG, iikey+"//"+obj);	
 			}
-			*/		// 테스트용(확인용)
+			 */		// 테스트용(확인용)
 			thePrefs = sharedPreferences;
 		}
 	}
-	
+
 	// 탈퇴 - 어플 내 기본 프리퍼런스 초기화.   -- 탈퇴 기능 사용 안함
 	public void goodBye(SharedPreferences sharedPreferences){
 		/*
@@ -939,21 +1012,27 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		init.putInt("birthYear", todayYear);	
 		init.putInt("birthMonth", todayMonth);	
 		init.putInt("birthDay", todayDay);	
-		
+
 		init.putString("password", "");
 		init.putString("pref_user_sex", null);
 		init.putString("pref_user_email", "");
-		
+
 		init.putBoolean("preference_alarm_chk", true);	
 		init.putBoolean("preference_lock_chk", false);	
-		
+
 		init.commit();
 	}
-	
-	
+
+
 	/**
-	 *  공용설정에서 업뎃 여부 확인 이후, y 이면 자체 설정에 업뎃 친다. 아니면 말고.  비번은 해당사항 없다.
+	 * updateServerSettingsToPrefs
+	 * 
+	 *  공용설정에서 업뎃 여부 확인 이후, y 이면 자체 설정에 업뎃 친다. 아니면 pass.  비번은 해당사항 없다.
 	 *  서버에서 받은 설정 정보를 모바일 설정에 저장한다. 업데이트 여부는 updateYN 를 이용한다.
+	 *  
+	 * @param
+	 * @param
+	 * @return
 	 */
 	public void updateServerSettingsToPrefs(){
 		String updateYN = sharedPrefCustom.getString("updateYN", "N");
@@ -966,10 +1045,10 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			// 생년월일은 꺼내서 쪼개서 다시 저장
 			if(server_birthday.length()>8){		// 2012-08-25		0123 4x 56 7x 89
 				String server_birth_year = server_birthday.substring(0,4);
-			    String server_birth_month = server_birthday.substring(5,7);
-			    String server_birth_day = server_birthday.substring(8,10);
-			    Log.d(TAG,"server_birth_year::"+server_birth_year+"//server_birth_month::"+server_birth_month+"//server_birth_day::"+server_birth_day);
-			    int int_server_birth_year = Integer.parseInt(server_birth_year);
+				String server_birth_month = server_birthday.substring(5,7);
+				String server_birth_day = server_birthday.substring(8,10);
+				Log.d(TAG,"server_birth_year::"+server_birth_year+"//server_birth_month::"+server_birth_month+"//server_birth_day::"+server_birth_day);
+				int int_server_birth_year = Integer.parseInt(server_birth_year);
 				int int_server_birth_month = Integer.parseInt(server_birth_month);
 				int int_server_birth_day = Integer.parseInt(server_birth_day);
 				SharedPreferences.Editor birthDate = sharedPrefCustom.edit();
@@ -999,31 +1078,39 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			updateDone.putString("updateYN2", "Y");		// 폰으로 업뎃 끝 이후. --> 하위 페이지에서 완료됨.
 			updateDone.commit();
 			Log.i(TAG,"update settings to mobile step1 done");
-//			(Preference)findPreference("preference_alarm_chk").
-//			if(defaultPref!=null){		// 자체 설정. 
-//				Map<String, ?> map = defaultPref.getAll();
-//				Log.d(TAG, "map.size"+map.size());	
-//				Set set  = map.keySet();
-//				Iterator ii = set.iterator();
-//				String iikey="";
-//				String iivalue="";
-//				Object obj = null;
-//				while(ii.hasNext()){
-//					iikey =( String)ii.next();
-//					obj = (Object) map.get(iikey);
-////					iivalue  = (String)obj;
-//					Log.d(TAG, iikey+"//"+obj);	
-//				}
-//			}
+			//			(Preference)findPreference("preference_alarm_chk").
+			//			if(defaultPref!=null){		// 자체 설정. 
+			//				Map<String, ?> map = defaultPref.getAll();
+			//				Log.d(TAG, "map.size"+map.size());	
+			//				Set set  = map.keySet();
+			//				Iterator ii = set.iterator();
+			//				String iikey="";
+			//				String iivalue="";
+			//				Object obj = null;
+			//				while(ii.hasNext()){
+			//					iikey =( String)ii.next();
+			//					obj = (Object) map.get(iikey);
+			////					iivalue  = (String)obj;
+			//					Log.d(TAG, iikey+"//"+obj);	
+			//				}
+			//			}
 		}else{
-//			Log.e(TAG,"업뎃 필요 x");
+			//			Log.e(TAG,"업뎃 필요 x");
 		}
 	}
-	
-	
+
+
 	/*
 	 *  닫기 버튼 2번 누르면 종료 됨.(non-Javadoc)
 	 * @see android.app.Activity#onBackPressed()
+	 */
+	/**
+	 * onBackPressed
+	 *  닫기 버튼 2번 누르면 종료 한다
+	 *
+	 * @param
+	 * @param
+	 * @return
 	 */
 	@Override
 	public void onBackPressed() {
@@ -1049,15 +1136,15 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			).start();
 		}
 	}
-	
-	
+
+
 	@Override			// 이 액티비티가 종료될때 실행. 
 	protected void onDestroy() {
 		resumeCalled = false;		// 또 불러 주십시오.
 		super.onDestroy();
-//		try{
-//			connection2.disconnect();
-//			}catch(Exception e){}
+		//		try{
+		//			connection2.disconnect();
+		//			}catch(Exception e){}
 	}
-	
+
 }
