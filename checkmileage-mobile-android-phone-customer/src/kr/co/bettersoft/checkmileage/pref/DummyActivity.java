@@ -26,7 +26,7 @@ import android.widget.Toast;
  * 
  * 터치시 발생 이벤트니까 푸쉬 목록 페이지 만들어서 그쪽으로 보내주는 것도 좋음....
  *  단 푸시 목록은 설정에서 가는건데 여기서 보내는건 그거 말고 또다른 페이지. 
- *  (연결된 곳 없이 닫으면 종료 되는걸로.. 왔는데 또열리면 어떻하나.. 3개는 금지?)
+ *  (연결된 곳 없이 닫으면 종료 되는걸로.. )
  */
 public class DummyActivity extends Activity {
 	RunningAppProcessInfo runningappprocessinfo = new RunningAppProcessInfo();
