@@ -448,7 +448,8 @@ public class PushList extends Activity {
 //	}
 	public void getMyEventList() throws JSONException, IOException {
 		Log.i(TAG, "getMyEventList");
-		if(CheckNetwork()){
+		if(true){
+//		if(CheckNetwork()){
 			controllerName = "checkMileageMerchantMarketingController";
 			methodName = "selectMemberMerchantMarketingList";
 			showPb();
@@ -533,7 +534,7 @@ public class PushList extends Activity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		Log.d(TAG,"수신::"+builder.toString());
+//		Log.d(TAG,"수신::"+builder.toString());
 		String tempstr = builder.toString();		
 		JSONArray jsonArray2 = null;
 		try {
@@ -748,41 +749,41 @@ public class PushList extends Activity {
 		 * 네트워크 상태 감지
 		 * 
 		 */
-		public Boolean CheckNetwork(){
-			ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-			NetworkInfo ni = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-			boolean isWifiAvailable = ni.isAvailable();
-			boolean isWifiConn = ni.isConnected();
-			ni = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-			boolean isMobileAvail = ni.isAvailable();
-			boolean isMobileConn = ni.isConnected();
-			
-			String status = "WiFi Avail="+isWifiAvailable+"//Conn="+isWifiConn
-			+"//Mobile Avail="+isMobileAvail
-			+"//Conn="+isMobileConn;
-			if(!(isWifiConn||isMobileConn)){
-				Log.w(TAG,status);
-//				AlertShow_networkErr();
-				new Thread( 
-						new Runnable(){
-							public void run(){
-								Message message = handler .obtainMessage();
-								Bundle b = new Bundle();
-								b.putInt( "showNetErrToast" , 1);
-								message.setData(b);
-								handler .sendMessage(message);
-							}
-						}
-				).start();
-				hidePb();
-				getEventDBData();		// 통신 안되면 db거 보여주기로..
-				isRunning = 0;
-				connected = false;
-			}else{
-				connected = true;
-			}
-			return connected;
-		}
+//		public Boolean CheckNetwork(){
+//			ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+//			NetworkInfo ni = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+//			boolean isWifiAvailable = ni.isAvailable();
+//			boolean isWifiConn = ni.isConnected();
+//			ni = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+//			boolean isMobileAvail = ni.isAvailable();
+//			boolean isMobileConn = ni.isConnected();
+//			
+//			String status = "WiFi Avail="+isWifiAvailable+"//Conn="+isWifiConn
+//			+"//Mobile Avail="+isMobileAvail
+//			+"//Conn="+isMobileConn;
+//			if(!(isWifiConn||isMobileConn)){
+//				Log.w(TAG,status);
+////				AlertShow_networkErr();
+//				new Thread( 
+//						new Runnable(){
+//							public void run(){
+//								Message message = handler .obtainMessage();
+//								Bundle b = new Bundle();
+//								b.putInt( "showNetErrToast" , 1);
+//								message.setData(b);
+//								handler .sendMessage(message);
+//							}
+//						}
+//				).start();
+//				hidePb();
+//				getEventDBData();		// 통신 안되면 db거 보여주기로..
+//				isRunning = 0;
+//				connected = false;
+//			}else{
+//				connected = true;
+//			}
+//			return connected;
+//		}
 		
 		@Override
 		public void onDestroy(){

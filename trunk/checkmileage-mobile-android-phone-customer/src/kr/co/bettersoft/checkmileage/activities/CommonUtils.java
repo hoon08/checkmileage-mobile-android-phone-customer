@@ -45,6 +45,9 @@ public class CommonUtils extends Activity {
 //	public static int usingNetwork = 0;
 //	public static int threadWaitngTime = 500;
 	
+	/*
+	 * 프로퍼티 사용했었는데, 프리퍼런스 방식이 더 좋아서 프로퍼티는 더이상 사용하지 않음
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

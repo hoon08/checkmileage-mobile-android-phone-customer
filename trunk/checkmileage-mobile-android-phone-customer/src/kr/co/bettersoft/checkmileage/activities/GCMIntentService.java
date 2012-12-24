@@ -33,10 +33,12 @@ import org.json.JSONObject;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.gcm.GCMRegistrar;
@@ -62,6 +64,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 	
     private static final String TAG = "GCMIntentService";
 
+    
+//    RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.my_widget_layout);
+
+    
     public GCMIntentService() {
         super(SENDER_ID);
     }
@@ -269,6 +275,14 @@ public class GCMIntentService extends GCMBaseIntentService {
 //        displayMessage(context, message);
         Log.i(TAG, "Received message of onMessage():"+intent.getStringExtra("MESSAGE"));		// 동작함.
         
+        // 앱위젯 테스트용
+//        RemoteViews views = new RemoteViews(this.getPackageName(), R.layout.my_widget_layout);
+//        int count = 50;//Or whatever value you set to it.
+//        views.setTextViewText(R.id.txtCount,Integer.toString(count));
+//        AppWidgetManager appWidgetManager;
+//        appWidgetManager.updateAppWidget(appWidgetId, views);
+        
+        
 //        Toast.makeText(GCMIntentService.this, "(테스트)메시지가 도착하였습니다."+intent.getStringExtra("MESSAGE"), Toast.LENGTH_SHORT).show();
 //        if(intent.getStringExtra("MESSAGE").equals("Check Mileage 로 부터 새로운 메시지가 도착했습니다.")){
 //        	// ...Log.i(TAG, "112233");		// 동작함.
@@ -336,11 +350,9 @@ public class GCMIntentService extends GCMBaseIntentService {
         
         if(message.equals(new_msg)){
         	Log.d(TAG,"new msg - test");
-//        	notificationIntent = new Intent(context, MainActivity.class);		// 이걸 띄워서 문제가 된다면..
-//            notificationIntent = new Intent(context, PushDetail.class);	// 데이터 전달이 가능하므로 직접 부르지 않아도 되려나..
             notificationIntent = new Intent(context, DummyActivity.class);	
 //            notificationIntent.putExtra("RunMode", "TEST");						// 데이터 전달이 가능하다. 이것을 통해.. 원하는 액티비티를 실행시켜줄수 있다..
-            notificationIntent.putExtra("RunMode", "MILEAGE");						// 테스트용..
+            notificationIntent.putExtra("RunMode", "MILEAGE");						//
             
             // set intent so it does not start a new activity
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP

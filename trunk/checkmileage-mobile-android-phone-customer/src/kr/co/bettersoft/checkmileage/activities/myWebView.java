@@ -167,7 +167,7 @@ public class myWebView extends Activity {
 			new Thread(new Runnable() {
 	            @Override
 	            public void run() {
-	                try {
+	                try {		// 기다렸다가 체크해서 안끝났으면 중지
 	                    Thread.sleep(CommonUtils.serverConnectTimeOut);
 	                } catch (InterruptedException e) {
 	                    e.printStackTrace();
