@@ -1,11 +1,11 @@
 package kr.co.bettersoft.checkmileage.activities;
-/*
+/**
+ * MyQRPageActivity
+ * 
  *  내 QR 보기 화면
  *  
  *  그리고 onresume 에 좌표 업뎃 기능 을 넣어 어플 실행 또는 내 QR 코드를 볼때마다 현재 사용자 위치를 서버에 업뎃 하도록 하였음.
  *   화면을 자주 오가며 업뎃 자꾸 시키는것을 방지하기 위해  플래그 값을 둠.  빨라서 대부분은 업뎃을 함..
- *  
- *  
  *  
  */
 
@@ -59,7 +59,7 @@ import android.widget.Toast;
 
 public class MyQRPageActivity extends Activity {
 	String TAG = "MyQRPageActivity";
-	
+
 	// 서버 통신 용 
 	String controllerName="";
 	String methodName="";
@@ -81,71 +81,86 @@ public class MyQRPageActivity extends Activity {
 	int qrSize =300;							// QR이미지 크기
 	int deviceSize = 0;		
 	static Bitmap bmp =null;					// 이미지 생성용도
-	 static Bitmap bmp2 =null;
+	static Bitmap bmp2 =null;
 	static ImageView imgView;
 	public static String qrCode = "";			// qr 아이디
-	
+
 	// 핸들러 등록
 	Handler handler = new Handler(){
-    	@Override
-    	public void handleMessage(Message msg){
-    		Bundle b = msg.getData();
-    		int showQR =  b.getInt("showQR");		// 값을 넣지 않으면 0 을 꺼내었다.
-    		if(showQR==1){
-    			imgView.setImageBitmap(bmp);		// 화면에 QR 보여준다.
-    		}
-    	}
-    };
-    
-    public Bitmap createQRself(String qrCode){		// 자체 QR 생성
-    	try { 
-    	    // generate a 200x200 QR code 
-    	    Bitmap bm = encodeAsBitmap(qrCode, BarcodeFormat.QR_CODE, 200, 200); 
-    	    if(bm != null) { 
-    	        Log.d(TAG,"S to createQRself");
-    	        return bm;
-    	    } 
-    	} catch (Exception e) { 
-    		e.printStackTrace();
-    	}
+		@Override
+		public void handleMessage(Message msg){
+			Bundle b = msg.getData();
+			int showQR =  b.getInt("showQR");		// 값을 넣지 않으면 0 을 꺼내었다.
+			if(showQR==1){
+				imgView.setImageBitmap(bmp);		// 화면에 QR 보여준다.
+			}
+		}
+	};
+	/**
+	 * createQRself
+	 *  자체 QR 생성 함수 호출한다
+	 *
+	 * @param qrCode
+	 * @param
+	 * @return bm
+	 */
+	public Bitmap createQRself(String qrCode){		// 자체 QR 생성
+		try { 
+			// generate a 200x200 QR code 
+			Bitmap bm = encodeAsBitmap(qrCode, BarcodeFormat.QR_CODE, 200, 200); 
+			if(bm != null) { 
+				Log.d(TAG,"S to createQRself");
+				return bm;
+			} 
+		} catch (Exception e) { 
+			e.printStackTrace();
+		}
 		return null;
-    }
-    
-    
-    // 자체 QR 생성 용도
-    private static final int WHITE = 0xFFFFFFFF;  
-    private static final int BLACK = 0xFF000000;
-    static Bitmap encodeAsBitmap(String contents,
-    		BarcodeFormat format, 
-    		int desiredWidth,         
-    		int desiredHeight) throws Exception {
-    	MultiFormatWriter writer = new MultiFormatWriter();   
-    	BitMatrix result = writer.encode(contents, format, desiredWidth, desiredHeight, null);   
-    	int width = result.getWidth();  
-    	int height = result.getHeight();  
-    	int[] pixels = new int[width * height];   
-    	// All are 0, or black, by default  
-    	for (int y = 0; y < height; y++) {
-    		int offset = y * width;    
-    		for (int x = 0; x < width; x++) {   
-    			pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;   
-    			}   
-    		}    
-    	Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);  
-    	bitmap.setPixels(pixels, 0, width, 0, 0, width, height); 
-    	return bitmap; 
-    	}
-   
-    
+	}
+
+
+	// 자체 QR 생성 용도
+	private static final int WHITE = 0xFFFFFFFF;  
+	private static final int BLACK = 0xFF000000;
+	/**
+	 * encodeAsBitmap
+	 *  자체 QR 생성 한다
+	 *
+	 * @param contents
+	 * @param format
+	 * @return bitmap
+	 */
+	static Bitmap encodeAsBitmap(String contents,
+			BarcodeFormat format, 
+			int desiredWidth,         
+			int desiredHeight) throws Exception {
+		MultiFormatWriter writer = new MultiFormatWriter();   
+		BitMatrix result = writer.encode(contents, format, desiredWidth, desiredHeight, null);   
+		int width = result.getWidth();  
+		int height = result.getHeight();  
+		int[] pixels = new int[width * height];   
+		// All are 0, or black, by default  
+		for (int y = 0; y < height; y++) {
+			int offset = y * width;    
+			for (int x = 0; x < width; x++) {   
+				pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;   
+			}   
+		}    
+		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);  
+		bitmap.setPixels(pixels, 0, width, 0, 0, width, height); 
+		return bitmap; 
+	}
+
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-	    super.onCreate(savedInstanceState);
-	    setContentView(R.layout.my_qr_page);
-	    imgView = (ImageView)findViewById(R.id.myQRCode);
-	    /*
-	     *  QR 크기를 화면에 맞추기 위해 화면 크기를 구함.
-	     */
-	    Log.i("qrCode : ", "" + qrCode);
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.my_qr_page);
+		imgView = (ImageView)findViewById(R.id.myQRCode);
+		/*
+		 *  QR 크기를 화면에 맞추기 위해 화면 크기를 구함.
+		 */
+		Log.i("qrCode : ", "" + qrCode);
 		float screenWidth = this.getResources().getDisplayMetrics().widthPixels;
 		Log.i("screenWidth : ", "" + screenWidth);
 		float screenHeight = this.getResources().getDisplayMetrics().heightPixels;
@@ -153,47 +168,55 @@ public class MyQRPageActivity extends Activity {
 		/*
 		 *  QR 코드를 받아옴.  구글 웹페이지를 통한 생성 --> 자체 라이브러리 먼저 해보고 안되면 웹통신.
 		 */
-	    new Thread(
-        		new Runnable(){
-        			public void run(){
-        				if(savedBMP==null){
-        					bmp = createQRself(qrCode);		// 자체 라이브러리 사용하여 생성.
-        					if(bmp==null){
-        						Log.d(TAG,"bmp1==null");
-        						bmp = downloadBitmap("http://chart.apis.google.com/chart?cht=qr&chs="+qrSize+"x"+qrSize+"&choe=UTF-8&chld=H&chl="+qrCode);		// 웹 통신하여 가져옴 
-        						if(bmp==null){
-        							Log.d(TAG,"bmp2==null");
-        							finish();
-        						}else{
-        							saveBMPtoDB(bmp);
-        						}
-        						// QR 이미지 생성 실패. 처리 필요 *** no qr img 로 가야 할듯.? 재실행?;
-        					}else{
-        						saveBMPtoDB(bmp);
-        					}
-        				}else{
-        					bmp = savedBMP;
-        				}
+		new Thread(
+				new Runnable(){
+					public void run(){
+						if(savedBMP==null){
+							bmp = createQRself(qrCode);		// 자체 라이브러리 사용하여 생성.
+							if(bmp==null){
+								Log.d(TAG,"bmp1==null");
+								bmp = downloadBitmap("http://chart.apis.google.com/chart?cht=qr&chs="+qrSize+"x"+qrSize+"&choe=UTF-8&chld=H&chl="+qrCode);		// 웹 통신하여 가져옴 
+								if(bmp==null){
+									Log.d(TAG,"bmp2==null");
+									finish();
+								}else{
+									saveBMPtoDB(bmp);
+								}
+								// QR 이미지 생성 실패. 처리 필요 *** no qr img 로 가야 할듯.? 재실행?;
+							}else{
+								saveBMPtoDB(bmp);
+							}
+						}else{
+							bmp = savedBMP;
+						}
 						// showQR
-        				Message message = handler.obtainMessage();
+						Message message = handler.obtainMessage();
 						Bundle b = new Bundle();
 						b.putInt("showQR", 1);
 						message.setData(b);
 						handler.sendMessage(message);
-        			}
-        		}
-        ).start();
+					}
+				}
+		).start();
 	}
-	
+
 	// 생성한 QR코드 이미지를 DB에 저장한다.
+	/**
+	 * saveBMPtoDB
+	 *  생성한 QR코드 이미지를 DB에 저장한다.
+	 *
+	 * @param bmp
+	 * @param
+	 * @return
+	 */
 	public void saveBMPtoDB(Bitmap bmp){
 		Log.d(TAG,"saveBMPtoDB");
 		SQLiteDatabase db = null;
 		db= openOrCreateDatabase( "sqlite_carrotDB.db",             
-		          SQLiteDatabase.CREATE_IF_NECESSARY ,null );
+				SQLiteDatabase.CREATE_IF_NECESSARY ,null );
 		String data_key="";
 		String data_value="";
-		
+
 		// BMP -> 문자열 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();   
 		bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object    
@@ -212,12 +235,20 @@ public class MyQRPageActivity extends Activity {
 		}
 		db.close();
 	}
-	
-	
-	
-	
+
+
+
+
 	/*
 	 * QR 이미지받기. url 사용하여 구글 웹에서 받아오기.
+	 */
+	/**
+	 * downloadBitmap
+	 *  url 사용하여 구글 웹에서  QR 이미지 받아온다
+	 *
+	 * @param url
+	 * @param
+	 * @return bitmap
 	 */
 	static Bitmap downloadBitmap(String url) {    
 		final AndroidHttpClient client = AndroidHttpClient.newInstance("Android");    
@@ -253,17 +284,25 @@ public class MyQRPageActivity extends Activity {
 		}    
 		return null;
 	}
-	
+
 	@Override
 	public void onResume(){
 		super.onResume();
 		app_end = 0;
-//		myLocationIs();
+		//		myLocationIs();
 	}
-	
+
 	/*
 	 *  닫기 버튼 2번 누르면 종료 됨.(non-Javadoc)
 	 * @see android.app.Activity#onBackPressed()
+	 */
+	/**
+	 * onBackPressed
+	 *   닫기 버튼 2번 누르면 종료 한다
+	 *
+	 * @param
+	 * @param
+	 * @return
 	 */
 	@Override
 	public void onBackPressed() {
@@ -289,9 +328,17 @@ public class MyQRPageActivity extends Activity {
 			).start();
 		}
 	}
-	
-	
+
+
 	// 서버에 내 위치 업뎃.
+	/**
+	 * myLocationIs
+	 *  서버에 내 위치 업뎃한다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void myLocationIs(){
 		try{
 			LocationManager  lm;
@@ -329,11 +376,19 @@ public class MyQRPageActivity extends Activity {
 			Log.w(TAG,"fail to update my location to server");
 		}
 	}
-	
-	
-	
-	
+
+
+
+
 	// 비동기로사용자의 위치 정보를 수정
+	/**
+	 * backgroundUpdateLocationToServer
+	 *  비동기로사용자의 위치 정보를 수정하는 함수 호출한다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public class backgroundUpdateLocationToServer extends  AsyncTask<Void, Void, Void> { 
 		@Override protected void onPostExecute(Void result) {  
 		} 
@@ -341,38 +396,46 @@ public class MyQRPageActivity extends Activity {
 		} 
 		@Override protected Void doInBackground(Void... params) {  
 			Log.d(TAG,"backgroundUpdateMyLocationtoServer");
-//        		updateLocationToServer_pre();
-        		updateLocationToServer();
+			//        		updateLocationToServer_pre();
+			updateLocationToServer();
 			return null; 
 		}
 	}
-	
+
 	/*
 	 * 사용자의 위치 정보를 수정 한다.
 	 * 그 결과를 'SUCCESS' 나 'FAIL' 의 스트링으로 반환 한다.
 	 * //checkMileageMemberController  updateMemberLocation   checkMileageMember  
 	 *	// checkMileageId  latitude  longitude  activateYn  modifyDate
 	 */
-//	public void updateLocationToServer_pre(){
-//		new Thread(
-//				new Runnable(){
-//					public void run(){
-//						Log.d(TAG,"updateLocationToServer_pre");
-//						try{
-//							Thread.sleep(CommonUtils.threadWaitngTime);
-//						}catch(Exception e){
-//						}finally{
-//							if(CommonUtils.usingNetwork<1){
-//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-//								updateLocationToServer();
-//							}else{
-//								updateLocationToServer_pre();
-//							}
-//						}
-//					}
-//				}
-//			).start();
-//	}
+	//	public void updateLocationToServer_pre(){
+	//		new Thread(
+	//				new Runnable(){
+	//					public void run(){
+	//						Log.d(TAG,"updateLocationToServer_pre");
+	//						try{
+	//							Thread.sleep(CommonUtils.threadWaitngTime);
+	//						}catch(Exception e){
+	//						}finally{
+	//							if(CommonUtils.usingNetwork<1){
+	//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+	//								updateLocationToServer();
+	//							}else{
+	//								updateLocationToServer_pre();
+	//							}
+	//						}
+	//					}
+	//				}
+	//			).start();
+	//	}
+	/**
+	 * updateLocationToServer
+	 *  사용자의 위치 정보를 수정 한다.
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void updateLocationToServer(){
 		if(isUpdating==0){
 			isUpdating = 1;
@@ -381,25 +444,25 @@ public class MyQRPageActivity extends Activity {
 			methodName = "updateMemberLocation";
 			final String myLat2 = Integer.toString(myLat);
 			final String myLon2 = Integer.toString(myLon);
-//			Log.e(TAG,todays+"//"+myLat+"//"+myLon);
+			//			Log.e(TAG,todays+"//"+myLat+"//"+myLon);
 			new Thread(
 					new Runnable(){
 						public void run(){
 							JSONObject obj = new JSONObject();
 							try{
 								// 자신의 아이디를 넣어서 조회
-//								Log.d(TAG,"checkMileageId::"+qrCode);
-//								Log.d(TAG,"latitude::"+myLat);
-//								Log.d(TAG,"longitude::"+myLon);
-//								Log.d(TAG,"activateYn::"+"Y");
-//								Log.d(TAG,"modifyDate::"+todays);
+								//								Log.d(TAG,"checkMileageId::"+qrCode);
+								//								Log.d(TAG,"latitude::"+myLat);
+								//								Log.d(TAG,"longitude::"+myLon);
+								//								Log.d(TAG,"activateYn::"+"Y");
+								//								Log.d(TAG,"modifyDate::"+todays);
 								obj.put("checkMileageId", qrCode);
 								obj.put("latitude", myLat2);
 								obj.put("longitude", myLon2);
 								obj.put("activateYn", "Y");
-								
+
 								String nowTime = getNow();
-								
+
 								obj.put("modifyDate", nowTime);
 							}catch(Exception e){
 								e.printStackTrace();
@@ -413,31 +476,31 @@ public class MyQRPageActivity extends Activity {
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
-//								connection2.connect();
+								//								connection2.connect();
 								Thread.sleep(200);
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
 								Thread.sleep(200);
-//								System.out.println("postUrl      : " + postUrl2);
-//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+								//								System.out.println("postUrl      : " + postUrl2);
+								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 								responseCode = connection2.getResponseCode();
-//								InputStream in =  connection2.getInputStream();
-//								os2.close();
+								//								InputStream in =  connection2.getInputStream();
+								//								os2.close();
 								// 조회한 결과를 처리.
 								if(responseCode==200 || responseCode==204){
-//									Log.d(TAG,"S");
+									//									Log.d(TAG,"S");
 								}
-//								connection2.disconnect();
+								//								connection2.disconnect();
 							}catch(Exception e){ 
-//								connection2.disconnect();
+								//								connection2.disconnect();
 								Log.d(TAG,"updateLocationToServer->fail");
 							}finally{
 								isUpdating = 0;
-//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-//									CommonUtils.usingNetwork = 0;
-//								}
+								//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+								//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+								//									CommonUtils.usingNetwork = 0;
+								//								}
 							}
 						}
 					}
@@ -446,8 +509,16 @@ public class MyQRPageActivity extends Activity {
 			Log.w(TAG,"already updating..");
 		}
 	}
-	
+
 	// 업뎃 시각
+	/**
+	 * getNow
+	 *  현시각을 구한다
+	 *
+	 * @param
+	 * @param
+	 * @return nowTime
+	 */
 	public String getNow(){
 		// 일단 오늘.
 		Calendar c = Calendar.getInstance();
@@ -475,18 +546,18 @@ public class MyQRPageActivity extends Activity {
 		if(tempSecond.length()==1) tempSecond = "0"+tempSecond;
 		String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute+":"+tempSecond;
 		return nowTime;
-//		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
+		//		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
 	}
 	@Override
 	public void onDestroy(){
 		super.onDestroy();
-//		try{
-//			if(connection2!=null){
-//				connection2.disconnect();
-//			}
-//		}catch(Exception e){}
+		//		try{
+		//			if(connection2!=null){
+		//				connection2.disconnect();
+		//			}
+		//		}catch(Exception e){}
 	}
-	
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 }

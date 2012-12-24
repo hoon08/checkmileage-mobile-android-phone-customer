@@ -49,6 +49,8 @@ import java.util.Map;
 import com.google.zxing.client.android.encode.*;
 
 /**
+ * QRCodeEncoder
+ * 
  * This class does the work of decoding the user's request and extracting all the data
  * to be encoded in a barcode.
  *

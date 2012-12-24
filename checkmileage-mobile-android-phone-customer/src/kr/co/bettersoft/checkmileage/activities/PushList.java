@@ -1,7 +1,8 @@
 package kr.co.bettersoft.checkmileage.activities;
-/*
- * 가맹점에서 보내온 이벤트 목록보기. 특정 버튼 터치하여 상세 화면으로 이동 가능.
+/**
+ * PushList
  * 
+ * 가맹점에서 보내온 이벤트 목록보기. 특정 버튼 터치하여 상세 화면으로 이동 가능.
  * 
  */
 import java.io.BufferedReader;
@@ -55,25 +56,25 @@ import android.widget.AdapterView.OnItemClickListener;
 public class PushList extends Activity {
 
 	String TAG = "PushList";
-	
+
 	// 서버 통신 용
 	int responseCode = 0;
 	String myQRcode = "";
 	String controllerName = "";
 	String methodName = "";
 	String serverName = CommonUtils.serverNames;
-	
+
 	URL postUrl2;
 	HttpURLConnection connection2;
-	
-//	String imgthumbDomain = CommonUtils.imgthumbDomain; 					// Img 가져올때 파일명만 있을 경우 앞에 붙일 도메인.  
-//	String imgDomain = CommonUtils.imgDomain; 					// Img 가져올때 파일명만 있을 경우 앞에 붙일 도메인.  
+
+	//	String imgthumbDomain = CommonUtils.imgthumbDomain; 					// Img 가져올때 파일명만 있을 경우 앞에 붙일 도메인.  
+	//	String imgDomain = CommonUtils.imgDomain; 					// Img 가져올때 파일명만 있을 경우 앞에 붙일 도메인.  
 	String imgPushDomain = CommonUtils.imgPushDomain;			// 푸시 이미지 전용 도메인
-	
+
 	public List<CheckMileagePushEvent> entries;	// 1차적으로 조회한 결과. (가맹점 상세 정보 제외)
 	public List<CheckMileagePushEvent> dbInEntries;	// db에 넣을 거
 	public List<CheckMileagePushEvent> dbOutEntries;	// db에서 꺼낸거
-	
+
 	// 받은 데이터 임시 저장용 -> 변수에 임시 저장 후 도메인에 저장
 	String tmp_subject = "";			
 	String tmp_content = "";
@@ -82,21 +83,21 @@ public class PushList extends Activity {
 	String tmpstr2 = "";
 	String tmp_companyName = "";
 	Bitmap tmp_imageFile = null;
-	
+
 	Boolean dbSaveEnable = true;			// db 저장 가능 여부
 	public static Boolean searched = false;		// 조회 했는가?
-	
+
 	List<CheckMileagePushEvent> entriesFn = null;
 	int isRunning = 0;						// 중복 실행 방지
-	
+
 	public boolean connected = false;  // 인터넷 연결상태
 	View emptyView;
-	
+
 	// 진행바
 	ProgressBar pb1;
-	
+
 	int reTry = 3;
-	
+
 	/*
 	 * 모바일 sqlite 를 사용하여 내 이벤트 목록을 받아와서 저장. 
 	 * 이후 통신 불가일때 마지막으로 저장한 데이터를 보여준다.
@@ -107,71 +108,96 @@ public class PushList extends Activity {
 	 * 통신 성공 여부와 상관없이 db 테이블이 있고 데이터가 있으면 해당 데이터를 보여준다.
 	 */
 	////----------------------- SQLite  Query-----------------------//
-	
+
 	// 테이블 삭제 쿼리 ---> 테이블은 init 에서 이미 만들었으니 안의 내용만 지우고...다시 하자
 	private static final String Q_INIT_TABLE = "DELETE FROM push_event;" ;
 
 	// 테이블 생성 쿼리.
 	private static final String Q_CREATE_TABLE = "CREATE TABLE push_event (" +
-	       "_id INTEGER PRIMARY KEY AUTOINCREMENT," +					// 모바일 db 저장되는 자동증가  인덱스 키
-	       "subject TEXT," +											// 이벤트 제목
-	       "content TEXT," +											// 이벤트 글귀
-	       "imageFileUrl TEXT," +										// 이벤트이미지 주소
-	       "modifyDate TEXT," +											// 이벤트 등록일
-	       "companyName TEXT," +										// 업체명
-	       "imageFile TEXT" +											// 이미지 파일(문자화)
-//	       "idCheckMileageMileages TEXT," +								// 서버 db에 저장된 인덱스 키				// 저장할 데이터 들..
-//	       "mileage TEXT," +											// 마일리지 값
-//	       "modifyDate TEXT," +											// 수정일시
-//	       "checkMileageMembersCheckMileageId TEXT," +					// 사용자 아이디
-//	       "checkMileageMerchantsMerchantId TEXT," +					// 가맹점 아이디
-//	       "companyName TEXT," +										// 가맹점 이름
-//	       "introduction TEXT," +										// 가맹점 소개글
-//	       "workPhoneNumber TEXT," +									// 가맹점 전번
-//	       "profileThumbnailImageUrl TEXT," +							// 섬네일 이미지 url
-//	       "bm TEXT" +													// 섬네일 이미지(string화 시킨 값)
-	       ");" ;
-	
+	"_id INTEGER PRIMARY KEY AUTOINCREMENT," +					// 모바일 db 저장되는 자동증가  인덱스 키
+	"subject TEXT," +											// 이벤트 제목
+	"content TEXT," +											// 이벤트 글귀
+	"imageFileUrl TEXT," +										// 이벤트이미지 주소
+	"modifyDate TEXT," +											// 이벤트 등록일
+	"companyName TEXT," +										// 업체명
+	"imageFile TEXT" +											// 이미지 파일(문자화)
+	//	       "idCheckMileageMileages TEXT," +								// 서버 db에 저장된 인덱스 키				// 저장할 데이터 들..
+	//	       "mileage TEXT," +											// 마일리지 값
+	//	       "modifyDate TEXT," +											// 수정일시
+	//	       "checkMileageMembersCheckMileageId TEXT," +					// 사용자 아이디
+	//	       "checkMileageMerchantsMerchantId TEXT," +					// 가맹점 아이디
+	//	       "companyName TEXT," +										// 가맹점 이름
+	//	       "introduction TEXT," +										// 가맹점 소개글
+	//	       "workPhoneNumber TEXT," +									// 가맹점 전번
+	//	       "profileThumbnailImageUrl TEXT," +							// 섬네일 이미지 url
+	//	       "bm TEXT" +													// 섬네일 이미지(string화 시킨 값)
+	");" ;
+
 	// 테이블 조회 쿼리
 	private final String Q_GET_LIST = "SELECT * FROM push_event";
-	
+
 
 	//----------------------- SQLite -----------------------//
-	
+
 	// 초기화작업- db 및 테이블 검사하고 없으면 만들기.
 	SQLiteDatabase db = null;
+	/**
+	 * initDB
+	 *  db 초기화한다, 없으면 생성한다
+	 *
+	 * @param 
+	 * @param
+	 * @return 
+	 */
 	public void initDB(){
 		Log.i(TAG,"initDB");
 		// db 관련 작업 초기화, DB 열어 SQLiteDatabase 인스턴스 생성          db 열거나 없으면 생성
-	     if(db== null ){
-	          db= openOrCreateDatabase( "sqlite_carrotDB.db", SQLiteDatabase.CREATE_IF_NECESSARY ,null );
-	    }
-	     // 테이블에서 데이터 가져오기 전 테이블 생성 확인 없으면 생성.
-	      checkTableIsCreated(db);
+		if(db== null ){
+			db= openOrCreateDatabase( "sqlite_carrotDB.db", SQLiteDatabase.CREATE_IF_NECESSARY ,null );
+		}
+		// 테이블에서 데이터 가져오기 전 테이블 생성 확인 없으면 생성.
+		checkTableIsCreated(db);
 	}
+
+	/**
+	 * checkTableIsCreated
+	 *  db 확인하여 없으면 생성한다
+	 *
+	 * @param db
+	 * @param
+	 * @return
+	 */
 	public void checkTableIsCreated(SQLiteDatabase db){		// mileage_info 라는 이름의 테이블을 검색하고 없으면 생성.
 		Log.i(TAG, "checkTableIsCreated");
 		try{
-//			Cursor c = db.query(String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy);
+			//			Cursor c = db.query(String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy);
 			Cursor c = db.query("sqlite_master" , new String[] {"count(*)"}, "name=?" , new String[] {"push_event"}, null ,null , null);
-		      Integer cnt=0;
-		      c.moveToFirst();                                 // 커서를 첫라인으로 옮김
-		       while(c.isAfterLast()== false ){                   // 마지막 라인이 될때까지 1씩 증가하면서 본다
-		            cnt=c.getInt(0);
-		            c.moveToNext();
-		      }
-		       //커서는 사용 직후 닫는다
-		      c.close();
-		       //테이블 없으면 생성
-		       if(cnt==0){
-		            db.execSQL(Q_CREATE_TABLE);
-		      }
+			Integer cnt=0;
+			c.moveToFirst();                                 // 커서를 첫라인으로 옮김
+			while(c.isAfterLast()== false ){                   // 마지막 라인이 될때까지 1씩 증가하면서 본다
+				cnt=c.getInt(0);
+				c.moveToNext();
+			}
+			//커서는 사용 직후 닫는다
+			c.close();
+			//테이블 없으면 생성
+			if(cnt==0){
+				db.execSQL(Q_CREATE_TABLE);
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 	}
-	
+
 	// server에서 받은 data를 db로
+	/**
+	 * saveEventDataToDB
+	 * server에서 받은 data를 db로 저장한다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void saveEventDataToDB(){			//	db 테이블을 초기화 후 새 데이터를 넣습니다.	  // oncreate()에서 테이블 검사해서 만들었기 때문에 최초 등은 걱정하지 않는다.
 		Log.i(TAG, "saveEventDataToDB");
 		try{
@@ -199,9 +225,17 @@ public class PushList extends Activity {
 			Log.i(TAG, "saveEventDataToDB success");
 		}catch(Exception e){e.printStackTrace();}
 	}
-	
-	
+
+
 	// db 에 저장된 데이터를 화면에
+	/**
+	 * getEventDBData
+	 * db 에 저장된 데이터를 화면에 보여주기 위해 꺼낸다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void getEventDBData(){
 		Log.i(TAG, "getEventDBData");
 		if(!db.isOpen()){
@@ -242,17 +276,17 @@ public class PushList extends Activity {
 							tmp_imageFile
 					));
 					c.moveToNext();
-		       }
+				}
 			}
-			 c.close();
-//			 db.close();		// db 는 마지막에 한번 닫음.
-			 entriesFn = dbOutEntries;						//  *** 꺼낸 데이터를 결과 데이터에 세팅 
+			c.close();
+			//			 db.close();		// db 는 마지막에 한번 닫음.
+			entriesFn = dbOutEntries;						//  *** 꺼낸 데이터를 결과 데이터에 세팅 
 		}catch(Exception e){e.printStackTrace();}
 		showEventList();									//  *** 결과 데이터를 화면에 보여준다.		 데이터 있는지 여부는 결과 처리에서 함께..
 	}
 	////---------------------SQLite ----------------------////
-	
-	
+
+
 	// 핸들러
 	Handler handler = new Handler(){
 		@Override
@@ -299,12 +333,27 @@ public class PushList extends Activity {
 	};
 
 	ListView listView;
-	
+	/**
+	 * returnThis
+	 *  컨택스트를 리턴한다.(핸들러에서 필요)
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public Context returnThis(){
 		return this;
 	}
 
 	// 진행창 보이기/숨기기
+	/**
+	 * showPb
+	 *  중앙 프로그래스바 가시화한다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void showPb(){
 		new Thread(
 				new Runnable(){
@@ -318,6 +367,14 @@ public class PushList extends Activity {
 				}
 		).start();
 	}
+	/**
+	 * hidePb
+	 *  중앙 프로그래스바 비가시화한다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void hidePb(){
 		new Thread(
 				new Runnable(){
@@ -331,6 +388,15 @@ public class PushList extends Activity {
 				}
 		).start();
 	}
+
+	/**
+	 * showMSG
+	 *  화면에 error 토스트 띄운다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void showMSG(){			// 화면에 토스트 띄움..
 		new Thread(
 				new Runnable(){
@@ -344,8 +410,16 @@ public class PushList extends Activity {
 				}
 		).start();
 	}
-	
+
 	// 조회한 데이터를 화면에+ 클릭시 이벤트(상세화면으로)
+	/**
+	 * setListing
+	 *  조회한 데이터를 화면에출력하고 클릭시 상세화면으로 이동하도록 이벤트를 등록한다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void setListing(){
 		listView  = (ListView)findViewById(R.id.push_list_listview);
 		listView.setAdapter(new PushEventListAdapter(this, entriesFn));
@@ -363,8 +437,8 @@ public class PushList extends Activity {
 			}
 		});
 	}
-	
-	
+
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -372,20 +446,20 @@ public class PushList extends Activity {
 		requestWindowFeature( Window.FEATURE_NO_TITLE );		// no title
 		pb1 = (ProgressBar) findViewById(R.id.push_list_ProgressBar01);
 		// DB 쓸거니까 초기화 해준다.
-		 initDB();
-		 
+		initDB();
+
 		myQRcode = MyQRPageActivity.qrCode;			// 내 QR 코드. 
-		
+
 		Log.i(TAG, myQRcode);		
-		
+
 		setContentView(R.layout.push_list);
-		
+
 		searched = false;		 
-		
+
 		if(isRunning<1){								// 중복 실행 방지
 			isRunning = isRunning+1;
-				myQRcode = MyQRPageActivity.qrCode;
-				new backgroundGetMyEventList().execute();	// 이벤트 리스트 조회
+			myQRcode = MyQRPageActivity.qrCode;
+			new backgroundGetMyEventList().execute();	// 이벤트 리스트 조회
 		}else{
 			Log.w(TAG, "already running..");
 		}
@@ -393,6 +467,14 @@ public class PushList extends Activity {
 
 
 	// 비동기로 이벤트 목록 가져오는 함수 호출.
+	/**
+	 * backgroundGetMyEventList
+	 *  비동기로 이벤트 목록 가져오는 함수 호출한다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public class backgroundGetMyEventList extends   AsyncTask<Void, Void, Void> {
 		@Override protected void onPostExecute(Void result) { 
 		}
@@ -400,7 +482,7 @@ public class PushList extends Activity {
 		}
 		@Override protected Void doInBackground(Void... params) { 
 			Log. d(TAG,"backgroundGetMyEventList");
-//			getMyEventList_pre();
+			//			getMyEventList_pre();
 			try {
 				getMyEventList();
 			} catch (JSONException e) {
@@ -420,36 +502,44 @@ public class PushList extends Activity {
 	 * 보내는 파라미터 : checkMileageId  activateYn
 	 * 받는 데이터 : List<CheckMileageMerchantMarketing>
 	 */
-//	public void getMyEventList_pre(){
-//		new Thread(
-//				new Runnable(){
-//					public void run(){
-//						Log.d(TAG,"getMyEventList_pre");
-//						try{
-//							Thread.sleep(CommonUtils.threadWaitngTime);
-//						}catch(Exception e){
-//						}finally{
-//							if(CommonUtils.usingNetwork<1){
-//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-//								try {
-//									getMyEventList();
-//								} catch (JSONException e) {
-//									e.printStackTrace();
-//								} catch (IOException e) {
-//									e.printStackTrace();
-//								}
-//							}else{
-//								getMyEventList_pre();
-//							}
-//						}
-//					}
-//				}
-//			).start();
-//	}
+	//	public void getMyEventList_pre(){
+	//		new Thread(
+	//				new Runnable(){
+	//					public void run(){
+	//						Log.d(TAG,"getMyEventList_pre");
+	//						try{
+	//							Thread.sleep(CommonUtils.threadWaitngTime);
+	//						}catch(Exception e){
+	//						}finally{
+	//							if(CommonUtils.usingNetwork<1){
+	//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+	//								try {
+	//									getMyEventList();
+	//								} catch (JSONException e) {
+	//									e.printStackTrace();
+	//								} catch (IOException e) {
+	//									e.printStackTrace();
+	//								}
+	//							}else{
+	//								getMyEventList_pre();
+	//							}
+	//						}
+	//					}
+	//				}
+	//			).start();
+	//	}
+	/**
+	 * getMyEventList
+	 *  내 이벤트 목록 을 가져온다.
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void getMyEventList() throws JSONException, IOException {
 		Log.i(TAG, "getMyEventList");
 		if(true){
-//		if(CheckNetwork()){
+			//		if(CheckNetwork()){
 			controllerName = "checkMileageMerchantMarketingController";
 			methodName = "selectMemberMerchantMarketingList";
 			showPb();
@@ -474,44 +564,44 @@ public class PushList extends Activity {
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
-//								connection2.connect();		// *** 
+								//								connection2.connect();		// *** 
 								Thread.sleep(200);	
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
 								Thread.sleep(200);
-//								System.out.println("postUrl      : " + postUrl2);
-//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+								//								System.out.println("postUrl      : " + postUrl2);
+								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
 								responseCode = connection2.getResponseCode();
 								InputStream in =  connection2.getInputStream();
-//								os2.close();
+								//								os2.close();
 								// 조회한 결과를 처리.
 								getMyEventListResult(in);
-//								connection2.disconnect();
+								//								connection2.disconnect();
 							}catch(Exception e){ 
-//								connection2.disconnect();
+								//								connection2.disconnect();
 								// 다시
-//								if(reTry>0){
-//									Log.w(TAG, "fail and retry remain : "+reTry);
-//									reTry = reTry-1;
-//									try {
-//										Thread.sleep(200);
-//										getMyMileageList();
-//									} catch (Exception e1) {
-//										Log.w(TAG,"again is failed() and again... ;");
-//									}	
-//								}else{
-//									Log.w(TAG,"reTry failed - init reTry");
-//									reTry = 3;
-//									hidePb();
-//									isRunning = isRunning-1;
-//									getEventDBData();						// n회 재시도에도 실패하면 db에서 꺼내서 보여준다.
-//								}
+								//								if(reTry>0){
+								//									Log.w(TAG, "fail and retry remain : "+reTry);
+								//									reTry = reTry-1;
+								//									try {
+								//										Thread.sleep(200);
+								//										getMyMileageList();
+								//									} catch (Exception e1) {
+								//										Log.w(TAG,"again is failed() and again... ;");
+								//									}	
+								//								}else{
+								//									Log.w(TAG,"reTry failed - init reTry");
+								//									reTry = 3;
+								//									hidePb();
+								//									isRunning = isRunning-1;
+								//									getEventDBData();						// n회 재시도에도 실패하면 db에서 꺼내서 보여준다.
+								//								}
 							}
-//							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-//							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-//								CommonUtils.usingNetwork = 0;
-//							}
+							//							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+							//							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+							//								CommonUtils.usingNetwork = 0;
+							//							}
 						}
 					}
 			).start();
@@ -520,7 +610,16 @@ public class PushList extends Activity {
 		}
 	}
 
-	 // 이벤트 조회 결과를 처리하는 부분
+
+	// 이벤트 조회 결과를 처리하는 부분
+	/**
+	 * getMyEventListResult
+	 *  이벤트 조회 결과를 처리한다
+	 *
+	 * @param in
+	 * @param
+	 * @return
+	 */
 	public void getMyEventListResult(InputStream in){
 		Log.d(TAG,"getMyEventListResult");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);
@@ -534,7 +633,7 @@ public class PushList extends Activity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//		Log.d(TAG,"수신::"+builder.toString());
+		//		Log.d(TAG,"수신::"+builder.toString());
 		String tempstr = builder.toString();		
 		JSONArray jsonArray2 = null;
 		try {
@@ -546,16 +645,16 @@ public class PushList extends Activity {
 		if(responseCode==200 || responseCode==204){
 			try {
 				entries = new ArrayList<CheckMileagePushEvent>(max);
-				
-//				String tmp_imageFileStr = "";
+
+				//				String tmp_imageFileStr = "";
 				if(max>0){
 					for ( int i = 0; i < max; i++ ){
 						doneCnt++;
 						JSONObject jsonObj = jsonArray2.getJSONObject(i).getJSONObject("checkMileageMerchantMarketing");
 						//  idCheckMileageMileages,  mileage,  modifyDate,  checkMileageMembersCheckMileageID,  checkMileageMerchantsMerchantID
 						// 객체 만들고 값 받은거 넣어서 저장..  저장값: 인덱스번호, 수정날짜, 아이디, 가맹점아이디.
-						
-//						tmp_idCheckMileageMileages = jsonObj.getString("idCheckMileageMileages");
+
+						//						tmp_idCheckMileageMileages = jsonObj.getString("idCheckMileageMileages");
 						try{
 							tmp_subject = jsonObj.getString("subject");
 						}catch(Exception e){
@@ -574,7 +673,7 @@ public class PushList extends Activity {
 							}else{
 								tmp_imageFileUrl = "";
 							}
-							
+
 						}catch(Exception e){
 							Log.d(TAG,"imageFileUrl F");
 							tmp_imageFileUrl = "";
@@ -591,15 +690,15 @@ public class PushList extends Activity {
 								+ tmp_modifyDate.substring(11, 13)+ getString(R.string.hour)					// 시
 								+ tmp_modifyDate.substring(14, 16)+ getString(R.string.minute)					// 분
 								;
-								
+
 							}
-							
-							
+
+
 							tmpstr2 = tmp_modifyDate.substring(0, 4)+ getString(R.string.year) 		// 년
 							+ tmp_modifyDate.substring(5, 7)+ getString(R.string.month) 					// 월
 							+ tmp_modifyDate.substring(8, 10)+ getString(R.string.day) 					// 일
-//							+ tmp_modifyDate.substring(0, 4)+ getString(R.string.year)					// 시
-//							+ tmp_modifyDate.substring(0, 4)+ getString(R.string.year)					// 분
+							//							+ tmp_modifyDate.substring(0, 4)+ getString(R.string.year)					// 시
+							//							+ tmp_modifyDate.substring(0, 4)+ getString(R.string.year)					// 분
 							;
 							tmp_modifyDate = tmpstr2;
 						}catch(Exception e){
@@ -636,12 +735,12 @@ public class PushList extends Activity {
 								tmp_imageFile
 								// 그 외 섬네일 이미지, 가맹점 이름
 						));
-						
+
 					}
 				}
 			}catch (JSONException e) {
 				doneCnt--;
-//				dbSaveEnable = false;
+				//				dbSaveEnable = false;
 				e.printStackTrace();
 			}finally{
 				dbInEntries = entries; 
@@ -664,15 +763,23 @@ public class PushList extends Activity {
 			showMSG();    // 핸들러 통한 토스트
 		}
 	}
-	
+
 	public void alertToUser(){				// 	data 조회가 잘 안됐어요. -- 로그남김
 		Log.d(TAG,"Get Data from Server -> Error Occured..");
-		
+
 	}
-	
-	
+
+
 
 	// entries3 를 전역에 저장후 스레드 이용하여 돌린다. 화면에 보여준다.		-- 2차 처리.
+	/**
+	 * showEventList
+	 *  결과 도메인을 핸들러를 통해 화면에 보여준다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void showEventList(){
 		hidePb();
 		//  가져온 데이터 화면에 보여주기.
@@ -690,11 +797,28 @@ public class PushList extends Activity {
 	}
 
 	// 이벤트 이미지 : URL 에서 이미지 받아와서 도메인에 저장하는 부분.
+	/**
+	 * LoadImage
+	 *  가맹점 이미지 URL 에서 이미지 받아온 스트림을 비트맵으로 저장한다
+	 *
+	 * @param $imagePath
+	 * @param
+	 * @return bm
+	 */
 	private Bitmap LoadImage( String $imagePath ) {
 		InputStream inputStream = OpenHttpConnection( $imagePath ) ;
 		Bitmap bm = BitmapFactory.decodeStream( inputStream ) ;
 		return bm;
 	}
+
+	/**
+	 * OpenHttpConnection
+	 *  가맹점 이미지 URL 에서 이미지 받아와서 스트림으로 저장한다
+	 *
+	 * @param $imagePath
+	 * @param
+	 * @return stream
+	 */
 	private InputStream OpenHttpConnection(String $imagePath) {
 		InputStream stream = null ;
 		try {
@@ -713,84 +837,84 @@ public class PushList extends Activity {
 		return stream ;
 	}
 
-	
+
 	////////////////////////   하드웨어 메뉴 버튼.  ////////////////
-	
-	 @Override
-	    public boolean onCreateOptionsMenu(Menu menu) {
-		 String tmpstr = getString(R.string.refresh);
-	        menu.add(Menu. NONE, Menu.FIRST+1, Menu.NONE, tmpstr );             // 신규등록 메뉴 추가. -- 새로고침
-//	          getMenuInflater().inflate(R.menu.activity_main, menu);
-	        return (super .onCreateOptionsMenu(menu));
-	    }
-	    // 옵션 메뉴 특정 아이템 클릭시 필요한 일 처리
-	    @Override
-	    public boolean onOptionsItemSelected(MenuItem item){
-	      return (itemCallback(item)|| super.onOptionsItemSelected(item));
-	    }
-	    // 아이템 아이디 값 기준 필요한 일 처리
-	    public boolean itemCallback(MenuItem item){
-	      switch(item.getItemId()){
-	      case Menu. FIRST+1:
-	    	  if(isRunning<1){
-	  			isRunning = isRunning+1;
-	  				myQRcode = MyQRPageActivity.qrCode;
-	  				new backgroundGetMyEventList().execute();		// 조회 --> 새로고침 기능
-	  		}else{
-	  			Log.w(TAG, "already running..");
-	  		}
-	             return true ;
-	      }
-	      return false;
-	    }
-	////////////////////////////////////////////////////////////
-	
-	    /*
-		 * 네트워크 상태 감지
-		 * 
-		 */
-//		public Boolean CheckNetwork(){
-//			ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-//			NetworkInfo ni = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-//			boolean isWifiAvailable = ni.isAvailable();
-//			boolean isWifiConn = ni.isConnected();
-//			ni = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-//			boolean isMobileAvail = ni.isAvailable();
-//			boolean isMobileConn = ni.isConnected();
-//			
-//			String status = "WiFi Avail="+isWifiAvailable+"//Conn="+isWifiConn
-//			+"//Mobile Avail="+isMobileAvail
-//			+"//Conn="+isMobileConn;
-//			if(!(isWifiConn||isMobileConn)){
-//				Log.w(TAG,status);
-////				AlertShow_networkErr();
-//				new Thread( 
-//						new Runnable(){
-//							public void run(){
-//								Message message = handler .obtainMessage();
-//								Bundle b = new Bundle();
-//								b.putInt( "showNetErrToast" , 1);
-//								message.setData(b);
-//								handler .sendMessage(message);
-//							}
-//						}
-//				).start();
-//				hidePb();
-//				getEventDBData();		// 통신 안되면 db거 보여주기로..
-//				isRunning = 0;
-//				connected = false;
-//			}else{
-//				connected = true;
-//			}
-//			return connected;
-//		}
-		
-		@Override
-		public void onDestroy(){
-			db.close();
-			super.onDestroy();
-//			try{
-//				connection2.disconnect();
-//				}catch(Exception e){}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		String tmpstr = getString(R.string.refresh);
+		menu.add(Menu. NONE, Menu.FIRST+1, Menu.NONE, tmpstr );             // 신규등록 메뉴 추가. -- 새로고침
+		//	          getMenuInflater().inflate(R.menu.activity_main, menu);
+		return (super .onCreateOptionsMenu(menu));
+	}
+	// 옵션 메뉴 특정 아이템 클릭시 필요한 일 처리
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item){
+		return (itemCallback(item)|| super.onOptionsItemSelected(item));
+	}
+	// 아이템 아이디 값 기준 필요한 일 처리
+	public boolean itemCallback(MenuItem item){
+		switch(item.getItemId()){
+		case Menu. FIRST+1:
+			if(isRunning<1){					// 조회중
+				isRunning = isRunning+1;
+				myQRcode = MyQRPageActivity.qrCode;		// 내 qr 로
+				new backgroundGetMyEventList().execute();		// 조회 한다--> 새로고침 기능 이 된다
+			}else{
+				Log.w(TAG, "already running..");
+			}
+			return true ;
 		}
+		return false;
+	}
+	////////////////////////////////////////////////////////////
+
+	/*
+	 * 네트워크 상태 감지
+	 * 
+	 */
+	//		public Boolean CheckNetwork(){
+	//			ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+	//			NetworkInfo ni = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+	//			boolean isWifiAvailable = ni.isAvailable();
+	//			boolean isWifiConn = ni.isConnected();
+	//			ni = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+	//			boolean isMobileAvail = ni.isAvailable();
+	//			boolean isMobileConn = ni.isConnected();
+	//			
+	//			String status = "WiFi Avail="+isWifiAvailable+"//Conn="+isWifiConn
+	//			+"//Mobile Avail="+isMobileAvail
+	//			+"//Conn="+isMobileConn;
+	//			if(!(isWifiConn||isMobileConn)){
+	//				Log.w(TAG,status);
+	////				AlertShow_networkErr();
+	//				new Thread( 
+	//						new Runnable(){
+	//							public void run(){
+	//								Message message = handler .obtainMessage();
+	//								Bundle b = new Bundle();
+	//								b.putInt( "showNetErrToast" , 1);
+	//								message.setData(b);
+	//								handler .sendMessage(message);
+	//							}
+	//						}
+	//				).start();
+	//				hidePb();
+	//				getEventDBData();		// 통신 안되면 db거 보여주기로..
+	//				isRunning = 0;
+	//				connected = false;
+	//			}else{
+	//				connected = true;
+	//			}
+	//			return connected;
+	//		}
+
+	@Override
+	public void onDestroy(){
+		db.close();			//사용이 끝났으니 db 는 닫아준다
+		super.onDestroy();
+		//			try{
+		//				connection2.disconnect();
+		//				}catch(Exception e){}
+	}
 }

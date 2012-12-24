@@ -1,7 +1,9 @@
 package kr.co.bettersoft.checkmileage.activities;
-// QR 스켄 페이지
-
-
+/**
+ * ScanQRPageActivity
+ * 
+ *  QR 스켄 페이지
+ */
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,64 +36,72 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class ScanQRPageActivity extends Activity {
-	SharedPreferences sharedPrefCustom;
-	
-	String serverName = CommonUtils.serverNames;
+	SharedPreferences sharedPrefCustom;					// 프리퍼런스
+
+	// 서버 통신 용
+	String serverName = CommonUtils.serverNames;		
 	String controllerName = "";
 	String methodName = "";
 	String qrcode = "";
-		
 	int responseCode= 0;
-	
+	URL postUrl2;
+	HttpURLConnection connection2;
+
 	String phoneNumber = "";
+
 	// 시간 관련
 	Calendar c = Calendar.getInstance();
-	
 	int todayYear = 0;						// 지금 -  년 월 일 시 분
 	int todayMonth = 0;
 	int todayDay = 0;
 	int todayHour = 0;
 	int todayMinute = 0;
 	int todaySecond = 0;
-	
-	URL postUrl2;
-	HttpURLConnection connection2;
-	
+
 	//Locale
 	Locale systemLocale = null;
-//	String strDisplayCountry = "";
+	//	String strDisplayCountry = "";
 	String strCountry = "";
 	String strLanguage = "";
-	
+
 	// 설정 정보 저장할 도메인.
 	CheckMileageMemberSettings settings;
-	
+
 	String idExist = "";
 	static int qrResult = 0;
 	public static final String TAG = ScanQRPageActivity.class.getSimpleName();
-	
+
 	// 핸들러 등록
 	Handler handler = new Handler(){
-    	@Override
-    	public void handleMessage(Message msg){
-    		Bundle b = msg.getData();
-    		int showQR =  b.getInt("showQR");		// 값을 넣지 않으면 0 을 꺼내었다.
-    		
-    		if(b.getInt("showErrToast")==1){
+		@Override
+		public void handleMessage(Message msg){
+			Bundle b = msg.getData();
+			int showQR =  b.getInt("showQR");		// 값을 넣지 않으면 0 을 꺼내었다.
+
+			if(b.getInt("showErrToast")==1){
 				Toast.makeText(ScanQRPageActivity.this, R.string.fail_scan_qr, Toast.LENGTH_SHORT).show();
 			}
-    		if(b.getInt("getUserSetting")==1){		// 서버에서 설정 정보 가져와서 저장
-    			new backgroundGetUserSettingsFromServer().execute();     
+			if(b.getInt("getUserSetting")==1){		// 서버에서 설정 정보 가져와서 저장
+				new backgroundGetUserSettingsFromServer().execute();     
 			}
-    		if(b.getInt("showIntroView")==1){		// 서버에서 설정 정보 가져와서 저장
-    			setContentView(R.layout.intro);
+			if(b.getInt("showIntroView")==1){		// 서버에서 설정 정보 가져와서 저장
+				setContentView(R.layout.intro);
 			}
-    		if(b.getInt("showErrToast")==1){
+			if(b.getInt("showErrToast")==1){
 				Toast.makeText(ScanQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 			}
-    	}
-    };
-    public void showErrMSG(){			// 화면에 에러 토스트 띄움..
+		}
+	};
+
+	/**
+	 * showErrMsg
+	 *  화면에 error 토스트 띄운다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
+	public void showErrMSG(){			// 화면에 에러 토스트 띄움..
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -105,19 +115,19 @@ public class ScanQRPageActivity extends Activity {
 		).start();
 	}
 
-	
-	
+
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.scan_qr_page);
-		
+
 		Intent rIntent = getIntent();
-        phoneNumber = rIntent.getStringExtra("phoneNumber");
-        if(phoneNumber==null){
-        	phoneNumber="";
-        }
+		phoneNumber = rIntent.getStringExtra("phoneNumber");
+		if(phoneNumber==null){
+			phoneNumber="";
+		}
 		/* 
 		 * QR 스켄모드가 되어 QR 카드를 스켄한다.
 		 * QR 카드 스켄이 성공하여 QR 정보를 얻어오면, 해당 정보를 앱에 저장하고, 서버에 등록한다.
@@ -150,14 +160,31 @@ public class ScanQRPageActivity extends Activity {
 	}
 
 	// pref 에 QR 저장 .
-    public void saveQRforPref(String qrCode){
-    	sharedPrefCustom = getSharedPreferences("MyCustomePref",
-    			Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
-    	SharedPreferences.Editor saveQR = sharedPrefCustom.edit();
-    	saveQR.putString("qrcode", qrCode);
-    	saveQR.commit();
-    }
-	
+	/**
+	 * saveQRforPref
+	 *  프리퍼런스(설정)에 QR을 저장한다
+	 *
+	 * @param qrCode
+	 * @param
+	 * @return
+	 */
+	public void saveQRforPref(String qrCode){
+		sharedPrefCustom = getSharedPreferences("MyCustomePref",
+				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
+		SharedPreferences.Editor saveQR = sharedPrefCustom.edit();
+		saveQR.putString("qrcode", qrCode);
+		saveQR.commit();
+	}
+
+	/**
+	 * onActivityResult
+	 *  qr 스켄 정보를 받아 처리한다
+	 *
+	 * @param requestCode
+	 * @param resultCode
+	 * @param intent
+	 * @return
+	 */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		// TODO Auto-generated method stub
@@ -168,7 +195,7 @@ public class ScanQRPageActivity extends Activity {
 				// 1. 로컬에 QR 코드를 저장함
 				Log.i("ScanQRPageActivity", "save qrcode to file : "+qrcode);
 				saveQRforPref(qrcode);		// 설정에 qr 저장
-				
+
 				// 화면 전환- 스켄화면 대신 인트로 화면을 보여줌.
 				new Thread(
 						new Runnable(){
@@ -181,8 +208,8 @@ public class ScanQRPageActivity extends Activity {
 							}
 						}
 				).start();
-				
-//				checkAlreadyExistID_pre();		// 서버에 아이디 있는지 확인해서 없으면 등록하고,  있으면 설정 정보를 가져와서 로컬에 저장한다.
+
+				//				checkAlreadyExistID_pre();		// 서버에 아이디 있는지 확인해서 없으면 등록하고,  있으면 설정 정보를 가져와서 로컬에 저장한다.
 				checkAlreadyExistID();		// 서버에 아이디 있는지 확인해서 없으면 등록하고,  있으면 설정 정보를 가져와서 로컬에 저장한다.
 			} else if(resultCode == RESULT_CANCELED) {
 				// 취소 또는 실패시 이전화면으로.
@@ -194,32 +221,41 @@ public class ScanQRPageActivity extends Activity {
 		}
 	}
 
-	
+
 	/*
 	 * 기존 사용자인지 확인.
 	 *  아이디로 서버에 조회해서 이미 등록된 아이디인지 확인한다.
 	 *    이미 등록된 아이디인 경우 추가 등록할 필요가 없다. 대신 설정 정보를 가져와서 로컬에 저장한다.
 	 */
-//	public void checkAlreadyExistID_pre(){
-//		new Thread(
-//				new Runnable(){
-//					public void run(){
-//						Log.d(TAG,"updateMyGCMtoServer_pre");
-//						try{
-//							Thread.sleep(CommonUtils.threadWaitngTime);
-//						}catch(Exception e){
-//						}finally{
-//							if(CommonUtils.usingNetwork<1){
-//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-//								checkAlreadyExistID();
-//							}else{
-//								checkAlreadyExistID_pre();
-//							}
-//						}
-//					}
-//				}
-//			).start();
-//	}
+	//	public void checkAlreadyExistID_pre(){
+	//		new Thread(
+	//				new Runnable(){
+	//					public void run(){
+	//						Log.d(TAG,"updateMyGCMtoServer_pre");
+	//						try{
+	//							Thread.sleep(CommonUtils.threadWaitngTime);
+	//						}catch(Exception e){
+	//						}finally{
+	//							if(CommonUtils.usingNetwork<1){
+	//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+	//								checkAlreadyExistID();
+	//							}else{
+	//								checkAlreadyExistID_pre();
+	//							}
+	//						}
+	//					}
+	//				}
+	//			).start();
+	//	}
+
+	/**
+	 * checkAlreadyExistID
+	 *  기존 사용자인지 확인한다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void checkAlreadyExistID(){
 		Log.i(TAG, "checkAlreadyExistID");
 		controllerName = "checkMileageMemberController";
@@ -244,7 +280,7 @@ public class ScanQRPageActivity extends Activity {
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
-//							connection2.connect();
+							//							connection2.connect();
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
@@ -255,38 +291,46 @@ public class ScanQRPageActivity extends Activity {
 								InputStream in =  connection2.getInputStream();
 								// 조회한 결과를 처리.
 								checkUserID(in);
-//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-//									CommonUtils.usingNetwork = 0;
-//								}
+								//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+								//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+								//									CommonUtils.usingNetwork = 0;
+								//								}
 							}else{
 								showErrMSG();
-//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-//									CommonUtils.usingNetwork = 0;
-//								}
-								 Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
-								 startActivity(backToNoQRIntent);
-								 finish();
+								//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+								//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+								//									CommonUtils.usingNetwork = 0;
+								//								}
+								Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
+								startActivity(backToNoQRIntent);
+								finish();
 							}
-//							connection2.disconnect();
+							//							connection2.disconnect();
 						}catch(Exception e){ 
-//							connection2.disconnect();
-//							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-//							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-//								CommonUtils.usingNetwork = 0;
-//							}
+							//							connection2.disconnect();
+							//							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+							//							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+							//								CommonUtils.usingNetwork = 0;
+							//							}
 							e.printStackTrace();
 							showErrMSG();
-							 Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
-							 startActivity(backToNoQRIntent);
-							 finish();
+							Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
+							startActivity(backToNoQRIntent);
+							finish();
 						}
 					}
 				}
 		).start();
 	}
 	// 사용자가 있는지 확인한 결과를 처리
+	/**
+	 * checkUserID
+	 *  사용자가 있는지 확인한 결과를 처리한다
+	 *
+	 * @param in
+	 * @param
+	 * @return
+	 */
 	public void checkUserID(InputStream in){
 		Log.d(TAG,"alalyzeData");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);
@@ -300,40 +344,40 @@ public class ScanQRPageActivity extends Activity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//		Log.d(TAG,"get data ::"+builder.toString());
+		//		Log.d(TAG,"get data ::"+builder.toString());
 		String tempstr = builder.toString();		
-			try {
-				jsonObject = new JSONObject(tempstr);
-				JSONObject jsonobj2 = jsonObject.getJSONObject("checkMileageMember");
-				try{
-					idExist = jsonobj2.getString("totalCount");				// 아이디가 있으면1 없으면 0
-				}catch(Exception e){
-					e.printStackTrace();
-					idExist = "0";
-				}
-				if(idExist.equals("0")){		// 서버에 아이디가 없으면 업데이트 해준다. 
-//					saveQRtoServer_pre();		
-					saveQRtoServer();		
-				}else{							// 서버에 아이디가 있으면 설정을 받아와서 저장해야 한다.
-					Log.d(TAG,"idExist, getSettingsFromServer = T");
-					//설정 정보를 가져와서 저장 함.  핸들러를 이용한다.
-					new Thread(
-							new Runnable(){
-								public void run(){
-									Message message = handler.obtainMessage();				
-									Bundle b = new Bundle();
-									b.putInt("getUserSetting", 1);
-									message.setData(b);
-									handler.sendMessage(message);
-								}
-							}
-					).start();
-				}
-			} catch (JSONException e) {
+		try {
+			jsonObject = new JSONObject(tempstr);
+			JSONObject jsonobj2 = jsonObject.getJSONObject("checkMileageMember");
+			try{
+				idExist = jsonobj2.getString("totalCount");				// 아이디가 있으면1 없으면 0
+			}catch(Exception e){
 				e.printStackTrace();
-			} 
+				idExist = "0";
+			}
+			if(idExist.equals("0")){		// 서버에 아이디가 없으면 업데이트 해준다. 
+				//					saveQRtoServer_pre();		
+				saveQRtoServer();		
+			}else{							// 서버에 아이디가 있으면 설정을 받아와서 저장해야 한다.
+				Log.d(TAG,"idExist, getSettingsFromServer = T");
+				//설정 정보를 가져와서 저장 함.  핸들러를 이용한다.
+				new Thread(
+						new Runnable(){
+							public void run(){
+								Message message = handler.obtainMessage();				
+								Bundle b = new Bundle();
+								b.putInt("getUserSetting", 1);
+								message.setData(b);
+								handler.sendMessage(message);
+							}
+						}
+				).start();
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} 
 	}
-	
+
 	// 다음페이지로 이동한다. qrCode 값을 전달한다.
 	public void goNextPage(){
 		Log.i("ScanQRPageActivity", "load qrcode to img : "+qrcode);
@@ -352,43 +396,60 @@ public class ScanQRPageActivity extends Activity {
 				}
 		).start();
 	}
-	
+
 	// 백단에서 서버에서 설정 정보 가져오는 메서드 호출.
+	/**
+	 * backgroundGetUserSettingsFromServer
+	 *  비동기로 서버에서 설정 정보 가져오는 메서드 호출한다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public class backgroundGetUserSettingsFromServer extends   AsyncTask<Void, Void, Void> {
-        @Override protected void onPostExecute(Void result) {  }
-        @Override protected void onPreExecute() {  }
-        @Override protected Void doInBackground(Void... params) { 
-        	Log. d(TAG,"backgroundGetUserSettingsFromServer");
-//        	getUserSettingsFromServer_pre();
-        	getUserSettingsFromServer();
-        	return null ;
-        }
+		@Override protected void onPostExecute(Void result) {  }
+		@Override protected void onPreExecute() {  }
+		@Override protected Void doInBackground(Void... params) { 
+			Log. d(TAG,"backgroundGetUserSettingsFromServer");
+			//        	getUserSettingsFromServer_pre();
+			getUserSettingsFromServer();
+			return null ;
+		}
 	}
 	/*
 	 *     인증 성공(현재 기능 보류) 이후  
 	 *     이전 사용자일 경우 서버로부터 사용자 설정 정보를 가져와서 모바일의 설정 정보에 대입시킨다..
 	 *     비번의 경우 분실시 어플 삭제후 재설치.. 재 인증 받는다. 그럼 비번 초기화.
 	 */
-//	public void getUserSettingsFromServer_pre(){
-//		new Thread(
-//				new Runnable(){
-//					public void run(){
-//						Log.d(TAG,"getUserSettingsFromServer_pre");
-//						try{
-//							Thread.sleep(CommonUtils.threadWaitngTime);
-//						}catch(Exception e){
-//						}finally{
-//							if(CommonUtils.usingNetwork<1){
-//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-//								getUserSettingsFromServer();
-//							}else{
-//								getUserSettingsFromServer_pre();
-//							}
-//						}
-//					}
-//				}
-//			).start();
-//	}
+	//	public void getUserSettingsFromServer_pre(){
+	//		new Thread(
+	//				new Runnable(){
+	//					public void run(){
+	//						Log.d(TAG,"getUserSettingsFromServer_pre");
+	//						try{
+	//							Thread.sleep(CommonUtils.threadWaitngTime);
+	//						}catch(Exception e){
+	//						}finally{
+	//							if(CommonUtils.usingNetwork<1){
+	//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+	//								getUserSettingsFromServer();
+	//							}else{
+	//								getUserSettingsFromServer_pre();
+	//							}
+	//						}
+	//					}
+	//				}
+	//			).start();
+	//	}
+
+	/**
+	 * getUserSettingsFromServer
+	 *  서버로부터 설정 정보를 받는다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void getUserSettingsFromServer(){		// 서버로부터 설정 정보를 받는다.  아이디를 사용.모든데이터.  CheckMileageMember
 		Log.d(TAG, "getUserSettingsFromServer");
 		controllerName = "checkMileageMemberController";
@@ -409,12 +470,12 @@ public class ScanQRPageActivity extends Activity {
 						try{
 							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 							connection2 = (HttpURLConnection) postUrl2.openConnection();
-//							connection2.setConnectTimeout(10000);
+							//							connection2.setConnectTimeout(10000);
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
-//							connection2.connect();
+							//							connection2.connect();
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
@@ -428,20 +489,29 @@ public class ScanQRPageActivity extends Activity {
 							}else{
 								showErrMSG();
 							}
-//							connection2.disconnect();
+							//							connection2.disconnect();
 						}catch(Exception e){ 
-//							connection2.disconnect();
+							//							connection2.disconnect();
 							e.printStackTrace();
 						}
-//						CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-//						if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-//							CommonUtils.usingNetwork = 0;
-//						}
+						//						CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+						//						if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+						//							CommonUtils.usingNetwork = 0;
+						//						}
 					}
 				}
 		).start();
 	} 
+
 	// 설정 정보를 로컬에 저장
+	/**
+	 * theMySettingData1
+	 *  설정 정보를 로컬에 저장한다
+	 *
+	 * @param in
+	 * @param 
+	 * @return
+	 */
 	public void theMySettingData1(InputStream in){
 		Log.d(TAG,"theMySettingData1");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);
@@ -456,41 +526,49 @@ public class ScanQRPageActivity extends Activity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//		Log.d(TAG,"내 설정 상세정보::"+builder.toString());
+		//		Log.d(TAG,"내 설정 상세정보::"+builder.toString());
 		String tempstr = builder.toString();		
-			try {
-				jsonObject = new JSONObject(tempstr);
-				JSONObject jsonobj2 = jsonObject.getJSONObject("checkMileageMember");
-				// 데이터를 전역 변수 도메인에 저장하고  설정에 저장..
-				try{
-					settings.setEmail(jsonobj2.getString("email"));				
-				}catch(Exception e){
-					settings.setEmail("");
-				}
-				try{
-					settings.setBirthday(jsonobj2.getString("birthday"));				
-				}catch(Exception e){
-					settings.setBirthday("");
-				}
-				try{
-					settings.setGender(jsonobj2.getString("gender"));				
-				}catch(Exception e){
-					settings.setGender("");
-				}
-				try{
-					settings.setReceive_notification_yn(jsonobj2.getString("receiveNotificationYn"));	
-				}catch(Exception e){
-					settings.setReceive_notification_yn("");
-				}
-				setUserSettingsToPrefs();		// 설정에 전달 및 저장
-			} catch (JSONException e) {
-				e.printStackTrace();
-			} 
+		try {
+			jsonObject = new JSONObject(tempstr);
+			JSONObject jsonobj2 = jsonObject.getJSONObject("checkMileageMember");
+			// 데이터를 전역 변수 도메인에 저장하고  설정에 저장..
+			try{
+				settings.setEmail(jsonobj2.getString("email"));				
+			}catch(Exception e){
+				settings.setEmail("");
+			}
+			try{
+				settings.setBirthday(jsonobj2.getString("birthday"));				
+			}catch(Exception e){
+				settings.setBirthday("");
+			}
+			try{
+				settings.setGender(jsonobj2.getString("gender"));				
+			}catch(Exception e){
+				settings.setGender("");
+			}
+			try{
+				settings.setReceive_notification_yn(jsonobj2.getString("receiveNotificationYn"));	
+			}catch(Exception e){
+				settings.setReceive_notification_yn("");
+			}
+			setUserSettingsToPrefs();		// 설정에 전달 및 저장
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} 
 	}
 	/*
 	 * 서버에서 받은 설정 정보를 모바일 내 설정 정보에 저장한다.
 	 *   EMAIL  // BIRTHDAY //  GENDER // RECEIVE_NOTIFICATION_YN
 	 *   4가지. -> 를 설정 도메인에 저장한 후 설정에서 세팅해준다..
+	 */
+	/**
+	 * setUserSettingsToPrefs
+	 *  서버에서 받은 설정 정보를 모바일 내 설정 정보에 저장한다.
+	 *
+	 * @param
+	 * @param
+	 * @return
 	 */
 	public void setUserSettingsToPrefs(){
 		sharedPrefCustom = getSharedPreferences("MyCustomePref",
@@ -506,41 +584,50 @@ public class ScanQRPageActivity extends Activity {
 			saveUpdateYn.putBoolean("server_receive_notification_yn", true);
 		}
 		saveUpdateYn.commit();
-		
+
 		goNextPage();		// 다음 페이지로 이동.
 	}
-	
-	
-	 /*
-     *   서버에 생성한 QR 아이디를 등록.(서버에 등록되어있지 않은경우 호출)
-     *   
-     */
-//	public void saveQRtoServer_pre(){
-//		new Thread(
-//				new Runnable(){
-//					public void run(){
-//						Log.d(TAG,"saveQRtoServer_pre");
-//						try{
-//							Thread.sleep(CommonUtils.threadWaitngTime);
-//						}catch(Exception e){
-//						}finally{
-//							if(CommonUtils.usingNetwork<1){
-//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-//								saveQRtoServer();
-//							}else{
-//								saveQRtoServer_pre();
-//							}
-//						}
-//					}
-//				}
-//			).start();
-//	}
-    public void saveQRtoServer(){
-    	Log.i(TAG, "saveQRtoServer");
+
+
+	/*
+	 *   서버에 생성한 QR 아이디를 등록.(서버에 등록되어있지 않은경우 호출)
+	 *   
+	 */
+	//	public void saveQRtoServer_pre(){
+	//		new Thread(
+	//				new Runnable(){
+	//					public void run(){
+	//						Log.d(TAG,"saveQRtoServer_pre");
+	//						try{
+	//							Thread.sleep(CommonUtils.threadWaitngTime);
+	//						}catch(Exception e){
+	//						}finally{
+	//							if(CommonUtils.usingNetwork<1){
+	//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+	//								saveQRtoServer();
+	//							}else{
+	//								saveQRtoServer_pre();
+	//							}
+	//						}
+	//					}
+	//				}
+	//			).start();
+	//	}
+
+	/**
+	 * saveQRtoServer
+	 *  qr 을 서버에 저장한다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
+	public void saveQRtoServer(){
+		Log.i(TAG, "saveQRtoServer");
 		controllerName = "checkMileageMemberController";
 		methodName = "registerMember";
 		systemLocale = getResources().getConfiguration().locale;
-//		strDisplayCountry = systemLocale.getDisplayCountry();
+		//		strDisplayCountry = systemLocale.getDisplayCountry();
 		strCountry = systemLocale.getCountry();
 		strLanguage = systemLocale.getLanguage();
 		// 서버 통신부
@@ -588,45 +675,53 @@ public class ScanQRPageActivity extends Activity {
 							if(responseCode==200||responseCode==204){
 								InputStream in =  connection2.getInputStream();
 								Log.d(TAG, "register user S");
-//								connection2.disconnect();
-//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-//									CommonUtils.usingNetwork = 0;
-//								}
+								//								connection2.disconnect();
+								//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+								//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+								//									CommonUtils.usingNetwork = 0;
+								//								}
 								goNextPage();				// 다음 페이지로 이동 
 							}else{
 								Log.e(TAG, "register user F");
-//								connection2.disconnect();
+								//								connection2.disconnect();
 								showErrMSG();
-//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-//									CommonUtils.usingNetwork = 0;
-//								}
-								 Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
-								 startActivity(backToNoQRIntent);
-								 finish();
+								//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+								//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+								//									CommonUtils.usingNetwork = 0;
+								//								}
+								Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
+								startActivity(backToNoQRIntent);
+								finish();
 							}
 						}catch(Exception e){ 
-//							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-//							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-//								CommonUtils.usingNetwork = 0;
-//							}
-//							connection2.disconnect();
+							//							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+							//							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+							//								CommonUtils.usingNetwork = 0;
+							//							}
+							//							connection2.disconnect();
 							e.printStackTrace();
 							showErrMSG();
-							 Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
-							 startActivity(backToNoQRIntent);
-							 finish();
+							Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
+							startActivity(backToNoQRIntent);
+							finish();
 						}
 					}
 				}
 		).start();
-    }
-    
-    // 현시각
-    public String getNow(){
+	}
+
+	// 현시각
+	/**
+	 * getNow
+	 *  현시각을 구한다
+	 *
+	 * @param
+	 * @param
+	 * @return nowTime
+	 */
+	public String getNow(){
 		// 일단 오늘.
-    	c = Calendar.getInstance();
+		c = Calendar.getInstance();
 		todayYear = c.get(Calendar.YEAR);
 		todayMonth = c.get(Calendar.MONTH)+1;			// 꺼내면 0부터 시작이니까 +1 해준다.
 		todayDay = c.get(Calendar.DATE);
@@ -645,14 +740,14 @@ public class ScanQRPageActivity extends Activity {
 		if(tempSecond.length()==1) tempSecond = "0"+tempSecond;
 		String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute+":"+tempSecond;
 		return nowTime;
-//		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
+		//		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
 	}
-    
-    @Override
+
+	@Override
 	public void onDestroy(){
 		super.onDestroy();
-//		try{
-//		connection2.disconnect();
-//		}catch(Exception e){}
+		//		try{
+		//		connection2.disconnect();
+		//		}catch(Exception e){}
 	}
 }

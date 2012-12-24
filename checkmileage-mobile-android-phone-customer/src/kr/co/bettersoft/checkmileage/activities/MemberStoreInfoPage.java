@@ -1,12 +1,12 @@
 package kr.co.bettersoft.checkmileage.activities;
 // 가맹점 정보 보기
 
-/*
+/**
+ * MemberStoreInfoPage
+ * 
  * 가맹점 아이디, 내 마일리지  <-- 이전 화면에서 받아온다..  (여기서 말하는 이전 화면은 내 마일리지 목록 또는 가맹점 목록)
  * 가맹점 이미지URL, 가맹점 이름, 대표자 이름, 전화번호, 주소, 좌표1,2(좌표 미리 받으면 지도 볼때 안받아도 된다..), 상세 설명
  * 이후의 기능으로 기록보기, 전화걸기, 메뉴/서비스 보기 등..
- * 
- * 
  * 
  */
 
@@ -78,10 +78,10 @@ public class MemberStoreInfoPage extends Activity {
 	String myMileage = "";
 	String merchantId ="";
 	String idCheckMileageMileages ="";
-//	String imageFileStr="";			// 문자열로 바꾼 이미지
-//	Bitmap imageFile= null;			// 이미지 파일
-	
-	
+	//	String imageFileStr="";			// 문자열로 바꾼 이미지
+	//	Bitmap imageFile= null;			// 이미지 파일
+
+
 	String imgDomain = CommonUtils.imgDomain; 					// Img 가져올때 파일명만 있을 경우 앞에 붙일 도메인.   
 	Bitmap bm = null;
 	String latatude = "";
@@ -96,7 +96,7 @@ public class MemberStoreInfoPage extends Activity {
 	String tmpstr2 = "";
 	int maxPRstr = 200;					// 화면에 보여줄 소개 글의 최대 글자수. 넘어가면 자르고 ... 으로 표시해줌.
 
-//	float fImgSize = 0;
+	//	float fImgSize = 0;
 
 	// 진행바
 	ProgressBar pb1;		// 중단 로딩 진행바
@@ -110,7 +110,7 @@ public class MemberStoreInfoPage extends Activity {
 				if(b.getInt("showYN")==1){
 					// merchantData 에서 데이터 꺼내어 화면에 세팅한다.			// titleImg , name , companyName , phone , addr , pr ,,
 					TextView mileage = (TextView)findViewById(R.id.mileage);
-//					TextView type = (TextView)findViewById(R.id.type);
+					//					TextView type = (TextView)findViewById(R.id.type);
 					TextView member_store_title = (TextView)findViewById(R.id.member_store_title);
 					ImageView titleImg = (ImageView)findViewById(R.id.prImage);
 					TextView name = (TextView)findViewById(R.id.name);	
@@ -218,6 +218,14 @@ public class MemberStoreInfoPage extends Activity {
 
 
 	// 중앙 프로그래스바 보임, 숨김
+	/**
+	 * showPb
+	 *  중앙 프로그래스바 가시화한다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void showPb(){
 		new Thread( 
 				new Runnable(){
@@ -231,6 +239,14 @@ public class MemberStoreInfoPage extends Activity {
 				}
 		).start();
 	}
+	/**
+	 * hidePb
+	 *  중앙 프로그래스바 비가시화한다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void hidePb(){
 		new Thread(
 				new Runnable(){
@@ -272,35 +288,35 @@ public class MemberStoreInfoPage extends Activity {
 		showPb();
 
 		// 화면 크기 측정. (가맹점 사진 보여주기 위함)
-//		float screenWidth = this.getResources().getDisplayMetrics().widthPixels;
-//		Log.i("screenWidth : ", "" + screenWidth);
-//		float screenHeight = this.getResources().getDisplayMetrics().heightPixels;
-//		Log.i("screenHeight : ", "" + screenHeight);
+		//		float screenWidth = this.getResources().getDisplayMetrics().widthPixels;
+		//		Log.i("screenWidth : ", "" + screenWidth);
+		//		float screenHeight = this.getResources().getDisplayMetrics().heightPixels;
+		//		Log.i("screenHeight : ", "" + screenHeight);
 
-//		if(screenWidth < screenHeight ){
-//			fImgSize = screenWidth;
-//		}else{
-//			fImgSize = screenHeight;
-//		}
+		//		if(screenWidth < screenHeight ){
+		//			fImgSize = screenWidth;
+		//		}else{
+		//			fImgSize = screenHeight;
+		//		}
 
 		Intent rIntent = getIntent();
 		merchantId = rIntent.getStringExtra("checkMileageMerchantsMerchantID");			// 가맹점 아디
 		myMileage = rIntent.getStringExtra("myMileage");							// 가맹점에 대한 내 마일리지
-		
+
 		// 섬네일이므로 사용 하면 안됨.
-//		imageFileStr = rIntent.getStringExtra("imageFileStr");							// 가맹점에 대한 내 마일리지		
-//		if((imageFileStr!=null) && (imageFileStr.length()>0)){									// 이벤트 이미지 - 가 문자열로 데이터가 넘어온 경우. 변환.
-//			byte[] decodedString = Base64.decode(imageFileStr, Base64.DEFAULT); 
-//			imageFile = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-//		}
-		
+		//		imageFileStr = rIntent.getStringExtra("imageFileStr");							// 가맹점에 대한 내 마일리지		
+		//		if((imageFileStr!=null) && (imageFileStr.length()>0)){									// 이벤트 이미지 - 가 문자열로 데이터가 넘어온 경우. 변환.
+		//			byte[] decodedString = Base64.decode(imageFileStr, Base64.DEFAULT); 
+		//			imageFile = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+		//		}
+
 		if(myMileage==null||myMileage.length()<1){
 			myMileage = "0";
 		}
 		idCheckMileageMileages = rIntent.getStringExtra("idCheckMileageMileages");		// 내 아디
 		merchantData.setMerchantID(merchantId);
 		if(merchantId.length()>0){
-//			getMerchantInfo_pre();
+			//			getMerchantInfo_pre();
 			try {
 				getMerchantInfo();				// 가맹점 정보 가져옴
 			} catch (JSONException e) {
@@ -314,10 +330,25 @@ public class MemberStoreInfoPage extends Activity {
 			finish();
 		}
 	}
-
+	/**
+	 * returnThis
+	 *  컨택스트를 리턴한다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public Context returnThis(){
 		return this;
 	}
+	/**
+	 * showMSG
+	 *  화면에 error 토스트 띄운다
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void showMSG(){			// 화면에 error 토스트 띄움..
 		new Thread(
 				new Runnable(){
@@ -368,34 +399,42 @@ public class MemberStoreInfoPage extends Activity {
 	 *  받는 파라미터 : CheckMileageMerchant
 	 *    
 	 */
-//	public void getMerchantInfo_pre(){
-//		new Thread(
-//				new Runnable(){
-//					public void run(){
-//						Log.d(TAG,"getMerchantInfo_pre");
-//						try{
-//							Thread.sleep(CommonUtils.threadWaitngTime);
-//						}catch(Exception e){
-//						}finally{
-//							if(CommonUtils.usingNetwork<1){
-//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-//								try {
-//									getMerchantInfo();				// 가맹점 정보 가져옴
-//								} catch (JSONException e) {
-//									// TODO Auto-generated catch block
-//									e.printStackTrace();
-//								} catch (IOException e) {
-//									// TODO Auto-generated catch block
-//									e.printStackTrace();
-//								}
-//							}else{
-//								getMerchantInfo_pre();
-//							}
-//						}
-//					}
-//				}
-//			).start();
-//	}
+	//	public void getMerchantInfo_pre(){
+	//		new Thread(
+	//				new Runnable(){
+	//					public void run(){
+	//						Log.d(TAG,"getMerchantInfo_pre");
+	//						try{
+	//							Thread.sleep(CommonUtils.threadWaitngTime);
+	//						}catch(Exception e){
+	//						}finally{
+	//							if(CommonUtils.usingNetwork<1){
+	//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
+	//								try {
+	//									getMerchantInfo();				// 가맹점 정보 가져옴
+	//								} catch (JSONException e) {
+	//									// TODO Auto-generated catch block
+	//									e.printStackTrace();
+	//								} catch (IOException e) {
+	//									// TODO Auto-generated catch block
+	//									e.printStackTrace();
+	//								}
+	//							}else{
+	//								getMerchantInfo_pre();
+	//							}
+	//						}
+	//					}
+	//				}
+	//			).start();
+	//	}
+	/**
+	 * getMerchantInfo
+	 *  서버와 통신하여 가맹점 정보를 가져온다.
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void getMerchantInfo() throws JSONException, IOException {
 		Log.i(TAG, "getMerchantInfo");
 		controllerName = "checkMileageMerchantController";
@@ -423,7 +462,7 @@ public class MemberStoreInfoPage extends Activity {
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
-//							connection2.connect();		// ???
+							//							connection2.connect();		// ???
 							Thread.sleep(200);	
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
@@ -432,24 +471,32 @@ public class MemberStoreInfoPage extends Activity {
 							// 200 , 204 : 정상
 							responseCode = connection2.getResponseCode();
 							in =  connection2.getInputStream();
-//							os2.close();
+							//							os2.close();
 							// 조회한 결과를 처리.
 							theData1(in);
-//							connection2.disconnect();
+							//							connection2.disconnect();
 						}catch(Exception e){ 
 							//							e.printStackTrace();
-//							connection2.disconnect();
+							//							connection2.disconnect();
 						}  
-//						CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-//						if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-//							CommonUtils.usingNetwork = 0;
-//						}
+						//						CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+						//						if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+						//							CommonUtils.usingNetwork = 0;
+						//						}
 					}
 				}).start();
 	}
 
 	/*
 	 * 가맹점 상세 정보를 받음
+	 */
+	/**
+	 * theData1
+	 *  가맹점 상세 정보를 받은 것을 처리한다
+	 *
+	 * @param in
+	 * @param
+	 * @return
 	 */
 	public void theData1(InputStream in){
 		Log.d(TAG,"theData");
@@ -478,7 +525,7 @@ public class MemberStoreInfoPage extends Activity {
 			try {
 				jsonObject = new JSONObject(tempstr);
 				JSONObject jsonobj2 = jsonObject.getJSONObject("checkMileageMerchant");
-				
+
 				String prstr = "";
 				// 데이터를 전역 변수 도메인에 저장하고 핸들러를 통해 도메인-> 화면에 보여준다..
 				try{
@@ -531,20 +578,20 @@ public class MemberStoreInfoPage extends Activity {
 					merchantData.setLongtitude("");
 				}
 				if(merchantData.getProfileImageURL()!=null && merchantData.getProfileImageURL().length()>0){
-//					if(imageFile!=null){
-//						bm = imageFile;
-//					}else{
+					//					if(imageFile!=null){
+					//						bm = imageFile;
+					//					}else{
+					try{
+						Log.w(TAG,"LoadImage with URL :"+merchantData.getProfileImageURL());
+						bm = LoadImage(imgDomain+merchantData.getProfileImageURL());				 
+					}catch(Exception e3){
+						Log.w(TAG, imgDomain+merchantData.getProfileImageURL()+" -- fail");
 						try{
-							Log.w(TAG,"LoadImage with URL :"+merchantData.getProfileImageURL());
-							bm = LoadImage(imgDomain+merchantData.getProfileImageURL());				 
-						}catch(Exception e3){
-							Log.w(TAG, imgDomain+merchantData.getProfileImageURL()+" -- fail");
-							try{
-								BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.empty_320_240);
-								bm = dw.getBitmap();
-							}catch(Exception e4){}
-						}
-//					}
+							BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.empty_320_240);
+							bm = dw.getBitmap();
+						}catch(Exception e4){}
+					}
+					//					}
 				}
 				if(bm==null){
 					BitmapDrawable dw = (BitmapDrawable) this.getResources().getDrawable(R.drawable.empty_320_240);
@@ -567,11 +614,27 @@ public class MemberStoreInfoPage extends Activity {
 	}
 
 	// 가맹점 이미지 URL 에서 이미지 받아와서 도메인에 저장하는 부분.
+	/**
+	 * LoadImage
+	 *  가맹점 이미지 URL 에서 이미지 받아온 스트림을 비트맵으로 저장한다
+	 *
+	 * @param $imagePath
+	 * @param
+	 * @return bm
+	 */
 	private Bitmap LoadImage( String $imagePath ) {
 		InputStream inputStream = OpenHttpConnection( $imagePath ) ;
 		Bitmap bm = BitmapFactory.decodeStream( inputStream ) ;
 		return bm;
 	}
+	/**
+	 * OpenHttpConnection
+	 *  가맹점 이미지 URL 에서 이미지 받아와서 스트림으로 저장한다
+	 *
+	 * @param $imagePath
+	 * @param
+	 * @return stream
+	 */
 	private InputStream OpenHttpConnection(String $imagePath) {
 		// TODO Auto-generated method stub
 		InputStream stream = null ;
@@ -594,6 +657,14 @@ public class MemberStoreInfoPage extends Activity {
 	}
 
 	// 화면에 보여준다..
+	/**
+	 * showInfo
+	 *  받아온 정보를 화면에 보여준다.
+	 *
+	 * @param
+	 * @param
+	 * @return
+	 */
 	public void showInfo(){
 		new Thread(
 				new Runnable(){
@@ -653,6 +724,14 @@ public class MemberStoreInfoPage extends Activity {
 
 
 	// 전화 걸기
+	/**
+	 * setCallingPhoneNumber
+	 *  전화를 건다
+	 *
+	 * @param phoneNumber
+	 * @param
+	 * @return
+	 */
 	public void setCallingPhoneNumber(final String phoneNumber) {
 		handler.post(new Runnable() {
 			public void run() {
@@ -674,10 +753,10 @@ public class MemberStoreInfoPage extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		error = 0;		// 서버 무한 접속 중이라면 종료 시켜야 하기때문..
-//		try{
-//			if(connection2!=null){
-//				connection2.disconnect();
-//			}
-//		}catch(Exception e){}
+		//		try{
+		//			if(connection2!=null){
+		//				connection2.disconnect();
+		//			}
+		//		}catch(Exception e){}
 	}
 }
