@@ -64,6 +64,10 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 	static String barCode = "";
 	public static TabHost tabhost;
 
+	TextView mileageBadge;
+	
+	
+	
 	////////////////////////////////////  // GCM 
 	AsyncTask<Void, Void, Void> mRegisterTask;
 	public static String REGISTRATION_ID = "";		// 등록아이디
@@ -104,6 +108,12 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 		setContentView(R.layout.main_tabs);
 		main_TabsActivity = Main_TabsActivity.this;		// 다른데서 여기 종료시키기 위함.
 
+		mileageBadge = (TextView) findViewById(R.id.main_tabs_mileage_badge);		// 마일리지 상단 뱃지	 *** 테스트용
+		mileageBadge.setText("");					// 하드코딩 100 을 지운다.
+		mileageBadge.setVisibility(View.GONE);		// 뱃지 숨긴다. 테스트용 *** 
+		// 나중에 실제 사용하게 된다면 값만 ""로 바꾸면 배경 동그라미만 보이게 되므로 비저빌리티도 사라지도록 함께 바꿔줘야 한다.
+		
+		
 		Intent receiveIntent = getIntent();							// 인텐트 통해 전달 받은 값 꺼내기.
 		if(myQR.length()<1){
 			myQR = receiveIntent.getStringExtra("myQR");
