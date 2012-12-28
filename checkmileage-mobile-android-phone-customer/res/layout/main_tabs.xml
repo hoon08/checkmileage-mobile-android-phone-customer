@@ -73,7 +73,9 @@
                         android:text=" 100 "
                         android:textColor="#FFFFFF"
                         android:background="@drawable/design_bg_badge"
-                        android:textSize="10dp" />
+                        android:textSize="10dp" 
+                        android:visibility="gone"
+                        />
                 </LinearLayout>
 
                 <LinearLayout
