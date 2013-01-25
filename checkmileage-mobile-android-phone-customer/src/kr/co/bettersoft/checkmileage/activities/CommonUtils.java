@@ -42,6 +42,7 @@ public class CommonUtils extends Activity {
 
 //	public static String qrFileSavedPath = "/sdcard/CarrotKeyFile.txt";
 	public static String qrFileSavedPath = "/sdcard/Android/data/kr.co.bettersoft.carrot/";
+	public static String qrFileSavedPathFile = "/sdcard/Android/data/kr.co.bettersoft.carrot/CarrotKeyFile.dat";
 	
 	//	public static String prefPath = "kr.co.bettersoft.checkmileage.pref";
 

@@ -207,7 +207,7 @@ public class CreateQRPageActivity extends Activity {
 			File qrFileDirectory = new File(CommonUtils.qrFileSavedPath);
 			qrFileDirectory.mkdirs();
 
-			File myFile = new File(CommonUtils.qrFileSavedPath+"CarrotKeyFile.txt");
+			File myFile = new File(CommonUtils.qrFileSavedPathFile);
 			myFile.createNewFile();
 			FileOutputStream fOut = new FileOutputStream(myFile);
 			OutputStreamWriter myOutWriter = 
