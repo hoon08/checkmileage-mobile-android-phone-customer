@@ -192,6 +192,9 @@ public class ScanQRPageActivity extends Activity {
 		if(requestCode == 0) {
 			if(resultCode == RESULT_OK) {  // 성공시
 				qrcode = intent.getStringExtra("SCAN_RESULT");
+				if(qrcode.contains("http")){			// URL로 읽었을 경우.
+					qrcode = qrcode.substring(7);			// 앞의 http:// 을 자른다. (7글자)
+				}
 				// 1. 로컬에 QR 코드를 저장함
 				Log.i("ScanQRPageActivity", "save qrcode to file : "+qrcode);
 				saveQRforPref(qrcode);		// 설정에 qr 저장

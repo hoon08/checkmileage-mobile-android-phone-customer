@@ -315,7 +315,7 @@ public class MainActivity extends Activity {
 	public void readQRFromFile(){
 		Log.d(TAG,"try get qr from file");
 		try{
-			File myFile = new File(CommonUtils.qrFileSavedPath+"CarrotKeyFile.txt");	
+			File myFile = new File(CommonUtils.qrFileSavedPathFile);	
 			FileInputStream fIn = new FileInputStream(myFile);
 			BufferedReader myReader = new BufferedReader(
 					new InputStreamReader(fIn));
