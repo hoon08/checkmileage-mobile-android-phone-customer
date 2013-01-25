@@ -5,10 +5,13 @@ package kr.co.bettersoft.checkmileage.activities;
  *  QR 스켄 페이지
  */
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
@@ -174,6 +177,23 @@ public class ScanQRPageActivity extends Activity {
 		SharedPreferences.Editor saveQR = sharedPrefCustom.edit();
 		saveQR.putString("qrcode", qrCode);
 		saveQR.commit();
+		
+		// 파일에도 저장
+		try {
+			File qrFileDirectory = new File(CommonUtils.qrFileSavedPath);
+			qrFileDirectory.mkdirs();
+
+			File myFile = new File(CommonUtils.qrFileSavedPathFile);
+			myFile.createNewFile();
+			FileOutputStream fOut = new FileOutputStream(myFile);
+			OutputStreamWriter myOutWriter = 
+									new OutputStreamWriter(fOut);
+			myOutWriter.append(qrCode);
+			myOutWriter.close();
+			fOut.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
