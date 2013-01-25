@@ -304,6 +304,7 @@ public class MainActivity extends Activity {
 			qrResult = 1;
 			MyQRPageActivity.qrCode = myQR;
 		}else{
+			Log.d(TAG,"pref no qr, go to file");
 			readQRFromFile();
 		}
 	}
@@ -312,8 +313,9 @@ public class MainActivity extends Activity {
 	 * 파일로부터 qr을 읽는다.
 	 */
 	public void readQRFromFile(){
+		Log.d(TAG,"try get qr from file");
 		try{
-			File myFile = new File(CommonUtils.qrFileSavedPath);
+			File myFile = new File(CommonUtils.qrFileSavedPath+"CarrotKeyFile.txt");	
 			FileInputStream fIn = new FileInputStream(myFile);
 			BufferedReader myReader = new BufferedReader(
 					new InputStreamReader(fIn));
@@ -333,6 +335,8 @@ public class MainActivity extends Activity {
 			saveQR.putString("qrcode", myQR);
 			saveQR.commit();
 
+			qrResult = 1;
+			MyQRPageActivity.qrCode = myQR;
 		}catch(Exception e){
 			e.printStackTrace();
 		}
