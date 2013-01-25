@@ -65,7 +65,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 	private static final String TAG = "GCMIntentService";
 
-
+	static String myQR = "";
 	//    RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.my_widget_layout);
 
 
@@ -126,7 +126,16 @@ public class GCMIntentService extends GCMBaseIntentService {
 		@Override protected Void doInBackground(Void... params) {  
 			Log.d(TAG,"backgroundUpdateMyGCMtoServer");
 			//        		updateMyGCMtoServer_pre();
-			updateMyGCMtoServer();
+			
+			if(myQR==null || myQR.length()<1){	
+				myQR = Main_TabsActivity.myQR;
+			}
+			if(myQR==null || myQR.length()<1){
+				// qr 없으면 업데이트 하지 않음
+			}else{			// qr 있을때에만 업데이트함.
+				updateMyGCMtoServer();
+			}
+			
 			//			try {						// gcm 확인용
 			//				testGCM(regIdGCM);
 			//			} catch (JSONException e) {
@@ -180,10 +189,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 						JSONObject obj = new JSONObject();
 						try{
 							obj.put("activateYn", "Y");
-							obj.put("checkMileageId", Main_TabsActivity.myQR);			  
+							obj.put("checkMileageId", myQR);			  
 							obj.put("registrationId", regIdGCM);							
 							obj.put("modifyDate", getNow());			
-							Log.d(TAG, "checkMileageId:"+Main_TabsActivity.myQR);
+							Log.d(TAG, "checkMileageId:"+myQR);
 							Log.d(TAG, "registrationId:"+regIdGCM);
 							Log.d(TAG, "modifyDate:"+getNow());
 						}catch(Exception e){

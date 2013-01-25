@@ -102,4 +102,14 @@ public class No_QR_PageActivity extends Activity {
 		DummyActivity.count = 0;
 		finish();
 	}
+	
+	@Override
+	protected void onResume() {		// 카메라 스켄하다 말고 왔거나 등의 이유로 돌아왔을때 기능 사용 가능하도록 함
+		super.onResume();
+		button1.setEnabled(true);
+		button2.setEnabled(true);
+	};
+	
+	
+	
 }

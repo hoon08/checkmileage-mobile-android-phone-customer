@@ -1,6 +1,10 @@
 package kr.co.bettersoft.checkmileage.activities;
 // 인트로
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import kr.co.bettersoft.checkmileage.activities.R;
@@ -239,7 +243,7 @@ public class MainActivity extends Activity {
 								//--------------------------------------------------------------------------------------//
 
 								// QR 코드가 있다면 QR 화면으로 이동하고, QR 코드가 없다면 QR 등록 화면으로 이동한다.
-								if(myQR.length()>0){ // QR코드가 있는지 확인. 있으면 바로 내 QR 페이지로 이동.
+								if((myQR!=null) &&  myQR.length()>0){ // QR코드가 있는지 확인. 있으면 바로 내 QR 페이지로 이동.	// 저장된 QR이 null 일 경우에도 생성으로 이동..
 									Log.i("MainActivity", "QR code checked success, Go Main Pages::"+myQR);
 
 									Intent intent = new Intent(MainActivity.this, Main_TabsActivity.class);
@@ -299,6 +303,38 @@ public class MainActivity extends Activity {
 		if(myQR.length()>1){
 			qrResult = 1;
 			MyQRPageActivity.qrCode = myQR;
+		}else{
+			readQRFromFile();
+		}
+	}
+	
+	/**
+	 * 파일로부터 qr을 읽는다.
+	 */
+	public void readQRFromFile(){
+		try{
+			File myFile = new File(CommonUtils.qrFileSavedPath);
+			FileInputStream fIn = new FileInputStream(myFile);
+			BufferedReader myReader = new BufferedReader(
+					new InputStreamReader(fIn));
+			String aDataRow = "";
+			String aBuffer = "";
+			while ((aDataRow = myReader.readLine()) != null) {
+//				aBuffer += aDataRow + "\n";
+				aBuffer += aDataRow;
+			}
+			myQR = aBuffer;
+			
+			
+			//파일에 있는걸로 쓰기로 했기 때문에 설정에 저장해둔다.
+			sharedPrefCustom = getSharedPreferences("MyCustomePref",
+					Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
+			SharedPreferences.Editor saveQR = sharedPrefCustom.edit();
+			saveQR.putString("qrcode", myQR);
+			saveQR.commit();
+
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////    
