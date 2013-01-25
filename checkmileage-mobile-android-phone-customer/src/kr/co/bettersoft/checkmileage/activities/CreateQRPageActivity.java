@@ -11,7 +11,10 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
@@ -37,7 +40,6 @@ public class CreateQRPageActivity extends Activity {
 
 	static int qrResult = 0;
 	String qrcode = "";		 
-	//	String qrcode = "createdNewQRCodeOne";		// test
 	String phoneNumber = "";
 	String tmpStr = "";
 	// 시간 관련
@@ -114,7 +116,6 @@ public class CreateQRPageActivity extends Activity {
 		if(tmpStr!=null && tmpStr.length()>0){
 			phoneNumber = rIntent.getStringExtra("phoneNumber");
 		}
-		//	    qrcode = "test1234";		// test
 		qrcode = timeID;			// 이 줄을  주석 처리하면 기본 값 test1234 사용 - test용도. , 주석 풀면 새로 만든 시간 아이디 사용- 실제 사용 용도.. *** 
 
 		/*
@@ -129,8 +130,13 @@ public class CreateQRPageActivity extends Activity {
 		 */
 		Log.i("CreateQRPageActivity", "save qrcode to file : "+qrcode);
 
-		new backgroundSaveQRforPref().execute();		// 비동기 실행 - 설정에 저장 -- 끝나면 서버에 저장
+		new backgroundSaveQRforPref().execute();		// 비동기 실행 - 설정에 저장 -- 끝나면 서버에 저장 -- 이후 이동하는 걸로..
+	}
 
+	
+	
+	
+	public void goMainTabs(){
 		/*
 		 * MyQR페이지에 생성된 QR로 QR이미지 받아서 보여줌.
 		 */
@@ -156,7 +162,9 @@ public class CreateQRPageActivity extends Activity {
 				}
 		).start();
 	}
-
+	
+	
+	
 	// 비동기로 호출. 설정에 저장
 	/**
 	 * backgroundSaveQRforPref
@@ -181,18 +189,32 @@ public class CreateQRPageActivity extends Activity {
 	/**
 	 * saveQRforPref
 	 *  설정에 qr 저장한다
-	 *
+	 *  --파일에도 저장한다.  20130125
 	 * @param qrCode
 	 * @param
 	 * @return
 	 */
 	public void saveQRforPref(String qrCode){
+		// 설정에 저장
 		sharedPrefCustom = getSharedPreferences("MyCustomePref",
 				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
 		SharedPreferences.Editor saveQR = sharedPrefCustom.edit();
 		saveQR.putString("qrcode", qrCode);
 		saveQR.commit();
 
+		// 파일에 저장
+		try {
+			File myFile = new File(CommonUtils.qrFileSavedPath);
+			myFile.createNewFile();
+			FileOutputStream fOut = new FileOutputStream(myFile);
+			OutputStreamWriter myOutWriter = 
+									new OutputStreamWriter(fOut);
+			myOutWriter.append(qrCode);
+			myOutWriter.close();
+			fOut.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		new backgroundSaveQRtoServer().execute();		// 설정에 저장 끝나면 .. 비동기 실행 - 서버에 저장
 	}
 
@@ -295,6 +317,10 @@ public class CreateQRPageActivity extends Activity {
 							if(responseCode==200||responseCode==204){
 								Log.e(TAG, "register user S");
 								//								connection2.disconnect();
+								
+								// 저장끝나고 나서 액티비티 이동.
+								goMainTabs();
+								
 							}else{
 								Log.e(TAG, "register user F");		// 오류 발생시 에러 창 띄우고 돌아간다.. 통신에러 발생할수 있다.
 								String alrtMsg = getString(R.string.error_message);

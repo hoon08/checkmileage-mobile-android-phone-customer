@@ -274,6 +274,7 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 		mRegisterTask = new AsyncTask<Void, Void, Void>() {
 			@Override
 			protected Void doInBackground(Void... params) {	// 무조건 GCM 등록한다. 이전값이든 새값이든 등록하고 //등록 결과를 서버에 업뎃하는 부분은 GCM서비스에서 처리한다.
+				GCMIntentService.myQR = myQR;
 				GCMRegistrar.register(getThis(), SENDER_ID);	
 				return null;
 			}
