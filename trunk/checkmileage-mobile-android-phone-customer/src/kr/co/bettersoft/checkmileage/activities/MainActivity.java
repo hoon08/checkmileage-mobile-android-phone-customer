@@ -4,7 +4,9 @@ package kr.co.bettersoft.checkmileage.activities;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.List;
 
 import kr.co.bettersoft.checkmileage.activities.R;
@@ -55,6 +57,9 @@ public class MainActivity extends Activity {
 	// QR 저장소이용 결과.
 	static int qrResult = 0;
 
+	String qrFromPref = ""; //설정에서 읽은 qr 코드
+	String qrFromFile = "";		// 파일에서 읽은 qr 코드
+	
 	// 설정 파일 저장소  --> QR 코드도 저장하는걸로..
 	String strForLog = "";
 	SharedPreferences sharedPrefForThis;
@@ -299,14 +304,7 @@ public class MainActivity extends Activity {
 	public void readQRFromPref(){
 		strForLog = sharedPrefCustom.getString("qrcode", "");		
 		Log.i(TAG,"pref qrcode:"+strForLog);
-		myQR = strForLog;
-		if(myQR.length()>1){
-			qrResult = 1;
-			MyQRPageActivity.qrCode = myQR;
-		}else{
-			Log.d(TAG,"pref no qr, go to file");
-			readQRFromFile();
-		}
+		qrFromPref = strForLog;
 	}
 	
 	/**
@@ -325,20 +323,10 @@ public class MainActivity extends Activity {
 //				aBuffer += aDataRow + "\n";
 				aBuffer += aDataRow;
 			}
-			myQR = aBuffer;
-			
-			
-			//파일에 있는걸로 쓰기로 했기 때문에 설정에 저장해둔다.
-			sharedPrefCustom = getSharedPreferences("MyCustomePref",
-					Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
-			SharedPreferences.Editor saveQR = sharedPrefCustom.edit();
-			saveQR.putString("qrcode", myQR);
-			saveQR.commit();
-
-			qrResult = 1;
-			MyQRPageActivity.qrCode = myQR;
+			qrFromFile = aBuffer;
 		}catch(Exception e){
-			e.printStackTrace();
+//			e.printStackTrace();
+			qrFromFile = "";
 		}
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////    
@@ -348,6 +336,72 @@ public class MainActivity extends Activity {
 	// QR 코드 저장소에서 QR 코드를 읽어온다. --> 설정파일에서 읽는다
 	public void readQR(){
 		readQRFromPref();
+		readQRFromFile();
+		
+		if(qrFromPref==null || qrFromPref.length()<1){		// 설정에 없는 경우
+			Log.d(TAG,"pref no qr");
+			if(qrFromFile==null || qrFromFile.length()<1){	
+				//(파일에도 없는 경우 -> 양쪽에 모두 없으면 패스 --> 생성화면으로 이동됨.)	
+			}else{		// 파일에는 있는 경우 
+				myQR = qrFromFile;	// 파일것을 사용
+				// 파일 데이터를 설정에 저장  -- 파일에 있는걸로 쓰기로 했기 때문에 설정에 저장해둔다.
+				sharedPrefCustom = getSharedPreferences("MyCustomePref",
+						Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
+				SharedPreferences.Editor saveQR = sharedPrefCustom.edit();
+				saveQR.putString("qrcode", qrFromFile);
+				saveQR.commit();
+				
+				// 다음 액티비티로 전달 (파일값사용)
+				myQR = qrFromFile;	
+				qrResult = 1;
+				MyQRPageActivity.qrCode = myQR;
+			}
+		}else if(qrFromFile==null || qrFromFile.length()<1){		// 설정에 있는 경우 + 파일에 없는 경우
+			// 설정에 있는 것을 파일로 복사
+			try {
+				File qrFileDirectory = new File(CommonUtils.qrFileSavedPath);
+				qrFileDirectory.mkdirs();
+
+				File myFile = new File(CommonUtils.qrFileSavedPathFile);
+				myFile.createNewFile();
+				FileOutputStream fOut = new FileOutputStream(myFile);
+				OutputStreamWriter myOutWriter = 
+										new OutputStreamWriter(fOut);
+				myOutWriter.append(qrFromPref);
+				myOutWriter.close();
+				fOut.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			myQR = qrFromPref;		// 다음 액티비티로 전달 (설정값사용)
+			qrResult = 1;
+			MyQRPageActivity.qrCode = myQR;
+		}else{			// 설정에 있는 경우 + 파일에도 있는 경우
+			// 비교하여 다르다면 설정에 있는 것을 파일로 복사
+			if(!(qrFromPref.equals(qrFromFile))){
+				Log.d(TAG,"not equals qrFromFile,qrFromPref ");
+				// 설정에 있는 것을 파일로 복사
+				try {
+					File qrFileDirectory = new File(CommonUtils.qrFileSavedPath);
+					qrFileDirectory.mkdirs();
+
+					File myFile = new File(CommonUtils.qrFileSavedPathFile);
+					myFile.createNewFile();
+					FileOutputStream fOut = new FileOutputStream(myFile);
+					OutputStreamWriter myOutWriter = 
+											new OutputStreamWriter(fOut);
+					myOutWriter.append(qrFromPref);
+					myOutWriter.close();
+					fOut.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			myQR = qrFromPref;				// 다음 액티비티로 전달 (설정값사용)
+			qrResult = 1;
+			MyQRPageActivity.qrCode = myQR;
+		}
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////   
