@@ -171,22 +171,26 @@ public class MyQRPageActivity extends Activity {
 		new Thread(
 				new Runnable(){
 					public void run(){
-						if(savedBMP==null){
-							bmp = createQRself(qrCode);		// 자체 라이브러리 사용하여 생성.
-							if(bmp==null){
-								Log.d(TAG,"bmp1==null");
-								bmp = downloadBitmap("http://chart.apis.google.com/chart?cht=qr&chs="+qrSize+"x"+qrSize+"&choe=UTF-8&chld=H&chl="+qrCode);		// 웹 통신하여 가져옴 
-								if(bmp==null){
-									Log.d(TAG,"bmp2==null");
-									finish();
-								}else{
+						if(savedBMP==null){	// 기존 저장된 파일 없는경우.
+							if(qrCode!=null && qrCode.length()>0){
+								bmp = createQRself(qrCode);		// 자체 라이브러리 사용하여 생성.
+								if(bmp==null){			// 자체 생성 실패한 경우.
+									Log.d(TAG,"bmp1==null");
+									bmp = downloadBitmap("http://chart.apis.google.com/chart?cht=qr&chs="+qrSize+"x"+qrSize+"&choe=UTF-8&chld=H&chl="+qrCode);		// 웹 통신하여 가져옴 
+									if(bmp==null){
+										Log.d(TAG,"bmp2==null");
+										finish();
+									}else{
+										saveBMPtoDB(bmp);
+									}
+									// QR 이미지 생성 실패. 처리 필요 *** no qr img 로 가야 할듯.? 재실행?;
+								}else{	// 자체 성공 성공한 경우
 									saveBMPtoDB(bmp);
 								}
-								// QR 이미지 생성 실패. 처리 필요 *** no qr img 로 가야 할듯.? 재실행?;
 							}else{
-								saveBMPtoDB(bmp);
+								// finish();	// 종료. qr 없이 올수 없음.
 							}
-						}else{
+						}else{	// 기존 저장된 파일 있는 경우
 							bmp = savedBMP;
 						}
 						// showQR

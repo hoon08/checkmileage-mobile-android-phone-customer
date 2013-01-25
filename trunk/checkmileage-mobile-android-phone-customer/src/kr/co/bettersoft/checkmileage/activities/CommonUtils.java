@@ -40,7 +40,8 @@ public class CommonUtils extends Activity {
 
 	public static String packageNames = "kr.co.bettersoft.checkmileage.activities";
 
-	public static String qrFileSavedPath = "/sdcard/CarrotKeyFile.txt";
+//	public static String qrFileSavedPath = "/sdcard/CarrotKeyFile.txt";
+	public static String qrFileSavedPath = "/sdcard/Android/data/kr.co.bettersoft.carrot/";
 	
 	//	public static String prefPath = "kr.co.bettersoft.checkmileage.pref";
 
