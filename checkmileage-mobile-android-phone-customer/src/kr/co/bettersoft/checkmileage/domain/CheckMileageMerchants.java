@@ -1,52 +1,52 @@
 package kr.co.bettersoft.checkmileage.domain;
 
 
-// °¡¸ÍÁ¡ »ó¼¼ Á¤º¸ ¹Ş±â ¿ëµµ.
+// ê°€ë§¹ì  ìƒì„¸ ì •ë³´ ë°›ê¸° ìš©ë„.
 import android.graphics.Bitmap;
 
 public class CheckMileageMerchants {
 	/*
-	 * º¸³»´Â Á¤º¸ : °¡¸ÍÁ¡ ¾ÆÀÌµğ
+	 * ë³´ë‚´ëŠ” ì •ë³´ : ê°€ë§¹ì  ì•„ì´ë””
 	 *   	checkMileageMileage :: activateYn, checkMileageMembersCheckMileageId
-	 *  ¹Ş´Â Á¤º¸ : 
-	 *    °¡¸ÍÁ¡ ÀÌ¸§, °¡¸ÍÁ¡ ÀÌ¹ÌÁöURL, °¡¸ÍÁ¡¿¡ ´ëÇÑ ³» ¸¶ÀÏ¸®Áö.    // ¸¶ÀÏ¸®Áö ¾øÀ½.µû·Î Á¶È¸.¶Ç´Â Àü´Ş?
-	 *     ´ëÇ¥ÀÚ ÀÌ¸§ , ÀüÈ­¹øÈ£ 1, ÁÖ¼Ò 1, 
-	 *      ±âÅ¸ ¼³¸íµé, ÁÂÇ¥(1,2),  
-	 *    @[°¡¸ÍÁ¡¾ÆÀÌµğ] ´Â °¡Àå Ã³À½ °¡Á®¿À¹Ç·Î µû·Î ÀúÀå
+	 *  ë°›ëŠ” ì •ë³´ : 
+	 *    ê°€ë§¹ì  ì´ë¦„, ê°€ë§¹ì  ì´ë¯¸ì§€URL, ê°€ë§¹ì ì— ëŒ€í•œ ë‚´ ë§ˆì¼ë¦¬ì§€.    // ë§ˆì¼ë¦¬ì§€ ì—†ìŒ.ë”°ë¡œ ì¡°íšŒ.ë˜ëŠ” ì „ë‹¬?
+	 *     ëŒ€í‘œì ì´ë¦„ , ì „í™”ë²ˆí˜¸ 1, ì£¼ì†Œ 1, 
+	 *      ê¸°íƒ€ ì„¤ëª…ë“¤, ì¢Œí‘œ(1,2),  
+	 *    @[ê°€ë§¹ì ì•„ì´ë””] ëŠ” ê°€ì¥ ì²˜ìŒ ê°€ì ¸ì˜¤ë¯€ë¡œ ë”°ë¡œ ì €ì¥
 	 */
-	private String merchantId;	// °¡¸ÍÁ¡¾ÆÀÌµğ
+	private String merchantId;	// ê°€ë§¹ì ì•„ì´ë””
 	
-	private String name;								// ´ëÇ¥ÀÚ ÀÌ¸§
-	private String companyName;							// °¡¸ÍÁ¡ ÀÌ¸§
+	private String name;								// ëŒ€í‘œì ì´ë¦„
+	private String companyName;							// ê°€ë§¹ì  ì´ë¦„
 	
-	private String workPhoneNumber;						// °¡¸ÍÁ¡ ÀüÈ­¹øÈ£
+	private String workPhoneNumber;						// ê°€ë§¹ì  ì „í™”ë²ˆí˜¸
 	
-	private String address01;							// °¡¸ÍÁ¡ ÁÖ¼Ò
+	private String address01;							// ê°€ë§¹ì  ì£¼ì†Œ
 	private String address02;		
 	
-	private String latitude;							// °¡¸ÍÁ¡ ÁÂÇ¥1
-	private String longtitude;							// °¡¸ÍÁ¡ ÁÂÇ¥2
+	private String latitude;							// ê°€ë§¹ì  ì¢Œí‘œ1
+	private String longtitude;							// ê°€ë§¹ì  ì¢Œí‘œ2
 	
-	private String profileImageURL;						// ÇÁ·ÎÇÊ ÀÌ¹ÌÁö URL
-	private Bitmap merchantImage;						// ÇÁ·ÎÇÊ ÀÌ¹ÌÁö
+	private String profileImageURL;						// í”„ë¡œí•„ ì´ë¯¸ì§€ URL
+	private Bitmap merchantImage;						// í”„ë¡œí•„ ì´ë¯¸ì§€
 	
-	private String prSentence;							// °¡¸ÍÁ¡ ÀÚ¶û
+	private String prSentence;							// ê°€ë§¹ì  ìë‘
 	
-	private String checkMileageMembersCheckMileageID;			// ¸¶ÀÏ¸®Áö µî·Ï¿¡ ´ëÇÑ °íÀ¯ ID 
-	private String mileage;										// °¡¸ÍÁ¡¿¡ ´ëÇÑ ¸¶ÀÏ¸®Áö
+	private String checkMileageMembersCheckMileageID;			// ë§ˆì¼ë¦¬ì§€ ë“±ë¡ì— ëŒ€í•œ ê³ ìœ  ID 
+	private String mileage;										// ê°€ë§¹ì ì— ëŒ€í•œ ë§ˆì¼ë¦¬ì§€
 	
 	private String activateYN;									// Y 
 	
-	private String modifyDate;									// ¼öÁ¤ÀÏ
-	private String registerDate;								// µî·ÏÀÏ
+	private String modifyDate;									// ìˆ˜ì •ì¼
+	private String registerDate;								// ë“±ë¡ì¼
 	
-	// °¡¸ÍÁ¡ »ó¼¼º¸±â·Î °¥¶§ ³» ¸¶ÀÏ¸®Áö, ³» ¸¶ÀÏ¸®Áö¿¡ ´ëÇÑ °íÀ¯ ¾ÆÀÌµğ°¡ ÇÊ¿äÇÏ´Ù.(³»¾Æµğ-°¡¸ÍÁ¡¾Æµğ-¸¶ÀÏ¸®Áö ¸ÅÇÎ Á¤º¸ÀÇ ÀÎµ¦½º°ª)  mileage  idCheckMileageMileages
-	private String idCheckMileageMileages;				// °íÀ¯ ½Äº° ¹øÈ£
+	// ê°€ë§¹ì  ìƒì„¸ë³´ê¸°ë¡œ ê°ˆë•Œ ë‚´ ë§ˆì¼ë¦¬ì§€, ë‚´ ë§ˆì¼ë¦¬ì§€ì— ëŒ€í•œ ê³ ìœ  ì•„ì´ë””ê°€ í•„ìš”í•˜ë‹¤.(ë‚´ì•„ë””-ê°€ë§¹ì ì•„ë””-ë§ˆì¼ë¦¬ì§€ ë§¤í•‘ ì •ë³´ì˜ ì¸ë±ìŠ¤ê°’)  mileage  idCheckMileageMileages
+	private String idCheckMileageMileages;				// ê³ ìœ  ì‹ë³„ ë²ˆí˜¸
 	
 	public CheckMileageMerchants(String merchantId, String companyName, String profileImageURL, String idCheckMileageMileages, String mileage) 
 	{
-		this.merchantId = merchantId;		// Å° °ª --> ·Î±×º¼¶§ ÇÊ¿ä
-		this.companyName = companyName;										// ¸¶ÀÏ¸®Áö
+		this.merchantId = merchantId;		// í‚¤ ê°’ --> ë¡œê·¸ë³¼ë•Œ í•„ìš”
+		this.companyName = companyName;										// ë§ˆì¼ë¦¬ì§€
 		this.profileImageURL = profileImageURL;	
 		this.idCheckMileageMileages = idCheckMileageMileages;
 		this.mileage = mileage;
@@ -54,8 +54,8 @@ public class CheckMileageMerchants {
 	
 	public CheckMileageMerchants(String merchantId, String companyName, String profileImageURL, String idCheckMileageMileages, String mileage, Bitmap merchantImage) 
 	{
-		this.merchantId = merchantId;		// Å° °ª --> ·Î±×º¼¶§ ÇÊ¿ä
-		this.companyName = companyName;										// ¸¶ÀÏ¸®Áö
+		this.merchantId = merchantId;		// í‚¤ ê°’ --> ë¡œê·¸ë³¼ë•Œ í•„ìš”
+		this.companyName = companyName;										// ë§ˆì¼ë¦¬ì§€
 		this.profileImageURL = profileImageURL;	
 		this.idCheckMileageMileages = idCheckMileageMileages;
 		this.mileage = mileage;

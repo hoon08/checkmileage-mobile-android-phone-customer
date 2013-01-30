@@ -22,12 +22,12 @@ import android.widget.Toast;
 /**
  * DummyActivity
  * 
- * ¾îÇÃ ½ÃÀÛ½Ã °¡Àå ¸ÕÀú ½ÇÇàµÊ.
- * ¾îÇÃÀÌ ÀÌ¹Ì ½ÇÇàÁß¿¡ Çª½Ã·Î ´Ù½Ã ½ÇÇàµÈ °æ¿ì ÇÏ´ÂÀÏ ¾øÀÌ Á×¾îÁØ´Ù.
- * ¾îÇÃÀÌ ½ÇÇàÁßÀÌ ¾Æ´Ï¶ó¸é ¾îÇÃ Á¤»ó ½ÇÇàµÈ´Ù.
+ * ì–´í”Œ ì‹œìž‘ì‹œ ê°€ìž¥ ë¨¼ì € ì‹¤í–‰ë¨.
+ * ì–´í”Œì´ ì´ë¯¸ ì‹¤í–‰ì¤‘ì— í‘¸ì‹œë¡œ ë‹¤ì‹œ ì‹¤í–‰ëœ ê²½ìš° í•˜ëŠ”ì¼ ì—†ì´ ì£½ì–´ì¤€ë‹¤.
+ * ì–´í”Œì´ ì‹¤í–‰ì¤‘ì´ ì•„ë‹ˆë¼ë©´ ì–´í”Œ ì •ìƒ ì‹¤í–‰ëœë‹¤.
  * 
- *  ´Ü Çª½Ã ¸ñ·ÏÀº ¼³Á¤¿¡¼­ °¡´Â°Çµ¥ ¿©±â¼­ º¸³»´Â°Ç ±×°Å ¸»°í »õ ÆäÀÌÁö. 
- *  (¿¬°áµÈ °÷ ¾øÀÌ ´ÝÀ¸¸é Á¾·á µÇ´Â°É·Î.. )
+ *  ë‹¨ í‘¸ì‹œ ëª©ë¡ì€ ì„¤ì •ì—ì„œ ê°€ëŠ”ê±´ë° ì—¬ê¸°ì„œ ë³´ë‚´ëŠ”ê±´ ê·¸ê±° ë§ê³  ìƒˆ íŽ˜ì´ì§€. 
+ *  (ì—°ê²°ëœ ê³³ ì—†ì´ ë‹«ìœ¼ë©´ ì¢…ë£Œ ë˜ëŠ”ê±¸ë¡œ.. )
  */
 public class DummyActivity extends Activity {
 	RunningAppProcessInfo runningappprocessinfo = new RunningAppProcessInfo();
@@ -35,7 +35,7 @@ public class DummyActivity extends Activity {
 	public static Activity dummyActivity;
 
 	String TAG = "DummyActivity";
-	String RunMode = "";			// Àü´Þ¹ÞÀº ½ÇÇà¸ðµå. ±âº»/¸¶ÀÏ¸®Áö/ÀÌº¥Æ® µî
+	String RunMode = "";			// ì „ë‹¬ë°›ì€ ì‹¤í–‰ëª¨ë“œ. ê¸°ë³¸/ë§ˆì¼ë¦¬ì§€/ì´ë²¤íŠ¸ ë“±
 	String message;
 	/** Called when the activity is first created. */
 	@Override
@@ -48,53 +48,53 @@ public class DummyActivity extends Activity {
 		Intent receiveIntent = getIntent();
 		RunMode = receiveIntent.getStringExtra("RunMode");					// TEST  MILEAGE  MARKETING  NORMAL
 
-		if(RunMode!=null && RunMode.length()>0){		// µ¥ÀÌÅÍ Àü´ÞÀÌ °¡´ÉÇÏ´Ù.
+		if(RunMode!=null && RunMode.length()>0){		// ë°ì´í„° ì „ë‹¬ì´ ê°€ëŠ¥í•˜ë‹¤.
 			Log.d(TAG, RunMode);
 		}else{
-			Log.d(TAG, "NORMAL");		// ¾øÀ¸¸é ±âº»
+			Log.d(TAG, "NORMAL");		// ì—†ìœ¼ë©´ ê¸°ë³¸
 			RunMode = "NORMAL";
 		}
 
-		// °á°ú´Â true °¡ ³ª¿Â´Ù.
-		isRunningProcess(this, CommonUtils.packageNames);		// ½ÇÇàÁßÀÎÁö È®ÀÎ.
-		if(count==1){		// ÃÖÃÊ ½ÇÇà.(³ª¹Û¿¡¾øÀ½)	
-			// Å×½ºÆ® ¹× ³ë¸ÖÀº °°´Ù. ±×³É ½ÇÇàÇÑ´Ù. ¸¶ÀÏ¸®Áö º¯°æ»çÇ×, ÀÌº¥Æ®´Â ¾Ë·ÁÁà¾ß ÇÑ´Ù.
+		// ê²°ê³¼ëŠ” true ê°€ ë‚˜ì˜¨ë‹¤.
+		isRunningProcess(this, CommonUtils.packageNames);		// ì‹¤í–‰ì¤‘ì¸ì§€ í™•ì¸.
+		if(count==1){		// ìµœì´ˆ ì‹¤í–‰.(ë‚˜ë°–ì—ì—†ìŒ)	
+			// í…ŒìŠ¤íŠ¸ ë° ë…¸ë©€ì€ ê°™ë‹¤. ê·¸ëƒ¥ ì‹¤í–‰í•œë‹¤. ë§ˆì¼ë¦¬ì§€ ë³€ê²½ì‚¬í•­, ì´ë²¤íŠ¸ëŠ” ì•Œë ¤ì¤˜ì•¼ í•œë‹¤.
 			Intent intent = new Intent(DummyActivity.this, MainActivity.class);
 			if(RunMode.equals("MILEAGE")){
-				intent.putExtra("RunMode", "MILEAGE");		// ¸¶ÀÏ¸®Áö º¯°æÀÏ¶§´Â ¾Ë·ÁÁØ´Ù.
-			}else if(RunMode.equals("MARKETING")){		// ÀÌº¥Æ® Çª½¬ÀÏ °æ¿ì ÇØ´ç ÀÌº¥Æ® È­¸éÀ» º¸¿©Áà¾ß ÇÑ´Ù. »õ ÀÎÅÙÆ®·Î ¾×Æ¼ºñÆ¼¸¦ ½ÇÇàÇØÁÖ¸é µÈ´Ù. ¹®Á¦´Â ¼ø¼­. À§¿¡°Å ÇÏ°í³ª¼­ ÇØÁØ´Ù.
-				intent.putExtra("RunMode", "MARKETING");			// ÇöÀç ¸¶ÀÏ¸®Áö ¸ðµå¸¸ ¹ÝÀÀÇÑ´Ù.
-				// ÀÌº¥Æ® È­¸éÀÌ °¡Àå À§¿¡ ¿Ã¶ó¿Í¾ß ÀÎÁ¤. (»õ ÀÎÅÙÆ®¸¦ ½ÇÇà) -- ¸ÞÀÎ¿¡¼­ Ã³¸®ÇÑ´Ù.
-				// ... ÀÎÅÙÆ® ÀÛ¼ºÇØ¼­ ½ÇÇà½ÃÄÑÁØ´Ù. 
-			}//  ±× ¿Ü¿¡´Â Ãß°¡ µ¿ÀÛ ÇÏÁö ¾Ê´Â´Ù.
+				intent.putExtra("RunMode", "MILEAGE");		// ë§ˆì¼ë¦¬ì§€ ë³€ê²½ì¼ë•ŒëŠ” ì•Œë ¤ì¤€ë‹¤.
+			}else if(RunMode.equals("MARKETING")){		// ì´ë²¤íŠ¸ í‘¸ì‰¬ì¼ ê²½ìš° í•´ë‹¹ ì´ë²¤íŠ¸ í™”ë©´ì„ ë³´ì—¬ì¤˜ì•¼ í•œë‹¤. ìƒˆ ì¸í…íŠ¸ë¡œ ì•¡í‹°ë¹„í‹°ë¥¼ ì‹¤í–‰í•´ì£¼ë©´ ëœë‹¤. ë¬¸ì œëŠ” ìˆœì„œ. ìœ„ì—ê±° í•˜ê³ ë‚˜ì„œ í•´ì¤€ë‹¤.
+				intent.putExtra("RunMode", "MARKETING");			// í˜„ìž¬ ë§ˆì¼ë¦¬ì§€ ëª¨ë“œë§Œ ë°˜ì‘í•œë‹¤.
+				// ì´ë²¤íŠ¸ í™”ë©´ì´ ê°€ìž¥ ìœ„ì— ì˜¬ë¼ì™€ì•¼ ì¸ì •. (ìƒˆ ì¸í…íŠ¸ë¥¼ ì‹¤í–‰) -- ë©”ì¸ì—ì„œ ì²˜ë¦¬í•œë‹¤.
+				// ... ì¸í…íŠ¸ ìž‘ì„±í•´ì„œ ì‹¤í–‰ì‹œì¼œì¤€ë‹¤. 
+			}//  ê·¸ ì™¸ì—ëŠ” ì¶”ê°€ ë™ìž‘ í•˜ì§€ ì•ŠëŠ”ë‹¤.
 			startActivity(intent);
-		}else{				// ÀÌ¹Ì ½ÇÇàÁß.
-			//	    	count = 0;		// ÃÊ±âÈ­ ÇØÁØ´Ù. Á¾·áÇÏ°í ´Ù½Ã ½ÇÇàÇÒ ¼ö ÀÖ°Ô..
+		}else{				// ì´ë¯¸ ì‹¤í–‰ì¤‘.
+			//	    	count = 0;		// ì´ˆê¸°í™” í•´ì¤€ë‹¤. ì¢…ë£Œí•˜ê³  ë‹¤ì‹œ ì‹¤í–‰í•  ìˆ˜ ìžˆê²Œ..
 			count = count -1;
 			if(count<0){
 				count = 0;
 			}
-			if(RunMode.equals("MILEAGE")){			// ¸¶ÀÏ¸®ÁöÀÏ °æ¿ì¿¡´Â ³» ¸¶ÀÏ¸®Áö ¸ñ·Ï Àç Á¶È¸ µÇµµ·Ï º¯¼ö °ªÀ» ¼³Á¤ÇØÁØ´Ù.	
-				MyMileagePageActivity.searched = false;		// ...		// ³» ¸¶ÀÏ¸®Áö ¸ñ·Ï Á¶È¸ º¯¼ö °ª ¼³Á¤ ÇØÁÙ °Í..
-				Main_TabsActivity.tabhost.setCurrentTab(1);				// ÇÏ´Â ±è¿¡ ³» ¸¶ÀÏ¸®Áö ÅÇÀ¸·Î ÀÌµ¿½ÃÄÑÁØ´Ù.
-			}else if(RunMode.equals("MARKETING")){		// ÀÌº¥Æ® Çª½¬ÀÏ °æ¿ì ÇØ´ç ÀÌº¥Æ® È­¸éÀ» º¸¿©Áà¾ß ÇÑ´Ù. ÀÌ¹Ì ½ÇÇàÁßÀÌ´Ï±î »õ ÀÎÅÙÆ®·Î ¾×Æ¼ºñÆ¼¸¸ ½ÇÇàÇØÁÖ¸é µÈ´Ù.
+			if(RunMode.equals("MILEAGE")){			// ë§ˆì¼ë¦¬ì§€ì¼ ê²½ìš°ì—ëŠ” ë‚´ ë§ˆì¼ë¦¬ì§€ ëª©ë¡ ìž¬ ì¡°íšŒ ë˜ë„ë¡ ë³€ìˆ˜ ê°’ì„ ì„¤ì •í•´ì¤€ë‹¤.	
+				MyMileagePageActivity.searched = false;		// ...		// ë‚´ ë§ˆì¼ë¦¬ì§€ ëª©ë¡ ì¡°íšŒ ë³€ìˆ˜ ê°’ ì„¤ì • í•´ì¤„ ê²ƒ..
+				Main_TabsActivity.tabhost.setCurrentTab(1);				// í•˜ëŠ” ê¹€ì— ë‚´ ë§ˆì¼ë¦¬ì§€ íƒ­ìœ¼ë¡œ ì´ë™ì‹œì¼œì¤€ë‹¤.
+			}else if(RunMode.equals("MARKETING")){		// ì´ë²¤íŠ¸ í‘¸ì‰¬ì¼ ê²½ìš° í•´ë‹¹ ì´ë²¤íŠ¸ í™”ë©´ì„ ë³´ì—¬ì¤˜ì•¼ í•œë‹¤. ì´ë¯¸ ì‹¤í–‰ì¤‘ì´ë‹ˆê¹Œ ìƒˆ ì¸í…íŠ¸ë¡œ ì•¡í‹°ë¹„í‹°ë§Œ ì‹¤í–‰í•´ì£¼ë©´ ëœë‹¤.
 				Log.d(TAG,"MARKETING");
 				message = receiveIntent.getStringExtra("message");	
 				Log.d(TAG,"receiveIntent.getStringExtra():"+message);
 
 				Intent PushListIntent = new Intent(DummyActivity.this, kr.co.bettersoft.checkmileage.activities.PushList.class);
 				startActivity(PushListIntent);
-			}//  ±× ¿Ü¿¡´Â(ÀÏ¹Ý,Å×½ºÆ®) µ¿ÀÛ ÇÏÁö ¾Ê´Â´Ù. (ÀÌ¹Ì ½ÇÇàÁßÀÌ¹Ç·Î)
+			}//  ê·¸ ì™¸ì—ëŠ”(ì¼ë°˜,í…ŒìŠ¤íŠ¸) ë™ìž‘ í•˜ì§€ ì•ŠëŠ”ë‹¤. (ì´ë¯¸ ì‹¤í–‰ì¤‘ì´ë¯€ë¡œ)
 		}
 		//	    }
 		finish();
 	}
 
 
-	// Ç×»ó ±âµ¿ÁßÀÌ±â¶§¹®¿¡ °á°ú´Â true.    Áßº¹ ½ÇÇà ¹æÁö¸¦ À§ÇØ Ä«¿îÆÃ Ã¼Å©¸¦ ÇÑ´Ù.
+	// í•­ìƒ ê¸°ë™ì¤‘ì´ê¸°ë•Œë¬¸ì— ê²°ê³¼ëŠ” true.    ì¤‘ë³µ ì‹¤í–‰ ë°©ì§€ë¥¼ ìœ„í•´ ì¹´ìš´íŒ… ì²´í¬ë¥¼ í•œë‹¤.
 	/**
 	 * isRunningProcess
-	 *  Áßº¹ ½ÇÇà ¹æÁö¸¦ À§ÇØ Ä«¿îÆÃ Ã¼Å©¸¦ ÇÑ´Ù.
+	 *  ì¤‘ë³µ ì‹¤í–‰ ë°©ì§€ë¥¼ ìœ„í•´ ì¹´ìš´íŒ… ì²´í¬ë¥¼ í•œë‹¤.
 	 *
 	 * @param context
 	 * @param packageName
@@ -111,12 +111,12 @@ public class DummyActivity extends Activity {
 			{
 				//    			Log.d("Log","packageName=packageName/"+packageName);
 				isRunning = true;
-				count= count+1;		// ½ÇÇàÁßÀÎ Ä³·µ¼ö (Áßº¹ ½ÇÇà ¹æÁö ¿ë)
+				count= count+1;		// ì‹¤í–‰ì¤‘ì¸ ìºëŸ¿ìˆ˜ (ì¤‘ë³µ ì‹¤í–‰ ë°©ì§€ ìš©)
 				Log.d("Log","count:"+count);
 				break;
 			}
 		}
 		return isRunning;
 	}
-	// mainActivity.finish();		// ¸ÞÀÎ Á¾·á -> ¸®½Ã¹ö Á¾·á  --> ¿©±â¼­ Ã³¸®ÇÏÁö ¾Ê´Â´Ù.
+	// mainActivity.finish();		// ë©”ì¸ ì¢…ë£Œ -> ë¦¬ì‹œë²„ ì¢…ë£Œ  --> ì—¬ê¸°ì„œ ì²˜ë¦¬í•˜ì§€ ì•ŠëŠ”ë‹¤.
 }

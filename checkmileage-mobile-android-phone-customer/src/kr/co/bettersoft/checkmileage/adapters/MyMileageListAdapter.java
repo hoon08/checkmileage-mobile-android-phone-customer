@@ -16,7 +16,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 /*
- * ¸¶ÀÏ¸®Áö ¸ñ·Ï ¿ë ¾Æ´äÅÍ.
+ * ë§ˆì¼ë¦¬ì§€ ëª©ë¡ ìš© ì•„ë‹µí„°.
  */
 public class MyMileageListAdapter extends BaseAdapter {
 	private Context context;
@@ -41,7 +41,7 @@ public class MyMileageListAdapter extends BaseAdapter {
 			// get layout from mobile.xml
 			listView = inflater.inflate(R.layout.my_mileage_list, null);
  
-			// ** ¹İº¹ ¹®Á¦ ÇØ°áÀ» À§ÇØ ¾Æ·¡·Î ¿Å±è.
+			// ** ë°˜ë³µ ë¬¸ì œ í•´ê²°ì„ ìœ„í•´ ì•„ë˜ë¡œ ì˜®ê¹€.
 //			// set value into textview
 //			TextView textViewMileage = (TextView) listView
 //					.findViewById(R.id.mileage);
@@ -63,7 +63,7 @@ public class MyMileageListAdapter extends BaseAdapter {
 			listView = (View) convertView;
 		}
  
-		// ** ¹İº¹ ¹®Á¦ ÇØ°áÀ» À§ÇØ ¿©±â·Î ¿Å±è
+		// ** ë°˜ë³µ ë¬¸ì œ í•´ê²°ì„ ìœ„í•´ ì—¬ê¸°ë¡œ ì˜®ê¹€
 		// set value into textview
 		TextView textViewMileage = (TextView) listView
 				.findViewById(R.id.mileage);
@@ -75,7 +75,7 @@ public class MyMileageListAdapter extends BaseAdapter {
 		// set value into textview
 		TextView textViewMerchantDate = (TextView) listView
 				.findViewById(R.id.merchantDate);
-		textViewMerchantDate.setText(((CheckMileageMileage)entries.get(position)).getModifyDate());		// Ã³À½¿£ Àü¹øÀÌ¾úÀ¸³ª ½ÇÁ¦ °ªÀº ¸¶Áö¸· ÀÌ¿ë ÀÏ½Ã·Î ÇÑ´Ù.
+		textViewMerchantDate.setText(((CheckMileageMileage)entries.get(position)).getModifyDate());		// ì²˜ìŒì—” ì „ë²ˆì´ì—ˆìœ¼ë‚˜ ì‹¤ì œ ê°’ì€ ë§ˆì§€ë§‰ ì´ìš© ì¼ì‹œë¡œ í•œë‹¤.
 		
 		TextView textViewMerchantIntro = (TextView) listView
 		.findViewById(R.id.merchantIntro);

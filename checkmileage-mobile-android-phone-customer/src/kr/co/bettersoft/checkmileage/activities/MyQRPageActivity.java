@@ -2,10 +2,10 @@ package kr.co.bettersoft.checkmileage.activities;
 /**
  * MyQRPageActivity
  * 
- *  ³» QR º¸±â È­¸é
+ *  ë‚´ QR ë³´ê¸° í™”ë©´
  *  
- *  ±×¸®°í onresume ¿¡ ÁÂÇ¥ ¾÷µ« ±â´É À» ³Ö¾î ¾îÇÃ ½ÇÇà ¶Ç´Â ³» QR ÄÚµå¸¦ º¼¶§¸¶´Ù ÇöÀç »ç¿ëÀÚ À§Ä¡¸¦ ¼­¹ö¿¡ ¾÷µ« ÇÏµµ·Ï ÇÏ¿´À½.
- *   È­¸éÀ» ÀÚÁÖ ¿À°¡¸ç ¾÷µ« ÀÚ²Ù ½ÃÅ°´Â°ÍÀ» ¹æÁöÇÏ±â À§ÇØ  ÇÃ·¡±× °ªÀ» µÒ.  »¡¶ó¼­ ´ëºÎºĞÀº ¾÷µ«À» ÇÔ..
+ *  ê·¸ë¦¬ê³  onresume ì— ì¢Œí‘œ ì—…ëƒ ê¸°ëŠ¥ ì„ ë„£ì–´ ì–´í”Œ ì‹¤í–‰ ë˜ëŠ” ë‚´ QR ì½”ë“œë¥¼ ë³¼ë•Œë§ˆë‹¤ í˜„ì¬ ì‚¬ìš©ì ìœ„ì¹˜ë¥¼ ì„œë²„ì— ì—…ëƒ í•˜ë„ë¡ í•˜ì˜€ìŒ.
+ *   í™”ë©´ì„ ìì£¼ ì˜¤ê°€ë©° ì—…ëƒ ìê¾¸ ì‹œí‚¤ëŠ”ê²ƒì„ ë°©ì§€í•˜ê¸° ìœ„í•´  í”Œë˜ê·¸ ê°’ì„ ë‘ .  ë¹¨ë¼ì„œ ëŒ€ë¶€ë¶„ì€ ì—…ëƒì„ í•¨..
  *  
  */
 
@@ -60,7 +60,7 @@ import android.widget.Toast;
 public class MyQRPageActivity extends Activity {
 	String TAG = "MyQRPageActivity";
 
-	// ¼­¹ö Åë½Å ¿ë 
+	// ì„œë²„ í†µì‹  ìš© 
 	String controllerName="";
 	String methodName="";
 	String serverName = CommonUtils.serverNames;
@@ -68,43 +68,43 @@ public class MyQRPageActivity extends Activity {
 	HttpURLConnection connection2;
 	int responseCode= 0;
 	int isUpdating = 0;
-	int app_end = 0;			// µÚ·Î°¡±â ¹öÆ°À¸·Î ´İÀ»¶§ 2¹ø¸¸¿¡ ´İÈ÷µµ·Ï
+	int app_end = 0;			// ë’¤ë¡œê°€ê¸° ë²„íŠ¼ìœ¼ë¡œ ë‹«ì„ë•Œ 2ë²ˆë§Œì— ë‹«íˆë„ë¡
 	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
 	MainActivity mainActivity = (MainActivity)MainActivity.mainActivity;
 
-	// ³» ÁÂÇ¥ ¾÷µ«¿ë
+	// ë‚´ ì¢Œí‘œ ì—…ëƒìš©
 	int myLat = 0;
 	int myLon = 0;
 
-	// QR °ü·Ã
-	static Bitmap savedBMP = null;				// db ÀúÀåµÈ ÀÌ¹ÌÁö (Àü´Ş¹ŞÀ½)
-	int qrSize =300;							// QRÀÌ¹ÌÁö Å©±â
+	// QR ê´€ë ¨
+	static Bitmap savedBMP = null;				// db ì €ì¥ëœ ì´ë¯¸ì§€ (ì „ë‹¬ë°›ìŒ)
+	int qrSize =300;							// QRì´ë¯¸ì§€ í¬ê¸°
 	int deviceSize = 0;		
-	static Bitmap bmp =null;					// ÀÌ¹ÌÁö »ı¼º¿ëµµ
+	static Bitmap bmp =null;					// ì´ë¯¸ì§€ ìƒì„±ìš©ë„
 	static Bitmap bmp2 =null;
 	static ImageView imgView;
-	public static String qrCode = "";			// qr ¾ÆÀÌµğ
+	public static String qrCode = "";			// qr ì•„ì´ë””
 
-	// ÇÚµé·¯ µî·Ï
+	// í•¸ë“¤ëŸ¬ ë“±ë¡
 	Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg){
 			Bundle b = msg.getData();
-			int showQR =  b.getInt("showQR");		// °ªÀ» ³ÖÁö ¾ÊÀ¸¸é 0 À» ²¨³»¾ú´Ù.
+			int showQR =  b.getInt("showQR");		// ê°’ì„ ë„£ì§€ ì•Šìœ¼ë©´ 0 ì„ êº¼ë‚´ì—ˆë‹¤.
 			if(showQR==1){
-				imgView.setImageBitmap(bmp);		// È­¸é¿¡ QR º¸¿©ÁØ´Ù.
+				imgView.setImageBitmap(bmp);		// í™”ë©´ì— QR ë³´ì—¬ì¤€ë‹¤.
 			}
 		}
 	};
 	/**
 	 * createQRself
-	 *  ÀÚÃ¼ QR »ı¼º ÇÔ¼ö È£ÃâÇÑ´Ù
+	 *  ìì²´ QR ìƒì„± í•¨ìˆ˜ í˜¸ì¶œí•œë‹¤
 	 *
 	 * @param qrCode
 	 * @param
 	 * @return bm
 	 */
-	public Bitmap createQRself(String qrCode){		// ÀÚÃ¼ QR »ı¼º
+	public Bitmap createQRself(String qrCode){		// ìì²´ QR ìƒì„±
 		try { 
 			// generate a 200x200 QR code 
 			Bitmap bm = encodeAsBitmap(qrCode, BarcodeFormat.QR_CODE, 200, 200); 
@@ -119,12 +119,12 @@ public class MyQRPageActivity extends Activity {
 	}
 
 
-	// ÀÚÃ¼ QR »ı¼º ¿ëµµ
+	// ìì²´ QR ìƒì„± ìš©ë„
 	private static final int WHITE = 0xFFFFFFFF;  
 	private static final int BLACK = 0xFF000000;
 	/**
 	 * encodeAsBitmap
-	 *  ÀÚÃ¼ QR »ı¼º ÇÑ´Ù
+	 *  ìì²´ QR ìƒì„± í•œë‹¤
 	 *
 	 * @param contents
 	 * @param format
@@ -158,7 +158,7 @@ public class MyQRPageActivity extends Activity {
 		setContentView(R.layout.my_qr_page);
 		imgView = (ImageView)findViewById(R.id.myQRCode);
 		/*
-		 *  QR Å©±â¸¦ È­¸é¿¡ ¸ÂÃß±â À§ÇØ È­¸é Å©±â¸¦ ±¸ÇÔ.
+		 *  QR í¬ê¸°ë¥¼ í™”ë©´ì— ë§ì¶”ê¸° ìœ„í•´ í™”ë©´ í¬ê¸°ë¥¼ êµ¬í•¨.
 		 */
 		Log.i("qrCode : ", "" + qrCode);
 		float screenWidth = this.getResources().getDisplayMetrics().widthPixels;
@@ -166,31 +166,31 @@ public class MyQRPageActivity extends Activity {
 		float screenHeight = this.getResources().getDisplayMetrics().heightPixels;
 		Log.i("screenHeight : ", "" + screenHeight);
 		/*
-		 *  QR ÄÚµå¸¦ ¹Ş¾Æ¿È.  ±¸±Û À¥ÆäÀÌÁö¸¦ ÅëÇÑ »ı¼º --> ÀÚÃ¼ ¶óÀÌºê·¯¸® ¸ÕÀú ÇØº¸°í ¾ÈµÇ¸é À¥Åë½Å.
+		 *  QR ì½”ë“œë¥¼ ë°›ì•„ì˜´.  êµ¬ê¸€ ì›¹í˜ì´ì§€ë¥¼ í†µí•œ ìƒì„± --> ìì²´ ë¼ì´ë¸ŒëŸ¬ë¦¬ ë¨¼ì € í•´ë³´ê³  ì•ˆë˜ë©´ ì›¹í†µì‹ .
 		 */
 		new Thread(
 				new Runnable(){
 					public void run(){
-						if(savedBMP==null){	// ±âÁ¸ ÀúÀåµÈ ÆÄÀÏ ¾ø´Â°æ¿ì.
+						if(savedBMP==null){	// ê¸°ì¡´ ì €ì¥ëœ íŒŒì¼ ì—†ëŠ”ê²½ìš°.
 							if(qrCode!=null && qrCode.length()>0){
-								bmp = createQRself(qrCode);		// ÀÚÃ¼ ¶óÀÌºê·¯¸® »ç¿ëÇÏ¿© »ı¼º.
-								if(bmp==null){			// ÀÚÃ¼ »ı¼º ½ÇÆĞÇÑ °æ¿ì.
+								bmp = createQRself(qrCode);		// ìì²´ ë¼ì´ë¸ŒëŸ¬ë¦¬ ì‚¬ìš©í•˜ì—¬ ìƒì„±.
+								if(bmp==null){			// ìì²´ ìƒì„± ì‹¤íŒ¨í•œ ê²½ìš°.
 									Log.d(TAG,"bmp1==null");
-									bmp = downloadBitmap("http://chart.apis.google.com/chart?cht=qr&chs="+qrSize+"x"+qrSize+"&choe=UTF-8&chld=H&chl="+qrCode);		// À¥ Åë½ÅÇÏ¿© °¡Á®¿È 
+									bmp = downloadBitmap("http://chart.apis.google.com/chart?cht=qr&chs="+qrSize+"x"+qrSize+"&choe=UTF-8&chld=H&chl="+qrCode);		// ì›¹ í†µì‹ í•˜ì—¬ ê°€ì ¸ì˜´ 
 									if(bmp==null){
 										Log.d(TAG,"bmp2==null");
 										finish();
 									}else{
 										saveBMPtoDB(bmp);
 									}
-									// QR ÀÌ¹ÌÁö »ı¼º ½ÇÆĞ. Ã³¸® ÇÊ¿ä *** no qr img ·Î °¡¾ß ÇÒµí.? Àç½ÇÇà?;
-								}else{	// ÀÚÃ¼ ¼º°ø ¼º°øÇÑ °æ¿ì
+									// QR ì´ë¯¸ì§€ ìƒì„± ì‹¤íŒ¨. ì²˜ë¦¬ í•„ìš” *** no qr img ë¡œ ê°€ì•¼ í• ë“¯.? ì¬ì‹¤í–‰?;
+								}else{	// ìì²´ ì„±ê³µ ì„±ê³µí•œ ê²½ìš°
 									saveBMPtoDB(bmp);
 								}
 							}else{
-								// finish();	// Á¾·á. qr ¾øÀÌ ¿Ã¼ö ¾øÀ½.
+								// finish();	// ì¢…ë£Œ. qr ì—†ì´ ì˜¬ìˆ˜ ì—†ìŒ.
 							}
-						}else{	// ±âÁ¸ ÀúÀåµÈ ÆÄÀÏ ÀÖ´Â °æ¿ì
+						}else{	// ê¸°ì¡´ ì €ì¥ëœ íŒŒì¼ ìˆëŠ” ê²½ìš°
 							bmp = savedBMP;
 						}
 						// showQR
@@ -204,10 +204,10 @@ public class MyQRPageActivity extends Activity {
 		).start();
 	}
 
-	// »ı¼ºÇÑ QRÄÚµå ÀÌ¹ÌÁö¸¦ DB¿¡ ÀúÀåÇÑ´Ù.
+	// ìƒì„±í•œ QRì½”ë“œ ì´ë¯¸ì§€ë¥¼ DBì— ì €ì¥í•œë‹¤.
 	/**
 	 * saveBMPtoDB
-	 *  »ı¼ºÇÑ QRÄÚµå ÀÌ¹ÌÁö¸¦ DB¿¡ ÀúÀåÇÑ´Ù.
+	 *  ìƒì„±í•œ QRì½”ë“œ ì´ë¯¸ì§€ë¥¼ DBì— ì €ì¥í•œë‹¤.
 	 *
 	 * @param bmp
 	 * @param
@@ -221,13 +221,13 @@ public class MyQRPageActivity extends Activity {
 		String data_key="";
 		String data_value="";
 
-		// BMP -> ¹®ÀÚ¿­ 
+		// BMP -> ë¬¸ìì—´ 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();   
 		bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object    
 		byte[] b = baos.toByteArray();  
 		data_value = Base64.encodeToString(b, Base64.DEFAULT); 
 
-		// Á¶È¸
+		// ì¡°íšŒ
 		ContentValues initialValues = new ContentValues(); 
 		initialValues.put("key_of_data", "user_img"); 
 		initialValues.put("value_of_data", data_value); 
@@ -244,11 +244,11 @@ public class MyQRPageActivity extends Activity {
 
 
 	/*
-	 * QR ÀÌ¹ÌÁö¹Ş±â. url »ç¿ëÇÏ¿© ±¸±Û À¥¿¡¼­ ¹Ş¾Æ¿À±â.
+	 * QR ì´ë¯¸ì§€ë°›ê¸°. url ì‚¬ìš©í•˜ì—¬ êµ¬ê¸€ ì›¹ì—ì„œ ë°›ì•„ì˜¤ê¸°.
 	 */
 	/**
 	 * downloadBitmap
-	 *  url »ç¿ëÇÏ¿© ±¸±Û À¥¿¡¼­  QR ÀÌ¹ÌÁö ¹Ş¾Æ¿Â´Ù
+	 *  url ì‚¬ìš©í•˜ì—¬ êµ¬ê¸€ ì›¹ì—ì„œ  QR ì´ë¯¸ì§€ ë°›ì•„ì˜¨ë‹¤
 	 *
 	 * @param url
 	 * @param
@@ -297,12 +297,12 @@ public class MyQRPageActivity extends Activity {
 	}
 
 	/*
-	 *  ´İ±â ¹öÆ° 2¹ø ´©¸£¸é Á¾·á µÊ.(non-Javadoc)
+	 *  ë‹«ê¸° ë²„íŠ¼ 2ë²ˆ ëˆ„ë¥´ë©´ ì¢…ë£Œ ë¨.(non-Javadoc)
 	 * @see android.app.Activity#onBackPressed()
 	 */
 	/**
 	 * onBackPressed
-	 *   ´İ±â ¹öÆ° 2¹ø ´©¸£¸é Á¾·á ÇÑ´Ù
+	 *   ë‹«ê¸° ë²„íŠ¼ 2ë²ˆ ëˆ„ë¥´ë©´ ì¢…ë£Œ í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -314,8 +314,8 @@ public class MyQRPageActivity extends Activity {
 		if(app_end == 1){
 			Log.d(TAG,"kill all");
 			mainActivity.finish();
-			dummyActivity.finish();		// ´õ¹Ìµµ Á¾·á
-			DummyActivity.count = 0;		// °³¼ö 0À¸·Î ÃÊ±âÈ­ ½ÃÄÑÁØ´Ù. ´Ù½Ã ½ÇÇàµÉ¼ö ÀÖµµ·Ï
+			dummyActivity.finish();		// ë”ë¯¸ë„ ì¢…ë£Œ
+			DummyActivity.count = 0;		// ê°œìˆ˜ 0ìœ¼ë¡œ ì´ˆê¸°í™” ì‹œì¼œì¤€ë‹¤. ë‹¤ì‹œ ì‹¤í–‰ë ìˆ˜ ìˆë„ë¡
 			finish();
 		}else{
 			app_end = 1;
@@ -334,10 +334,10 @@ public class MyQRPageActivity extends Activity {
 	}
 
 
-	// ¼­¹ö¿¡ ³» À§Ä¡ ¾÷µ«.
+	// ì„œë²„ì— ë‚´ ìœ„ì¹˜ ì—…ëƒ.
 	/**
 	 * myLocationIs
-	 *  ¼­¹ö¿¡ ³» À§Ä¡ ¾÷µ«ÇÑ´Ù
+	 *  ì„œë²„ì— ë‚´ ìœ„ì¹˜ ì—…ëƒí•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -352,28 +352,28 @@ public class MyQRPageActivity extends Activity {
 			lm=(LocationManager)getSystemService(Context.LOCATION_SERVICE);
 			provider = LocationManager.GPS_PROVIDER;
 			Criteria criteria = new Criteria();
-			criteria.setAccuracy(Criteria.ACCURACY_COARSE); // Á¤È®µµ
-			criteria.setPowerRequirement(Criteria.POWER_LOW); // Àü¿ø ¼Òºñ·®
-			criteria.setAltitudeRequired(false); // °íµµ
+			criteria.setAccuracy(Criteria.ACCURACY_COARSE); // ì •í™•ë„
+			criteria.setPowerRequirement(Criteria.POWER_LOW); // ì „ì› ì†Œë¹„ëŸ‰
+			criteria.setAltitudeRequired(false); // ê³ ë„
 			criteria.setBearingRequired(false); // ..
-			criteria.setSpeedRequired(false); // ¼Óµµ
-			criteria.setCostAllowed(true); // ±İÀüÀû ºñ¿ë
+			criteria.setSpeedRequired(false); // ì†ë„
+			criteria.setCostAllowed(true); // ê¸ˆì „ì  ë¹„ìš©
 			bestProvider = lm.getBestProvider(criteria, true);
 			location =  lm.getLastKnownLocation(bestProvider);
 			if(location!=null){
-				myLat = (int) (location.getLatitude()*1000000);				// ÇöÀ§Ä¡ÀÇ ÁÂÇ¥ È¹µæ
+				myLat = (int) (location.getLatitude()*1000000);				// í˜„ìœ„ì¹˜ì˜ ì¢Œí‘œ íšë“
 				myLon = (int) (location.getLongitude()*1000000);	
 				Log.d(TAG, "runOnFirstFix// location1:"+myLat+", "+myLon);			// 37529466 126921069
-				new backgroundUpdateLocationToServer().execute();	// ºñµ¿±â·Î ¼­¹ö¿¡ À§Ä¡ ¾÷µ«		
+				new backgroundUpdateLocationToServer().execute();	// ë¹„ë™ê¸°ë¡œ ì„œë²„ì— ìœ„ì¹˜ ì—…ëƒ		
 			}else{
 				location =  lm.getLastKnownLocation(provider);
 				if(location==null){
 					Log.d(TAG,"location = null");	
 				}else{
-					myLat = (int) (location.getLatitude()*1000000);				// ÇöÀ§Ä¡ÀÇ ÁÂÇ¥ È¹µæ
+					myLat = (int) (location.getLatitude()*1000000);				// í˜„ìœ„ì¹˜ì˜ ì¢Œí‘œ íšë“
 					myLon = (int) (location.getLongitude()*1000000);	
 					Log.d("runOnFirstFix", "location2:"+myLat+", "+myLon);			
-					new backgroundUpdateLocationToServer().execute();	// ºñµ¿±â·Î ÀüÈ¯	
+					new backgroundUpdateLocationToServer().execute();	// ë¹„ë™ê¸°ë¡œ ì „í™˜	
 				}
 			}
 		}catch(Exception e){
@@ -384,10 +384,10 @@ public class MyQRPageActivity extends Activity {
 
 
 
-	// ºñµ¿±â·Î»ç¿ëÀÚÀÇ À§Ä¡ Á¤º¸¸¦ ¼öÁ¤
+	// ë¹„ë™ê¸°ë¡œì‚¬ìš©ìì˜ ìœ„ì¹˜ ì •ë³´ë¥¼ ìˆ˜ì •
 	/**
 	 * backgroundUpdateLocationToServer
-	 *  ºñµ¿±â·Î»ç¿ëÀÚÀÇ À§Ä¡ Á¤º¸¸¦ ¼öÁ¤ÇÏ´Â ÇÔ¼ö È£ÃâÇÑ´Ù
+	 *  ë¹„ë™ê¸°ë¡œì‚¬ìš©ìì˜ ìœ„ì¹˜ ì •ë³´ë¥¼ ìˆ˜ì •í•˜ëŠ” í•¨ìˆ˜ í˜¸ì¶œí•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -407,8 +407,8 @@ public class MyQRPageActivity extends Activity {
 	}
 
 	/*
-	 * »ç¿ëÀÚÀÇ À§Ä¡ Á¤º¸¸¦ ¼öÁ¤ ÇÑ´Ù.
-	 * ±× °á°ú¸¦ 'SUCCESS' ³ª 'FAIL' ÀÇ ½ºÆ®¸µÀ¸·Î ¹İÈ¯ ÇÑ´Ù.
+	 * ì‚¬ìš©ìì˜ ìœ„ì¹˜ ì •ë³´ë¥¼ ìˆ˜ì • í•œë‹¤.
+	 * ê·¸ ê²°ê³¼ë¥¼ 'SUCCESS' ë‚˜ 'FAIL' ì˜ ìŠ¤íŠ¸ë§ìœ¼ë¡œ ë°˜í™˜ í•œë‹¤.
 	 * //checkMileageMemberController  updateMemberLocation   checkMileageMember  
 	 *	// checkMileageId  latitude  longitude  activateYn  modifyDate
 	 */
@@ -434,7 +434,7 @@ public class MyQRPageActivity extends Activity {
 	//	}
 	/**
 	 * updateLocationToServer
-	 *  »ç¿ëÀÚÀÇ À§Ä¡ Á¤º¸¸¦ ¼öÁ¤ ÇÑ´Ù.
+	 *  ì‚¬ìš©ìì˜ ìœ„ì¹˜ ì •ë³´ë¥¼ ìˆ˜ì • í•œë‹¤.
 	 *
 	 * @param
 	 * @param
@@ -454,7 +454,7 @@ public class MyQRPageActivity extends Activity {
 						public void run(){
 							JSONObject obj = new JSONObject();
 							try{
-								// ÀÚ½ÅÀÇ ¾ÆÀÌµğ¸¦ ³Ö¾î¼­ Á¶È¸
+								// ìì‹ ì˜ ì•„ì´ë””ë¥¼ ë„£ì–´ì„œ ì¡°íšŒ
 								//								Log.d(TAG,"checkMileageId::"+qrCode);
 								//								Log.d(TAG,"latitude::"+myLat);
 								//								Log.d(TAG,"longitude::"+myLon);
@@ -487,11 +487,11 @@ public class MyQRPageActivity extends Activity {
 								os2.flush();
 								Thread.sleep(200);
 								//								System.out.println("postUrl      : " + postUrl2);
-								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : Á¤»ó
+								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : ì •ìƒ
 								responseCode = connection2.getResponseCode();
 								//								InputStream in =  connection2.getInputStream();
 								//								os2.close();
-								// Á¶È¸ÇÑ °á°ú¸¦ Ã³¸®.
+								// ì¡°íšŒí•œ ê²°ê³¼ë¥¼ ì²˜ë¦¬.
 								if(responseCode==200 || responseCode==204){
 									//									Log.d(TAG,"S");
 								}
@@ -502,7 +502,7 @@ public class MyQRPageActivity extends Activity {
 							}finally{
 								isUpdating = 0;
 								//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-								//								if(CommonUtils.usingNetwork < 0){	// 0 º¸´Ù ÀÛÁö´Â ¾Ê°Ô
+								//								if(CommonUtils.usingNetwork < 0){	// 0 ë³´ë‹¤ ì‘ì§€ëŠ” ì•Šê²Œ
 								//									CommonUtils.usingNetwork = 0;
 								//								}
 							}
@@ -514,26 +514,26 @@ public class MyQRPageActivity extends Activity {
 		}
 	}
 
-	// ¾÷µ« ½Ã°¢
+	// ì—…ëƒ ì‹œê°
 	/**
 	 * getNow
-	 *  Çö½Ã°¢À» ±¸ÇÑ´Ù
+	 *  í˜„ì‹œê°ì„ êµ¬í•œë‹¤
 	 *
 	 * @param
 	 * @param
 	 * @return nowTime
 	 */
 	public String getNow(){
-		// ÀÏ´Ü ¿À´Ã.
+		// ì¼ë‹¨ ì˜¤ëŠ˜.
 		Calendar c = Calendar.getInstance();
-		int todayYear = 0;						// Áö±İ -  ³â ¿ù ÀÏ ½Ã ºĞ
+		int todayYear = 0;						// ì§€ê¸ˆ -  ë…„ ì›” ì¼ ì‹œ ë¶„
 		int todayMonth = 0;
 		int todayDay = 0;
 		int todayHour = 0;
 		int todayMinute = 0;
 		int todaySecond = 0;
 		todayYear = c.get(Calendar.YEAR);
-		todayMonth = c.get(Calendar.MONTH)+1;			// ²¨³»¸é 0ºÎÅÍ ½ÃÀÛÀÌ´Ï±î +1 ÇØÁØ´Ù.
+		todayMonth = c.get(Calendar.MONTH)+1;			// êº¼ë‚´ë©´ 0ë¶€í„° ì‹œì‘ì´ë‹ˆê¹Œ +1 í•´ì¤€ë‹¤.
 		todayDay = c.get(Calendar.DATE);
 		todayHour = c.get(Calendar.HOUR_OF_DAY);
 		todayMinute = c.get(Calendar.MINUTE);

@@ -2,9 +2,9 @@ package kr.co.bettersoft.checkmileage.pref;
 /**
  * PrefActivityFromResource
  * 
- * ¼³Á¤ È­¸é. 
+ * ì„¤ì • í™”ë©´. 
  * 
- * ÅÍÄ¡½Ã ÀÌº¥Æ® ¼³Á¤µµ ¿©±â¼­ÇÑ´Ù
+ * í„°ì¹˜ì‹œ ì´ë²¤íŠ¸ ì„¤ì •ë„ ì—¬ê¸°ì„œí•œë‹¤
  */
 import java.io.BufferedReader;
 
@@ -77,57 +77,57 @@ import kr.co.bettersoft.checkmileage.domain.CheckMileageMembers;
 
 
 public class PrefActivityFromResource extends PreferenceActivity implements OnSharedPreferenceChangeListener{
-	int app_end = 0;	// µÚ·Î°¡±â ¹öÆ°À¸·Î ´İÀ»¶§ 2¹ø¸¸¿¡ ´İÈ÷µµ·Ï
+	int app_end = 0;	// ë’¤ë¡œê°€ê¸° ë²„íŠ¼ìœ¼ë¡œ ë‹«ì„ë•Œ 2ë²ˆë§Œì— ë‹«íˆë„ë¡
 
 	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
 	MainActivity mainActivity = (MainActivity)MainActivity.mainActivity;
 
 	static String TAG = "PrefActivityFromResource";
 
-	public Boolean resumeCalled = false;  // Ã³À½ ¿­·È´ÂÁö, ´Ù¸¥ È­¸é °¬´Ù¿Â°ÇÁö. -- Ã³À½¿­·ÈÀ»¶§¸¸ ÇÁ¸®ÆÛ·±½º ÁöÁ¤ÇÏ±â À§ÇÔ.
+	public Boolean resumeCalled = false;  // ì²˜ìŒ ì—´ë ¸ëŠ”ì§€, ë‹¤ë¥¸ í™”ë©´ ê°”ë‹¤ì˜¨ê±´ì§€. -- ì²˜ìŒì—´ë ¸ì„ë•Œë§Œ í”„ë¦¬í¼ëŸ°ìŠ¤ ì§€ì •í•˜ê¸° ìœ„í•¨.
 
-	SharedPreferences sharedPrefCustom;	// °ø¿ë ÇÁ¸³½º		 Àá±İ ¹× QR (Àá±İÀº ¸ŞÀÎ°ú °øÀ¯  À§ÀÇ °Í(default,this)Àº ¸ŞÀÎ°ú °øÀ¯µÇÁö ¾Ê¾Æ ÀÌ sharedPref µµ »ç¿ëÇÑ´Ù.)		
-	//	PreferenceCategory category1;			// ¼³Á¤ÀÇ Ä«Å×°í¸®Â°·Î ºñÈ°¼º ½ÃÅ³¼ö ÀÖ´Ù. º» ÇÁ·ÎÁ§Æ®¿¡¼­ »ç¿ë ¾ÈÇÔ
-	//	WebView mWeb;							// µµ¿ò¸», °øÁö µî º¼¶§ »ç¿ëÇÏ´Â À¥ºä		--> ´Ù¸¥ ¾×Æ¼ºñÆ¼ ÅëÇØ È£ÃâÇÔ.
+	SharedPreferences sharedPrefCustom;	// ê³µìš© í”„ë¦½ìŠ¤		 ì ê¸ˆ ë° QR (ì ê¸ˆì€ ë©”ì¸ê³¼ ê³µìœ   ìœ„ì˜ ê²ƒ(default,this)ì€ ë©”ì¸ê³¼ ê³µìœ ë˜ì§€ ì•Šì•„ ì´ sharedPref ë„ ì‚¬ìš©í•œë‹¤.)		
+	//	PreferenceCategory category1;			// ì„¤ì •ì˜ ì¹´í…Œê³ ë¦¬ì§¸ë¡œ ë¹„í™œì„± ì‹œí‚¬ìˆ˜ ìˆë‹¤. ë³¸ í”„ë¡œì íŠ¸ì—ì„œ ì‚¬ìš© ì•ˆí•¨
+	//	WebView mWeb;							// ë„ì›€ë§, ê³µì§€ ë“± ë³¼ë•Œ ì‚¬ìš©í•˜ëŠ” ì›¹ë·°		--> ë‹¤ë¥¸ ì•¡í‹°ë¹„í‹° í†µí•´ í˜¸ì¶œí•¨.
 
-	SharedPreferences thePrefs;				// ¾îÇÃ ³» ÀÚÃ¼ ÇÁ¸®ÆÛ·±½º.  Resume ¶§ ÀÌ°÷¿¡ ¿¬°áÇÏ¿© »ç¿ë(Å»Åğ¶§ ÃÊ±âÈ­ ¿ëµµ)--  
-	SharedPreferences defaultPref;			// default --   ÀÚÃ¼ ÇÁ¸®ÆÛ·±½º. 
+	SharedPreferences thePrefs;				// ì–´í”Œ ë‚´ ìì²´ í”„ë¦¬í¼ëŸ°ìŠ¤.  Resume ë•Œ ì´ê³³ì— ì—°ê²°í•˜ì—¬ ì‚¬ìš©(íƒˆí‡´ë•Œ ì´ˆê¸°í™” ìš©ë„)--  
+	SharedPreferences defaultPref;			// default --   ìì²´ í”„ë¦¬í¼ëŸ°ìŠ¤. 
 
-	// ½Ã°£°ü·Ã
+	// ì‹œê°„ê´€ë ¨
 	Calendar c = Calendar.getInstance();
-	int todayYear = 0;						// Áö±İ -  ³â ¿ù ÀÏ ½Ã ºĞ
+	int todayYear = 0;						// ì§€ê¸ˆ -  ë…„ ì›” ì¼ ì‹œ ë¶„
 	int todayMonth = 0;
 	int todayDay = 0;
 	int todayHour = 0;
 	int todayMinute = 0;
 	int todaySecond = 0;
-	int birthYear = 0;						// »ı³â¿ùÀÏ - ³â ¿ù ÀÏ
+	int birthYear = 0;						// ìƒë…„ì›”ì¼ - ë…„ ì›” ì¼
 	int birthMonth= 0;
 	int birthDay = 0;
 
 
-	int sharePrefsFlag = 1;					// ¾îÇÃ³» ÀÚÃ¼ ÇÁ¸³½º¸¦ ¾ò±â À§ÇÑ ¹Ì³¢. 1,-1 °ªÀ» ¹Ù²ã°¡¸ç ÀúÀåÇÏ¸é ¸®½º³Ê°¡ µ¿ÀÛÇÑ´Ù. - ±×¶§ µ¿ÀÛÇÏ´Â ÇÁ¸®ÆÛ·±½º¸¦ Àâ´Â´Ù.
+	int sharePrefsFlag = 1;					// ì–´í”Œë‚´ ìì²´ í”„ë¦½ìŠ¤ë¥¼ ì–»ê¸° ìœ„í•œ ë¯¸ë¼. 1,-1 ê°’ì„ ë°”ê¿”ê°€ë©° ì €ì¥í•˜ë©´ ë¦¬ìŠ¤ë„ˆê°€ ë™ì‘í•œë‹¤. - ê·¸ë•Œ ë™ì‘í•˜ëŠ” í”„ë¦¬í¼ëŸ°ìŠ¤ë¥¼ ì¡ëŠ”ë‹¤.
 
-	// ¼­¹ö Åë½Å °ü·Ã
+	// ì„œë²„ í†µì‹  ê´€ë ¨
 	String serverName = CommonUtils.serverNames;
-	static String controllerName = "";		// JSON ¼­¹ö Åë½Å¸í ÄÁÆ®·Ñ·¯ ¸í
-	static String methodName = "";			// JSON ¼­¹ö Åë½Å¿ë ¸Ş¼Òµå ¸í
-	static int responseCode = 0;			// JSON ¼­¹ö Åë½Å °á°ú
+	static String controllerName = "";		// JSON ì„œë²„ í†µì‹ ëª… ì»¨íŠ¸ë¡¤ëŸ¬ ëª…
+	static String methodName = "";			// JSON ì„œë²„ í†µì‹ ìš© ë©”ì†Œë“œ ëª…
+	static int responseCode = 0;			// JSON ì„œë²„ í†µì‹  ê²°ê³¼
 	URL postUrl2 ;
 	HttpURLConnection connection2;
 
-	static int updateLv=0;							// ¼­¹ö¿¡ ¾÷µ« Ä¥Áö ¿©ºÎ °Ë»ç¿ëµµ. 0ÀÌ¸é ¾ÈÇÏ°í, 1ÀÌ¸é ÇÑ´Ù, 2¸é µÎ¹øÇÑ´Ù(¾÷µ«Áß °ªÀÌ ¹Ù²ï °æ¿ìÀÓ)
+	static int updateLv=0;							// ì„œë²„ì— ì—…ëƒ ì¹ ì§€ ì—¬ë¶€ ê²€ì‚¬ìš©ë„. 0ì´ë©´ ì•ˆí•˜ê³ , 1ì´ë©´ í•œë‹¤, 2ë©´ ë‘ë²ˆí•œë‹¤(ì—…ëƒì¤‘ ê°’ì´ ë°”ë€ ê²½ìš°ì„)
 
 	// Locale
 	Locale systemLocale = null ;
 	//    String strDisplayCountry = "" ;
-	String strCountry = "" ;				// ±¹°¡ ÄÚµå
-	String strLanguage = "" ;				// ¾ğ¾î ÄÚµå
+	String strCountry = "" ;				// êµ­ê°€ ì½”ë“œ
+	String strLanguage = "" ;				// ì–¸ì–´ ì½”ë“œ
 
-	// GCM ¹ŞÀ»Áö ¿©ºÎ ÀúÀå. ¸Ş¼­µå¿ë.
+	// GCM ë°›ì„ì§€ ì—¬ë¶€ ì €ì¥. ë©”ì„œë“œìš©.
 	String strYorN = "";
 	Boolean yn = false;
-	// ÄÉ¸¯ ¼³Á¤ Á¤º¸ ÀúÀåÇØ ³õÀ» µµ¸ŞÀÎ. Ç×»ó ÃÖ½Å Á¤º¸¸¦ À¯ÁöÇØ¾ß ÇÑ´Ù.
+	// ì¼€ë¦­ ì„¤ì • ì •ë³´ ì €ì¥í•´ ë†“ì„ ë„ë©”ì¸. í•­ìƒ ìµœì‹  ì •ë³´ë¥¼ ìœ ì§€í•´ì•¼ í•œë‹¤.
 	static CheckMileageMembers memberInfo;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -136,62 +136,62 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		getNow();
 		//		Toast.makeText(PrefActivityFromResource.this, "Year:"+todayYear+",Month:"+todayMonth+",Day:"+todayDay, Toast.LENGTH_SHORT).show();
 
-		// 1. \res\xml\preferences.xml·Î ºÎÅÍ Preference °èÃş±¸Á¶¸¦ ÀĞ¾î¿Í
-		// 2. ÀÌ PreferenceActivityÀÇ °èÃş±¸Á¶·Î ÁöÁ¤/Ç¥Çö ÇÏ°í
-		// 3. \data\data\ÆĞÅ°ÁöÀÌ¸§\shared_prefs\ÆĞÅ°ÁöÀÌ¸§_preferences.xml »ı¼º
-		// 4. ÀÌ ÈÄ Preference¿¡ º¯°æ »çÇ×ÀÌ »ı±â¸é ÆÄÀÏ¿¡ ÀÚµ¿ ÀúÀå
+		// 1. \res\xml\preferences.xmlë¡œ ë¶€í„° Preference ê³„ì¸µêµ¬ì¡°ë¥¼ ì½ì–´ì™€
+		// 2. ì´ PreferenceActivityì˜ ê³„ì¸µêµ¬ì¡°ë¡œ ì§€ì •/í‘œí˜„ í•˜ê³ 
+		// 3. \data\data\íŒ¨í‚¤ì§€ì´ë¦„\shared_prefs\íŒ¨í‚¤ì§€ì´ë¦„_preferences.xml ìƒì„±
+		// 4. ì´ í›„ Preferenceì— ë³€ê²½ ì‚¬í•­ì´ ìƒê¸°ë©´ íŒŒì¼ì— ìë™ ì €ì¥
 		addPreferencesFromResource(R.xml.settings);
 
 		/*
-		 *  ¼­¹ö·ÎºÎÅÍ °³ÀÎ Á¤º¸¸¦ °¡Á®¿Í¼­ µµ¸ŞÀÎ °°Àº °÷¿¡ ´ã¾ÆµĞ´Ù. ³ªÁß¿¡ ¾÷µ¥ÀÌÆ® ÇÒ¶§ »ç¿ë . ¾÷µ¥ÀÌÆ®ÇÏ°í ³ª¸é ±× µµ¸ŞÀÎ ±×´ë·Î À¯Áö ..
-		 *  ¾ø´Â°Å´Â null pointer ³ª¹Ç·Î ""·Î ¹Ù²ãÁÖ´Â Ã³¸®°¡ ÇÊ¿äÇÏ´Ù.
+		 *  ì„œë²„ë¡œë¶€í„° ê°œì¸ ì •ë³´ë¥¼ ê°€ì ¸ì™€ì„œ ë„ë©”ì¸ ê°™ì€ ê³³ì— ë‹´ì•„ë‘”ë‹¤. ë‚˜ì¤‘ì— ì—…ë°ì´íŠ¸ í• ë•Œ ì‚¬ìš© . ì—…ë°ì´íŠ¸í•˜ê³  ë‚˜ë©´ ê·¸ ë„ë©”ì¸ ê·¸ëŒ€ë¡œ ìœ ì§€ ..
+		 *  ì—†ëŠ”ê±°ëŠ” null pointer ë‚˜ë¯€ë¡œ ""ë¡œ ë°”ê¿”ì£¼ëŠ” ì²˜ë¦¬ê°€ í•„ìš”í•˜ë‹¤.
 		 */
 		memberInfo = new CheckMileageMembers();
 
 		new backgroundGetUserInfo().execute();	
-		if(!resumeCalled){			// ÇÑ¹ø¸¸ .. ´À¸®´Ï±î
+		if(!resumeCalled){			// í•œë²ˆë§Œ .. ëŠë¦¬ë‹ˆê¹Œ
 			getPreferenceScreen().getSharedPreferences() 
-			.registerOnSharedPreferenceChangeListener(this);		// ¸®½º³Ê µî·Ï 
+			.registerOnSharedPreferenceChangeListener(this);		// ë¦¬ìŠ¤ë„ˆ ë“±ë¡ 
 
 			/*
-			 *  ºñ¹ø Àá±İ ¼³Á¤Àº ºñ¹øÀÌ ÀÖÀ» °æ¿ì¿¡¸¸ ÇØÁØ´Ù.	(ºñ¹øÀÌ ¾ø´Ù¸é Àá±İ Ã¼Å© ¼³Á¤À» »ç¿ëÇÒ ¼ö ¾ø´Ù.)		
-			 *  ºñ¹ø ¼³Á¤ÀÇ °æ¿ì ¸®Áí¿¡ ³ÖÁö ¾ÊÀ¸¸é ÇÑ¹ø¹Û¿¡ ¾ÈÀĞ¾î¼­ º¯°æ½Ã Àû¿ëµÇÁö ¾Ê´Â´Ù. (¾îÇÃ Àç±âµ¿ÇØ¾ß Àû¿ë)
+			 *  ë¹„ë²ˆ ì ê¸ˆ ì„¤ì •ì€ ë¹„ë²ˆì´ ìˆì„ ê²½ìš°ì—ë§Œ í•´ì¤€ë‹¤.	(ë¹„ë²ˆì´ ì—†ë‹¤ë©´ ì ê¸ˆ ì²´í¬ ì„¤ì •ì„ ì‚¬ìš©í•  ìˆ˜ ì—†ë‹¤.)		
+			 *  ë¹„ë²ˆ ì„¤ì •ì˜ ê²½ìš° ë¦¬ì¥¼ì— ë„£ì§€ ì•Šìœ¼ë©´ í•œë²ˆë°–ì— ì•ˆì½ì–´ì„œ ë³€ê²½ì‹œ ì ìš©ë˜ì§€ ì•ŠëŠ”ë‹¤. (ì–´í”Œ ì¬ê¸°ë™í•´ì•¼ ì ìš©)
 			 */
-			// prefs 	// ¾îÇÃ Àá±İ ¼³Á¤. °ø¿ëÀ¸·Î ¾µ°Íµµ ÇÊ¿äÇÏ´Ù. 
+			// prefs 	// ì–´í”Œ ì ê¸ˆ ì„¤ì •. ê³µìš©ìœ¼ë¡œ ì“¸ê²ƒë„ í•„ìš”í•˜ë‹¤. 
 			sharedPrefCustom = getSharedPreferences("MyCustomePref",
 					Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
-			sharedPrefCustom.registerOnSharedPreferenceChangeListener(this);			// ¿©±â¿¡µµ µî·ÏÇØ³ö¾ß ¸®½Ã¹ö°¡ Á¦´ë·Î ¹İÀÀÇÑ´Ù.
+			sharedPrefCustom.registerOnSharedPreferenceChangeListener(this);			// ì—¬ê¸°ì—ë„ ë“±ë¡í•´ë†”ì•¼ ë¦¬ì‹œë²„ê°€ ì œëŒ€ë¡œ ë°˜ì‘í•œë‹¤.
 
-			// default µµ  µî·ÏÇØ¾ß ÇÔ
+			// default ë„  ë“±ë¡í•´ì•¼ í•¨
 			defaultPref = PreferenceManager.getDefaultSharedPreferences(this);
 			defaultPref.registerOnSharedPreferenceChangeListener(this);			 
 
 			//		category1 = (PreferenceCategory)findPreference("category1");
 			//			Preference passwordCheck = findPreference("preference_lock_chk");
 
-			// ÇÁ¸®ÆÛ·±½º µ¿±âÈ­ (°øÀ¯¿ë - µğÆúÆ® °£ µ¿±âÈ­)
-			SharedPreferences.Editor init2 = sharedPrefCustom.edit();		// °­Á¦ È£Ãâ¿ëµµ  .. ´Ü¾î¸íÀº ÀÇ¹Ì¾ø´Ù.
-			int someNum = sharedPrefCustom.getInt("pref_app_hi", sharePrefsFlag);	// ÀÌÀü °ª°ú °°À»¼ö ÀÖÀ¸¹Ç·Î..
-			someNum = someNum * -1;													// ¸Å¹ø ´Ù¸¥ °ªÀÌ µé¾î°¡¾ß Á¦´ë·Î È£ÃâÀÌ µÈ´Ù. °°Àº °ªµé¾î°¡¸é º¯È­ ¾ø´Ù°í È£Ãâ ¾ÈµÊ.			
-			init2.putInt("pref_app_hi", someNum); 		// ÇÁ¸®ÆÛ·±½º °ª ³Ö¾î ¾÷µ¥ÀÌÆ® ½ÃÅ°¸é °­Á¦·Î ¸®½º³Ê È£Ãâ.
+			// í”„ë¦¬í¼ëŸ°ìŠ¤ ë™ê¸°í™” (ê³µìœ ìš© - ë””í´íŠ¸ ê°„ ë™ê¸°í™”)
+			SharedPreferences.Editor init2 = sharedPrefCustom.edit();		// ê°•ì œ í˜¸ì¶œìš©ë„  .. ë‹¨ì–´ëª…ì€ ì˜ë¯¸ì—†ë‹¤.
+			int someNum = sharedPrefCustom.getInt("pref_app_hi", sharePrefsFlag);	// ì´ì „ ê°’ê³¼ ê°™ì„ìˆ˜ ìˆìœ¼ë¯€ë¡œ..
+			someNum = someNum * -1;													// ë§¤ë²ˆ ë‹¤ë¥¸ ê°’ì´ ë“¤ì–´ê°€ì•¼ ì œëŒ€ë¡œ í˜¸ì¶œì´ ëœë‹¤. ê°™ì€ ê°’ë“¤ì–´ê°€ë©´ ë³€í™” ì—†ë‹¤ê³  í˜¸ì¶œ ì•ˆë¨.			
+			init2.putInt("pref_app_hi", someNum); 		// í”„ë¦¬í¼ëŸ°ìŠ¤ ê°’ ë„£ì–´ ì—…ë°ì´íŠ¸ ì‹œí‚¤ë©´ ê°•ì œë¡œ ë¦¬ìŠ¤ë„ˆ í˜¸ì¶œ.
 			init2.commit();			
-			// ÀÚÃ¼ ÇÁ¸®ÆÛ¸¦ Áö¸ñÇÒ ¼ö ÀÖ°Ô µÊ. Å»Åğ ¸Ş¼Òµå¶§ ÃÊ±â°ª ¼¼ÆÃÇØÁØ´Ù.
+			// ìì²´ í”„ë¦¬í¼ë¥¼ ì§€ëª©í•  ìˆ˜ ìˆê²Œ ë¨. íƒˆí‡´ ë©”ì†Œë“œë•Œ ì´ˆê¸°ê°’ ì„¸íŒ…í•´ì¤€ë‹¤.
 
-			// ¼³Á¤ º¯°æÇÏ°í ¿Â °æ¿ì ¾÷µ« ÇÑ¹ø ÃÄÁÖ±â.
-			if(updateLv>0){		// 2¿´´ø °æ¿ì= (¾÷µ«Áß ¶Ç º¯°æµÈ °æ¿ì ->ÇÑ¹ø´õ)
+			// ì„¤ì • ë³€ê²½í•˜ê³  ì˜¨ ê²½ìš° ì—…ëƒ í•œë²ˆ ì³ì£¼ê¸°.
+			if(updateLv>0){		// 2ì˜€ë˜ ê²½ìš°= (ì—…ëƒì¤‘ ë˜ ë³€ê²½ëœ ê²½ìš° ->í•œë²ˆë”)
 				Log.d(TAG,"Need Update one more time");
 				//				updateToServer_pre();
 				updateToServer();
 			}
-			updateServerSettingsToPrefs();				// ¼­¹ö¿¡¼­ °¡Á®¿Â Á¤º¸¸¦ ÇÁ¸®ÆÛ·±½º¿¡ ÀúÀå 
+			updateServerSettingsToPrefs();				// ì„œë²„ì—ì„œ ê°€ì ¸ì˜¨ ì •ë³´ë¥¼ í”„ë¦¬í¼ëŸ°ìŠ¤ì— ì €ì¥ 
 			resumeCalled = true;
 		}
 	}
 
-	// ÇöÀç ½Ã°¢ ±¸ÇÏ±â.
+	// í˜„ì¬ ì‹œê° êµ¬í•˜ê¸°.
 	/**
 	 * getNow
-	 *  ÇöÀç ½Ã°¢ ±¸ÇÑ´Ù
+	 *  í˜„ì¬ ì‹œê° êµ¬í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -200,7 +200,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	public String getNow(){
 		c = Calendar.getInstance();
 		todayYear = c.get(Calendar.YEAR);
-		todayMonth = c.get(Calendar.MONTH)+1;			// ²¨³»¸é 0ºÎÅÍ ½ÃÀÛÀÌ´Ï±î +1 ÇØÁØ´Ù.
+		todayMonth = c.get(Calendar.MONTH)+1;			// êº¼ë‚´ë©´ 0ë¶€í„° ì‹œì‘ì´ë‹ˆê¹Œ +1 í•´ì¤€ë‹¤.
 		todayDay = c.get(Calendar.DATE);
 		todayHour = c.get(Calendar.HOUR_OF_DAY);
 		todayMinute = c.get(Calendar.MINUTE);
@@ -221,9 +221,9 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	}
 
 	/*
-	 * oncreate ¿¡ ÀÖÀ¸¸é ÇÑ¹ø¹Û¿¡ ¸øÇØ¼­ µÎ¹ø ÀÌ»ó ÇÏ·Á¸é Resume ¿¡ µĞ´Ù..
-	 * È­¸éÀ¸·Î ¿Ã¶§¸¶´Ù ºñ¹øÀ» ²¨³½´Ù. 
-	 * (ºñ¹ø º¯°æ ÀÌÈÄ µ¹¾Æ¿ÔÀ»¶§ º¯°æµÈ ºñ¹ø ²¨³¾¼ö ÀÖµµ·Ï ÇÔ)  -- ÀÌÁ¦ ºñ¹ø »ç¿ë ¾ÈÇÏ¹Ç·Î..
+	 * oncreate ì— ìˆìœ¼ë©´ í•œë²ˆë°–ì— ëª»í•´ì„œ ë‘ë²ˆ ì´ìƒ í•˜ë ¤ë©´ Resume ì— ë‘”ë‹¤..
+	 * í™”ë©´ìœ¼ë¡œ ì˜¬ë•Œë§ˆë‹¤ ë¹„ë²ˆì„ êº¼ë‚¸ë‹¤. 
+	 * (ë¹„ë²ˆ ë³€ê²½ ì´í›„ ëŒì•„ì™”ì„ë•Œ ë³€ê²½ëœ ë¹„ë²ˆ êº¼ë‚¼ìˆ˜ ìˆë„ë¡ í•¨)  -- ì´ì œ ë¹„ë²ˆ ì‚¬ìš© ì•ˆí•˜ë¯€ë¡œ..
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onResume()
 	 */
@@ -234,7 +234,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		//		Log.i(TAG, "onResume");		// yyyyMMdd
 		// Set up a listener whenever a key changes 
 		getPreferenceScreen().getSharedPreferences() 
-		.registerOnSharedPreferenceChangeListener(this); 		// ¸®½º³Ê µî·Ï
+		.registerOnSharedPreferenceChangeListener(this); 		// ë¦¬ìŠ¤ë„ˆ ë“±ë¡
 	}
 
 	@Override 
@@ -242,16 +242,16 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		super.onPause(); 
 		// Unregister the listener whenever a key changes 
 		getPreferenceScreen().getSharedPreferences() 
-		.unregisterOnSharedPreferenceChangeListener(this); 		// ¸®½º³Ê ÇØÁ¦
+		.unregisterOnSharedPreferenceChangeListener(this); 		// ë¦¬ìŠ¤ë„ˆ í•´ì œ
 	} 
 
-	// Preference¿¡¼­ Å¬¸¯ ¹ß»ı½Ã È£ÃâµÇ´Â call back
+	// Preferenceì—ì„œ í´ë¦­ ë°œìƒì‹œ í˜¸ì¶œë˜ëŠ” call back
 	// Parameters:
-	//  - PreferenceScreen : ÀÌº¥Æ®°¡ ¹ß»ıÇÑ PreferenceÀÇ root
-	//  - Preference : ÀÌº¥Æ®¸¦ ¹ß»ı½ÃÅ² Preference Ç×¸ñ
+	//  - PreferenceScreen : ì´ë²¤íŠ¸ê°€ ë°œìƒí•œ Preferenceì˜ root
+	//  - Preference : ì´ë²¤íŠ¸ë¥¼ ë°œìƒì‹œí‚¨ Preference í•­ëª©
 	/**
 	 * onPreferenceTreeClick
-	 *  ÇÁ¸®ÆÛ·±½º Å¬¸¯½Ã È£ÃâµÇ´Â Äİ¹é¸Ş¼­µåÀÌ´Ù. ¼³Á¤ °ª º¯È­ ¶Ç´Â ¼³Á¤ ¸Ş´º È£Ãâ µîÀÌ ÀÖ´Ù.
+	 *  í”„ë¦¬í¼ëŸ°ìŠ¤ í´ë¦­ì‹œ í˜¸ì¶œë˜ëŠ” ì½œë°±ë©”ì„œë“œì´ë‹¤. ì„¤ì • ê°’ ë³€í™” ë˜ëŠ” ì„¤ì • ë©”ë‰´ í˜¸ì¶œ ë“±ì´ ìˆë‹¤.
 	 *
 	 * @param preferenceScreen
 	 * @param preference
@@ -260,47 +260,47 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	@Override
 	public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
 			Preference preference) {
-		// sub_checkbox¶õ Å°¸¦ °¡Áö°í ÀÖ´Â PreferenceÇ×¸ñÀÌ ÀÌº¥Æ® ¹ß»ı ½Ã ½ÇÇà 
+		// sub_checkboxë€ í‚¤ë¥¼ ê°€ì§€ê³  ìˆëŠ” Preferenceí•­ëª©ì´ ì´ë²¤íŠ¸ ë°œìƒ ì‹œ ì‹¤í–‰ 
 		//		if(preference.equals((CheckBoxPreference)findPreference("sub_checkbox"))) {
-		// Preference µ¥ÀÌÅÍ ÆÄÀÏÁß "sub_checkbox" Å°¿Í ¿¬°áµÈ boolean °ª¿¡ µû¶ó
-		// category1 (ListPreference, RingtonePreference Æ÷ÇÔ)À» È°¼ºÈ­/ºñÈ°¼ºÈ­
+		// Preference ë°ì´í„° íŒŒì¼ì¤‘ "sub_checkbox" í‚¤ì™€ ì—°ê²°ëœ boolean ê°’ì— ë”°ë¼
+		// category1 (ListPreference, RingtonePreference í¬í•¨)ì„ í™œì„±í™”/ë¹„í™œì„±í™”
 
-		// //     Å×½ºÆ®¿ë.  Ã¼Å©¹Ú½º°¡ Ã¼Å©µÇ¾ú´ÂÁö ¿©ºÎ¸¦ ÅëÇØ ÀÌº¥Æ® ¹ß»ı..ºñ¹ø ¿¡¼­´Â ºñ¹øÀÌ ÀÖ´ÂÁö ¿©ºÎ·Î ÇÒ°Í..
+		// //     í…ŒìŠ¤íŠ¸ìš©.  ì²´í¬ë°•ìŠ¤ê°€ ì²´í¬ë˜ì—ˆëŠ”ì§€ ì—¬ë¶€ë¥¼ í†µí•´ ì´ë²¤íŠ¸ ë°œìƒ..ë¹„ë²ˆ ì—ì„œëŠ” ë¹„ë²ˆì´ ìˆëŠ”ì§€ ì—¬ë¶€ë¡œ í• ê²ƒ..
 		//			category1.setEnabled(mainPreference.getBoolean("sub_checkbox", false));
 		//			if(((CheckBoxPreference)findPreference("sub_checkbox")).isChecked()){
-		//				// Á¶°Ç¿¡ µû¶ó Æ¯Á¤ Ç×¸ñÀ» dis enable ÇÒ¼ö ÀÖ´Ù.
+		//				// ì¡°ê±´ì— ë”°ë¼ íŠ¹ì • í•­ëª©ì„ dis enable í• ìˆ˜ ìˆë‹¤.
 		//				Preference pref = findPreference("pref_app_qna");
 		//				pref.setEnabled(false);
 		//			}else{
 		//				Preference pref = findPreference("pref_app_qna");
 		//				pref.setEnabled(true);
 		//			}
-		//Å×½ºÆ®¿ë . ////
+		//í…ŒìŠ¤íŠ¸ìš© . ////
 		//		}
 		/*
-		 * 		 *  checkMileageId /		 ±×³É ¾²±â.
-		 *  password /			¾÷µ«											ºñ¹ø¿¡¼­ º°µµ.	 Ã³¸®						.
-		 *  phoneNumber /			±×³É ¾²±â.
-		 *  email /				¾÷µ«											pref_user_email						//
-		 *  birthday /			¾÷µ«											pref_user_birth						//
-		 *  gender /			¾÷µ«											pref_user_sex						//
-		 *  latitude /				±×³É ¾²±â. º°µµ ¾÷µ«? ¾îÇÃ ½ÇÇà½Ã?
-		 *  longitude /				±×³É ¾²±â. º°µµ ¾÷µ«? ¾îÇÃ ½ÇÇà½Ã?
-		 *  deviceType /			±×³É ¾²±â.
-		 *  registrationId /		±×³É ¾²±â.
-		 *  activateYn /		¾÷µ« (Å»Åğ½Ã)																		//
-		 *  modifyDate /		¾÷µ« - 										Çö½Ã°¢. ³â¿ùÀÏ½ÃºĞ  yyyyMMdd-hh:mm	(±×¶§±×¶§)	/	
+		 * 		 *  checkMileageId /		 ê·¸ëƒ¥ ì“°ê¸°.
+		 *  password /			ì—…ëƒ											ë¹„ë²ˆì—ì„œ ë³„ë„.	 ì²˜ë¦¬						.
+		 *  phoneNumber /			ê·¸ëƒ¥ ì“°ê¸°.
+		 *  email /				ì—…ëƒ											pref_user_email						//
+		 *  birthday /			ì—…ëƒ											pref_user_birth						//
+		 *  gender /			ì—…ëƒ											pref_user_sex						//
+		 *  latitude /				ê·¸ëƒ¥ ì“°ê¸°. ë³„ë„ ì—…ëƒ? ì–´í”Œ ì‹¤í–‰ì‹œ?
+		 *  longitude /				ê·¸ëƒ¥ ì“°ê¸°. ë³„ë„ ì—…ëƒ? ì–´í”Œ ì‹¤í–‰ì‹œ?
+		 *  deviceType /			ê·¸ëƒ¥ ì“°ê¸°.
+		 *  registrationId /		ê·¸ëƒ¥ ì“°ê¸°.
+		 *  activateYn /		ì—…ëƒ (íƒˆí‡´ì‹œ)																		//
+		 *  modifyDate /		ì—…ëƒ - 										í˜„ì‹œê°. ë…„ì›”ì¼ì‹œë¶„  yyyyMMdd-hh:mm	(ê·¸ë•Œê·¸ë•Œ)	/	
 		 */
 
-		// ¾Ë¸² ¼ö½Å ¼³Á¤ ¿©ºÎ.
+		// ì•Œë¦¼ ìˆ˜ì‹  ì„¤ì • ì—¬ë¶€.
 		if(preference.equals((CheckBoxPreference)findPreference("preference_alarm_chk"))){
 			//	Toast.makeText(PrefActivityFromResource.this, "preference_lock_password", Toast.LENGTH_SHORT).show();
-			SharedPreferences.Editor saveGCMCustom = sharedPrefCustom.edit();		// °ø¿ë¿¡ ÀúÀåÇØ ÁØ´Ù.
+			SharedPreferences.Editor saveGCMCustom = sharedPrefCustom.edit();		// ê³µìš©ì— ì €ì¥í•´ ì¤€ë‹¤.
 			yn = ((CheckBoxPreference)findPreference("preference_alarm_chk")).isChecked();
 			saveGCMCustom.putBoolean("gcmReceive", yn);
 			saveGCMCustom.commit();
-			// ¼­¹ö¿¡µµ ¾÷µ« ½ÃÄÑÁØ´Ù.
-			if(updateLv<2){		// 0¶Ç´Â 1ÀÏ°æ¿ì. 1 Áõ°¡. (ÃÖ´ë 2±îÁö)
+			// ì„œë²„ì—ë„ ì—…ëƒ ì‹œì¼œì¤€ë‹¤.
+			if(updateLv<2){		// 0ë˜ëŠ” 1ì¼ê²½ìš°. 1 ì¦ê°€. (ìµœëŒ€ 2ê¹Œì§€)
 				updateLv = updateLv+1;
 				if(updateLv==1){
 					//					updateGCMToServer_pre(yn);
@@ -310,9 +310,9 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		}
 
 
-		// ÀÚÁÖ ¹¯´Â Áú¹® µîÀÇ °æ¿ì ÀÎÅÙÆ®·Î À¥ºä ½Ç½Ã
+		// ìì£¼ ë¬»ëŠ” ì§ˆë¬¸ ë“±ì˜ ê²½ìš° ì¸í…íŠ¸ë¡œ ì›¹ë·° ì‹¤ì‹œ
 		if(preference.equals(findPreference("pref_app_qna"))){
-			//			Toast.makeText(PrefActivityFromResource.this, "À¥ºä ÆäÀÌÁö·Î ÀÌµ¿ÇÕ´Ï´Ù.", Toast.LENGTH_SHORT).show();
+			//			Toast.makeText(PrefActivityFromResource.this, "ì›¹ë·° í˜ì´ì§€ë¡œ ì´ë™í•©ë‹ˆë‹¤.", Toast.LENGTH_SHORT).show();
 			Intent webIntent = new Intent(PrefActivityFromResource.this, myWebView.class);
 			webIntent.putExtra("loadingURL", "http://www.mcarrot.net/mFaq.do");
 			//			webIntent.putExtra("loadingURL", memberInfo.getCountryCode());
@@ -321,40 +321,40 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			startActivity(webIntent);
 		}
 
-		// °øÁö»çÇ×.  pref_app_notify
+		// ê³µì§€ì‚¬í•­.  pref_app_notify
 		if(preference.equals(findPreference("pref_app_notify"))){
-			//			Toast.makeText(PrefActivityFromResource.this, "À¥ºä ÆäÀÌÁö·Î ÀÌµ¿ÇÕ´Ï´Ù.", Toast.LENGTH_SHORT).show();
+			//			Toast.makeText(PrefActivityFromResource.this, "ì›¹ë·° í˜ì´ì§€ë¡œ ì´ë™í•©ë‹ˆë‹¤.", Toast.LENGTH_SHORT).show();
 			Intent webIntent = new Intent(PrefActivityFromResource.this, myWebView.class);
 			webIntent.putExtra("loadingURL", "http://www.mcarrot.net/mNoticeBoardList.do");
 			startActivity(webIntent);
 		}
 
-		// ÀÌ¿ë ¾à°ü..  pref_app_terms
+		// ì´ìš© ì•½ê´€..  pref_app_terms
 		if(preference.equals(findPreference("pref_app_terms"))){
-			//			Toast.makeText(PrefActivityFromResource.this, "À¥ºä ÆäÀÌÁö·Î ÀÌµ¿ÇÕ´Ï´Ù.", Toast.LENGTH_SHORT).show();
+			//			Toast.makeText(PrefActivityFromResource.this, "ì›¹ë·° í˜ì´ì§€ë¡œ ì´ë™í•©ë‹ˆë‹¤.", Toast.LENGTH_SHORT).show();
 			Intent webIntent = new Intent(PrefActivityFromResource.this, myWebView.class);
 			webIntent.putExtra("loadingURL", "http://www.mcarrot.net/mTerms.do");
 			startActivity(webIntent);
 		}
 
-		//		// Å»Åğ.  pref_app_leave
+		//		// íƒˆí‡´.  pref_app_leave
 		//		if(preference.equals(findPreference("pref_app_leave"))){
 		//		//	//		//	Toast.makeText(PrefActivityFromResource.this, R.string.leave_toast_message, Toast.LENGTH_SHORT).show();
 		//			new AlertDialog.Builder(this)
-		//			.setTitle("È¸¿ø Å»Åğ")
-		//			.setMessage("Å»Åğ ½Ã ±âÁ¸ ¸¶ÀÏ¸®Áö°¡ ¼Ò¸êµË´Ï´Ù.\nÁ¤¸»·Î Å»ÅğÇÏ½Ã°Ú½À´Ï±î?")
+		//			.setTitle("íšŒì› íƒˆí‡´")
+		//			.setMessage("íƒˆí‡´ ì‹œ ê¸°ì¡´ ë§ˆì¼ë¦¬ì§€ê°€ ì†Œë©¸ë©ë‹ˆë‹¤.\nì •ë§ë¡œ íƒˆí‡´í•˜ì‹œê² ìŠµë‹ˆê¹Œ?")
 		//			.setIcon(android.R.drawable.ic_dialog_alert)
 		//			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 		//				public void onClick(DialogInterface dialog, int whichButton) {
-		//					memberInfo.setActivateYn("N");	// ¼­¹ö¿¡ ºñÈ°¼ºÈ­ ½ÃÅ²´Ù.
+		//					memberInfo.setActivateYn("N");	// ì„œë²„ì— ë¹„í™œì„±í™” ì‹œí‚¨ë‹¤.
 		//					memberDeactivation();
-		//					// ¸ğ¹ÙÀÏ ³»¿¡¼­µµ QRÄÚµå,ºñ¹ø ¼³Á¤ µîÀ» ³¯·Á ¹ö¸°´Ù. ±× ¿Ü Á¤º¸µéÀº ÀÎÁõ ¹ŞÀ¸¸é¼­ ¼­¹ö¿¡¼­ ¹ŞÀº°É·Î ¾÷µ« ÇØÁØ´Ù....
+		//					// ëª¨ë°”ì¼ ë‚´ì—ì„œë„ QRì½”ë“œ,ë¹„ë²ˆ ì„¤ì • ë“±ì„ ë‚ ë ¤ ë²„ë¦°ë‹¤. ê·¸ ì™¸ ì •ë³´ë“¤ì€ ì¸ì¦ ë°›ìœ¼ë©´ì„œ ì„œë²„ì—ì„œ ë°›ì€ê±¸ë¡œ ì—…ëƒ í•´ì¤€ë‹¤....
 		//					SharedPreferences.Editor init = sharedPrefCustom.edit();
 		//					init.putString("qrcode", "");		init.putBoolean("appLocked", false);	
 		//					init.putString("password", "");
 		//					init.commit();
 		//					goodBye(thePrefs);
-		//					// db ÀÇ »ç¿ëÀÚ Å×ÀÌºí µå¶ø.
+		//					// db ì˜ ì‚¬ìš©ì í…Œì´ë¸” ë“œë.
 		//					try{
 		//						SQLiteDatabase db = null;
 		//						db= openOrCreateDatabase( "sqlite_carrotDB.db",             
@@ -364,7 +364,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		//					}catch(Exception e){
 		//						e.printStackTrace();
 		//					}
-		//					Toast.makeText(PrefActivityFromResource.this, "ÀÌ¿ëÇØ ÁÖ¼Å¼­ °¨»çÇÕ´Ï´Ù.", Toast.LENGTH_SHORT).show(); 
+		//					Toast.makeText(PrefActivityFromResource.this, "ì´ìš©í•´ ì£¼ì…”ì„œ ê°ì‚¬í•©ë‹ˆë‹¤.", Toast.LENGTH_SHORT).show(); 
 		//					finish();
 		//				}
 		//			})
@@ -377,18 +377,18 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 
 
 
-		// ÀÌº¥Æ® ¾Ë¸²  pref_push_list
+		// ì´ë²¤íŠ¸ ì•Œë¦¼  pref_push_list
 		if(preference.equals(findPreference("pref_push_list"))){
-			//			AlertShow_Message();				// ÁØºñÁßÀÔ´Ï´Ù.
-			// ÀÌº¥Æ® ¸ñ·Ï ±¸Çö ÀÌÈÄ ÇÏ´Ü ÁÖ¼® ÇØÁ¦.
+			//			AlertShow_Message();				// ì¤€ë¹„ì¤‘ì…ë‹ˆë‹¤.
+			// ì´ë²¤íŠ¸ ëª©ë¡ êµ¬í˜„ ì´í›„ í•˜ë‹¨ ì£¼ì„ í•´ì œ.
 			Intent PushListIntent = new Intent(PrefActivityFromResource.this, kr.co.bettersoft.checkmileage.activities.PushList.class);
 			startActivity(PushListIntent);
 
 		}
 
-		// ÀÌ ¾ÛÀº ? pref_app_what
+		// ì´ ì•±ì€ ? pref_app_what
 		if(preference.equals(findPreference("pref_app_what"))){
-			//			Toast.makeText(PrefActivityFromResource.this, "À¥ºä ÆäÀÌÁö·Î ÀÌµ¿ÇÕ´Ï´Ù.", Toast.LENGTH_SHORT).show();
+			//			Toast.makeText(PrefActivityFromResource.this, "ì›¹ë·° í˜ì´ì§€ë¡œ ì´ë™í•©ë‹ˆë‹¤.", Toast.LENGTH_SHORT).show();
 			Intent aboutIntent = new Intent(PrefActivityFromResource.this, Settings_AboutPageActivity.class);
 			//			webIntent.putExtra("loadingURL", "http://m.naver.com");
 			startActivity(aboutIntent);
@@ -398,7 +398,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	}	
 
 
-	// ÁØºñÁßÀÔ´Ï´Ù.. -> ÀÌº¥Æ® ¸ñ·Ï ¹Ì±¸Çö »óÅÂÀÏ¶§ ¾Ë¸² ¿ëµµ --> ÇöÀç´Â»ç¿ëÇÏÁö ¾ÊÀ½
+	// ì¤€ë¹„ì¤‘ì…ë‹ˆë‹¤.. -> ì´ë²¤íŠ¸ ëª©ë¡ ë¯¸êµ¬í˜„ ìƒíƒœì¼ë•Œ ì•Œë¦¼ ìš©ë„ --> í˜„ì¬ëŠ”ì‚¬ìš©í•˜ì§€ ì•ŠìŒ
 	public void AlertShow_Message(){		//R.string.network_error
 		AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
 		alert_internet_status.setTitle("Carrot");
@@ -417,10 +417,10 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 
 
 
-	// ºñµ¿±â·Î »ç¿ëÀÚ Á¤º¸¸¦ ¾÷µ« È£Ãâ  -- Ä³·µ ¼­¹ö¿¡ »ç¿ëÀÚ Á¤º¸¸¦ ¾÷µ«
+	// ë¹„ë™ê¸°ë¡œ ì‚¬ìš©ì ì •ë³´ë¥¼ ì—…ëƒ í˜¸ì¶œ  -- ìºëŸ¿ ì„œë²„ì— ì‚¬ìš©ì ì •ë³´ë¥¼ ì—…ëƒ
 	/**
 	 * backgroundGetUserInfo
-	 * ºñµ¿±â·Î »ç¿ëÀÚ Á¤º¸¸¦ ¾÷µ«ÇÏ´Â ÇÔ¼ö¸¦ È£ÃâÇÑ´Ù
+	 * ë¹„ë™ê¸°ë¡œ ì‚¬ìš©ì ì •ë³´ë¥¼ ì—…ëƒí•˜ëŠ” í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -435,7 +435,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			Log.d(TAG,"backgroundUpdateMyGCMtoServer");
 			//        		getUserInfo_pre();
 			getUserInfo();
-			//			try {						// gcm È®ÀÎ¿ë
+			//			try {						// gcm í™•ì¸ìš©
 			//				testGCM(regIdGCM);
 			//			} catch (JSONException e) {
 			//				e.printStackTrace();
@@ -446,9 +446,9 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		}
 	}
 	/*
-	 *  ¼­¹ö·ÎºÎÅÍ °³ÀÎ Á¤º¸¸¦ ¹Ş¾Æ¿Í¼­ µµ¸ŞÀÎ¿¡ ÀúÀåÇØ µĞ´Ù. ³ªÁß¿¡ ¾÷µ¥ÀÌÆ® ÇÒ¶§ »ç¿ëÇØ¾ßÇÏ´Ï±î.
-	 *  checkMileageMemberController ÄÁ/ selectMemberInformation  ¸Ş/ checkMileageMember µµ/ 
-	 *  checkMileageId º¯<-qrCode , activateYn : Y  /  CheckMileageMember °á°ú
+	 *  ì„œë²„ë¡œë¶€í„° ê°œì¸ ì •ë³´ë¥¼ ë°›ì•„ì™€ì„œ ë„ë©”ì¸ì— ì €ì¥í•´ ë‘”ë‹¤. ë‚˜ì¤‘ì— ì—…ë°ì´íŠ¸ í• ë•Œ ì‚¬ìš©í•´ì•¼í•˜ë‹ˆê¹Œ.
+	 *  checkMileageMemberController ì»¨/ selectMemberInformation  ë©”/ checkMileageMember ë„/ 
+	 *  checkMileageId ë³€<-qrCode , activateYn : Y  /  CheckMileageMember ê²°ê³¼
 	 */
 	//	public void getUserInfo_pre(){
 	//		new Thread(
@@ -472,7 +472,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	//	}
 	/**
 	 * getUserInfo
-	 * ¼­¹ö·ÎºÎÅÍ °³ÀÎ Á¤º¸¸¦ ¹Ş¾Æ¿Í¼­ µµ¸ŞÀÎ¿¡ ÀúÀåÇØ µĞ´Ù
+	 * ì„œë²„ë¡œë¶€í„° ê°œì¸ ì •ë³´ë¥¼ ë°›ì•„ì™€ì„œ ë„ë©”ì¸ì— ì €ì¥í•´ ë‘”ë‹¤
 	 *
 	 * @param
 	 * @param
@@ -489,7 +489,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 					public void run(){
 						JSONObject obj = new JSONObject();
 						try{
-							// »ç¿ëÀÚ ¾ÆÀÌµğ¸¦ ³Ö¾î¼­ Á¶È¸
+							// ì‚¬ìš©ì ì•„ì´ë””ë¥¼ ë„£ì–´ì„œ ì¡°íšŒ
 							obj.put("activateYn", "Y");
 							obj.put("checkMileageId", MyQRPageActivity.qrCode);
 							Log.d(TAG,"checkMileageId:"+ MyQRPageActivity.qrCode);
@@ -512,11 +512,11 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							os2.flush();
 							Thread.sleep(200);
 							//							System.out.println("postUrl      : " + postUrl2);
-							//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : Á¤»ó
+							//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : ì •ìƒ
 							responseCode = connection2.getResponseCode();
 							InputStream in =  connection2.getInputStream();
 							//							os2.close();
-							// Á¶È¸ÇÑ °á°ú¸¦ Ã³¸®.
+							// ì¡°íšŒí•œ ê²°ê³¼ë¥¼ ì²˜ë¦¬.
 							theData1(in);
 							//							connection2.disconnect();
 						}catch(Exception e){ 
@@ -525,7 +525,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 						}
 						//						finally{
 						//							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-						//							if(CommonUtils.usingNetwork < 0){	// 0 º¸´Ù ÀÛÁö´Â ¾Ê°Ô
+						//							if(CommonUtils.usingNetwork < 0){	// 0 ë³´ë‹¤ ì‘ì§€ëŠ” ì•Šê²Œ
 						//								CommonUtils.usingNetwork = 0;
 						//							}
 						//						}
@@ -535,11 +535,11 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	}
 
 	/*
-	 *  ¼­¹ö·Î º¯°æµÈ ¼³Á¤ µîÀ» ¾÷µ¥ÀÌÆ® ÇÑ´Ù. ±×¶§±×¶§ ÇØÁà¾ß ÇÑ´Ù. ±âÁ¸ µµ¸ŞÀÎ¿¡ ¼¼ÆÃÇÏ°í µµ¸ŞÀÎ Ã¤·Î ¾÷µ¥ÀÌÆ® Ä£´Ù. 
-	 *    ÇÃ·¡±× °ªÀ» µÎ¾î 0->1·Î ¹Ù²Ù°í ¾÷µ« Ä£´Ù. 
-	 *    1ÀÏ°æ¿ì 2·Î ¹Ù²Ù°í ¾÷µ« ¾ÈÄ£´Ù. 
-	 *    2ÀÏ°æ¿ì ¾Æ¹«°Íµµ ÇÏÁö ¾Ê´Â´Ù. 
-	 *    ¾÷µ« Ä¡°í ³ª¼­ 1À» ³»¸®°í ³ª¼­ È®ÀÎ -> 0ÀÌ ¾Æ´Ò °æ¿ì ´Ù½Ã ¾÷µ« Ä£´Ù.
+	 *  ì„œë²„ë¡œ ë³€ê²½ëœ ì„¤ì • ë“±ì„ ì—…ë°ì´íŠ¸ í•œë‹¤. ê·¸ë•Œê·¸ë•Œ í•´ì¤˜ì•¼ í•œë‹¤. ê¸°ì¡´ ë„ë©”ì¸ì— ì„¸íŒ…í•˜ê³  ë„ë©”ì¸ ì±„ë¡œ ì—…ë°ì´íŠ¸ ì¹œë‹¤. 
+	 *    í”Œë˜ê·¸ ê°’ì„ ë‘ì–´ 0->1ë¡œ ë°”ê¾¸ê³  ì—…ëƒ ì¹œë‹¤. 
+	 *    1ì¼ê²½ìš° 2ë¡œ ë°”ê¾¸ê³  ì—…ëƒ ì•ˆì¹œë‹¤. 
+	 *    2ì¼ê²½ìš° ì•„ë¬´ê²ƒë„ í•˜ì§€ ì•ŠëŠ”ë‹¤. 
+	 *    ì—…ëƒ ì¹˜ê³  ë‚˜ì„œ 1ì„ ë‚´ë¦¬ê³  ë‚˜ì„œ í™•ì¸ -> 0ì´ ì•„ë‹ ê²½ìš° ë‹¤ì‹œ ì—…ëƒ ì¹œë‹¤.
 	 */
 	//	public void updateToServer_pre(){
 	//		new Thread(
@@ -565,7 +565,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 
 	/**
 	 * updateToServer
-	 *  ¼­¹ö·Î º¯°æµÈ ¼³Á¤ µîÀ» ¾÷µ¥ÀÌÆ® ÇÑ´Ù
+	 *  ì„œë²„ë¡œ ë³€ê²½ëœ ì„¤ì • ë“±ì„ ì—…ë°ì´íŠ¸ í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -581,7 +581,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 						public void run(){
 							JSONObject obj = new JSONObject();
 							try{
-								// »ç¿ëÀÚ Á¤º¸ ¾÷µ«.
+								// ì‚¬ìš©ì ì •ë³´ ì—…ëƒ.
 								obj.put("checkMileageId", memberInfo.getCheckMileageId());
 								obj.put("password", memberInfo.getPassword());
 								obj.put("phoneNumber", memberInfo.getPhoneNumber());
@@ -601,7 +601,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								Log.i(TAG, "activateYn::"+memberInfo.getActivateYn());
 								String nowTime = getNow();
 								Log.i(TAG, "nowTime::"+nowTime);
-								obj.put("modifyDate", nowTime);		// Áö±İ ½Ã°£À¸·Î.
+								obj.put("modifyDate", nowTime);		// ì§€ê¸ˆ ì‹œê°„ìœ¼ë¡œ.
 							}catch(Exception e){
 								e.printStackTrace();
 							}
@@ -621,15 +621,15 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								os2.flush();
 								Thread.sleep(200);
 								//								System.out.println("postUrl      : " + postUrl2);
-								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : Á¤»ó
+								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : ì •ìƒ
 								responseCode = connection2.getResponseCode();
 								//								InputStream in =  connection2.getInputStream();
 								//								os2.close();
-								// Á¶È¸ÇÑ °á°ú¸¦ Ã³¸®.
-								if(responseCode==200 || responseCode == 204){	// ¼º°øÀÌ¶ó µüÈ÷..
-									//									theData1(in);		// ¼­¹ö °á°ú °¡Áö°í Àç ¼¼ÆÃÇÏ¸é¾ÈµÊ <- ´Â ¸â¹ö Á¤º¸ ¹Ş¾Æ¼­ Ã³¸®ÇÏ´Â ³à¼®ÀÓ È£Ãâ ±İÁö
+								// ì¡°íšŒí•œ ê²°ê³¼ë¥¼ ì²˜ë¦¬.
+								if(responseCode==200 || responseCode == 204){	// ì„±ê³µì´ë¼ ë”±íˆ..
+									//									theData1(in);		// ì„œë²„ ê²°ê³¼ ê°€ì§€ê³  ì¬ ì„¸íŒ…í•˜ë©´ì•ˆë¨ <- ëŠ” ë©¤ë²„ ì •ë³´ ë°›ì•„ì„œ ì²˜ë¦¬í•˜ëŠ” ë…€ì„ì„ í˜¸ì¶œ ê¸ˆì§€
 									updateLv = updateLv-1;
-									if(updateLv>0){		// 2¿´´ø °æ¿ì. (¾÷µ«Áß ¶Ç º¯°æµÈ °æ¿ì ÇÑ¹ø´õ)
+									if(updateLv>0){		// 2ì˜€ë˜ ê²½ìš°. (ì—…ëƒì¤‘ ë˜ ë³€ê²½ëœ ê²½ìš° í•œë²ˆë”)
 										Log.d(TAG,"Need Update one more time");
 										updateToServer();
 									}
@@ -643,7 +643,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							}
 							//							finally{
 							//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-							//								if(CommonUtils.usingNetwork < 0){	// 0 º¸´Ù ÀÛÁö´Â ¾Ê°Ô
+							//								if(CommonUtils.usingNetwork < 0){	// 0 ë³´ë‹¤ ì‘ì§€ëŠ” ì•Šê²Œ
 							//									CommonUtils.usingNetwork = 0;
 							//								}
 							//							}
@@ -655,11 +655,11 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	}
 
 	/*
-	 *  ¼­¹ö·Î ¾Ë¸² ¼ö½Å ¼³Á¤ ¾÷µ«.
-	 *    ÇÃ·¡±× °ªÀ» µÎ¾î 0->1·Î ¹Ù²Ù°í ¾÷µ« Ä£´Ù. 
-	 *    1ÀÏ°æ¿ì 2·Î ¹Ù²Ù°í ¾÷µ« ¾ÈÄ£´Ù. 
-	 *    2ÀÏ°æ¿ì ¾Æ¹«°Íµµ ÇÏÁö ¾Ê´Â´Ù. 
-	 *    ¾÷µ« Ä¡°í ³ª¼­ 1À» ³»¸®°í ³ª¼­ È®ÀÎ -> 0ÀÌ ¾Æ´Ò °æ¿ì ´Ù½Ã ¾÷µ« Ä£´Ù.
+	 *  ì„œë²„ë¡œ ì•Œë¦¼ ìˆ˜ì‹  ì„¤ì • ì—…ëƒ.
+	 *    í”Œë˜ê·¸ ê°’ì„ ë‘ì–´ 0->1ë¡œ ë°”ê¾¸ê³  ì—…ëƒ ì¹œë‹¤. 
+	 *    1ì¼ê²½ìš° 2ë¡œ ë°”ê¾¸ê³  ì—…ëƒ ì•ˆì¹œë‹¤. 
+	 *    2ì¼ê²½ìš° ì•„ë¬´ê²ƒë„ í•˜ì§€ ì•ŠëŠ”ë‹¤. 
+	 *    ì—…ëƒ ì¹˜ê³  ë‚˜ì„œ 1ì„ ë‚´ë¦¬ê³  ë‚˜ì„œ í™•ì¸ -> 0ì´ ì•„ë‹ ê²½ìš° ë‹¤ì‹œ ì—…ëƒ ì¹œë‹¤.
 	 */
 	//	public void updateGCMToServer_pre(final Boolean checked){
 	//		new Thread(
@@ -684,7 +684,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 
 	/**
 	 * updateGCMToServer
-	 *  ¼­¹ö¿¡ ¾Ë¸² ¼ö½Å ¼³Á¤ °ªÀ» ¾÷µ«ÇÑ´Ù
+	 *  ì„œë²„ì— ì•Œë¦¼ ìˆ˜ì‹  ì„¤ì • ê°’ì„ ì—…ëƒí•œë‹¤
 	 *
 	 * @param checked
 	 * @param
@@ -705,7 +705,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 						public void run(){
 							JSONObject obj = new JSONObject();
 							try{
-								// »ç¿ëÀÚ Á¤º¸ ¾÷µ«.
+								// ì‚¬ìš©ì ì •ë³´ ì—…ëƒ.
 
 								/*
 								 * checkMileageId
@@ -715,11 +715,11 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								 */
 								// checkMileageMember    CheckMileageMember
 								obj.put("checkMileageId", memberInfo.getCheckMileageId());
-								obj.put("receiveNotificationYn", strYorN);						// Á¤ÇØ¼­ ³Ö¾î.
+								obj.put("receiveNotificationYn", strYorN);						// ì •í•´ì„œ ë„£ì–´.
 								obj.put("activateYn", memberInfo.getActivateYn());
 
 								String nowTime = getNow();
-								obj.put("modifyDate", nowTime);		// Áö±İ ½Ã°£À¸·Î.
+								obj.put("modifyDate", nowTime);		// ì§€ê¸ˆ ì‹œê°„ìœ¼ë¡œ.
 
 								Log.i(TAG, "checkMileageId::"+memberInfo.getCheckMileageId());
 								Log.i(TAG, "receiveNotificationYn::"+strYorN);
@@ -745,16 +745,16 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								os2.flush();
 								Thread.sleep(200);
 								//								System.out.println("postUrl      : " + postUrl2);
-								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : Á¤»ó
+								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : ì •ìƒ
 								responseCode = connection2.getResponseCode();
 								//								InputStream in =  connection2.getInputStream();
 								//								os2.close();
-								// Á¶È¸ÇÑ °á°ú¸¦ Ã³¸®.
-								if(responseCode==200 || responseCode == 204){	// ¼º°øÀÌ¶ó µüÈ÷..
-									//									theData1(in);		// ¼­¹ö °á°ú °¡Áö°í Àç ¼¼ÆÃÇÏ¸é¾ÈµÊ <- ´Â ¸â¹ö Á¤º¸ ¹Ş¾Æ¼­ Ã³¸®ÇÏ´Â ³à¼®ÀÓ È£Ãâ ±İÁö
+								// ì¡°íšŒí•œ ê²°ê³¼ë¥¼ ì²˜ë¦¬.
+								if(responseCode==200 || responseCode == 204){	// ì„±ê³µì´ë¼ ë”±íˆ..
+									//									theData1(in);		// ì„œë²„ ê²°ê³¼ ê°€ì§€ê³  ì¬ ì„¸íŒ…í•˜ë©´ì•ˆë¨ <- ëŠ” ë©¤ë²„ ì •ë³´ ë°›ì•„ì„œ ì²˜ë¦¬í•˜ëŠ” ë…€ì„ì„ í˜¸ì¶œ ê¸ˆì§€
 									Log.d(TAG, "S to receive GCM option update");
 									updateLv = updateLv-1;
-									if(updateLv>0){		// 2¿´´ø °æ¿ì. (¾÷µ«Áß ¶Ç º¯°æµÈ °æ¿ì ÇÑ¹ø´õ)
+									if(updateLv>0){		// 2ì˜€ë˜ ê²½ìš°. (ì—…ëƒì¤‘ ë˜ ë³€ê²½ëœ ê²½ìš° í•œë²ˆë”)
 										Log.d(TAG,"Need Update one more time");
 										//										updateGCMToServer_pre(yn);
 										updateGCMToServer(yn);
@@ -769,7 +769,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							}
 							//							finally{
 							//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-							//								if(CommonUtils.usingNetwork < 0){	// 0 º¸´Ù ÀÛÁö´Â ¾Ê°Ô
+							//								if(CommonUtils.usingNetwork < 0){	// 0 ë³´ë‹¤ ì‘ì§€ëŠ” ì•Šê²Œ
 							//									CommonUtils.usingNetwork = 0;
 							//								}
 							//							}
@@ -782,7 +782,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 
 
 	/*
-	 * È¸¿ø Å»Åğ Àü¿ë ¸Ş¼­µå.  --> ±â´É Á¦°Å µÊ.
+	 * íšŒì› íƒˆí‡´ ì „ìš© ë©”ì„œë“œ.  --> ê¸°ëŠ¥ ì œê±° ë¨.
 	 * memberDeactivation
 	 */
 	public void memberDeactivation(){
@@ -794,7 +794,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 					public void run(){
 						JSONObject obj = new JSONObject();
 						try{
-							// »ç¿ëÀÚ Å»Åğ.
+							// ì‚¬ìš©ì íƒˆí‡´.
 							/*
 							 * checkMileageId
 									activateYn
@@ -806,7 +806,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 
 							String nowTime = getNow();
 							Log.i(TAG, "nowTime::"+nowTime);
-							obj.put("modifyDate", nowTime);		// Áö±İ ½Ã°£À¸·Î.
+							obj.put("modifyDate", nowTime);		// ì§€ê¸ˆ ì‹œê°„ìœ¼ë¡œ.
 						}catch(Exception e){
 							e.printStackTrace();
 						}
@@ -826,14 +826,14 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							os2.flush();
 							Thread.sleep(200);
 							//							System.out.println("postUrl      : " + postUrl2);
-							//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : Á¤»ó
+							//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : ì •ìƒ
 							responseCode = connection2.getResponseCode();
 							//							InputStream in =  connection2.getInputStream();
 							//							os2.close();
-							// Á¶È¸ÇÑ °á°ú¸¦ Ã³¸®.
-							if(responseCode==200 || responseCode == 204){	// ¼º°øÀÌ¶ó µüÈ÷..
-								//									theData1(in);		// ¼­¹ö °á°ú °¡Áö°í Àç ¼¼ÆÃÇÏ¸é¾ÈµÊ <- ´Â ¸â¹ö Á¤º¸ ¹Ş¾Æ¼­ Ã³¸®ÇÏ´Â ³à¼®ÀÓ È£Ãâ ±İÁö
-								// ... ÇÒ°Å ¾øÀ½. Å»Åğ ¼º°øÇß´Âµ¥ ¹«½¼..
+							// ì¡°íšŒí•œ ê²°ê³¼ë¥¼ ì²˜ë¦¬.
+							if(responseCode==200 || responseCode == 204){	// ì„±ê³µì´ë¼ ë”±íˆ..
+								//									theData1(in);		// ì„œë²„ ê²°ê³¼ ê°€ì§€ê³  ì¬ ì„¸íŒ…í•˜ë©´ì•ˆë¨ <- ëŠ” ë©¤ë²„ ì •ë³´ ë°›ì•„ì„œ ì²˜ë¦¬í•˜ëŠ” ë…€ì„ì„ í˜¸ì¶œ ê¸ˆì§€
+								// ... í• ê±° ì—†ìŒ. íƒˆí‡´ ì„±ê³µí–ˆëŠ”ë° ë¬´ìŠ¨..
 							}else{
 								Log.w(TAG,"fail to update");
 							}
@@ -848,11 +848,11 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	}
 
 	/*
-	 * ¼­¹ö·ÎºÎÅÍ ¹Ş¾Æ¿Â °³ÀÎ Á¤º¸¸¦ ÆÄ½ÌÇØ¼­ µµ¸ŞÀÎ¿¡ ÀúÀåÇÏ´Â ºÎºĞ. ¾÷µ«, Å»Åğ¿¡¼­ È£ÃâÇÏ¸é ¾ÈµÊ. ¸â¹ö µ¥ÀÌÅÍ ¸ğµÎ ³¯¾Æ°¨
+	 * ì„œë²„ë¡œë¶€í„° ë°›ì•„ì˜¨ ê°œì¸ ì •ë³´ë¥¼ íŒŒì‹±í•´ì„œ ë„ë©”ì¸ì— ì €ì¥í•˜ëŠ” ë¶€ë¶„. ì—…ëƒ, íƒˆí‡´ì—ì„œ í˜¸ì¶œí•˜ë©´ ì•ˆë¨. ë©¤ë²„ ë°ì´í„° ëª¨ë‘ ë‚ ì•„ê°
 	 */
 	/**
 	 * theData1
-	 *  ¼­¹ö·ÎºÎÅÍ ¹Ş¾Æ¿Â °³ÀÎ Á¤º¸¸¦ ÆÄ½ÌÇØ¼­ µµ¸ŞÀÎ¿¡ ÀúÀåÇÑ´Ù
+	 *  ì„œë²„ë¡œë¶€í„° ë°›ì•„ì˜¨ ê°œì¸ ì •ë³´ë¥¼ íŒŒì‹±í•´ì„œ ë„ë©”ì¸ì— ì €ì¥í•œë‹¤
 	 *
 	 * @param in
 	 * @param
@@ -879,92 +879,92 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			e.printStackTrace();
 		}
 		/*
-		 *  ÀÏ´Ü ¹ŞÀº ³»¿ë ¿©±â¿¡ ÀûÀ»°Í
-		 *  °í°´ »ó¼¼Á¤º¸::{"checkMileageMember":
+		 *  ì¼ë‹¨ ë°›ì€ ë‚´ìš© ì—¬ê¸°ì— ì ì„ê²ƒ
+		 *  ê³ ê° ìƒì„¸ì •ë³´::{"checkMileageMember":
 		 *  {"checkMileageId":"test1234","password":"","phoneNumber":"01022173645",
 		 *  "email":"","birthday":"","gender":"","latitude":"","longitude":"","deviceType":"AS",
 		 *  "registrationId":"aaqw","activateYn":"Y","modifyDate":"2012-08-10","registerDate":"2012-08-10"}}
 		 *  
-		 *   ¾÷µ¥ÀÌÆ® ÇÒ °Íµé.  µµ¸ŞÀÎ¿¡ ÀúÀå.
+		 *   ì—…ë°ì´íŠ¸ í•  ê²ƒë“¤.  ë„ë©”ì¸ì— ì €ì¥.
 		 *  checkMileageId /password /phoneNumber /email /birthday /gender /latitude /longitude /deviceType /registrationId /activateYn /modifyDate /
 		 */
-		//		Log.d(TAG,"¼­¹ö¿¡¼­ ¹ŞÀº °í°´ »ó¼¼Á¤º¸::"+builder.toString());
-		String tempstr = builder.toString();		// ¹ŞÀº µ¥ÀÌÅÍ¸¦ °¡°øÇÏ¿© »ç¿ëÇÒ ¼ö ÀÖ´Ù
-		// // // // // // // ¹Ù·Î ¹Ù·Î È­¸é¿¡ add ÇÏ°í ÅÍÄ¡½Ã °ª °¡Á®´Ù°¡ »ó¼¼ Á¤º¸ º¸µµ·Ï....
+		//		Log.d(TAG,"ì„œë²„ì—ì„œ ë°›ì€ ê³ ê° ìƒì„¸ì •ë³´::"+builder.toString());
+		String tempstr = builder.toString();		// ë°›ì€ ë°ì´í„°ë¥¼ ê°€ê³µí•˜ì—¬ ì‚¬ìš©í•  ìˆ˜ ìˆë‹¤
+		// // // // // // // ë°”ë¡œ ë°”ë¡œ í™”ë©´ì— add í•˜ê³  í„°ì¹˜ì‹œ ê°’ ê°€ì ¸ë‹¤ê°€ ìƒì„¸ ì •ë³´ ë³´ë„ë¡....
 		if(responseCode==200 || responseCode==204){
 			try {
 				jsonObject = new JSONObject(tempstr);
 				JSONObject jsonobj2 = jsonObject.getJSONObject("checkMileageMember");
 				//				Bitmap bm = null;
-				// µ¥ÀÌÅÍ¸¦ Àü¿ª º¯¼ö µµ¸ŞÀÎ¿¡ ÀúÀåÇÏ°í ÇÚµé·¯¸¦ ÅëÇØ µµ¸ŞÀÎ-> È­¸é¿¡ º¸¿©ÁØ´Ù..
-				try{  // ¾ÆÀÌµğ
+				// ë°ì´í„°ë¥¼ ì „ì—­ ë³€ìˆ˜ ë„ë©”ì¸ì— ì €ì¥í•˜ê³  í•¸ë“¤ëŸ¬ë¥¼ í†µí•´ ë„ë©”ì¸-> í™”ë©´ì— ë³´ì—¬ì¤€ë‹¤..
+				try{  // ì•„ì´ë””
 					Log.i(TAG, "checkMileageId:::"+jsonobj2.getString("checkMileageId"));
 					memberInfo.setCheckMileageId(jsonobj2.getString("checkMileageId"));				
 				}catch(Exception e){ memberInfo.setCheckMileageId(""); }
-				try{  // ºñ¹ø
+				try{  // ë¹„ë²ˆ
 					memberInfo.setPassword(jsonobj2.getString("password"));				
 				}catch(Exception e){ memberInfo.setPassword(""); }
-				try{  //Àü¹ø 
+				try{  //ì „ë²ˆ 
 					memberInfo.setPhoneNumber(jsonobj2.getString("phoneNumber"));				
 				}catch(Exception e){ memberInfo.setPhoneNumber(""); }
-				try{	// ¸á
+				try{	// ë©œ
 					memberInfo.setEmail(jsonobj2.getString("email"));				
 				}catch(Exception e){ memberInfo.setEmail(""); }
-				try{	// »ıÀÏ
+				try{	// ìƒì¼
 					memberInfo.setBirthday(jsonobj2.getString("birthday"));				
 				}catch(Exception e){ memberInfo.setBirthday(""); }
-				try{	// ¼ºº°
+				try{	// ì„±ë³„
 					memberInfo.setGender(jsonobj2.getString("gender"));				
 				}catch(Exception e){ memberInfo.setGender(""); }
-				try{	// À§µµ
+				try{	// ìœ„ë„
 					memberInfo.setLatitude(jsonobj2.getString("latitude"));				
 				}catch(Exception e){ memberInfo.setLatitude(""); }
-				try{	// °æµµ
+				try{	// ê²½ë„
 					memberInfo.setLongitude(jsonobj2.getString("longitude"));				
 				}catch(Exception e){ memberInfo.setLongitude(""); }
-				try{	// Å¸ÀÔ
+				try{	// íƒ€ì…
 					memberInfo.setDeviceType(jsonobj2.getString("deviceType"));				
 				}catch(Exception e){ memberInfo.setDeviceType(""); }
-				try{	// µî·ÏID
+				try{	// ë“±ë¡ID
 					memberInfo.setRegistrationId(jsonobj2.getString("registrationId"));				
 				}catch(Exception e){ memberInfo.setRegistrationId(""); }
-				try{	// ¾×Æ¼º£ÀÌÆ®
+				try{	// ì•¡í‹°ë² ì´íŠ¸
 					memberInfo.setActivateYn(jsonobj2.getString("activateYn"));	
 					if((jsonobj2.getString("activateYn")==null)||(jsonobj2.getString("activateYn").length()<1)){
 						memberInfo.setActivateYn("Y");
 					}
 				}catch(Exception e){ memberInfo.setActivateYn("Y"); }
-				try{	// º¯°æÀÏ
+				try{	// ë³€ê²½ì¼
 					memberInfo.setModifyDate(jsonobj2.getString("modifyDate"));				
 				}catch(Exception e){ memberInfo.setModifyDate(""); }
-				try{	// ¾Ë¸² ¼ö½Å ¿©ºÎ 
+				try{	// ì•Œë¦¼ ìˆ˜ì‹  ì—¬ë¶€ 
 					memberInfo.setReceiveNotificationYn(jsonobj2.getString("receiveNotificationYn"));				
 				}catch(Exception e){ memberInfo.setReceiveNotificationYn(""); }
 
-				try{	// ±¹°¡ ÄÚµå
+				try{	// êµ­ê°€ ì½”ë“œ
 					memberInfo.setCountryCode(jsonobj2.getString("countryCode"));				
 				}catch(Exception e){ memberInfo.setCountryCode(strCountry); }
-				try{	// ¾ğ¾î ÄÚµå
+				try{	// ì–¸ì–´ ì½”ë“œ
 					memberInfo.setLanguageCode(jsonobj2.getString("languageCode"));				
 				}catch(Exception e){ memberInfo.setLanguageCode(strLanguage); }
 
-				// ±× ¿Ü activateYn ´Â ¼öµ¿ Á¶ÀÛ. ÀÌ½ÃÁ¡¿¡ ÀúÀå ¿Ï·á.
+				// ê·¸ ì™¸ activateYn ëŠ” ìˆ˜ë™ ì¡°ì‘. ì´ì‹œì ì— ì €ì¥ ì™„ë£Œ.
 			} catch (JSONException e) {		
 				e.printStackTrace();
-				Log.w(TAG,tempstr.length()+"");		// 0 ÀÌ¸é ¼­¹ö¿¡ Á¤º¸ ¾øÀ½.
+				Log.w(TAG,tempstr.length()+"");		// 0 ì´ë©´ ì„œë²„ì— ì •ë³´ ì—†ìŒ.
 
 			} 
-		}else{			// ¿äÃ» ½ÇÆĞ½Ã	 Åä½ºÆ® ¶ç¿ì°í È­¸é À¯Áö.
+		}else{			// ìš”ì²­ ì‹¤íŒ¨ì‹œ	 í† ìŠ¤íŠ¸ ë„ìš°ê³  í™”ë©´ ìœ ì§€.
 			//			Toast.makeText(PrefActivityFromResource.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 		}
 	}
 
 
-	// ÁÖ ¿ëµµ´Â resume ¶§ ÀÚÃ¼ ÇÁ¸®ÆÛ·±½º Àü´ŞÇÏ¿© ÄÁÆ®·Ñ ÇÒ ¼ö ÀÖ°Ô ÇÏ´Â °Í. 
+	// ì£¼ ìš©ë„ëŠ” resume ë•Œ ìì²´ í”„ë¦¬í¼ëŸ°ìŠ¤ ì „ë‹¬í•˜ì—¬ ì»¨íŠ¸ë¡¤ í•  ìˆ˜ ìˆê²Œ í•˜ëŠ” ê²ƒ. 
 	/**
 	 * onSharedPreferenceChanged
-	 *  default ÇÁ¸®ÆÛ·±½º º¯È­°¡ ÀÖÀ»¶§ÀÇ Äİ¹é ¸Ş¼­µå ÀÌ´Ù.
-	 *   default ÇÁ¸®ÆÛ·±½º¿Í °øÀ¯ preference °£ µ¿±âÈ­¸¦ À§ÇÑ ÀÛ¾÷À» ÇÑ´Ù
+	 *  default í”„ë¦¬í¼ëŸ°ìŠ¤ ë³€í™”ê°€ ìˆì„ë•Œì˜ ì½œë°± ë©”ì„œë“œ ì´ë‹¤.
+	 *   default í”„ë¦¬í¼ëŸ°ìŠ¤ì™€ ê³µìœ  preference ê°„ ë™ê¸°í™”ë¥¼ ìœ„í•œ ì‘ì—…ì„ í•œë‹¤
 	 *
 	 * @param sharedPreferences
 	 * @param key
@@ -973,9 +973,9 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		if(key.equals("pref_app_hi")){		// resume ¿¡¼­ ³ÖÀº °Í°ú ÀÌ¸§ ÀÏÄ¡ÇØ¾ß µ¿ÀÛÇÑ´Ù.
+		if(key.equals("pref_app_hi")){		// resume ì—ì„œ ë„£ì€ ê²ƒê³¼ ì´ë¦„ ì¼ì¹˜í•´ì•¼ ë™ì‘í•œë‹¤.
 			//			Toast.makeText(PrefActivityFromResource.this, "???"+key, Toast.LENGTH_SHORT).show();
-			/*  // Å×½ºÆ®¿ë
+			/*  // í…ŒìŠ¤íŠ¸ìš©
 			Map<String, ?> map = sharedPreferences.getAll();
 			Log.e(TAG, "map.size"+map.size());	
 			Set set  = map.keySet();
@@ -989,12 +989,12 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 //				iivalue  = (String)obj;
 				Log.e(TAG, iikey+"//"+obj);	
 			}
-			 */		// Å×½ºÆ®¿ë(È®ÀÎ¿ë)
+			 */		// í…ŒìŠ¤íŠ¸ìš©(í™•ì¸ìš©)
 			thePrefs = sharedPreferences;
 		}
 	}
 
-	// Å»Åğ - ¾îÇÃ ³» ±âº» ÇÁ¸®ÆÛ·±½º ÃÊ±âÈ­.   -- Å»Åğ ±â´É »ç¿ë ¾ÈÇÔ
+	// íƒˆí‡´ - ì–´í”Œ ë‚´ ê¸°ë³¸ í”„ë¦¬í¼ëŸ°ìŠ¤ ì´ˆê¸°í™”.   -- íƒˆí‡´ ê¸°ëŠ¥ ì‚¬ìš© ì•ˆí•¨
 	public void goodBye(SharedPreferences sharedPreferences){
 		/*
 		 * birthYear//2009
@@ -1004,8 +1004,8 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		 * preference_alarm_chk//true
 		 * preference_lock_chk//true
 		 * 
-		 * pref_user_email//¤¡¤¤¤¡¤¤¤¤
-		 * pref_user_sex//³²¼º
+		 * pref_user_email//ã„±ã„´ã„±ã„´ã„´
+		 * pref_user_sex//ë‚¨ì„±
 		 * password//1234
 		 */
 		SharedPreferences.Editor init = sharedPreferences.edit();
@@ -1027,8 +1027,8 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	/**
 	 * updateServerSettingsToPrefs
 	 * 
-	 *  °ø¿ë¼³Á¤¿¡¼­ ¾÷µ« ¿©ºÎ È®ÀÎ ÀÌÈÄ, y ÀÌ¸é ÀÚÃ¼ ¼³Á¤¿¡ ¾÷µ« Ä£´Ù. ¾Æ´Ï¸é pass.  ºñ¹øÀº ÇØ´ç»çÇ× ¾ø´Ù.
-	 *  ¼­¹ö¿¡¼­ ¹ŞÀº ¼³Á¤ Á¤º¸¸¦ ¸ğ¹ÙÀÏ ¼³Á¤¿¡ ÀúÀåÇÑ´Ù. ¾÷µ¥ÀÌÆ® ¿©ºÎ´Â updateYN ¸¦ ÀÌ¿ëÇÑ´Ù.
+	 *  ê³µìš©ì„¤ì •ì—ì„œ ì—…ëƒ ì—¬ë¶€ í™•ì¸ ì´í›„, y ì´ë©´ ìì²´ ì„¤ì •ì— ì—…ëƒ ì¹œë‹¤. ì•„ë‹ˆë©´ pass.  ë¹„ë²ˆì€ í•´ë‹¹ì‚¬í•­ ì—†ë‹¤.
+	 *  ì„œë²„ì—ì„œ ë°›ì€ ì„¤ì • ì •ë³´ë¥¼ ëª¨ë°”ì¼ ì„¤ì •ì— ì €ì¥í•œë‹¤. ì—…ë°ì´íŠ¸ ì—¬ë¶€ëŠ” updateYN ë¥¼ ì´ìš©í•œë‹¤.
 	 *  
 	 * @param
 	 * @param
@@ -1042,7 +1042,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			String server_email = sharedPrefCustom.getString("server_email", "");
 			String server_gender = sharedPrefCustom.getString("server_gender", "");
 			Boolean server_receive_notification_yn = sharedPrefCustom.getBoolean("server_receive_notification_yn", true);			
-			// »ı³â¿ùÀÏÀº ²¨³»¼­ ÂÉ°³¼­ ´Ù½Ã ÀúÀå
+			// ìƒë…„ì›”ì¼ì€ êº¼ë‚´ì„œ ìª¼ê°œì„œ ë‹¤ì‹œ ì €ì¥
 			if(server_birthday.length()>8){		// 2012-08-25		0123 4x 56 7x 89
 				String server_birth_year = server_birthday.substring(0,4);
 				String server_birth_month = server_birthday.substring(5,7);
@@ -1063,23 +1063,23 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			SharedPreferences.Editor updateDone =   sharedPrefCustom.edit();
 			SharedPreferences.Editor sets = defaultPref.edit();
 			if(!server_receive_notification_yn){
-				sets.putBoolean("preference_alarm_chk", false);			// ÀÚÃ¼ ¼³Á¤ ¹Ù²Ş
+				sets.putBoolean("preference_alarm_chk", false);			// ìì²´ ì„¤ì • ë°”ê¿ˆ
 				CheckBoxPreference preference_alarm_chk = (CheckBoxPreference)findPreference("preference_alarm_chk");
-				preference_alarm_chk.setChecked(false);					// È­¸é¿¡¼­µµ ¹Ù²Ş
+				preference_alarm_chk.setChecked(false);					// í™”ë©´ì—ì„œë„ ë°”ê¿ˆ
 			}			
 			if(server_gender!=null && server_gender.length()>0){
-				sets.putString("pref_user_sex", server_gender);		// ÀÚÃ¼ ¼³Á¤¸¸ ¹Ù²Ş (È­¸é¿¡¼­´Â ÇÏÀ§ ÆäÀÌÁö¿¡¼­ ¹Ù²Ş)
+				sets.putString("pref_user_sex", server_gender);		// ìì²´ ì„¤ì •ë§Œ ë°”ê¿ˆ (í™”ë©´ì—ì„œëŠ” í•˜ìœ„ í˜ì´ì§€ì—ì„œ ë°”ê¿ˆ)
 			}
 			if(server_email!=null && server_email.length()>0){
-				sets.putString("pref_user_email", server_email);	// ÀÚÃ¼ ¼³Á¤¸¸ ¹Ù²Ş (È­¸é¿¡¼­´Â ÇÏÀ§ ÆäÀÌÁö¿¡¼­ ¹Ù²Ş)
+				sets.putString("pref_user_email", server_email);	// ìì²´ ì„¤ì •ë§Œ ë°”ê¿ˆ (í™”ë©´ì—ì„œëŠ” í•˜ìœ„ í˜ì´ì§€ì—ì„œ ë°”ê¿ˆ)
 			}
-			sets.commit();		// ÀÚÃ¼ ¼³Á¤ ¹Ù²Ş ÀúÀå.
-			updateDone.putString("updateYN", "N");		// ÆùÀ¸·Î ¾÷µ« ³¡ ÀÌÈÄ. 
-			updateDone.putString("updateYN2", "Y");		// ÆùÀ¸·Î ¾÷µ« ³¡ ÀÌÈÄ. --> ÇÏÀ§ ÆäÀÌÁö¿¡¼­ ¿Ï·áµÊ.
+			sets.commit();		// ìì²´ ì„¤ì • ë°”ê¿ˆ ì €ì¥.
+			updateDone.putString("updateYN", "N");		// í°ìœ¼ë¡œ ì—…ëƒ ë ì´í›„. 
+			updateDone.putString("updateYN2", "Y");		// í°ìœ¼ë¡œ ì—…ëƒ ë ì´í›„. --> í•˜ìœ„ í˜ì´ì§€ì—ì„œ ì™„ë£Œë¨.
 			updateDone.commit();
 			Log.i(TAG,"update settings to mobile step1 done");
 			//			(Preference)findPreference("preference_alarm_chk").
-			//			if(defaultPref!=null){		// ÀÚÃ¼ ¼³Á¤. 
+			//			if(defaultPref!=null){		// ìì²´ ì„¤ì •. 
 			//				Map<String, ?> map = defaultPref.getAll();
 			//				Log.d(TAG, "map.size"+map.size());	
 			//				Set set  = map.keySet();
@@ -1095,18 +1095,18 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			//				}
 			//			}
 		}else{
-			//			Log.e(TAG,"¾÷µ« ÇÊ¿ä x");
+			//			Log.e(TAG,"ì—…ëƒ í•„ìš” x");
 		}
 	}
 
 
 	/*
-	 *  ´İ±â ¹öÆ° 2¹ø ´©¸£¸é Á¾·á µÊ.(non-Javadoc)
+	 *  ë‹«ê¸° ë²„íŠ¼ 2ë²ˆ ëˆ„ë¥´ë©´ ì¢…ë£Œ ë¨.(non-Javadoc)
 	 * @see android.app.Activity#onBackPressed()
 	 */
 	/**
 	 * onBackPressed
-	 *  ´İ±â ¹öÆ° 2¹ø ´©¸£¸é Á¾·á ÇÑ´Ù
+	 *  ë‹«ê¸° ë²„íŠ¼ 2ë²ˆ ëˆ„ë¥´ë©´ ì¢…ë£Œ í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -1118,8 +1118,8 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		if(app_end == 1){
 			Log.d(TAG,"kill all");
 			mainActivity.finish();
-			dummyActivity.finish();		// ´õ¹Ìµµ Á¾·á
-			DummyActivity.count = 0;		// °³¼ö 0À¸·Î ÃÊ±âÈ­ ½ÃÄÑÁØ´Ù. ´Ù½Ã ½ÇÇàµÉ¼ö ÀÖµµ·Ï
+			dummyActivity.finish();		// ë”ë¯¸ë„ ì¢…ë£Œ
+			DummyActivity.count = 0;		// ê°œìˆ˜ 0ìœ¼ë¡œ ì´ˆê¸°í™” ì‹œì¼œì¤€ë‹¤. ë‹¤ì‹œ ì‹¤í–‰ë ìˆ˜ ìˆë„ë¡
 			finish();
 		}else{
 			app_end = 1;
@@ -1138,9 +1138,9 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	}
 
 
-	@Override			// ÀÌ ¾×Æ¼ºñÆ¼°¡ Á¾·áµÉ¶§ ½ÇÇà. 
+	@Override			// ì´ ì•¡í‹°ë¹„í‹°ê°€ ì¢…ë£Œë ë•Œ ì‹¤í–‰. 
 	protected void onDestroy() {
-		resumeCalled = false;		// ¶Ç ºÒ·¯ ÁÖ½Ê½Ã¿À.
+		resumeCalled = false;		// ë˜ ë¶ˆëŸ¬ ì£¼ì‹­ì‹œì˜¤.
 		super.onDestroy();
 		//		try{
 		//			connection2.disconnect();

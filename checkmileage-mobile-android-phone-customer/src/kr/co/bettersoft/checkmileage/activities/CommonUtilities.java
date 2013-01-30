@@ -16,7 +16,7 @@
 package kr.co.bettersoft.checkmileage.activities;
 /**
  * CommonUtilities
- * GCM ¿ë. SENDER_ID , DISPLAY_MESSAGE_ACTION »ç¿ë
+ * GCM ìš©. SENDER_ID , DISPLAY_MESSAGE_ACTION ì‚¬ìš©
  */
 import android.content.Context;
 import android.content.Intent;
@@ -37,7 +37,7 @@ public final class CommonUtilities {
 	 * Google API project id registered to use GCM.
 	 */
 	//    static final String SENDER_ID = "568602772620";				// yes. blue.
-	static final String SENDER_ID = "944691534021";				// yes. server / gcm register ÇÒ¶§ »ç¿ë
+	static final String SENDER_ID = "944691534021";				// yes. server / gcm register í• ë•Œ ì‚¬ìš©
 
 	/**
 	 * Tag used on log messages.

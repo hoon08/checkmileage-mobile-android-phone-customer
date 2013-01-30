@@ -1,15 +1,15 @@
 package kr.co.bettersoft.checkmileage.domain;
 /*
- * ¼­¹ö¿¡¼­ ¹Ş¾Æ¿Â ¼³Á¤ Á¤º¸¸¦ ¸ğ¹ÙÀÏ¿¡..
+ * ì„œë²„ì—ì„œ ë°›ì•„ì˜¨ ì„¤ì • ì •ë³´ë¥¼ ëª¨ë°”ì¼ì—..
  * 
- * ¼­¹ö¿¡¼­ ¹Ş¾Æ¿Â Á¤º¸Áß »ç¿ëÇÒ °Í  = EMAIL  // BIRTHDAY //  GENDER // RECEIVE_NOTIFICATION_YN
+ * ì„œë²„ì—ì„œ ë°›ì•„ì˜¨ ì •ë³´ì¤‘ ì‚¬ìš©í•  ê²ƒ  = EMAIL  // BIRTHDAY //  GENDER // RECEIVE_NOTIFICATION_YN
  * 
  */
 public class CheckMileageMemberSettings {
-	private String email;					// ÀÌ¸ŞÀÏ
-	private String birthday;				// »ıÀÏ
-	private String gender;					// ¼ºº°
-	private String receive_notification_yn;	// ¾Ë¸²¼ö½Å¿©ºÎ
+	private String email;					// ì´ë©”ì¼
+	private String birthday;				// ìƒì¼
+	private String gender;					// ì„±ë³„
+	private String receive_notification_yn;	// ì•Œë¦¼ìˆ˜ì‹ ì—¬ë¶€
 	public String getEmail() {
 		return email;
 	}

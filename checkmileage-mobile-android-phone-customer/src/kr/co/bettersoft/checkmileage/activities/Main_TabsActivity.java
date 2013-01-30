@@ -1,7 +1,7 @@
 package kr.co.bettersoft.checkmileage.activities;
 /**
  * Main_TabsActivity
- *  ¸ŞÀÎ ¸Ş´ºµé. ÅÇ1:³»QRº¸±â , ÅÇ2:³»¸¶ÀÏ¸®Áö, ÅÇ3:°¡¸ÍÁ¡¸ñ·Ï, ÅÇ4:¼³Á¤
+ *  ë©”ì¸ ë©”ë‰´ë“¤. íƒ­1:ë‚´QRë³´ê¸° , íƒ­2:ë‚´ë§ˆì¼ë¦¬ì§€, íƒ­3:ê°€ë§¹ì ëª©ë¡, íƒ­4:ì„¤ì •
  */
 import static kr.co.bettersoft.checkmileage.activities.CommonUtilities.DISPLAY_MESSAGE_ACTION;
 import static kr.co.bettersoft.checkmileage.activities.CommonUtilities.SENDER_ID;
@@ -59,7 +59,7 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 
 	static String myQR = "";
 
-	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;			// Á¾·á½Ã ´õ¹Ìµµ ÇÔ²² Á¾·á ½ÃÅ°±â À§ÇÔ
+	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;			// ì¢…ë£Œì‹œ ë”ë¯¸ë„ í•¨ê»˜ ì¢…ë£Œ ì‹œí‚¤ê¸° ìœ„í•¨
 
 	static String barCode = "";
 	public static TabHost tabhost;
@@ -70,27 +70,27 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 	
 	////////////////////////////////////  // GCM 
 	AsyncTask<Void, Void, Void> mRegisterTask;
-	public static String REGISTRATION_ID = "";		// µî·Ï¾ÆÀÌµğ
+	public static String REGISTRATION_ID = "";		// ë“±ë¡ì•„ì´ë””
 
-	int waitEnd = 0;		// test GCM ´ë±â¿ë
+	int waitEnd = 0;		// test GCM ëŒ€ê¸°ìš©
 
-	String RunMode = "";		// push ÅëÇÑ ½ÇÇàÀ» À§ÇÑ Á¶Ä¡
+	String RunMode = "";		// push í†µí•œ ì‹¤í–‰ì„ ìœ„í•œ ì¡°ì¹˜
 
 
-	// ÇÚµé·¯
+	// í•¸ë“¤ëŸ¬
 	Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg){
 			Bundle b = msg.getData();
 			try{
-				if(b.getInt("unregGCM")==1){				//GCM  unreg -- > »ç¿ë ¾ÈÇÔ. 
+				if(b.getInt("unregGCM")==1){				//GCM  unreg -- > ì‚¬ìš© ì•ˆí•¨. 
 					Log.d(TAG,"unregGCM - do nothing");
-					unregisterReceiver(mMyBroadcastReceiver);				// unregister ¾ÈÇÔ.
+					unregisterReceiver(mMyBroadcastReceiver);				// unregister ì•ˆí•¨.
 					GCMRegistrar.unregister(getThis());
 				}
-				if(b.getInt("set_tab_0")==1){				//GCM  unreg -- > »ç¿ë ¾ÈÇÔ. 
+				if(b.getInt("set_tab_0")==1){				//GCM  unreg -- > ì‚¬ìš© ì•ˆí•¨. 
 					Log.d(TAG,"set_tab_0");
-					tabhost.setCurrentTab(1);		// ½ÃÀÛ ÅÇ ¼³Á¤À» ¿øÇÒ °æ¿ì.. --> ½ÃÀÛºÎÅÍ ¸¶ÀÏ¸®Áö ÅÇ
+					tabhost.setCurrentTab(1);		// ì‹œì‘ íƒ­ ì„¤ì •ì„ ì›í•  ê²½ìš°.. --> ì‹œì‘ë¶€í„° ë§ˆì¼ë¦¬ì§€ íƒ­
 				}
 			}catch(Exception e){
 				e.printStackTrace();
@@ -103,18 +103,18 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature( Window.FEATURE_NO_TITLE );		// no title
-		//		requestWindowFeature(Window.FEATURE_LEFT_ICON);		// Å¸ÀÌÆ² ¿ŞÂÊ¿¡ ¾ÆÀÌÄÜ ³Ö±â- ¾ÈµÊ.			FEATURE_NO_TITLE µÊ   FEATURE_RIGHT_ICON ..
+		//		requestWindowFeature(Window.FEATURE_LEFT_ICON);		// íƒ€ì´í‹€ ì™¼ìª½ì— ì•„ì´ì½˜ ë„£ê¸°- ì•ˆë¨.			FEATURE_NO_TITLE ë¨   FEATURE_RIGHT_ICON ..
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_tabs);
-		main_TabsActivity = Main_TabsActivity.this;		// ´Ù¸¥µ¥¼­ ¿©±â Á¾·á½ÃÅ°±â À§ÇÔ.
+		main_TabsActivity = Main_TabsActivity.this;		// ë‹¤ë¥¸ë°ì„œ ì—¬ê¸° ì¢…ë£Œì‹œí‚¤ê¸° ìœ„í•¨.
 
-		mileageBadge = (TextView) findViewById(R.id.main_tabs_mileage_badge);		// ¸¶ÀÏ¸®Áö »ó´Ü ¹îÁö	 *** Å×½ºÆ®¿ë
-		mileageBadge.setText("");					// ÇÏµåÄÚµù 100 À» Áö¿î´Ù.
-		mileageBadge.setVisibility(View.GONE);		// ¹îÁö ¼û±ä´Ù. Å×½ºÆ®¿ë *** 
-		// ³ªÁß¿¡ ½ÇÁ¦ »ç¿ëÇÏ°Ô µÈ´Ù¸é °ª¸¸ ""·Î ¹Ù²Ù¸é ¹è°æ µ¿±×¶ó¹Ì¸¸ º¸ÀÌ°Ô µÇ¹Ç·Î ºñÀúºô¸®Æ¼µµ »ç¶óÁöµµ·Ï ÇÔ²² ¹Ù²ãÁà¾ß ÇÑ´Ù.
+		mileageBadge = (TextView) findViewById(R.id.main_tabs_mileage_badge);		// ë§ˆì¼ë¦¬ì§€ ìƒë‹¨ ë±ƒì§€	 *** í…ŒìŠ¤íŠ¸ìš©
+		mileageBadge.setText("");					// í•˜ë“œì½”ë”© 100 ì„ ì§€ìš´ë‹¤.
+		mileageBadge.setVisibility(View.GONE);		// ë±ƒì§€ ìˆ¨ê¸´ë‹¤. í…ŒìŠ¤íŠ¸ìš© *** 
+		// ë‚˜ì¤‘ì— ì‹¤ì œ ì‚¬ìš©í•˜ê²Œ ëœë‹¤ë©´ ê°’ë§Œ ""ë¡œ ë°”ê¾¸ë©´ ë°°ê²½ ë™ê·¸ë¼ë¯¸ë§Œ ë³´ì´ê²Œ ë˜ë¯€ë¡œ ë¹„ì €ë¹Œë¦¬í‹°ë„ ì‚¬ë¼ì§€ë„ë¡ í•¨ê»˜ ë°”ê¿”ì¤˜ì•¼ í•œë‹¤.
 		
 		
-		Intent receiveIntent = getIntent();							// ÀÎÅÙÆ® ÅëÇØ Àü´Ş ¹ŞÀº °ª ²¨³»±â.
+		Intent receiveIntent = getIntent();							// ì¸í…íŠ¸ í†µí•´ ì „ë‹¬ ë°›ì€ ê°’ êº¼ë‚´ê¸°.
 		if(myQR.length()<1){
 			myQR = receiveIntent.getStringExtra("myQR");
 		}
@@ -123,15 +123,15 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 		if(RunMode==null){
 			RunMode="";
 		}
-		nextProcessing();			// GCM ¼¼ÆÃ 
+		nextProcessing();			// GCM ì„¸íŒ… 
 		registerReceiver(mMyBroadcastReceiver, new IntentFilter(DISPLAY_MESSAGE_ACTION));		//  gcm reg..
 
 		//		tabhost = (TabHost) findViewById(android.R.id.tabhost);
 		tabhost = getTabHost();
 
-		tabhost.setOnTabChangedListener(this);		// ÀÌ°É ÇØÁà¾ß onTabChanged() Ã¼ÀÎÁö È¿°ú°¡ ÀÖ´Ù
+		tabhost.setOnTabChangedListener(this);		// ì´ê±¸ í•´ì¤˜ì•¼ onTabChanged() ì²´ì¸ì§€ íš¨ê³¼ê°€ ìˆë‹¤
 
-		// ¼³Á¤
+		// ì„¤ì •
 
 		////		tabhost.getTabWidget().setBackgroundDrawable( getResources().getDrawable(R.drawable.bluenavbar)); 
 		//		TextView txtTab = new TextView(this); 
@@ -153,13 +153,13 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 
 		tabhost.addTab(
 				tabhost.newTabSpec("tab_1")
-				//        		.setIndicator("³»QRÄÚµå", getResources().getDrawable(R.drawable.tab01_indicator))
+				//        		.setIndicator("ë‚´QRì½”ë“œ", getResources().getDrawable(R.drawable.tab01_indicator))
 				//				.setIndicator((View)tvTab1)
-				//				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu1))			// ÇÏ´Ü ¹öÆ°À» ÀÌ¹ÌÁö »ç¿ëÇÔ.
-				//				.setIndicator("12345678901234567890", getResources().getDrawable(R.drawable.tab01_indicator))			// ÇÏ´Ü ¹öÆ°À» ÀÌ¹ÌÁö »ç¿ëÇÔ.
-				.setIndicator(getResources().getString(R.string.my_qr_title), getResources().getDrawable(R.drawable.tab01_indicator))			// ÇÏ´Ü ¹öÆ°À» ÀÌ¹ÌÁö »ç¿ëÇÔ.
+				//				.setIndicator("", getResources().getDrawable(R.drawable.bottom_menu1))			// í•˜ë‹¨ ë²„íŠ¼ì„ ì´ë¯¸ì§€ ì‚¬ìš©í•¨.
+				//				.setIndicator("12345678901234567890", getResources().getDrawable(R.drawable.tab01_indicator))			// í•˜ë‹¨ ë²„íŠ¼ì„ ì´ë¯¸ì§€ ì‚¬ìš©í•¨.
+				.setIndicator(getResources().getString(R.string.my_qr_title), getResources().getDrawable(R.drawable.tab01_indicator))			// í•˜ë‹¨ ë²„íŠ¼ì„ ì´ë¯¸ì§€ ì‚¬ìš©í•¨.
 				.setContent(new Intent(this, MyQRPageActivity.class)));
-		// Optimizer.class ¼Ò½º´Â tab_1 ÅÇ¿¡¿¡ ¼ÓÇÔ. Optimizer.java
+		// Optimizer.class ì†ŒìŠ¤ëŠ” tab_1 íƒ­ì—ì— ì†í•¨. Optimizer.java
 		//         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
 
 
@@ -186,8 +186,8 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 
 
 
-		// Tab¿¡ »ö»ó ÁöÁ¤
-		new Thread(			// unreg ¾ÈÇÔ
+		// Tabì— ìƒ‰ìƒ ì§€ì •
+		new Thread(			// unreg ì•ˆí•¨
 				new Runnable(){
 					public void run(){
 						for(int i = 0; i < tabhost.getTabWidget().getChildCount(); i++) {
@@ -200,7 +200,7 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 						//						tabhost.getTabWidget().setCurrentTab(0);
 						//						tabhost.getTabWidget().getChildAt(0).setBackgroundColor(Color.parseColor("#000000"));
 
-						// ¸¶ÀÏ¸®Áö ÅëÇÑ ½ÇÇà½Ã¿¡ ´ëÇÑ Á¶Ä¡ »çÇ×
+						// ë§ˆì¼ë¦¬ì§€ í†µí•œ ì‹¤í–‰ì‹œì— ëŒ€í•œ ì¡°ì¹˜ ì‚¬í•­
 						if(RunMode.length()>0){
 							if(RunMode.equals("MILEAGE")){
 								Message message = handler.obtainMessage();				
@@ -208,7 +208,7 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 								b.putInt("set_tab_0", 1);
 								message.setData(b);
 								handler.sendMessage(message);
-							}else if(RunMode.equals("MARKETING")){		// ¸¶ÄÉÆÃÀÌ¸é Çª½Ã ¸®½ºÆ®¸¸ Ãß°¡·Î ¶ç¿ò
+							}else if(RunMode.equals("MARKETING")){		// ë§ˆì¼€íŒ…ì´ë©´ í‘¸ì‹œ ë¦¬ìŠ¤íŠ¸ë§Œ ì¶”ê°€ë¡œ ë„ì›€
 								Intent PushListIntent = new Intent(Main_TabsActivity.this, kr.co.bettersoft.checkmileage.activities.PushList.class);
 								MyQRPageActivity.qrCode = myQR;
 								startActivity(PushListIntent);
@@ -220,13 +220,13 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 
 
 
-		// locale ¾ò±â.
+		// locale ì–»ê¸°.
 		getLocale();
 	}
 
 	/**
 	 * getLocale
-	 *  µğ¹ÙÀÌ½º¿¡¼­ ±¹°¡,¾ğ¾î ÄÚµå ¾ò´Â´Ù
+	 *  ë””ë°”ì´ìŠ¤ì—ì„œ êµ­ê°€,ì–¸ì–´ ì½”ë“œ ì–»ëŠ”ë‹¤
 	 *
 	 * @param
 	 * @param
@@ -249,7 +249,7 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 		//        strMsg = "onTabChanged : " + tabId;
 		//        Toast.makeText( this, strMsg, Toast.LENGTH_SHORT ).show();
 
-		// tab »ö»ó º¯°æ
+		// tab ìƒ‰ìƒ ë³€ê²½
 		//		for(int i=0; i<tabhost.getTabWidget().getChildCount(); i++){
 		//			tabhost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#393939"));
 		//		}
@@ -257,23 +257,23 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 
 	}
 
-	////////////////////////////////////////////GCM ¼¼ÆÃ        ///////////////////////////////////////////////////////////////
+	////////////////////////////////////////////GCM ì„¸íŒ…        ///////////////////////////////////////////////////////////////
 	/**
 	 * nextProcessing
-	 *  GCM ¼¼ÆÃÇÏ¿© µî·ÏÇÑ´Ù
+	 *  GCM ì„¸íŒ…í•˜ì—¬ ë“±ë¡í•œë‹¤
 	 *
 	 * @param
 	 * @param
 	 * @return
 	 */
 	public void nextProcessing(){
-		////////////////////////////////////////////GCM ¼¼ÆÃ        ///////////////////////////////////////////////////////////////		
-		GCMRegistrar.checkDevice(this);					// ÀÓ½Ã ÁßÁö  ->ÇØÁ¦
+		////////////////////////////////////////////GCM ì„¸íŒ…        ///////////////////////////////////////////////////////////////		
+		GCMRegistrar.checkDevice(this);					// ì„ì‹œ ì¤‘ì§€  ->í•´ì œ
 		GCMRegistrar.checkManifest(this);				
 		Log.i(TAG, "registerReceiver1 ");
 		mRegisterTask = new AsyncTask<Void, Void, Void>() {
 			@Override
-			protected Void doInBackground(Void... params) {	// ¹«Á¶°Ç GCM µî·ÏÇÑ´Ù. ÀÌÀü°ªÀÌµç »õ°ªÀÌµç µî·ÏÇÏ°í //µî·Ï °á°ú¸¦ ¼­¹ö¿¡ ¾÷µ«ÇÏ´Â ºÎºĞÀº GCM¼­ºñ½º¿¡¼­ Ã³¸®ÇÑ´Ù.
+			protected Void doInBackground(Void... params) {	// ë¬´ì¡°ê±´ GCM ë“±ë¡í•œë‹¤. ì´ì „ê°’ì´ë“  ìƒˆê°’ì´ë“  ë“±ë¡í•˜ê³  //ë“±ë¡ ê²°ê³¼ë¥¼ ì„œë²„ì— ì—…ëƒí•˜ëŠ” ë¶€ë¶„ì€ GCMì„œë¹„ìŠ¤ì—ì„œ ì²˜ë¦¬í•œë‹¤.
 				GCMIntentService.myQR = myQR;
 				GCMRegistrar.register(getThis(), SENDER_ID);	
 				return null;
@@ -285,10 +285,10 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 		};
 		mRegisterTask.execute(null, null, null);
 	}
-	///////////////////////////////////////// GCM µî·Ï À§ÇÑ ¸Ş¼Òµåµé //////////////////////////////////    
+	///////////////////////////////////////// GCM ë“±ë¡ ìœ„í•œ ë©”ì†Œë“œë“¤ //////////////////////////////////    
 	/**
 	 * getThis
-	 *  ÄÁÅÃ½ºÆ® ¸®ÅÏÇÑ´Ù
+	 *  ì»¨íƒìŠ¤íŠ¸ ë¦¬í„´í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -300,17 +300,17 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 
 	/**
 	 * getNow
-	 *  Çö½Ã°¢ ±¸ÇÑ´Ù
+	 *  í˜„ì‹œê° êµ¬í•œë‹¤
 	 *
 	 * @param
 	 * @param
 	 * @return nowTime
 	 */
 	public String getNow(){
-		// Çö ½Ã°¢
+		// í˜„ ì‹œê°
 		Calendar c = Calendar.getInstance();
 		int todayYear = c.get(Calendar.YEAR);
-		int todayMonth = c.get(Calendar.MONTH)+1;			// ²¨³»¸é 0ºÎÅÍ ½ÃÀÛÀÌ´Ï±î +1 ÇØÁØ´Ù.
+		int todayMonth = c.get(Calendar.MONTH)+1;			// êº¼ë‚´ë©´ 0ë¶€í„° ì‹œì‘ì´ë‹ˆê¹Œ +1 í•´ì¤€ë‹¤.
 		int todayDay = c.get(Calendar.DATE);
 		int todayHour = c.get(Calendar.HOUR_OF_DAY);
 		int todayMinute = c.get(Calendar.MINUTE);
@@ -332,27 +332,27 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 	}
 
 
-	// ¸®½Ã¹ö µî·Ï, ÇØÁ¦ÇÏ¿© ½ÃÀÛ½Ã ³ª¿À´Â ¸®½Ã¹ö ÇØÁ¦Çß³Ä´Â Áú¹® ·Î±×°¡ ³ª¿ÀÁö ¾Êµµ·Ï ÇÑ´Ù. ½ÇÁ¦ Çª½Ã ¹Ş´Â°ÍÀº ¼­ºñ½º´Ü¿¡¼­..
+	// ë¦¬ì‹œë²„ ë“±ë¡, í•´ì œí•˜ì—¬ ì‹œì‘ì‹œ ë‚˜ì˜¤ëŠ” ë¦¬ì‹œë²„ í•´ì œí–ˆëƒëŠ” ì§ˆë¬¸ ë¡œê·¸ê°€ ë‚˜ì˜¤ì§€ ì•Šë„ë¡ í•œë‹¤. ì‹¤ì œ í‘¸ì‹œ ë°›ëŠ”ê²ƒì€ ì„œë¹„ìŠ¤ë‹¨ì—ì„œ..
 	BroadcastReceiver mMyBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Log.w(TAG,"EXTRA_MESSAGE:"+intent.getStringExtra("MESSAGE"));
 			//		if(intent.getAction().equals(DISPLAY_MESSAGE_ACTION)) {
-			// Broadcast¸¦ µéÀ¸¸é ÇÒ ÀÏ
-			//			Toast.makeText(Main_TabsActivity.this, "(Å×½ºÆ®)¸Ş½ÃÁö°¡ µµÂøÇÏ¿´½À´Ï´Ù."+intent.getExtras().getString(EXTRA_MESSAGE), Toast.LENGTH_SHORT).show();
+			// Broadcastë¥¼ ë“¤ìœ¼ë©´ í•  ì¼
+			//			Toast.makeText(Main_TabsActivity.this, "(í…ŒìŠ¤íŠ¸)ë©”ì‹œì§€ê°€ ë„ì°©í•˜ì˜€ìŠµë‹ˆë‹¤."+intent.getExtras().getString(EXTRA_MESSAGE), Toast.LENGTH_SHORT).show();
 			//		}
 		}
 	};
 	@Override
 	protected void onResume() {
 		//		Log.i(TAG, "onResume");
-		//		registerReceiver(mMyBroadcastReceiver, new IntentFilter("receive¹ŞÀ» ÀÌ¸§"));
-		//		registerReceiver(mMyBroadcastReceiver, new IntentFilter(DISPLAY_MESSAGE_ACTION));			// oncreate ·Î ¿Å±è
+		//		registerReceiver(mMyBroadcastReceiver, new IntentFilter("receiveë°›ì„ ì´ë¦„"));
+		//		registerReceiver(mMyBroadcastReceiver, new IntentFilter(DISPLAY_MESSAGE_ACTION));			// oncreate ë¡œ ì˜®ê¹€
 		super.onResume();
 	};
 	/**
 	 * onPause
-	 *  È¨¹öÆ° ´©¸£¸é Á¾·á½ÃÅ²´Ù
+	 *  í™ˆë²„íŠ¼ ëˆ„ë¥´ë©´ ì¢…ë£Œì‹œí‚¨ë‹¤
 	 *
 	 * @param
 	 * @param
@@ -360,7 +360,7 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 	 */
 	@Override
 	protected void onPause() {
-		//		new Thread(			// unreg ¾ÈÇÔ
+		//		new Thread(			// unreg ì•ˆí•¨
 		//				new Runnable(){
 		//					public void run(){
 		//						Message message = handler.obtainMessage();				
@@ -372,22 +372,22 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 		//				}
 		//		).start();		
 		super.onPause();
-		// È¨¹öÆ° ´­·¶À»¶§ Á¾·á ¿©ºÎ..
+		// í™ˆë²„íŠ¼ ëˆŒë €ì„ë•Œ ì¢…ë£Œ ì—¬ë¶€..
 		if(!isForeGround()){
 			Log.d(TAG,"go home, bye");
-			dummyActivity.finish();		// ´õ¹Ìµµ Á¾·á
-			DummyActivity.count = 0;		// °³¼ö 0À¸·Î ÃÊ±âÈ­ ½ÃÄÑÁØ´Ù. ´Ù½Ã ½ÇÇàµÉ¼ö ÀÖµµ·Ï
+			dummyActivity.finish();		// ë”ë¯¸ë„ ì¢…ë£Œ
+			DummyActivity.count = 0;		// ê°œìˆ˜ 0ìœ¼ë¡œ ì´ˆê¸°í™” ì‹œì¼œì¤€ë‹¤. ë‹¤ì‹œ ì‹¤í–‰ë ìˆ˜ ìˆë„ë¡
 			finish();
 		}
 	}
 
 	/*
-	 * ÇÁ·Î¼¼½º°¡ ÃÖ»óÀ§·Î ½ÇÇàÁßÀÎÁö °Ë»ç.
-	 * @return true = ÃÖ»óÀ§
+	 * í”„ë¡œì„¸ìŠ¤ê°€ ìµœìƒìœ„ë¡œ ì‹¤í–‰ì¤‘ì¸ì§€ ê²€ì‚¬.
+	 * @return true = ìµœìƒìœ„
 	 */
 	/**
 	 * isForeGround
-	 *  ÇÁ·Î¼¼½º°¡ ÃÖ»óÀ§·Î ½ÇÇàÁßÀÎÁö °Ë»çÇÑ´Ù. (È¨¹öÆ° ´­·¶´ÂÁö ¿©ºÎ È®ÀÎ¿ë)
+	 *  í”„ë¡œì„¸ìŠ¤ê°€ ìµœìƒìœ„ë¡œ ì‹¤í–‰ì¤‘ì¸ì§€ ê²€ì‚¬í•œë‹¤. (í™ˆë²„íŠ¼ ëˆŒë €ëŠ”ì§€ ì—¬ë¶€ í™•ì¸ìš©)
 	 *
 	 * @param
 	 * @param
@@ -408,7 +408,7 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 	}
 	/**
 	 * onDestroy
-	 *  Á¾·á½Ã Á¤»ó Á¾·á ÇÑ´Ù
+	 *  ì¢…ë£Œì‹œ ì •ìƒ ì¢…ë£Œ í•œë‹¤
 	 *
 	 * @param
 	 * @param

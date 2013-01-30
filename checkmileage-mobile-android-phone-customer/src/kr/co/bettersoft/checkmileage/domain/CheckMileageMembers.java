@@ -1,35 +1,35 @@
 package kr.co.bettersoft.checkmileage.domain;
-// µµ¸ŞÀÎ. 
+// ë„ë©”ì¸. 
 
 
 /*
- * °³ÀÎ ¼³Á¤ º¯°æ µî ÇÒ¶§ µµ¸ŞÀÎ¿¡ ¸ğµÎ ´ã¾Æ¼­ µµ¸ŞÀÎ Ã¤·Î ¾÷µ¥ÀÌÆ® ½Ç½ÃÇÑ´Ù. (¼³Á¤ ¿¡¼­ »ç¿ë)
+ * ê°œì¸ ì„¤ì • ë³€ê²½ ë“± í• ë•Œ ë„ë©”ì¸ì— ëª¨ë‘ ë‹´ì•„ì„œ ë„ë©”ì¸ ì±„ë¡œ ì—…ë°ì´íŠ¸ ì‹¤ì‹œí•œë‹¤. (ì„¤ì • ì—ì„œ ì‚¬ìš©)
  *      
  *       
  */
 public class CheckMileageMembers {
-	private String checkMileage;		// ¸¶ÀÏ¸®Áö
-	private String merchantId;			// °¡¸ÍÁ¡ ¾ÆÀÌµğ
+	private String checkMileage;		// ë§ˆì¼ë¦¬ì§€
+	private String merchantId;			// ê°€ë§¹ì  ì•„ì´ë””
 	private String viewName;			// 
-	private String registerDate;		// µî·ÏÀÏ
+	private String registerDate;		// ë“±ë¡ì¼
 	
-	private String checkMileageId;		// °í°´ ¾ÆÀÌµğ
-	private String password;			// ºñ¹ø -> ÇöÀç »ç¿ë ¾ÈÇÔ
-	private String phoneNumber;			// Àü¹ø -> ÇöÀç »ç¿ë ¾ÈÇÔ
-	private String email;				// ÀÌ¸á ÁÖ¼Ò
-	private String birthday;			// »ıÀÏ
-	private String gender;				// ¼ºº°
-	private String latitude;			// ÁÂÇ¥-À§µµ
-	private String longitude;			// ÁÂÇ¥-°æµµ
-	private String deviceType;			// ±â±â Å¸ÀÔ (¹Ş¾Æ¼­ ´Ù½Ã µÇµ¹·ÁÁÜ)
-	private String registrationId;		// µî·Ï ID
+	private String checkMileageId;		// ê³ ê° ì•„ì´ë””
+	private String password;			// ë¹„ë²ˆ -> í˜„ì¬ ì‚¬ìš© ì•ˆí•¨
+	private String phoneNumber;			// ì „ë²ˆ -> í˜„ì¬ ì‚¬ìš© ì•ˆí•¨
+	private String email;				// ì´ë©œ ì£¼ì†Œ
+	private String birthday;			// ìƒì¼
+	private String gender;				// ì„±ë³„
+	private String latitude;			// ì¢Œí‘œ-ìœ„ë„
+	private String longitude;			// ì¢Œí‘œ-ê²½ë„
+	private String deviceType;			// ê¸°ê¸° íƒ€ì… (ë°›ì•„ì„œ ë‹¤ì‹œ ë˜ëŒë ¤ì¤Œ)
+	private String registrationId;		// ë“±ë¡ ID
 	private String activateYn;			
-	private String modifyDate;			// ¼öÁ¤ÀÏ.
+	private String modifyDate;			// ìˆ˜ì •ì¼.
 	
-	private String receiveNotificationYn;	// ¾Ë¸²¼ö½Å¿©ºÎ
+	private String receiveNotificationYn;	// ì•Œë¦¼ìˆ˜ì‹ ì—¬ë¶€
 	
-	private String countryCode;			// ±¹°¡ÄÚµå
-	private String languageCode;		// ¾ğ¾îÄÚµå
+	private String countryCode;			// êµ­ê°€ì½”ë“œ
+	private String languageCode;		// ì–¸ì–´ì½”ë“œ
 	
 	public String getCheckMileage() {
 		return checkMileage;

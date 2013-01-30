@@ -1,21 +1,21 @@
 package kr.co.bettersoft.checkmileage.domain;
 /*
- * °¡¸ÍÁ¡ ÀÌ¿ë ³»¿ª Á¶È¸ÇÒ¶§ »ç¿ëÇÏ´Â µµ¸ŞÀÎ Å¬·¡½º.
+ * ê°€ë§¹ì  ì´ìš© ë‚´ì—­ ì¡°íšŒí• ë•Œ ì‚¬ìš©í•˜ëŠ” ë„ë©”ì¸ í´ë˜ìŠ¤.
  * 
- * ¸¶ÀÏ¸®Áö Å×ÀÌºí¿¡ »ğÀÔ, ¼öÁ¤ µîÀÌ ÀÏ¾î³ª´Âµ¥ ±× °¡¸ÍÁ¡,¾ÆÀÌµğ - º°·Î Å° °ªÀÌ Á¸Àç.
+ * ë§ˆì¼ë¦¬ì§€ í…Œì´ë¸”ì— ì‚½ì…, ìˆ˜ì • ë“±ì´ ì¼ì–´ë‚˜ëŠ”ë° ê·¸ ê°€ë§¹ì ,ì•„ì´ë”” - ë³„ë¡œ í‚¤ ê°’ì´ ì¡´ì¬.
  *  
- *  ¿©±â¼­´Â ±× Å° °ªÀ» ÅëÇØ ÇØ´ç °¡¸ÍÁ¡-¾ÆÀÌµğ °£ ¹ß»ıÇÑ ¸¶ÀÏ¸®Áö ³»¿ªÀ» Á¶È¸ÇØ¼­ ¸®½ºÆ®·Î ´ã¾Æ¿Â´Ù.
+ *  ì—¬ê¸°ì„œëŠ” ê·¸ í‚¤ ê°’ì„ í†µí•´ í•´ë‹¹ ê°€ë§¹ì -ì•„ì´ë”” ê°„ ë°œìƒí•œ ë§ˆì¼ë¦¬ì§€ ë‚´ì—­ì„ ì¡°íšŒí•´ì„œ ë¦¬ìŠ¤íŠ¸ë¡œ ë‹´ì•„ì˜¨ë‹¤.
  */
 public class CheckMileageMemberMileageLogs {
 
-	private String checkMileageId;		// ³» ¾Æµğ
-	private String merchantId;			// °¡¸ÍÁ¡ ¾Æµğ
-	private String content;				// ³»¿ë ¸ÔÀº°Å? ÀÌ¿ëÇÑ°Í.
-	private String mileage;				// Àû¸³,»ç¿ëÇÑ ¸¶ÀÏ¸®Áö
-//	private String activateYn;			// È°¼º ºñÈ°¼º
-	private String modifyDate;			// ¼öÁ¤ÀÏ  - »ç¿ëo
-	private String registerDate;		// µî·ÏÀÏ - »ç¿ëx
-	private String checkMileageMileagesIdCheckMileageMileages;		// Å°°ª. Áß¿ä. Å°°ªÀ¸·Î Á¶È¸ÇÔ.
+	private String checkMileageId;		// ë‚´ ì•„ë””
+	private String merchantId;			// ê°€ë§¹ì  ì•„ë””
+	private String content;				// ë‚´ìš© ë¨¹ì€ê±°? ì´ìš©í•œê²ƒ.
+	private String mileage;				// ì ë¦½,ì‚¬ìš©í•œ ë§ˆì¼ë¦¬ì§€
+//	private String activateYn;			// í™œì„± ë¹„í™œì„±
+	private String modifyDate;			// ìˆ˜ì •ì¼  - ì‚¬ìš©o
+	private String registerDate;		// ë“±ë¡ì¼ - ì‚¬ìš©x
+	private String checkMileageMileagesIdCheckMileageMileages;		// í‚¤ê°’. ì¤‘ìš”. í‚¤ê°’ìœ¼ë¡œ ì¡°íšŒí•¨.
 	public String getCheckMileageId() {
 		return checkMileageId;
 	}

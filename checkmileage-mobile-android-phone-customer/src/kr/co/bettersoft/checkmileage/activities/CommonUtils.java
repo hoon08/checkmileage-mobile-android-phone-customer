@@ -1,7 +1,7 @@
 package kr.co.bettersoft.checkmileage.activities;
 /**
  * CommonUtils
- * ÀÌ¹ÌÁö µµ¸ŞÀÎ ¹× URL ÁÖ¼Ò ÀúÀå¿ë Å¬·¡½ºÀÌ´Ù
+ * ì´ë¯¸ì§€ ë„ë©”ì¸ ë° URL ì£¼ì†Œ ì €ì¥ìš© í´ë˜ìŠ¤ì´ë‹¤
  * 
  */
 import java.io.File;
@@ -26,8 +26,8 @@ import android.widget.TextView;
 public class CommonUtils extends Activity {
 
 	static String writeQRstr = "test1234";
-	static int callCode = 0;		// È£Ãâ ¸ğµå . ÀĞ±â:1, ¾²±â:2, ÃÊ±âÈ­:3
-	static int qrResult = 0;		// Ã³¸® °á°ú°ª. ¼º°ø:1, ½ÇÆĞ:: ÆÄÀÏ¾øÀ½:-3,ÀÔÃâ·Â¿À·ù:-2,±×¿Ü:-1
+	static int callCode = 0;		// í˜¸ì¶œ ëª¨ë“œ . ì½ê¸°:1, ì“°ê¸°:2, ì´ˆê¸°í™”:3
+	static int qrResult = 0;		// ì²˜ë¦¬ ê²°ê³¼ê°’. ì„±ê³µ:1, ì‹¤íŒ¨:: íŒŒì¼ì—†ìŒ:-3,ì…ì¶œë ¥ì˜¤ë¥˜:-2,ê·¸ì™¸:-1
 
 	public static int serverConnectTimeOut = 10000;
 
@@ -51,18 +51,18 @@ public class CommonUtils extends Activity {
 	//	public static int threadWaitngTime = 500;
 
 	/*
-	 * ÇÁ·ÎÆÛÆ¼ »ç¿ëÇß¾ú´Âµ¥, ÇÁ¸®ÆÛ·±½º ¹æ½ÄÀÌ ´õ ÁÁ¾Æ¼­ ÇÁ·ÎÆÛÆ¼´Â ´õÀÌ»ó »ç¿ëÇÏÁö ¾ÊÀ½
+	 * í”„ë¡œí¼í‹° ì‚¬ìš©í–ˆì—ˆëŠ”ë°, í”„ë¦¬í¼ëŸ°ìŠ¤ ë°©ì‹ì´ ë” ì¢‹ì•„ì„œ í”„ë¡œí¼í‹°ëŠ” ë”ì´ìƒ ì‚¬ìš©í•˜ì§€ ì•ŠìŒ
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if(callCode==1){	// ÀĞ±â ¸ğµå			// from main page
+		if(callCode==1){	// ì½ê¸° ëª¨ë“œ			// from main page
 			qrResult = readProps();
 			MainActivity.qrResult = qrResult;
-		}else if(callCode==2){ // ¾²±â ¸ğµå		// from main page (test)
+		}else if(callCode==2){ // ì“°ê¸° ëª¨ë“œ		// from main page (test)
 			qrResult = writeProps();
 			MainActivity.qrResult = qrResult;
-		}else if(callCode==3){	// ÃÊ±âÈ­ ¸ğµå		// from main page (test)
+		}else if(callCode==3){	// ì´ˆê¸°í™” ëª¨ë“œ		// from main page (test)
 			writeQRstr="";
 			qrResult = writeProps();
 			MainActivity.qrResult = qrResult;
@@ -73,7 +73,7 @@ public class CommonUtils extends Activity {
 			qrResult = writeProps();
 			ScanQRPageActivity.qrResult = qrResult;
 		}
-		else{		// ±×¿Ü. ºñÁ¤»óÀûÀÎ È£Ãâ.
+		else{		// ê·¸ì™¸. ë¹„ì •ìƒì ì¸ í˜¸ì¶œ.
 			Log.i("CommonUtils", "callCode:"+callCode);
 			MainActivity.qrResult = qrResult;
 		}
@@ -81,11 +81,11 @@ public class CommonUtils extends Activity {
 	}
 
 	public int writeProps(){
-		//ÆÄÀÏ ¾²±â					// ±âÁ¸ ÆÄÀÏÀ» µ¤¾î¾´´Ù. ÀÀ¿ëÇÏ¿© ´õÇÏ±âµµ °¡´É..
+		//íŒŒì¼ ì“°ê¸°					// ê¸°ì¡´ íŒŒì¼ì„ ë®ì–´ì“´ë‹¤. ì‘ìš©í•˜ì—¬ ë”í•˜ê¸°ë„ ê°€ëŠ¥..
 		FileOutputStream fos;
 		String strFileContents = writeQRstr;
 		try {
-			fos = openFileOutput("Filename.txt",MODE_PRIVATE);			// ÀÚ½Å¸¸.
+			fos = openFileOutput("Filename.txt",MODE_PRIVATE);			// ìì‹ ë§Œ.
 			fos.write(strFileContents.getBytes());
 			fos.close();
 			return 1;
@@ -101,7 +101,7 @@ public class CommonUtils extends Activity {
 	}
 
 	public  int readProps(){
-		//ÆÄÀÏ ÀĞ±â
+		//íŒŒì¼ ì½ê¸°
 		String strFileName = "Filename.txt";
 		StringBuffer strBuffer = new StringBuffer();
 		try {
@@ -109,7 +109,7 @@ public class CommonUtils extends Activity {
 			DataInputStream dataIO = new DataInputStream(fis);
 			String strLine = null;
 			String tmpStr = "";
-			while( (strLine = dataIO.readLine()) != null)          // ÆÄÀÏ ³» ÁÙ¹Ù²Ş
+			while( (strLine = dataIO.readLine()) != null)          // íŒŒì¼ ë‚´ ì¤„ë°”ê¿ˆ
 			{
 				strBuffer.append(strLine + "\n");
 				tmpStr = strLine;
@@ -125,7 +125,7 @@ public class CommonUtils extends Activity {
 		} catch (IOException e) {
 			//			e.printStackTrace();
 			return -2;
-		}catch(Exception e){		// ÆÄÀÏÀÌ ¾ø´Â °æ¿ì
+		}catch(Exception e){		// íŒŒì¼ì´ ì—†ëŠ” ê²½ìš°
 			//			e.printStackTrace();
 			return -1;
 		}

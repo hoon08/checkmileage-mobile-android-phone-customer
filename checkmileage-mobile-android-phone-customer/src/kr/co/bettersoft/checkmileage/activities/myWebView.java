@@ -3,8 +3,8 @@ package kr.co.bettersoft.checkmileage.activities;
 /**
  * myWebView
  * 
- * ¼³Á¤¿¡¼­ À¥ºä¸¦ »ç¿ëÇØ¼­ À¥ÆäÀÌÁö¸¦ º¸¿©Áà¾ß ÇÒ°æ¿ì »ç¿ëµÇ´Â À¥ºä ¾×Æ¼ºñÆ¼.
- *  ÇÊ¿äÇÑ URLÀº Àü´Ş¹ŞÀº °ªÀ» »ç¿ë.
+ * ì„¤ì •ì—ì„œ ì›¹ë·°ë¥¼ ì‚¬ìš©í•´ì„œ ì›¹í˜ì´ì§€ë¥¼ ë³´ì—¬ì¤˜ì•¼ í• ê²½ìš° ì‚¬ìš©ë˜ëŠ” ì›¹ë·° ì•¡í‹°ë¹„í‹°.
+ *  í•„ìš”í•œ URLì€ ì „ë‹¬ë°›ì€ ê°’ì„ ì‚¬ìš©.
  */
 
 import java.util.Locale;
@@ -38,28 +38,28 @@ public class myWebView extends Activity {
 	WebView mWeb;
 	String loadingURL = "";
 
-	// ·ÎÄÉÀÏ
+	// ë¡œì¼€ì¼
 	Locale systemLocale = null;
 	String strCountry = "";
 	String strLanguage = "";
 
 	String postData;
-	// ÁøÇà¹Ù
-	ProgressBar pb1;		// Áß´Ü ·Îµù ÁøÇà¹Ù
-	// ÇÚµé·¯
+	// ì§„í–‰ë°”
+	ProgressBar pb1;		// ì¤‘ë‹¨ ë¡œë”© ì§„í–‰ë°”
+	// í•¸ë“¤ëŸ¬
 	Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg){
 			try{
 				Bundle b = msg.getData();		
 				if(b.getInt("order")==1){
-					// ÇÁ·Î±×·¡½º¹Ù ½ÇÇà
+					// í”„ë¡œê·¸ë˜ìŠ¤ë°” ì‹¤í–‰
 					if(pb1==null){
 						pb1=(ProgressBar) findViewById(R.id.webview_progressbar1);
 					}
 					pb1.setVisibility(View.VISIBLE);
 				}else if(b.getInt("order")==2){
-					// ÇÁ·Î±×·¡½º¹Ù  Á¾·á
+					// í”„ë¡œê·¸ë˜ìŠ¤ë°”  ì¢…ë£Œ
 					if(pb1==null){
 						pb1=(ProgressBar) findViewById(R.id.webview_progressbar1);
 					}
@@ -67,7 +67,7 @@ public class myWebView extends Activity {
 				}
 				if(b.getInt("showErrToast")==1){
 					Toast.makeText(myWebView.this, getString(R.string.error_message), Toast.LENGTH_SHORT).show();
-					// ÆäÀÌÁö¸¦ ºÒ·¯¿À´Âµ¥ ½ÇÆĞÇß½À´Ï´Ù.\nÀá½ÃÈÄ ´Ù½Ã ½ÃµµÇØÁÖ½Ã±â ¹Ù¶ø´Ï´Ù.		
+					// í˜ì´ì§€ë¥¼ ë¶ˆëŸ¬ì˜¤ëŠ”ë° ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.\nì ì‹œí›„ ë‹¤ì‹œ ì‹œë„í•´ì£¼ì‹œê¸° ë°”ëë‹ˆë‹¤.		
 				}
 			}catch(Exception e){
 				e.printStackTrace();
@@ -78,37 +78,37 @@ public class myWebView extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//	    requestWindowFeature(Window.FEATURE_NO_TITLE );	// Å¸ÀÌÆ²¹Ù Á¦°Å
+		//	    requestWindowFeature(Window.FEATURE_NO_TITLE );	// íƒ€ì´í‹€ë°” ì œê±°
 		setContentView(R.layout.my_web_view);
 		Intent rIntent = getIntent();
-		loadingURL = rIntent.getStringExtra("loadingURL");			// URL Á¤º¸¸¦ ¹ŞÀ½.
+		loadingURL = rIntent.getStringExtra("loadingURL");			// URL ì •ë³´ë¥¼ ë°›ìŒ.
 		mWeb = (WebView)findViewById(R.id.web);
 
-		//»ç¿ëÀÚ Áö¿ª, ¾ğ¾î
+		//ì‚¬ìš©ì ì§€ì—­, ì–¸ì–´
 		systemLocale = getResources().getConfiguration().locale;
 		strCountry = systemLocale.getCountry();
 		strLanguage = systemLocale.getLanguage();
 
-		// ÀÌ¹ÌÁö È®´ë/Ãà¼Ò/½ºÅ©·Ñ ±İÁö. -> Çã¿ëÀ¸·Î ¼öÁ¤.  --> ±İÁö
+		// ì´ë¯¸ì§€ í™•ëŒ€/ì¶•ì†Œ/ìŠ¤í¬ë¡¤ ê¸ˆì§€. -> í—ˆìš©ìœ¼ë¡œ ìˆ˜ì •.  --> ê¸ˆì§€
 		//		mWeb.getSettings().setUseWideViewPort(true);		
-		mWeb.setWebViewClient(new MyWebViewClient());  // WebViewClient ÁöÁ¤          
+		mWeb.setWebViewClient(new MyWebViewClient());  // WebViewClient ì§€ì •          
 		mWeb.setWebChromeClient(new MyWebChromeClient());
 		WebSettings webSet = mWeb.getSettings();
-		// JavaScript Çã¿ë.
+		// JavaScript í—ˆìš©.
 		webSet.setJavaScriptEnabled(true);
-		// È®´ë/Ãà¼Ò ±İÁö. -> Çã¿ëÀ¸·Î ¼öÁ¤.  --> ±İÁö
+		// í™•ëŒ€/ì¶•ì†Œ ê¸ˆì§€. -> í—ˆìš©ìœ¼ë¡œ ìˆ˜ì •.  --> ê¸ˆì§€
 		//		webSet.setSupportZoom(true);
 		//		webSet.setBuiltInZoomControls(true);
 
 		if(loadingURL.length()>0){
-			////			postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// ÆÄ¶ó¹ÌÅÍ : Merchant-Language / Merchant-Country
+			////			postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// íŒŒë¼ë¯¸í„° : Merchant-Language / Merchant-Country
 			////			mWeb.postUrl(loadingURL, EncodingUtils.getBytes(postData, "BASE64"));
 			//			mWeb.getSettings().setJavaScriptEnabled(true);
 
 
-			//			new backgroundWebView().execute();		// ºñµ¿±â·Î URL ¿ÀÇÂ ½ÇÇà
-			// ºñµ¿±â -> ¹Ù·Î ¿­µµ·Ï ¼öÁ¤
-			postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// ÆÄ¶ó¹ÌÅÍ : Merchant-Language / Merchant-Country
+			//			new backgroundWebView().execute();		// ë¹„ë™ê¸°ë¡œ URL ì˜¤í”ˆ ì‹¤í–‰
+			// ë¹„ë™ê¸° -> ë°”ë¡œ ì—´ë„ë¡ ìˆ˜ì •
+			postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// íŒŒë¼ë¯¸í„° : Merchant-Language / Merchant-Country
 			mWeb.postUrl(loadingURL, EncodingUtils.getBytes(postData, "BASE64"));
 			mWeb.getSettings().setJavaScriptEnabled(true);
 			//			mWeb.loadUrl(loadingURL);		// url
@@ -116,7 +116,7 @@ public class myWebView extends Activity {
 			Toast.makeText(myWebView.this, R.string.cant_find_url, Toast.LENGTH_SHORT).show();
 		}
 	}
-	// ºñµ¿±â ½ÇÇà
+	// ë¹„ë™ê¸° ì‹¤í–‰
 	//	public class backgroundWebView extends  AsyncTask<Void, Void, Void> { 
 	//		@Override protected void onPostExecute(Void result) {  
 	//		} 
@@ -125,12 +125,12 @@ public class myWebView extends Activity {
 	//		@Override protected Void doInBackground(Void... params) {  
 	//			runOnUiThread(new Runnable(){
 	//				public void run(){
-	//					postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// ÆÄ¶ó¹ÌÅÍ : Merchant-Language / Merchant-Country
+	//					postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// íŒŒë¼ë¯¸í„° : Merchant-Language / Merchant-Country
 	//					mWeb.postUrl(loadingURL, EncodingUtils.getBytes(postData, "BASE64"));
 	//					mWeb.getSettings().setJavaScriptEnabled(true);
 	//					}
 	//			});
-	////			postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// ÆÄ¶ó¹ÌÅÍ : Merchant-Language / Merchant-Country
+	////			postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// íŒŒë¼ë¯¸í„° : Merchant-Language / Merchant-Country
 	////			mWeb.postUrl(loadingURL, EncodingUtils.getBytes(postData, "BASE64"));
 	//			return null; 
 	//		}
@@ -138,7 +138,7 @@ public class myWebView extends Activity {
 
 
 	@Override 
-	public boolean onKeyDown(int keyCode, KeyEvent event) { 			// Ãë¼Ò¹öÆ° ´©¸£¸é À¥ºäÀÇ ¹é¹öÆ°
+	public boolean onKeyDown(int keyCode, KeyEvent event) { 			// ì·¨ì†Œë²„íŠ¼ ëˆ„ë¥´ë©´ ì›¹ë·°ì˜ ë°±ë²„íŠ¼
 		if ((keyCode == KeyEvent.KEYCODE_BACK) && mWeb.canGoBack()) { 
 			mWeb.goBack(); 
 			return true; 
@@ -147,7 +147,7 @@ public class myWebView extends Activity {
 	}
 	/**
 	 * MyWebViewClient
-	 * ÆäÀÌÁö ·Îµå, ¿Ï·á ÀÌº¥Æ®¹ß»ı °¡´ÉÇÑ À¥ºä Å¬¶óÀÌ¾ğÆ®
+	 * í˜ì´ì§€ ë¡œë“œ, ì™„ë£Œ ì´ë²¤íŠ¸ë°œìƒ ê°€ëŠ¥í•œ ì›¹ë·° í´ë¼ì´ì–¸íŠ¸
 	 *
 	 */
 	private class MyWebViewClient extends WebViewClient {
@@ -157,7 +157,7 @@ public class myWebView extends Activity {
 		}
 		/**
 		 * onPageFinished
-		 * ·Îµù ³¡³ª¸é ÇÁ·Î±×·¡½º¹Ù ¼û±â°í Àç·Îµù °¡´ÉÇÏµµ·ÏÇÑ´Ù
+		 * ë¡œë”© ëë‚˜ë©´ í”„ë¡œê·¸ë˜ìŠ¤ë°” ìˆ¨ê¸°ê³  ì¬ë¡œë”© ê°€ëŠ¥í•˜ë„ë¡í•œë‹¤
 		 *
 		 * @param view
 		 * @param url
@@ -170,7 +170,7 @@ public class myWebView extends Activity {
 		}
 		/**
 		 * onPageStarted
-		 * À¥ºä ·Îµù ½ÃÀÛÇÏ¸é ½Ã°£ Àç¼­ ·Îµù ¾ÈµÇ¸é ¸ØÃß°í ¾Ë¸°´Ù.
+		 * ì›¹ë·° ë¡œë”© ì‹œì‘í•˜ë©´ ì‹œê°„ ì¬ì„œ ë¡œë”© ì•ˆë˜ë©´ ë©ˆì¶”ê³  ì•Œë¦°ë‹¤.
 		 *
 		 * @param view
 		 * @param url
@@ -184,7 +184,7 @@ public class myWebView extends Activity {
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
-					try {		// ±â´Ù·È´Ù°¡ Ã¼Å©ÇØ¼­ ¾È³¡³µÀ¸¸é ÁßÁö
+					try {		// ê¸°ë‹¤ë ¸ë‹¤ê°€ ì²´í¬í•´ì„œ ì•ˆëë‚¬ìœ¼ë©´ ì¤‘ì§€
 						Thread.sleep(CommonUtils.serverConnectTimeOut);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
@@ -210,16 +210,16 @@ public class myWebView extends Activity {
 
 	}
 	/**
-	 * WebChromeClient ¸¦ »ó¼ÓÇÏ´Â Å¬·¡½ºÀÌ´Ù.
-	 * alert ÀÌ³ª À©µµ¿ì ´İ±â µîÀÇ web ºê¶ó¿ìÀú ÀÌº¥Æ®¸¦ ±¸ÇÏ±â À§ÇÑ Å¬·¡½ºÀÌ´Ù.
+	 * WebChromeClient ë¥¼ ìƒì†í•˜ëŠ” í´ë˜ìŠ¤ì´ë‹¤.
+	 * alert ì´ë‚˜ ìœˆë„ìš° ë‹«ê¸° ë“±ì˜ web ë¸Œë¼ìš°ì € ì´ë²¤íŠ¸ë¥¼ êµ¬í•˜ê¸° ìœ„í•œ í´ë˜ìŠ¤ì´ë‹¤.
 	 * @author johnkim
 	 */
 	private class MyWebChromeClient extends WebChromeClient {
-		//Javascript alert È£Ãâ ½Ã ½ÇÇà
+		//Javascript alert í˜¸ì¶œ ì‹œ ì‹¤í–‰
 		@Override
 		public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
 			final JsResult finalRes = result;
-			//AlertDialog »ı¼º
+			//AlertDialog ìƒì„±
 			new AlertDialog.Builder(view.getContext())
 			.setMessage(message)
 			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -233,10 +233,10 @@ public class myWebView extends Activity {
 			return true;
 		}
 	}
-	// Áß¾Ó ÇÁ·Î±×·¡½º¹Ù º¸ÀÓ, ¼û±è
+	// ì¤‘ì•™ í”„ë¡œê·¸ë˜ìŠ¤ë°” ë³´ì„, ìˆ¨ê¹€
 	/**
 	 * showPb
-	 *  Áß¾Ó ÇÁ·Î±×·¡½º¹Ù °¡½ÃÈ­ÇÑ´Ù
+	 *  ì¤‘ì•™ í”„ë¡œê·¸ë˜ìŠ¤ë°” ê°€ì‹œí™”í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -257,7 +257,7 @@ public class myWebView extends Activity {
 	}
 	/**
 	 * hidePb
-	 *  Áß¾Ó ÇÁ·Î±×·¡½º¹Ù ºñ°¡½ÃÈ­ÇÑ´Ù
+	 *  ì¤‘ì•™ í”„ë¡œê·¸ë˜ìŠ¤ë°” ë¹„ê°€ì‹œí™”í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -279,7 +279,7 @@ public class myWebView extends Activity {
 
 	/**
 	 * showErrMsg
-	 *  È­¸é¿¡ error Åä½ºÆ® ¶ç¿î´Ù
+	 *  í™”ë©´ì— error í† ìŠ¤íŠ¸ ë„ìš´ë‹¤
 	 *
 	 * @param
 	 * @param
@@ -301,7 +301,7 @@ public class myWebView extends Activity {
 
 	/**
 	 * onStop
-	 *  ¾×Æ¼ºñÆ¼ Á¤ÁöÇÒ¶§ À¥ºä ·Îµùµµ Á¤ÁöÇÑ´Ù
+	 *  ì•¡í‹°ë¹„í‹° ì •ì§€í• ë•Œ ì›¹ë·° ë¡œë”©ë„ ì •ì§€í•œë‹¤
 	 *
 	 * @param
 	 * @param

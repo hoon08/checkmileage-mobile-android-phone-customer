@@ -36,7 +36,7 @@ import android.widget.Toast;
 
 /*
  * MemberStoreLogPageActivity
- *  °¡¸ÍÁ¡ »ó¼¼ - ÀÌ¿ë ³»¿ª -- »ç¿ë ¾ÈÇÔ
+ *  ê°€ë§¹ì  ìƒì„¸ - ì´ìš© ë‚´ì—­ -- ì‚¬ìš© ì•ˆí•¨
  */
 public class MemberStoreLogPageActivity extends Activity {
 	String idCheckMileageMileages ="";
@@ -52,22 +52,22 @@ public class MemberStoreLogPageActivity extends Activity {
 	URL postUrl2;
 	HttpURLConnection connection2;
 
-	public List<CheckMileageMemberMileageLogs> entries;	// 1Â÷ÀûÀ¸·Î Á¶È¸ÇÑ °á°ú.(¸®½ºÆ®)
+	public List<CheckMileageMemberMileageLogs> entries;	// 1ì°¨ì ìœ¼ë¡œ ì¡°íšŒí•œ ê²°ê³¼.(ë¦¬ìŠ¤íŠ¸)
 
-	private ListView m_list = null;											// ¸®½ºÆ® ºä
-	List<CheckMileageMemberMileageLogs> entriesFn = null;					// ¸®½ºÆ®. ÃÖÁ¾ÀûÀ¸·Î µé¾î°¥ ³à¼®µé. ¸¶ÀÏ¸®Áö ·Î±× ¸®½ºÆ®.
+	private ListView m_list = null;											// ë¦¬ìŠ¤íŠ¸ ë·°
+	List<CheckMileageMemberMileageLogs> entriesFn = null;					// ë¦¬ìŠ¤íŠ¸. ìµœì¢…ì ìœ¼ë¡œ ë“¤ì–´ê°ˆ ë…€ì„ë“¤. ë§ˆì¼ë¦¬ì§€ ë¡œê·¸ ë¦¬ìŠ¤íŠ¸.
 
-	private MileageLogAdapter logAdapter;			// ¼º´É ÁÁÀº ¾Æ´äÅÍ.
-	TextView emptyText = null;				// µ¥ÀÌÅÍ ¾øÀ½ ÅØ½ºÆ®.
+	private MileageLogAdapter logAdapter;			// ì„±ëŠ¥ ì¢‹ì€ ì•„ë‹µí„°.
+	TextView emptyText = null;				// ë°ì´í„° ì—†ìŒ í…ìŠ¤íŠ¸.
 
-	// ÇÚµé·¯
+	// í•¸ë“¤ëŸ¬
 	Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg){
 			try{
-				Bundle b = msg.getData();		// ¹Ş¾Æ¿Â °á°ú¸¦ È­¸é¿¡ »Ñ·ÁÁØ´Ù.
-				if(b.getInt("showYN")==1){		// È­¸é¿¡ º¸¿©Áàµµ ÁÁ´Ù´Â ¸Ş½ÃÁö. ¹Ş¾Æ¿Â ¸¶ÀÏ¸®Áö °á°ú¸¦ È­¸é¿¡ »Ñ·ÁÁØ´Ù.
-					// ÃÖÁ¾ °á°ú ¹è¿­Àº entriesFn ¿¡ ÀúÀåµÇ¾î ÀÖ´Ù.. ¿©±â ¸®½ºÆ® ·¹ÀÌ¾Æ¿ô.
+				Bundle b = msg.getData();		// ë°›ì•„ì˜¨ ê²°ê³¼ë¥¼ í™”ë©´ì— ë¿Œë ¤ì¤€ë‹¤.
+				if(b.getInt("showYN")==1){		// í™”ë©´ì— ë³´ì—¬ì¤˜ë„ ì¢‹ë‹¤ëŠ” ë©”ì‹œì§€. ë°›ì•„ì˜¨ ë§ˆì¼ë¦¬ì§€ ê²°ê³¼ë¥¼ í™”ë©´ì— ë¿Œë ¤ì¤€ë‹¤.
+					// ìµœì¢… ê²°ê³¼ ë°°ì—´ì€ entriesFn ì— ì €ì¥ë˜ì–´ ìˆë‹¤.. ì—¬ê¸° ë¦¬ìŠ¤íŠ¸ ë ˆì´ì•„ì›ƒ.
 					if(entriesFn.size()>0){
 						emptyText.setText("");
 						setListing();
@@ -76,7 +76,7 @@ public class MemberStoreLogPageActivity extends Activity {
 						emptyText.setText(R.string.no_used_logs);
 					}
 				}
-				if(b.getInt("showErrToast")==1){			// ¿¡·¯ Åä½ºÆ®
+				if(b.getInt("showErrToast")==1){			// ì—ëŸ¬ í† ìŠ¤íŠ¸
 					Toast.makeText(MemberStoreLogPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 				}
 			}catch(Exception e){	
@@ -87,10 +87,10 @@ public class MemberStoreLogPageActivity extends Activity {
 
 		}
 	};
-	// ÇÚµé·¯¿¡¼­ ÄÁÅØ½ºÆ® ¹Ş±â À§ÇØ »ç¿ë.
+	// í•¸ë“¤ëŸ¬ì—ì„œ ì»¨í…ìŠ¤íŠ¸ ë°›ê¸° ìœ„í•´ ì‚¬ìš©.
 	/**
 	 * returnThis
-	 *  ÇÚµé·¯¿¡¼­ ÄÁÅØ½ºÆ® ¹Ş±â À§ÇØ »ç¿ëÇÑ´Ù
+	 *  í•¸ë“¤ëŸ¬ì—ì„œ ì»¨í…ìŠ¤íŠ¸ ë°›ê¸° ìœ„í•´ ì‚¬ìš©í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -101,10 +101,10 @@ public class MemberStoreLogPageActivity extends Activity {
 	}
 
 
-	// µ¥ÀÌÅÍ¸¦ È­¸é¿¡ ¼¼ÆÃ
+	// ë°ì´í„°ë¥¼ í™”ë©´ì— ì„¸íŒ…
 	/**
 	 * setListing
-	 *  µ¥ÀÌÅÍ¸¦ È­¸é¿¡ ¼¼ÆÃÇÑ´Ù
+	 *  ë°ì´í„°ë¥¼ í™”ë©´ì— ì„¸íŒ…í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -114,7 +114,7 @@ public class MemberStoreLogPageActivity extends Activity {
 		logAdapter = new MileageLogAdapter(this, entriesFn);
 		m_list  = (ListView)findViewById(R.id.memberstore_log_list);
 		m_list.setAdapter(logAdapter);
-		//		gridView.setOnScrollListener(listScrollListener);		// ¸®½º³Ê µî·Ï. ½ºÅ©·Ñ½Ã ÇÏ´Ü¿¡ µµÂøÇÏ¸é Ãß°¡ µ¥ÀÌÅÍ Á¶È¸ÇÏµµ·Ï.
+		//		gridView.setOnScrollListener(listScrollListener);		// ë¦¬ìŠ¤ë„ˆ ë“±ë¡. ìŠ¤í¬ë¡¤ì‹œ í•˜ë‹¨ì— ë„ì°©í•˜ë©´ ì¶”ê°€ ë°ì´í„° ì¡°íšŒí•˜ë„ë¡.
 	}
 
 	/** Called when the activity is first created. */
@@ -123,14 +123,14 @@ public class MemberStoreLogPageActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.member_store_log);
 		Intent rIntent = getIntent();
-		idCheckMileageMileages = rIntent.getStringExtra("idCheckMileageMileages");			// ÁÖ¿ä Á¤º¸¸¦ ¹Ş´Â´Ù. ÁÖ¿äÁ¤º¸´Â Å° °ª. idCheckMileageMileages
+		idCheckMileageMileages = rIntent.getStringExtra("idCheckMileageMileages");			// ì£¼ìš” ì •ë³´ë¥¼ ë°›ëŠ”ë‹¤. ì£¼ìš”ì •ë³´ëŠ” í‚¤ ê°’. idCheckMileageMileages
 		storeName = rIntent.getStringExtra("storeName");	
 
-		new backgroundGetMyMileageLogList().execute();		// getMyMileageList ºñµ¿±â ½ÇÇà
+		new backgroundGetMyMileageLogList().execute();		// getMyMileageList ë¹„ë™ê¸° ì‹¤í–‰
 		m_list = (ListView) findViewById(R.id.memberstore_log_list);
 		emptyText = (TextView) findViewById(R.id.memberstore_log_list_empty);
 	}
-	// ºñµ¿±â·Î ¸¶ÀÏ¸®Áö ·Î±× ¸®½ºÆ® °¡Á®¿À´Â ÇÔ¼ö È£Ãâ
+	// ë¹„ë™ê¸°ë¡œ ë§ˆì¼ë¦¬ì§€ ë¡œê·¸ ë¦¬ìŠ¤íŠ¸ ê°€ì ¸ì˜¤ëŠ” í•¨ìˆ˜ í˜¸ì¶œ
 	public class backgroundGetMyMileageLogList extends  AsyncTask<Void, Void, Void> { 
 		@Override protected void onPostExecute(Void result) {  
 		} 
@@ -139,7 +139,7 @@ public class MemberStoreLogPageActivity extends Activity {
 		@Override protected Void doInBackground(Void... params) {  
 			Log.d(TAG,"backgroundGetMyMileageList");
 			try {
-				getMyMileageLogList();		// ¸¶ÀÏ¸®Áö ¸®½ºÆ® °¡Á®¿À±â
+				getMyMileageLogList();		// ë§ˆì¼ë¦¬ì§€ ë¦¬ìŠ¤íŠ¸ ê°€ì ¸ì˜¤ê¸°
 			} catch (JSONException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -149,29 +149,29 @@ public class MemberStoreLogPageActivity extends Activity {
 		}
 	}
 	/*
-	 * ¼­¹ö¿Í Åë½ÅÇÏ¿© °¡¸ÍÁ¡ ÀÌ¿ë ³»¿ª ·Î±×¸¦ °¡Á®¿Â´Ù.
-	 * ±× °á°ú¸¦ List<CheckMileageMemberMileageLogs> Object ·Î ¹İÈ¯ ÇÑ´Ù.
+	 * ì„œë²„ì™€ í†µì‹ í•˜ì—¬ ê°€ë§¹ì  ì´ìš© ë‚´ì—­ ë¡œê·¸ë¥¼ ê°€ì ¸ì˜¨ë‹¤.
+	 * ê·¸ ê²°ê³¼ë¥¼ List<CheckMileageMemberMileageLogs> Object ë¡œ ë°˜í™˜ í•œë‹¤.
 	 * 
-	 * º¸³»´Â Á¤º¸ : ¾×Æ¼º£ÀÌÆ®Y, Å°°ª : checkMileageMileagesIdCheckMileageMileages  <- ¾ÕÆäÀÌÁö¿¡¼­ ¹ŞÀ½.
+	 * ë³´ë‚´ëŠ” ì •ë³´ : ì•¡í‹°ë² ì´íŠ¸Y, í‚¤ê°’ : checkMileageMileagesIdCheckMileageMileages  <- ì•í˜ì´ì§€ì—ì„œ ë°›ìŒ.
 	 *  
-	 *  ¹Ş´Â Á¤º¸ : ÀÌ¿ëÇÑ¼­ºñ½º content., Àû¸³ ¶Ç´Â »ç¿ëÇÑ ¸¶ÀÏ¸®Áö mileage,   ¼öÁ¤ÀÏ  modifyDate
+	 *  ë°›ëŠ” ì •ë³´ : ì´ìš©í•œì„œë¹„ìŠ¤ content., ì ë¦½ ë˜ëŠ” ì‚¬ìš©í•œ ë§ˆì¼ë¦¬ì§€ mileage,   ìˆ˜ì •ì¼  modifyDate
 	 *  
 	 * -----------------------------------
-	 * |  [°¡¸ÍÁ¡ ÀÌ¸§]					   |
-	 * |  ÀÌ¿ë¼­ºñ½º						   |
-	 * |  ¸¶ÀÏ¸®Áö 	[ °¡ ¸Í Á¡ ÀÌ ¿ë ½Ã °¢ ]  	   |
+	 * |  [ê°€ë§¹ì  ì´ë¦„]					   |
+	 * |  ì´ìš©ì„œë¹„ìŠ¤						   |
+	 * |  ë§ˆì¼ë¦¬ì§€ 	[ ê°€ ë§¹ ì  ì´ ìš© ì‹œ ê° ]  	   |
 	 * ------------------------------------
 	 */
 	/**
 	 * getMyMileageLogList
-	 *  ¼­¹ö¿Í Åë½ÅÇÏ¿© °¡¸ÍÁ¡ ÀÌ¿ë ³»¿ª ·Î±×¸¦ °¡Á®¿Â´Ù.
+	 *  ì„œë²„ì™€ í†µì‹ í•˜ì—¬ ê°€ë§¹ì  ì´ìš© ë‚´ì—­ ë¡œê·¸ë¥¼ ê°€ì ¸ì˜¨ë‹¤.
 	 *
 	 * @param
 	 * @param
 	 * @return
 	 */
 	public void getMyMileageLogList() throws JSONException, IOException {
-		Log.i(TAG, "getMyMileageList:::"+idCheckMileageMileages);		// ÀÎµ¦½º ¹øÈ£..
+		Log.i(TAG, "getMyMileageList:::"+idCheckMileageMileages);		// ì¸ë±ìŠ¤ ë²ˆí˜¸..
 		controllerName = "checkMileageMemberMileageLogController";
 		methodName = "selectMemberMileageLogList";
 		new Thread(
@@ -179,7 +179,7 @@ public class MemberStoreLogPageActivity extends Activity {
 					public void run(){
 						JSONObject obj = new JSONObject();
 						try{
-							// ÀÚ½ÅÀÇ ¾ÆÀÌµğ¸¦ ³Ö¾î¼­ Á¶È¸
+							// ìì‹ ì˜ ì•„ì´ë””ë¥¼ ë„£ì–´ì„œ ì¡°íšŒ
 							obj.put("activateYn", "Y");
 							obj.put("checkMileageMileagesIdCheckMileageMileages", idCheckMileageMileages);
 						}catch(Exception e){
@@ -201,19 +201,19 @@ public class MemberStoreLogPageActivity extends Activity {
 							os2.flush();
 							Thread.sleep(200);
 							//							System.out.println("postUrl      : " + postUrl2);
-							//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : Á¤»ó
+							//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : ì •ìƒ
 							responseCode = connection2.getResponseCode();
 							InputStream in =  connection2.getInputStream();
 							//							os2.close();
-							// Á¶È¸ÇÑ °á°ú¸¦ Ã³¸®.
+							// ì¡°íšŒí•œ ê²°ê³¼ë¥¼ ì²˜ë¦¬.
 							theData1(in);
 							connection2.disconnect();
 						}catch(Exception e){ 
 							connection2.disconnect();
 							e.printStackTrace();
 							try{
-								Thread.sleep(100);		// ½¬¾ú´Ù°¡ ´Ù½Ã --> ¾ÈÇÔ
-								showMSG();		// ¿¡·¯ Åä½ºÆ® º¸¿©ÁÖ°í Á¾·áÇÏ¿© ´Ù½Ã ½ÇÇàÇÏµµ·ÏÇÔ.
+								Thread.sleep(100);		// ì‰¬ì—ˆë‹¤ê°€ ë‹¤ì‹œ --> ì•ˆí•¨
+								showMSG();		// ì—ëŸ¬ í† ìŠ¤íŠ¸ ë³´ì—¬ì£¼ê³  ì¢…ë£Œí•˜ì—¬ ë‹¤ì‹œ ì‹¤í–‰í•˜ë„ë¡í•¨.
 								finish();
 								//								getMyMileageLogList();
 							}catch(Exception e1){
@@ -226,11 +226,11 @@ public class MemberStoreLogPageActivity extends Activity {
 	}
 
 	/*
-	 * Á¶È¸ÇÑ ·Î±× ¸®½ºÆ®¸¦ ¹ŞÀ½.
+	 * ì¡°íšŒí•œ ë¡œê·¸ ë¦¬ìŠ¤íŠ¸ë¥¼ ë°›ìŒ.
 	 */
 	/**
 	 * theData1
-	 *   Á¶È¸ÇÑ ·Î±× ¸®½ºÆ®¸¦ ¹ŞÀº°ÍÀ» Ã³¸®ÇÑ´Ù
+	 *   ì¡°íšŒí•œ ë¡œê·¸ ë¦¬ìŠ¤íŠ¸ë¥¼ ë°›ì€ê²ƒì„ ì²˜ë¦¬í•œë‹¤
 	 *
 	 * @param in
 	 * @param 
@@ -248,9 +248,9 @@ public class MemberStoreLogPageActivity extends Activity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//		Log.d(TAG,"¼ö½Å::"+builder.toString());
-		String tempstr = builder.toString();		// ¹ŞÀº µ¥ÀÌÅÍ¸¦ °¡°øÇÏ¿© »ç¿ëÇÒ ¼ö ÀÖ´Ù
-		// // // // // // // ¹Ù·Î ¹Ù·Î È­¸é¿¡ add ÇÏ°í ÅÍÄ¡½Ã °ª °¡Á®´Ù°¡ »ó¼¼ Á¤º¸ º¸µµ·Ï....
+		//		Log.d(TAG,"ìˆ˜ì‹ ::"+builder.toString());
+		String tempstr = builder.toString();		// ë°›ì€ ë°ì´í„°ë¥¼ ê°€ê³µí•˜ì—¬ ì‚¬ìš©í•  ìˆ˜ ìˆë‹¤
+		// // // // // // // ë°”ë¡œ ë°”ë¡œ í™”ë©´ì— add í•˜ê³  í„°ì¹˜ì‹œ ê°’ ê°€ì ¸ë‹¤ê°€ ìƒì„¸ ì •ë³´ ë³´ë„ë¡....
 
 		JSONArray jsonArray2 = null;
 		try {
@@ -264,9 +264,9 @@ public class MemberStoreLogPageActivity extends Activity {
 				entries = new ArrayList<CheckMileageMemberMileageLogs>(max);
 				if(max>0){
 					/*
-					 * ¼ö½Å::[
+					 * ìˆ˜ì‹ ::[
 					 * 		{"checkMileageMemberMileageLog":
-					 * 				{"idCheckMileageMemberMileageLogs":1,"checkMileageId":"test1234","merchantId":"m1","content":"±è¹ä",
+					 * 				{"idCheckMileageMemberMileageLogs":1,"checkMileageId":"test1234","merchantId":"m1","content":"ê¹€ë°¥",
 					 * 				  "mileage":1,"activateYn":"Y","modifyDate":"2012-08-17","registerDate":"2012-08-17","checkMileageMileagesIdCheckMileageMileages":1}
 					 * 		},
 					 * 		...
@@ -275,11 +275,11 @@ public class MemberStoreLogPageActivity extends Activity {
 					for ( int i = 0; i < max; i++ ){
 						JSONObject jsonObj = jsonArray2.getJSONObject(i).getJSONObject("checkMileageMemberMileageLog");
 						//  idCheckMileageMileages,  mileage,  modifyDate,  checkMileageMembersCheckMileageID,  checkMileageMerchantsMerchantID
-						// °´Ã¼ ¸¸µé°í °ª ¹ŞÀº°Å ³Ö¾î¼­ ÀúÀå..  ÀúÀå°ª: ÀÎµ¦½º¹øÈ£, ¼öÁ¤³¯Â¥, ¾ÆÀÌµğ, °¡¸ÍÁ¡¾ÆÀÌµğ.
-						//						Log.d(TAG,"¼ö½Å checkMileageMileagesIdCheckMileageMileages::"+jsonObj.getString("checkMileageMileagesIdCheckMileageMileages"));
-						//						Log.d(TAG,"¼ö½Å content::"+jsonObj.getString("content"));
-						//						Log.d(TAG,"¼ö½Å mileage::"+jsonObj.getString("mileage"));
-						//						Log.d(TAG,"¼ö½Å modifyDate::"+jsonObj.getString("modifyDate"));
+						// ê°ì²´ ë§Œë“¤ê³  ê°’ ë°›ì€ê±° ë„£ì–´ì„œ ì €ì¥..  ì €ì¥ê°’: ì¸ë±ìŠ¤ë²ˆí˜¸, ìˆ˜ì •ë‚ ì§œ, ì•„ì´ë””, ê°€ë§¹ì ì•„ì´ë””.
+						//						Log.d(TAG,"ìˆ˜ì‹  checkMileageMileagesIdCheckMileageMileages::"+jsonObj.getString("checkMileageMileagesIdCheckMileageMileages"));
+						//						Log.d(TAG,"ìˆ˜ì‹  content::"+jsonObj.getString("content"));
+						//						Log.d(TAG,"ìˆ˜ì‹  mileage::"+jsonObj.getString("mileage"));
+						//						Log.d(TAG,"ìˆ˜ì‹  modifyDate::"+jsonObj.getString("modifyDate"));
 
 						entries.add(new CheckMileageMemberMileageLogs(jsonObj.getString("checkMileageMileagesIdCheckMileageMileages"),			
 								jsonObj.getString("content"),
@@ -291,20 +291,20 @@ public class MemberStoreLogPageActivity extends Activity {
 				e.printStackTrace();
 			}
 			finally{
-				entriesFn = entries;		// Ã³¸® °á°ú¸¦ ¹ÛÀ¸·Î »«´Ù.		(º¸¿©ÁÖ±â¿ë ¸®½ºÆ®¿¡ ÀúÀåÇÑ´Ù)
-				//				Log.d(TAG,"¼ö½Å entriesFn::"+entriesFn.size());
-				showInfo();					// ¹ÛÀ¸·Î »« °á°ú¸¦ °¡Áö°í È­¸é¿¡ »Ñ·ÁÁÖ´Â ÀÛ¾÷À» ÇÑ´Ù.
+				entriesFn = entries;		// ì²˜ë¦¬ ê²°ê³¼ë¥¼ ë°–ìœ¼ë¡œ ëº€ë‹¤.		(ë³´ì—¬ì£¼ê¸°ìš© ë¦¬ìŠ¤íŠ¸ì— ì €ì¥í•œë‹¤)
+				//				Log.d(TAG,"ìˆ˜ì‹  entriesFn::"+entriesFn.size());
+				showInfo();					// ë°–ìœ¼ë¡œ ëº€ ê²°ê³¼ë¥¼ ê°€ì§€ê³  í™”ë©´ì— ë¿Œë ¤ì£¼ëŠ” ì‘ì—…ì„ í•œë‹¤.
 			}
-		}else{			// ¿äÃ» ½ÇÆĞ½Ã	 Åä½ºÆ® ¶ç¿ì°í È­¸é À¯Áö.
+		}else{			// ìš”ì²­ ì‹¤íŒ¨ì‹œ	 í† ìŠ¤íŠ¸ ë„ìš°ê³  í™”ë©´ ìœ ì§€.
 			showMSG();
 			//			Toast.makeText(MemberStoreLogPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 		}
 	}
 
-	// entries3 ¸¦ Àü¿ª¿¡ ÀúÀåÈÄ ½º·¹µå ÀÌ¿ëÇÏ¿© µ¹¸°´Ù. È­¸é¿¡ º¸¿©ÁØ´Ù.
+	// entries3 ë¥¼ ì „ì—­ì— ì €ì¥í›„ ìŠ¤ë ˆë“œ ì´ìš©í•˜ì—¬ ëŒë¦°ë‹¤. í™”ë©´ì— ë³´ì—¬ì¤€ë‹¤.
 	/**
 	 * showInfo
-	 *   entries3 ¸¦ Àü¿ª¿¡ ÀúÀåÈÄ ½º·¹µå ÀÌ¿ëÇÏ¿© µ¹¸°´Ù. È­¸é¿¡ º¸¿©ÁØ´Ù.
+	 *   entries3 ë¥¼ ì „ì—­ì— ì €ì¥í›„ ìŠ¤ë ˆë“œ ì´ìš©í•˜ì—¬ ëŒë¦°ë‹¤. í™”ë©´ì— ë³´ì—¬ì¤€ë‹¤.
 	 *
 	 * @param in
 	 * @param 
@@ -325,13 +325,13 @@ public class MemberStoreLogPageActivity extends Activity {
 	}
 	/**
 	 * showMSG
-	 *  È­¸é¿¡ error Åä½ºÆ® ¶ç¿î´Ù
+	 *  í™”ë©´ì— error í† ìŠ¤íŠ¸ ë„ìš´ë‹¤
 	 *
 	 * @param 
 	 * @param 
 	 * @return
 	 */
-	public void showMSG(){			// È­¸é¿¡ error Åä½ºÆ® ¶ç¿ò..
+	public void showMSG(){			// í™”ë©´ì— error í† ìŠ¤íŠ¸ ë„ì›€..
 		new Thread(
 				new Runnable(){
 					public void run(){

@@ -1,5 +1,5 @@
 package kr.co.bettersoft.checkmileage.adapters;
-// Çª½Ã ÀÌº¥Æ® ¸ñ·Ï¿ë ¾Æ´äÅÍ
+// í‘¸ì‹œ ì´ë²¤íŠ¸ ëª©ë¡ìš© ì•„ë‹µí„°
 import java.util.List;
 
 import kr.co.bettersoft.checkmileage.activities.R;
