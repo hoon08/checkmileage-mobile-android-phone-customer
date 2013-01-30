@@ -1,7 +1,7 @@
 package kr.co.bettersoft.checkmileage.activities;
 /**
  * MemberStoreMapPageActivity
- * °¡¸ÍÁ¡ »ó¼¼ - Áöµµ º¸±â
+ * ê°€ë§¹ì  ìƒì„¸ - ì§€ë„ ë³´ê¸°
  * 
  */
 import java.util.ArrayList;
@@ -76,15 +76,15 @@ public class MemberStoreMapPageActivity extends MapActivity {
 
 		mLocation.runOnFirstFix(new Runnable() {
 			public void run() {
-				// ½ÃÀÛÀº ³» À§Ä¡·ÎºÎÅÍ.
-				GeoPoint pt = new GeoPoint(mLocation.getMyLocation().getLatitudeE6(), mLocation.getMyLocation().getLongitudeE6());				// ÁÂÇ¥·Î ÁöÁ¡ »ı¼º.!  ³» À§Ä¡ --> ÇØ´ç À§Ä¡·Î °¡ÀÚ.		
-				mapControl.setCenter(pt);									// (»ç¿ëÀÚ°¡ º¸´Â È­¸éÀÇ ÁÂÇ¥.)
+				// ì‹œì‘ì€ ë‚´ ìœ„ì¹˜ë¡œë¶€í„°.
+				GeoPoint pt = new GeoPoint(mLocation.getMyLocation().getLatitudeE6(), mLocation.getMyLocation().getLongitudeE6());				// ì¢Œí‘œë¡œ ì§€ì  ìƒì„±.!  ë‚´ ìœ„ì¹˜ --> í•´ë‹¹ ìœ„ì¹˜ë¡œ ê°€ì.		
+				mapControl.setCenter(pt);									// (ì‚¬ìš©ìê°€ ë³´ëŠ” í™”ë©´ì˜ ì¢Œí‘œ.)
 
-				//                 mMap.getController().animateTo(mLocation.getMyLocation());		// ÇöÀ§Ä¡
+				//                 mMap.getController().animateTo(mLocation.getMyLocation());		// í˜„ìœ„ì¹˜
 				GeoPoint gp = new GeoPoint(storeLat,storeLon);
 				mMap.getController().animateTo(gp);				//storeLat,storeLon
 
-				myLat = mLocation.getMyLocation().getLatitudeE6();				// ÇöÀ§Ä¡ÀÇ ÁÂÇ¥ È¹µæ *** ·Î±×¿ë
+				myLat = mLocation.getMyLocation().getLatitudeE6();				// í˜„ìœ„ì¹˜ì˜ ì¢Œí‘œ íšë“ *** ë¡œê·¸ìš©
 				myLon = mLocation.getMyLocation().getLongitudeE6();
 				Log.i("runOnFirstFix", "location:"+myLat+", "+myLon);			//ex) 37529466 126921069
 
@@ -94,7 +94,7 @@ public class MemberStoreMapPageActivity extends MapActivity {
 
 	/**
 	 * getPoint
-	 *  ÁÂÇ¥ ´ÜÀ§ ¼öÁ¤ÇÑ´Ù
+	 *  ì¢Œí‘œ ë‹¨ìœ„ ìˆ˜ì •í•œë‹¤
 	 *
 	 * @param lat
 	 * @param lon
@@ -123,23 +123,23 @@ public class MemberStoreMapPageActivity extends MapActivity {
 
 	/**
 	 * MyLocationOverlay2
-	 *  ¸ÊÀ§¿¡ ¿À¹ö·¹ÀÌ (ÅÍÄ¡½Ã ÀÌº¥Æ®)
+	 *  ë§µìœ„ì— ì˜¤ë²„ë ˆì´ (í„°ì¹˜ì‹œ ì´ë²¤íŠ¸)
 	 *
 	 */
 	class MyLocationOverlay2 extends MyLocationOverlay{
 		public MyLocationOverlay2(Context context,MapView mapView){
 			super(context,mapView);
 		}
-		protected boolean dispatchTap(){	// ¾È¿¡ÀÖ¾î¾ß µ¿ÀÛ. ÅÍÄ¡½Ã Åä½ºÆ®. 
+		protected boolean dispatchTap(){	// ì•ˆì—ìˆì–´ì•¼ ë™ì‘. í„°ì¹˜ì‹œ í† ìŠ¤íŠ¸. 
 			Toast.makeText(MemberStoreMapPageActivity.this, R.string.its_user_location, Toast.LENGTH_SHORT).show();
-			//			Toast.makeText(MemberStoreMapPageActivity.this, "¿©±â°¡ »ç¿ëÀÚÀ§Ä¡ÀÔ´Ï´Ù:"+myLat+","+myLon, Toast.LENGTH_SHORT).show();
+			//			Toast.makeText(MemberStoreMapPageActivity.this, "ì—¬ê¸°ê°€ ì‚¬ìš©ììœ„ì¹˜ì…ë‹ˆë‹¤:"+myLat+","+myLon, Toast.LENGTH_SHORT).show();
 			return false;
 		}
 	}
 
 	/**
 	 * SitesOverlay
-	 *  ¸ÊÀ§¿¡ °¡¸ÍÁ¡ ¸¶Ä¿¸¦ Ãß°¡ÇÑ´Ù.
+	 *  ë§µìœ„ì— ê°€ë§¹ì  ë§ˆì»¤ë¥¼ ì¶”ê°€í•œë‹¤.
 	 *
 	 */
 	private class SitesOverlay extends ItemizedOverlay<OverlayItem> {
@@ -155,11 +155,11 @@ public class MemberStoreMapPageActivity extends MapActivity {
 			//			items.add(new OverlayItem(getPoint(40.76866299974387,-73.98268461227417), "Lincoln Center","Home of Jazz at Lincoln Center"));
 			//			items.add(new OverlayItem(getPoint(40.765136435316755,-73.97989511489868), "Carnegie Hall","Where you go with practice, practice, practice"));
 			//			items.add(new OverlayItem(getPoint(40.70686417491799,-74.01572942733765), "The Downtown Club","Original home of the Heisman Trophy"));
-			// »ı¼ºµÈ OverlayItem À» ¸ñ·ÏÀ¸·Î ÁöÁ¤
+			// ìƒì„±ëœ OverlayItem ì„ ëª©ë¡ìœ¼ë¡œ ì§€ì •
 			populate();
 		}
 
-		// ÁöÁ¤ÇÑ ¹øÈ£¿¡ ´ëÇØ OverlayItemÀ» return
+		// ì§€ì •í•œ ë²ˆí˜¸ì— ëŒ€í•´ OverlayItemì„ return
 
 		@Override
 		protected OverlayItem createItem(int i) {
@@ -169,7 +169,7 @@ public class MemberStoreMapPageActivity extends MapActivity {
 		@Override
 		public void draw(Canvas canvas, MapView mapView, boolean shadow) {
 			super.draw(canvas, mapView, shadow);
-			// ¸¶Ä¿ÀÇ ¾Æ·¡ÀÇ Áß°£ ºÎºĞÀÌ ÁÂÇ¥¿¡ À§Ä¡ÇÏµµ·Ï ÁöÁ¤
+			// ë§ˆì»¤ì˜ ì•„ë˜ì˜ ì¤‘ê°„ ë¶€ë¶„ì´ ì¢Œí‘œì— ìœ„ì¹˜í•˜ë„ë¡ ì§€ì •
 			boundCenterBottom(marker);
 		}
 
@@ -181,7 +181,7 @@ public class MemberStoreMapPageActivity extends MapActivity {
 			return true;
 		}
 
-		//·¹ÀÌ¾î°¡ Ã³¸®ÇÒ ¼ö ÀÖ´Â Ç×¸ñÀÇ °³¼ö¸¦ ¸®ÅÏ
+		//ë ˆì´ì–´ê°€ ì²˜ë¦¬í•  ìˆ˜ ìˆëŠ” í•­ëª©ì˜ ê°œìˆ˜ë¥¼ ë¦¬í„´
 		@Override
 		public int size() {
 			return items.size();

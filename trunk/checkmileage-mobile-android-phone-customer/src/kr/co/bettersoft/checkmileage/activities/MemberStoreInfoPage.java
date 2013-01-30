@@ -1,12 +1,12 @@
 package kr.co.bettersoft.checkmileage.activities;
-// °¡¸ÍÁ¡ Á¤º¸ º¸±â
+// ê°€ë§¹ì  ì •ë³´ ë³´ê¸°
 
 /**
  * MemberStoreInfoPage
  * 
- * °¡¸ÍÁ¡ ¾ÆÀÌµğ, ³» ¸¶ÀÏ¸®Áö  <-- ÀÌÀü È­¸é¿¡¼­ ¹Ş¾Æ¿Â´Ù..  (¿©±â¼­ ¸»ÇÏ´Â ÀÌÀü È­¸éÀº ³» ¸¶ÀÏ¸®Áö ¸ñ·Ï ¶Ç´Â °¡¸ÍÁ¡ ¸ñ·Ï)
- * °¡¸ÍÁ¡ ÀÌ¹ÌÁöURL, °¡¸ÍÁ¡ ÀÌ¸§, ´ëÇ¥ÀÚ ÀÌ¸§, ÀüÈ­¹øÈ£, ÁÖ¼Ò, ÁÂÇ¥1,2(ÁÂÇ¥ ¹Ì¸® ¹ŞÀ¸¸é Áöµµ º¼¶§ ¾È¹Ş¾Æµµ µÈ´Ù..), »ó¼¼ ¼³¸í
- * ÀÌÈÄÀÇ ±â´ÉÀ¸·Î ±â·Ïº¸±â, ÀüÈ­°É±â, ¸Ş´º/¼­ºñ½º º¸±â µî..
+ * ê°€ë§¹ì  ì•„ì´ë””, ë‚´ ë§ˆì¼ë¦¬ì§€  <-- ì´ì „ í™”ë©´ì—ì„œ ë°›ì•„ì˜¨ë‹¤..  (ì—¬ê¸°ì„œ ë§í•˜ëŠ” ì´ì „ í™”ë©´ì€ ë‚´ ë§ˆì¼ë¦¬ì§€ ëª©ë¡ ë˜ëŠ” ê°€ë§¹ì  ëª©ë¡)
+ * ê°€ë§¹ì  ì´ë¯¸ì§€URL, ê°€ë§¹ì  ì´ë¦„, ëŒ€í‘œì ì´ë¦„, ì „í™”ë²ˆí˜¸, ì£¼ì†Œ, ì¢Œí‘œ1,2(ì¢Œí‘œ ë¯¸ë¦¬ ë°›ìœ¼ë©´ ì§€ë„ ë³¼ë•Œ ì•ˆë°›ì•„ë„ ëœë‹¤..), ìƒì„¸ ì„¤ëª…
+ * ì´í›„ì˜ ê¸°ëŠ¥ìœ¼ë¡œ ê¸°ë¡ë³´ê¸°, ì „í™”ê±¸ê¸°, ë©”ë‰´/ì„œë¹„ìŠ¤ ë³´ê¸° ë“±..
  * 
  */
 
@@ -74,15 +74,15 @@ public class MemberStoreInfoPage extends Activity {
 	String methodName ="";
 	String serverName = CommonUtils.serverNames;
 
-	public CheckMileageMerchants merchantData = new CheckMileageMerchants();	// °á°ú ÀúÀåÇØ¼­ º¸¿©ÁÖ±â À§ÇÑ µµ¸ŞÀÎ.
+	public CheckMileageMerchants merchantData = new CheckMileageMerchants();	// ê²°ê³¼ ì €ì¥í•´ì„œ ë³´ì—¬ì£¼ê¸° ìœ„í•œ ë„ë©”ì¸.
 	String myMileage = "";
 	String merchantId ="";
 	String idCheckMileageMileages ="";
-	//	String imageFileStr="";			// ¹®ÀÚ¿­·Î ¹Ù²Û ÀÌ¹ÌÁö
-	//	Bitmap imageFile= null;			// ÀÌ¹ÌÁö ÆÄÀÏ
+	//	String imageFileStr="";			// ë¬¸ìì—´ë¡œ ë°”ê¾¼ ì´ë¯¸ì§€
+	//	Bitmap imageFile= null;			// ì´ë¯¸ì§€ íŒŒì¼
 
 
-	String imgDomain = CommonUtils.imgDomain; 					// Img °¡Á®¿Ã¶§ ÆÄÀÏ¸í¸¸ ÀÖÀ» °æ¿ì ¾Õ¿¡ ºÙÀÏ µµ¸ŞÀÎ.   
+	String imgDomain = CommonUtils.imgDomain; 					// Img ê°€ì ¸ì˜¬ë•Œ íŒŒì¼ëª…ë§Œ ìˆì„ ê²½ìš° ì•ì— ë¶™ì¼ ë„ë©”ì¸.   
 	Bitmap bm = null;
 	String latatude = "";
 	String longitude = "";
@@ -94,21 +94,21 @@ public class MemberStoreInfoPage extends Activity {
 	int reTry = 3;			 
 	String tmpstr = "";
 	String tmpstr2 = "";
-	int maxPRstr = 200;					// È­¸é¿¡ º¸¿©ÁÙ ¼Ò°³ ±ÛÀÇ ÃÖ´ë ±ÛÀÚ¼ö. ³Ñ¾î°¡¸é ÀÚ¸£°í ... À¸·Î Ç¥½ÃÇØÁÜ.
+	int maxPRstr = 200;					// í™”ë©´ì— ë³´ì—¬ì¤„ ì†Œê°œ ê¸€ì˜ ìµœëŒ€ ê¸€ììˆ˜. ë„˜ì–´ê°€ë©´ ìë¥´ê³  ... ìœ¼ë¡œ í‘œì‹œí•´ì¤Œ.
 
 	//	float fImgSize = 0;
 
-	// ÁøÇà¹Ù
-	ProgressBar pb1;		// Áß´Ü ·Îµù ÁøÇà¹Ù
+	// ì§„í–‰ë°”
+	ProgressBar pb1;		// ì¤‘ë‹¨ ë¡œë”© ì§„í–‰ë°”
 
-	// ÇÚµé·¯
+	// í•¸ë“¤ëŸ¬
 	Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg){
 			try{
-				Bundle b = msg.getData();		// ¹Ş¾Æ¿Â°á°ú¸¦ È­¸é¿¡ »Ñ·ÁÁØ´Ù.
+				Bundle b = msg.getData();		// ë°›ì•„ì˜¨ê²°ê³¼ë¥¼ í™”ë©´ì— ë¿Œë ¤ì¤€ë‹¤.
 				if(b.getInt("showYN")==1){
-					// merchantData ¿¡¼­ µ¥ÀÌÅÍ ²¨³»¾î È­¸é¿¡ ¼¼ÆÃÇÑ´Ù.			// titleImg , name , companyName , phone , addr , pr ,,
+					// merchantData ì—ì„œ ë°ì´í„° êº¼ë‚´ì–´ í™”ë©´ì— ì„¸íŒ…í•œë‹¤.			// titleImg , name , companyName , phone , addr , pr ,,
 					TextView mileage = (TextView)findViewById(R.id.mileage);
 					//					TextView type = (TextView)findViewById(R.id.type);
 					TextView member_store_title = (TextView)findViewById(R.id.member_store_title);
@@ -143,11 +143,11 @@ public class MemberStoreInfoPage extends Activity {
 					phone.setText(merchantData.getWorkPhoneNumber());
 					tmpstr = getString(R.string.addr);
 					addr.setText(tmpstr+" : "+merchantData.getAddress01());
-					//					tmpstr = getString(R.string.pr_str);	// ¾Õ¿¡ ¼Ò°³: ¸¦ ºÙÀÌÁö ¾ÊÀ½.
+					//					tmpstr = getString(R.string.pr_str);	// ì•ì— ì†Œê°œ: ë¥¼ ë¶™ì´ì§€ ì•ŠìŒ.
 					pr.setText(merchantData.getPrSentence());
-					member_store_title.setText(merchantData.getCompanyName());			// »ó´Ü Å¸ÀÌÆ² ¾È¿¡ °¡¸ÍÁ¡ ÀÌ¸§.
+					member_store_title.setText(merchantData.getCompanyName());			// ìƒë‹¨ íƒ€ì´í‹€ ì•ˆì— ê°€ë§¹ì  ì´ë¦„.
 					//					tmpstr = getString(R.string.shop_name);
-					//					companyName.setText(tmpstr+" : "+merchantData.getCompanyName());	// °¡¸ÍÁ¡ ÀÌ¸§ - »ó´Ü Å¸ÀÌÆ² ¹Ù·Î ´ëÃ¼.
+					//					companyName.setText(tmpstr+" : "+merchantData.getCompanyName());	// ê°€ë§¹ì  ì´ë¦„ - ìƒë‹¨ íƒ€ì´í‹€ ë°”ë¡œ ëŒ€ì²´.
 
 					callBtn.setOnClickListener(new Button.OnClickListener()  {
 						public void onClick(View v)  {
@@ -188,19 +188,19 @@ public class MemberStoreInfoPage extends Activity {
 						mapBtn.setVisibility(View.VISIBLE);  // 	VISIBLE = 0;  INVISIBLE = 4;  GONE = 8;
 					}
 
-					//					logListBtn.setVisibility(View.VISIBLE);			// »ç¿ëÇÏ·Á¸é ÀÌÁÙ ÁÖ¼® Ç®¾î¼­ »ç¿ë
-					//					serviceListBtn.setVisibility(View.VISIBLE);		// ¼­ºñ½º ³»¿ª º¸±â..
+					//					logListBtn.setVisibility(View.VISIBLE);			// ì‚¬ìš©í•˜ë ¤ë©´ ì´ì¤„ ì£¼ì„ í’€ì–´ì„œ ì‚¬ìš©
+					//					serviceListBtn.setVisibility(View.VISIBLE);		// ì„œë¹„ìŠ¤ ë‚´ì—­ ë³´ê¸°..
 					closeBtn.setVisibility(View.VISIBLE);
 
 				}
 				if(b.getInt("order")==1){
-					// ÇÁ·Î±×·¡½º¹Ù ½ÇÇà
+					// í”„ë¡œê·¸ë˜ìŠ¤ë°” ì‹¤í–‰
 					if(pb1==null){
 						pb1=(ProgressBar) findViewById(R.id.memberstore_list_ProgressBar01);
 					}
 					pb1.setVisibility(View.VISIBLE);
 				}else if(b.getInt("order")==2){
-					// ÇÁ·Î±×·¡½º¹Ù  Á¾·á
+					// í”„ë¡œê·¸ë˜ìŠ¤ë°”  ì¢…ë£Œ
 					if(pb1==null){
 						pb1=(ProgressBar) findViewById(R.id.memberstore_list_ProgressBar01);
 					}
@@ -210,17 +210,17 @@ public class MemberStoreInfoPage extends Activity {
 					Toast.makeText(MemberStoreInfoPage.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 				}
 			}catch(Exception e){
-				//				Toast.makeText(MyMileagePageActivity.this, "¿¡·¯°¡ ¹ß»ıÇÏ¿´½À´Ï´Ù."+entriesFn.size(), Toast.LENGTH_SHORT).show();
+				//				Toast.makeText(MyMileagePageActivity.this, "ì—ëŸ¬ê°€ ë°œìƒí•˜ì˜€ìŠµë‹ˆë‹¤."+entriesFn.size(), Toast.LENGTH_SHORT).show();
 				e.printStackTrace();
 			}
 		}
 	};
 
 
-	// Áß¾Ó ÇÁ·Î±×·¡½º¹Ù º¸ÀÓ, ¼û±è
+	// ì¤‘ì•™ í”„ë¡œê·¸ë˜ìŠ¤ë°” ë³´ì„, ìˆ¨ê¹€
 	/**
 	 * showPb
-	 *  Áß¾Ó ÇÁ·Î±×·¡½º¹Ù °¡½ÃÈ­ÇÑ´Ù
+	 *  ì¤‘ì•™ í”„ë¡œê·¸ë˜ìŠ¤ë°” ê°€ì‹œí™”í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -241,7 +241,7 @@ public class MemberStoreInfoPage extends Activity {
 	}
 	/**
 	 * hidePb
-	 *  Áß¾Ó ÇÁ·Î±×·¡½º¹Ù ºñ°¡½ÃÈ­ÇÑ´Ù
+	 *  ì¤‘ì•™ í”„ë¡œê·¸ë˜ìŠ¤ë°” ë¹„ê°€ì‹œí™”í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -278,16 +278,16 @@ public class MemberStoreInfoPage extends Activity {
 		callBtn.setVisibility(View.GONE);
 		mapBtn.setVisibility(View.GONE);
 
-		logListBtn.setVisibility(View.GONE);		// »ç¿ëÇÏ·Á¸é ÀÌ µÎ ÁÙÀ» INVISIBLE ·Î ¹Ù²Ş.  
-		serviceListBtn.setVisibility(View.GONE);		// »ç¿ëÇÏÁö ¾ÊÀ¸·Á¸é GONE À¸·Î ¹Ù²Ş. ±×¸®°í VISIBLE·Î µ¹·Á³õÁö ¾ÊÀ½. 
+		logListBtn.setVisibility(View.GONE);		// ì‚¬ìš©í•˜ë ¤ë©´ ì´ ë‘ ì¤„ì„ INVISIBLE ë¡œ ë°”ê¿ˆ.  
+		serviceListBtn.setVisibility(View.GONE);		// ì‚¬ìš©í•˜ì§€ ì•Šìœ¼ë ¤ë©´ GONE ìœ¼ë¡œ ë°”ê¿ˆ. ê·¸ë¦¬ê³  VISIBLEë¡œ ëŒë ¤ë†“ì§€ ì•ŠìŒ. 
 
 		closeBtn.setVisibility(View.INVISIBLE);
 
 		// progress bar
-		pb1 = (ProgressBar) findViewById(R.id.memberstore_info_ProgressBar01);		// ·Îµù(Áß¾Ó)
+		pb1 = (ProgressBar) findViewById(R.id.memberstore_info_ProgressBar01);		// ë¡œë”©(ì¤‘ì•™)
 		showPb();
 
-		// È­¸é Å©±â ÃøÁ¤. (°¡¸ÍÁ¡ »çÁø º¸¿©ÁÖ±â À§ÇÔ)
+		// í™”ë©´ í¬ê¸° ì¸¡ì •. (ê°€ë§¹ì  ì‚¬ì§„ ë³´ì—¬ì£¼ê¸° ìœ„í•¨)
 		//		float screenWidth = this.getResources().getDisplayMetrics().widthPixels;
 		//		Log.i("screenWidth : ", "" + screenWidth);
 		//		float screenHeight = this.getResources().getDisplayMetrics().heightPixels;
@@ -300,12 +300,12 @@ public class MemberStoreInfoPage extends Activity {
 		//		}
 
 		Intent rIntent = getIntent();
-		merchantId = rIntent.getStringExtra("checkMileageMerchantsMerchantID");			// °¡¸ÍÁ¡ ¾Æµğ
-		myMileage = rIntent.getStringExtra("myMileage");							// °¡¸ÍÁ¡¿¡ ´ëÇÑ ³» ¸¶ÀÏ¸®Áö
+		merchantId = rIntent.getStringExtra("checkMileageMerchantsMerchantID");			// ê°€ë§¹ì  ì•„ë””
+		myMileage = rIntent.getStringExtra("myMileage");							// ê°€ë§¹ì ì— ëŒ€í•œ ë‚´ ë§ˆì¼ë¦¬ì§€
 
-		// ¼¶³×ÀÏÀÌ¹Ç·Î »ç¿ë ÇÏ¸é ¾ÈµÊ.
-		//		imageFileStr = rIntent.getStringExtra("imageFileStr");							// °¡¸ÍÁ¡¿¡ ´ëÇÑ ³» ¸¶ÀÏ¸®Áö		
-		//		if((imageFileStr!=null) && (imageFileStr.length()>0)){									// ÀÌº¥Æ® ÀÌ¹ÌÁö - °¡ ¹®ÀÚ¿­·Î µ¥ÀÌÅÍ°¡ ³Ñ¾î¿Â °æ¿ì. º¯È¯.
+		// ì„¬ë„¤ì¼ì´ë¯€ë¡œ ì‚¬ìš© í•˜ë©´ ì•ˆë¨.
+		//		imageFileStr = rIntent.getStringExtra("imageFileStr");							// ê°€ë§¹ì ì— ëŒ€í•œ ë‚´ ë§ˆì¼ë¦¬ì§€		
+		//		if((imageFileStr!=null) && (imageFileStr.length()>0)){									// ì´ë²¤íŠ¸ ì´ë¯¸ì§€ - ê°€ ë¬¸ìì—´ë¡œ ë°ì´í„°ê°€ ë„˜ì–´ì˜¨ ê²½ìš°. ë³€í™˜.
 		//			byte[] decodedString = Base64.decode(imageFileStr, Base64.DEFAULT); 
 		//			imageFile = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 		//		}
@@ -313,26 +313,26 @@ public class MemberStoreInfoPage extends Activity {
 		if(myMileage==null||myMileage.length()<1){
 			myMileage = "0";
 		}
-		idCheckMileageMileages = rIntent.getStringExtra("idCheckMileageMileages");		// ³» ¾Æµğ
+		idCheckMileageMileages = rIntent.getStringExtra("idCheckMileageMileages");		// ë‚´ ì•„ë””
 		merchantData.setMerchantID(merchantId);
 		if(merchantId.length()>0){
 			//			getMerchantInfo_pre();
 			try {
-				getMerchantInfo();				// °¡¸ÍÁ¡ Á¤º¸ °¡Á®¿È
+				getMerchantInfo();				// ê°€ë§¹ì  ì •ë³´ ê°€ì ¸ì˜´
 			} catch (JSONException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}else{
-			showMSG();		// ¿¡·¯½Ã ÇÚµé·¯ ÅëÇÑ Åä½ºÆ®
+			showMSG();		// ì—ëŸ¬ì‹œ í•¸ë“¤ëŸ¬ í†µí•œ í† ìŠ¤íŠ¸
 			//			Toast.makeText(MemberStoreInfoPage.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 			finish();
 		}
 	}
 	/**
 	 * returnThis
-	 *  ÄÁÅÃ½ºÆ®¸¦ ¸®ÅÏÇÑ´Ù
+	 *  ì»¨íƒìŠ¤íŠ¸ë¥¼ ë¦¬í„´í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -343,13 +343,13 @@ public class MemberStoreInfoPage extends Activity {
 	}
 	/**
 	 * showMSG
-	 *  È­¸é¿¡ error Åä½ºÆ® ¶ç¿î´Ù
+	 *  í™”ë©´ì— error í† ìŠ¤íŠ¸ ë„ìš´ë‹¤
 	 *
 	 * @param
 	 * @param
 	 * @return
 	 */
-	public void showMSG(){			// È­¸é¿¡ error Åä½ºÆ® ¶ç¿ò..
+	public void showMSG(){			// í™”ë©´ì— error í† ìŠ¤íŠ¸ ë„ì›€..
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -366,37 +366,37 @@ public class MemberStoreInfoPage extends Activity {
 
 
 	/*
-	 * ¼­¹ö¿Í Åë½ÅÇÏ¿© °¡¸ÍÁ¡ Á¤º¸¸¦ °¡Á®¿Â´Ù.				-- 1Â÷ °Ë»ö
+	 * ì„œë²„ì™€ í†µì‹ í•˜ì—¬ ê°€ë§¹ì  ì •ë³´ë¥¼ ê°€ì ¸ì˜¨ë‹¤.				-- 1ì°¨ ê²€ìƒ‰
 
-	 * ±× °á°ú¸¦ <CheckMileageMileage> Object ·Î ¹İÈ¯ ÇÑ´Ù.?? 
+	 * ê·¸ ê²°ê³¼ë¥¼ <CheckMileageMileage> Object ë¡œ ë°˜í™˜ í•œë‹¤.?? 
 	 * 
-	 * º¸³»´Â Á¤º¸ : °¡¸ÍÁ¡ ¾ÆÀÌµğ
+	 * ë³´ë‚´ëŠ” ì •ë³´ : ê°€ë§¹ì  ì•„ì´ë””
 	 *   	checkMileageMileage :: activateYn, checkMileageMembersCheckMileageId
-	 *  ¹Ş´Â Á¤º¸ : 
-	 *    °¡¸ÍÁ¡ ÀÌ¸§, °¡¸ÍÁ¡ ÀÌ¹ÌÁöURL, °¡¸ÍÁ¡¿¡ ´ëÇÑ ³» ¸¶ÀÏ¸®Áö.
-	 *     ´ëÇ¥ÀÚ ÀÌ¸§ , ÀüÈ­¹øÈ£ 1, ÁÖ¼Ò 1, 
-	 *      ±âÅ¸ ¼³¸íµé, ÁÂÇ¥(1,2),  
-	 *    @[°¡¸ÍÁ¡¾ÆÀÌµğ] ´Â °¡Àå Ã³À½ °¡Á®¿À¹Ç·Î µû·Î ÀúÀå
+	 *  ë°›ëŠ” ì •ë³´ : 
+	 *    ê°€ë§¹ì  ì´ë¦„, ê°€ë§¹ì  ì´ë¯¸ì§€URL, ê°€ë§¹ì ì— ëŒ€í•œ ë‚´ ë§ˆì¼ë¦¬ì§€.
+	 *     ëŒ€í‘œì ì´ë¦„ , ì „í™”ë²ˆí˜¸ 1, ì£¼ì†Œ 1, 
+	 *      ê¸°íƒ€ ì„¤ëª…ë“¤, ì¢Œí‘œ(1,2),  
+	 *    @[ê°€ë§¹ì ì•„ì´ë””] ëŠ” ê°€ì¥ ì²˜ìŒ ê°€ì ¸ì˜¤ë¯€ë¡œ ë”°ë¡œ ì €ì¥
 	 *  
 	 * -----------------------------------
-	 * |[      ÀÌ    ¹Ì    Áö      [¸¶ÀÏ¸®Áö] ] |
-	 * |[      ÀÌ    ¹Ì    Áö                       ] |
-	 * |´ëÇ¥ÀÚ :                       |
-	 * |Àü¹ø :				[ÀüÈ­°É±â]
-	 * |ÁÖ¼Ò : 				[Áöµµº¸±â]
+	 * |[      ì´    ë¯¸    ì§€      [ë§ˆì¼ë¦¬ì§€] ] |
+	 * |[      ì´    ë¯¸    ì§€                       ] |
+	 * |ëŒ€í‘œì :                       |
+	 * |ì „ë²ˆ :				[ì „í™”ê±¸ê¸°]
+	 * |ì£¼ì†Œ : 				[ì§€ë„ë³´ê¸°]
 	 * 
-	 * ±âÅ¸ ¼³¸í.....
+	 * ê¸°íƒ€ ì„¤ëª….....
 	 * 
-	 *      [¸Ş´º/¼­ºñ½º]  [´İ±â]
+	 *      [ë©”ë‰´/ì„œë¹„ìŠ¤]  [ë‹«ê¸°]
 	 * ------------------------------------
 	 * 
-	 * ´İ±â ¹öÆ°Àº »ó´Ü¿¡ µÑ¼öµµ...´­·¯¼­ È­¸é ´İÀ½.
-	 *  ¸¶ÀÏ¸®Áö ´­·¯¼­ ¸¶ÀÏ¸®Áö ÀÌ·Â º¸±â
-	 *  ÀüÈ­°É±â ´­·¯¼­ ÀüÈ­ °É±â
-	 *  Áöµµº¸±â ´­·¯¼­ Áöµµ»óÀÇ °¡¸ÍÁ¡, ³» À§Ä¡ È®ÀÎ.
+	 * ë‹«ê¸° ë²„íŠ¼ì€ ìƒë‹¨ì— ë‘˜ìˆ˜ë„...ëˆŒëŸ¬ì„œ í™”ë©´ ë‹«ìŒ.
+	 *  ë§ˆì¼ë¦¬ì§€ ëˆŒëŸ¬ì„œ ë§ˆì¼ë¦¬ì§€ ì´ë ¥ ë³´ê¸°
+	 *  ì „í™”ê±¸ê¸° ëˆŒëŸ¬ì„œ ì „í™” ê±¸ê¸°
+	 *  ì§€ë„ë³´ê¸° ëˆŒëŸ¬ì„œ ì§€ë„ìƒì˜ ê°€ë§¹ì , ë‚´ ìœ„ì¹˜ í™•ì¸.
 	 *    
-	 *  º¸³»´Â ÆÄ¶ó¹ÌÅÍ: merchantId  activateYn
-	 *  ¹Ş´Â ÆÄ¶ó¹ÌÅÍ : CheckMileageMerchant
+	 *  ë³´ë‚´ëŠ” íŒŒë¼ë¯¸í„°: merchantId  activateYn
+	 *  ë°›ëŠ” íŒŒë¼ë¯¸í„° : CheckMileageMerchant
 	 *    
 	 */
 	//	public void getMerchantInfo_pre(){
@@ -411,7 +411,7 @@ public class MemberStoreInfoPage extends Activity {
 	//							if(CommonUtils.usingNetwork<1){
 	//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
 	//								try {
-	//									getMerchantInfo();				// °¡¸ÍÁ¡ Á¤º¸ °¡Á®¿È
+	//									getMerchantInfo();				// ê°€ë§¹ì  ì •ë³´ ê°€ì ¸ì˜´
 	//								} catch (JSONException e) {
 	//									// TODO Auto-generated catch block
 	//									e.printStackTrace();
@@ -429,7 +429,7 @@ public class MemberStoreInfoPage extends Activity {
 	//	}
 	/**
 	 * getMerchantInfo
-	 *  ¼­¹ö¿Í Åë½ÅÇÏ¿© °¡¸ÍÁ¡ Á¤º¸¸¦ °¡Á®¿Â´Ù.
+	 *  ì„œë²„ì™€ í†µì‹ í•˜ì—¬ ê°€ë§¹ì  ì •ë³´ë¥¼ ê°€ì ¸ì˜¨ë‹¤.
 	 *
 	 * @param
 	 * @param
@@ -445,7 +445,7 @@ public class MemberStoreInfoPage extends Activity {
 					public void run(){
 						JSONObject obj = new JSONObject();
 						try{
-							// °¡¸ÍÁ¡ ¾ÆÀÌµğ¸¦ ³Ö¾î¼­ Á¶È¸
+							// ê°€ë§¹ì  ì•„ì´ë””ë¥¼ ë„£ì–´ì„œ ì¡°íšŒ
 							obj.put("activateYn", "Y");
 							obj.put("merchantId", merchantId);
 							Log.w(TAG,"merchantId:"+merchantId);
@@ -468,11 +468,11 @@ public class MemberStoreInfoPage extends Activity {
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
 							Thread.sleep(200);	
-							// 200 , 204 : Á¤»ó
+							// 200 , 204 : ì •ìƒ
 							responseCode = connection2.getResponseCode();
 							in =  connection2.getInputStream();
 							//							os2.close();
-							// Á¶È¸ÇÑ °á°ú¸¦ Ã³¸®.
+							// ì¡°íšŒí•œ ê²°ê³¼ë¥¼ ì²˜ë¦¬.
 							theData1(in);
 							//							connection2.disconnect();
 						}catch(Exception e){ 
@@ -480,7 +480,7 @@ public class MemberStoreInfoPage extends Activity {
 							//							connection2.disconnect();
 						}  
 						//						CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-						//						if(CommonUtils.usingNetwork < 0){	// 0 º¸´Ù ÀÛÁö´Â ¾Ê°Ô
+						//						if(CommonUtils.usingNetwork < 0){	// 0 ë³´ë‹¤ ì‘ì§€ëŠ” ì•Šê²Œ
 						//							CommonUtils.usingNetwork = 0;
 						//						}
 					}
@@ -488,11 +488,11 @@ public class MemberStoreInfoPage extends Activity {
 	}
 
 	/*
-	 * °¡¸ÍÁ¡ »ó¼¼ Á¤º¸¸¦ ¹ŞÀ½
+	 * ê°€ë§¹ì  ìƒì„¸ ì •ë³´ë¥¼ ë°›ìŒ
 	 */
 	/**
 	 * theData1
-	 *  °¡¸ÍÁ¡ »ó¼¼ Á¤º¸¸¦ ¹ŞÀº °ÍÀ» Ã³¸®ÇÑ´Ù
+	 *  ê°€ë§¹ì  ìƒì„¸ ì •ë³´ë¥¼ ë°›ì€ ê²ƒì„ ì²˜ë¦¬í•œë‹¤
 	 *
 	 * @param in
 	 * @param
@@ -512,44 +512,44 @@ public class MemberStoreInfoPage extends Activity {
 			e.printStackTrace();
 		}
 		/*
-		 * checkMileageMerchant":{"merchantId":"m1","password":"m1","name":"³»°¡Â¯","companyName":"¿ì¼ö±â¾÷",
+		 * checkMileageMerchant":{"merchantId":"m1","password":"m1","name":"ë‚´ê°€ì§±","companyName":"ìš°ìˆ˜ê¸°ì—…",
 		 * "profileImageUrl":"http:\/\/imgshop.daum-img.net\/image\/content\/set\/A_ds_view\/daum_B0_20120814172515_9723.jpg",
-		 * "email":"m1@m1.net","country":"ko","workPhoneNumber":"02-123-1231","address01":"¾ÆÁöÆ® ¿¡Æ¼¼­","businessType":"qwer",
+		 * "email":"m1@m1.net","country":"ko","workPhoneNumber":"02-123-1231","address01":"ì•„ì§€íŠ¸ ì—í‹°ì„œ","businessType":"qwer",
 		 * "businessRegistrationNumber01":1123,"businessRegistrationNumber02":4433,"businessKind01":"mm",
 		 * "decreaseMileage":0,"prSentence":1,"restrictionYn":"N","activateYn":"Y","modifyDate":"2012-08-10","registerDate":"2012-08-10"}}
 		 */
 		//		Log.d(TAG,"shop detail info ::"+builder.toString());
-		String tempstr = builder.toString();		// ¹ŞÀº µ¥ÀÌÅÍ¸¦ °¡°øÇÏ¿© »ç¿ëÇÒ ¼ö ÀÖ´Ù
-		// // // // // // // ¹Ù·Î ¹Ù·Î È­¸é¿¡ add ÇÏ°í ÅÍÄ¡½Ã °ª °¡Á®´Ù°¡ »ó¼¼ Á¤º¸ º¸µµ·Ï....
+		String tempstr = builder.toString();		// ë°›ì€ ë°ì´í„°ë¥¼ ê°€ê³µí•˜ì—¬ ì‚¬ìš©í•  ìˆ˜ ìˆë‹¤
+		// // // // // // // ë°”ë¡œ ë°”ë¡œ í™”ë©´ì— add í•˜ê³  í„°ì¹˜ì‹œ ê°’ ê°€ì ¸ë‹¤ê°€ ìƒì„¸ ì •ë³´ ë³´ë„ë¡....
 		if(responseCode==200 || responseCode==204){
 			try {
 				jsonObject = new JSONObject(tempstr);
 				JSONObject jsonobj2 = jsonObject.getJSONObject("checkMileageMerchant");
 
 				String prstr = "";
-				// µ¥ÀÌÅÍ¸¦ Àü¿ª º¯¼ö µµ¸ŞÀÎ¿¡ ÀúÀåÇÏ°í ÇÚµé·¯¸¦ ÅëÇØ µµ¸ŞÀÎ-> È­¸é¿¡ º¸¿©ÁØ´Ù..
+				// ë°ì´í„°ë¥¼ ì „ì—­ ë³€ìˆ˜ ë„ë©”ì¸ì— ì €ì¥í•˜ê³  í•¸ë“¤ëŸ¬ë¥¼ í†µí•´ ë„ë©”ì¸-> í™”ë©´ì— ë³´ì—¬ì¤€ë‹¤..
 				try{
-					merchantData.setName(jsonobj2.getString("name"));				// ´ëÇ¥ÀÚ
+					merchantData.setName(jsonobj2.getString("name"));				// ëŒ€í‘œì
 				}catch(Exception e){
 					merchantData.setName("");
 				}
 				try{
-					merchantData.setProfileImageURL(jsonobj2.getString("profileImageUrl"));				// °¡¸ÍÁ¡ ÀÌ¹ÌÁö URL
+					merchantData.setProfileImageURL(jsonobj2.getString("profileImageUrl"));				// ê°€ë§¹ì  ì´ë¯¸ì§€ URL
 				}catch(Exception e){
 					merchantData.setProfileImageURL("");
 				}
 				try{
-					merchantData.setCompanyName(jsonobj2.getString("companyName"));					// °¡¸ÍÁ¡ ÀÌ¸§
+					merchantData.setCompanyName(jsonobj2.getString("companyName"));					// ê°€ë§¹ì  ì´ë¦„
 				}catch(Exception e){
 					merchantData.setCompanyName("");
 				}
 				try{
-					merchantData.setWorkPhoneNumber(jsonobj2.getString("workPhoneNumber"));			// Àü¹ø1		
+					merchantData.setWorkPhoneNumber(jsonobj2.getString("workPhoneNumber"));			// ì „ë²ˆ1		
 				}catch(Exception e){
 					merchantData.setWorkPhoneNumber("");
 				}
 				try{
-					//					merchantData.setAddress01(jsonobj2.getString("address01"));			// ÁÖ¼Ò
+					//					merchantData.setAddress01(jsonobj2.getString("address01"));			// ì£¼ì†Œ
 					tmpstr = jsonobj2.getString("address01");
 					tmpstr2 = jsonobj2.getString("address02");
 					tmpstr = tmpstr + " "+ tmpstr2;
@@ -562,13 +562,13 @@ public class MemberStoreInfoPage extends Activity {
 					if(prstr.length()>maxPRstr){								
 						prstr = prstr.substring(0, maxPRstr-2) + "...";
 					}
-					merchantData.setPrSentence(prstr);			// ¼³¸í
-					//					merchantData.setPrSentence(jsonobj2.getString("prSentence"));			// ¼³¸í
+					merchantData.setPrSentence(prstr);			// ì„¤ëª…
+					//					merchantData.setPrSentence(jsonobj2.getString("prSentence"));			// ì„¤ëª…
 				}catch(Exception e){
 					merchantData.setPrSentence("");
 				}
 				try{
-					merchantData.setLatitude(jsonobj2.getString("latitude"));					// ÁÂÇ¥1,2
+					merchantData.setLatitude(jsonobj2.getString("latitude"));					// ì¢Œí‘œ1,2
 				}catch(Exception e){			
 					merchantData.setLatitude("");		
 				}
@@ -599,24 +599,24 @@ public class MemberStoreInfoPage extends Activity {
 				}
 				merchantData.setMerchantImage(bm);
 
-				// È­¸é¿¡ º¸¿©ÁÙ °ÍÀº °¡¸ÍÁ¡ ÀÌ¹ÌÁö.
-				// ÀÌ¹ÌÁö ÁÂÇÏ´Ü¿¡  Áö¿ª1 > ¾÷Á¾1
-				// ÀÌ¹ÌÁö ¿ì»ó´Ü¿¡ ¸¶ÀÏ¸®Áö
-				// ÀÌ¹ÌÁö ÇÏ´Ü¿¡ ´ëÇ¥ÀÚ / Àü¹ø (ÀüÈ­°É±â) / ÁÖ¼Ò (Áöµµº¸±â) / ¼³¸í /  (¸Ş´º/¼­ºñ½ºº¸±â)
+				// í™”ë©´ì— ë³´ì—¬ì¤„ ê²ƒì€ ê°€ë§¹ì  ì´ë¯¸ì§€.
+				// ì´ë¯¸ì§€ ì¢Œí•˜ë‹¨ì—  ì§€ì—­1 > ì—…ì¢…1
+				// ì´ë¯¸ì§€ ìš°ìƒë‹¨ì— ë§ˆì¼ë¦¬ì§€
+				// ì´ë¯¸ì§€ í•˜ë‹¨ì— ëŒ€í‘œì / ì „ë²ˆ (ì „í™”ê±¸ê¸°) / ì£¼ì†Œ (ì§€ë„ë³´ê¸°) / ì„¤ëª… /  (ë©”ë‰´/ì„œë¹„ìŠ¤ë³´ê¸°)
 				showInfo();
 			} catch (JSONException e) {
 				e.printStackTrace();
 			} 
-		}else{			// ¿äÃ» ½ÇÆĞ½Ã	 Åä½ºÆ® ¶ç¿ì°í È­¸é À¯Áö.
+		}else{			// ìš”ì²­ ì‹¤íŒ¨ì‹œ	 í† ìŠ¤íŠ¸ ë„ìš°ê³  í™”ë©´ ìœ ì§€.
 			showMSG();
 			//			Toast.makeText(MemberStoreInfoPage.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 		}
 	}
 
-	// °¡¸ÍÁ¡ ÀÌ¹ÌÁö URL ¿¡¼­ ÀÌ¹ÌÁö ¹Ş¾Æ¿Í¼­ µµ¸ŞÀÎ¿¡ ÀúÀåÇÏ´Â ºÎºĞ.
+	// ê°€ë§¹ì  ì´ë¯¸ì§€ URL ì—ì„œ ì´ë¯¸ì§€ ë°›ì•„ì™€ì„œ ë„ë©”ì¸ì— ì €ì¥í•˜ëŠ” ë¶€ë¶„.
 	/**
 	 * LoadImage
-	 *  °¡¸ÍÁ¡ ÀÌ¹ÌÁö URL ¿¡¼­ ÀÌ¹ÌÁö ¹Ş¾Æ¿Â ½ºÆ®¸²À» ºñÆ®¸ÊÀ¸·Î ÀúÀåÇÑ´Ù
+	 *  ê°€ë§¹ì  ì´ë¯¸ì§€ URL ì—ì„œ ì´ë¯¸ì§€ ë°›ì•„ì˜¨ ìŠ¤íŠ¸ë¦¼ì„ ë¹„íŠ¸ë§µìœ¼ë¡œ ì €ì¥í•œë‹¤
 	 *
 	 * @param $imagePath
 	 * @param
@@ -629,7 +629,7 @@ public class MemberStoreInfoPage extends Activity {
 	}
 	/**
 	 * OpenHttpConnection
-	 *  °¡¸ÍÁ¡ ÀÌ¹ÌÁö URL ¿¡¼­ ÀÌ¹ÌÁö ¹Ş¾Æ¿Í¼­ ½ºÆ®¸²À¸·Î ÀúÀåÇÑ´Ù
+	 *  ê°€ë§¹ì  ì´ë¯¸ì§€ URL ì—ì„œ ì´ë¯¸ì§€ ë°›ì•„ì™€ì„œ ìŠ¤íŠ¸ë¦¼ìœ¼ë¡œ ì €ì¥í•œë‹¤
 	 *
 	 * @param $imagePath
 	 * @param
@@ -656,10 +656,10 @@ public class MemberStoreInfoPage extends Activity {
 		return stream ;
 	}
 
-	// È­¸é¿¡ º¸¿©ÁØ´Ù..
+	// í™”ë©´ì— ë³´ì—¬ì¤€ë‹¤..
 	/**
 	 * showInfo
-	 *  ¹Ş¾Æ¿Â Á¤º¸¸¦ È­¸é¿¡ º¸¿©ÁØ´Ù.
+	 *  ë°›ì•„ì˜¨ ì •ë³´ë¥¼ í™”ë©´ì— ë³´ì—¬ì¤€ë‹¤.
 	 *
 	 * @param
 	 * @param
@@ -681,11 +681,11 @@ public class MemberStoreInfoPage extends Activity {
 
 
 	/*
-	 * Bitmap ÀÌ¹ÌÁö ¸®»çÀÌÁî -- xml ÀÚÃ¼ ¼³Á¤À¸·Î ´ëÃ¼
-	 * Src : ¿øº» Bitmap
-	 * newHeight : »õ·Î¿î ³ôÀÌ
-	 * newWidth : »õ·Î¿î ³ĞÀÌ
-	 * Âü°í ¼Ò½º : http://skyswim42.egloos.com/3477279 ( webview ¿¡¼­ capture È­¸é resizing ÇÏ´Â source µµ ÀÖÀ½ )
+	 * Bitmap ì´ë¯¸ì§€ ë¦¬ì‚¬ì´ì¦ˆ -- xml ìì²´ ì„¤ì •ìœ¼ë¡œ ëŒ€ì²´
+	 * Src : ì›ë³¸ Bitmap
+	 * newHeight : ìƒˆë¡œìš´ ë†’ì´
+	 * newWidth : ìƒˆë¡œìš´ ë„“ì´
+	 * ì°¸ê³  ì†ŒìŠ¤ : http://skyswim42.egloos.com/3477279 ( webview ì—ì„œ capture í™”ë©´ resizing í•˜ëŠ” source ë„ ìˆìŒ )
 	 */
 	private BitmapDrawable BitmapResizePrc(Bitmap Src, float newHeight, float newWidth)
 	{
@@ -703,7 +703,7 @@ public class MemberStoreInfoPage extends Activity {
 		// resize the bit map
 		matrix.postScale(scaleWidth, scaleHeight);
 
-		// rotate the Bitmap È¸Àü ½ÃÅ°·Á¸é ÁÖ¼® ÇØÁ¦!
+		// rotate the Bitmap íšŒì „ ì‹œí‚¤ë ¤ë©´ ì£¼ì„ í•´ì œ!
 		//matrix.postRotate(45);
 
 		// recreate the new Bitmap
@@ -723,10 +723,10 @@ public class MemberStoreInfoPage extends Activity {
 
 
 
-	// ÀüÈ­ °É±â
+	// ì „í™” ê±¸ê¸°
 	/**
 	 * setCallingPhoneNumber
-	 *  ÀüÈ­¸¦ °Ç´Ù
+	 *  ì „í™”ë¥¼ ê±´ë‹¤
 	 *
 	 * @param phoneNumber
 	 * @param
@@ -749,10 +749,10 @@ public class MemberStoreInfoPage extends Activity {
 		});
 	}
 
-	@Override			// ÀÌ ¾×Æ¼ºñÆ¼°¡ Á¾·áµÉ¶§ ½ÇÇà. 
+	@Override			// ì´ ì•¡í‹°ë¹„í‹°ê°€ ì¢…ë£Œë ë•Œ ì‹¤í–‰. 
 	protected void onDestroy() {
 		super.onDestroy();
-		error = 0;		// ¼­¹ö ¹«ÇÑ Á¢¼Ó ÁßÀÌ¶ó¸é Á¾·á ½ÃÄÑ¾ß ÇÏ±â¶§¹®..
+		error = 0;		// ì„œë²„ ë¬´í•œ ì ‘ì† ì¤‘ì´ë¼ë©´ ì¢…ë£Œ ì‹œì¼œì•¼ í•˜ê¸°ë•Œë¬¸..
 		//		try{
 		//			if(connection2!=null){
 		//				connection2.disconnect();

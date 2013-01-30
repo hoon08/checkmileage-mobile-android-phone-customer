@@ -15,7 +15,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 /*
- * ∞°∏Õ¡° ∞ÀªˆøÎ æ∆¥‰≈Õ. ∞°∏Õ¡° ∏Ò∑œ --> ±◊∏ÆµÂ ∫‰∑Œ »≠∏Èø° ∫∏ø©¡‹. 1¡Ÿø° µŒ∞≥. ¡§∑ƒ µ«¿÷¿Ω.
+ * Í∞ÄÎßπÏ†ê Í≤ÄÏÉâÏö© ÏïÑÎãµÌÑ∞. Í∞ÄÎßπÏ†ê Î™©Î°ù --> Í∑∏Î¶¨Îìú Î∑∞Î°ú ÌôîÎ©¥Ïóê Î≥¥Ïó¨Ï§å. 1Ï§ÑÏóê ÎëêÍ∞ú. Ï†ïÎ†¨ ÎêòÏûàÏùå.
  */
 public class MemberStoreSearchListAdapter extends BaseAdapter {
 	private Context context;
@@ -39,7 +39,7 @@ public class MemberStoreSearchListAdapter extends BaseAdapter {
 			// get layout from mobile.xml
 			gridView = inflater.inflate(R.layout.member_store_list_viewwrapper_row, null);
  
-			// ** ¿Ã º“Ω∫∏¶ ø©±‚ø° µŒ∏È «— »≠∏È¿« ¿ÃπÃ¡ˆ∞° π›∫π µ»¥Ÿ. æ∆∑°¬  return ¿ß∑Œ ø≈∞‹¡÷∏È ¿ÃπÃ¡ˆ π›∫π «ˆªÛ¿Ã æ¯¥Ÿ. 
+			// ** Ïù¥ ÏÜåÏä§Î•º Ïó¨Í∏∞Ïóê ÎëêÎ©¥ Ìïú ÌôîÎ©¥Ïùò Ïù¥ÎØ∏ÏßÄÍ∞Ä Î∞òÎ≥µ ÎêúÎã§. ÏïÑÎûòÏ™Ω return ÏúÑÎ°ú ÏòÆÍ≤®Ï£ºÎ©¥ Ïù¥ÎØ∏ÏßÄ Î∞òÎ≥µ ÌòÑÏÉÅÏù¥ ÏóÜÎã§. 
 //			// set value into textview
 //			TextView textView = (TextView) gridView
 //					.findViewById(R.id.label);
@@ -53,7 +53,7 @@ public class MemberStoreSearchListAdapter extends BaseAdapter {
 			gridView = (View) convertView;
 		}
  
-		// ** ¿ÃπÃ¡ˆ π›∫π «ˆªÛ¿ª æ¯æ÷±‚ ¿ß«ÿ ¿ß¬ ¿« º“Ω∫∏¶ ø©±‚∑Œ ø≈∞‹¡ÿ¥Ÿ. --> πÆ¡¶ «ÿ∞· µ .
+		// ** Ïù¥ÎØ∏ÏßÄ Î∞òÎ≥µ ÌòÑÏÉÅÏùÑ ÏóÜÏï†Í∏∞ ÏúÑÌï¥ ÏúÑÏ™ΩÏùò ÏÜåÏä§Î•º Ïó¨Í∏∞Î°ú ÏòÆÍ≤®Ï§ÄÎã§. --> Î¨∏Ï†ú Ìï¥Í≤∞ Îê®.
 		// set value into textview
 		TextView textView = (TextView) gridView
 				.findViewById(R.id.label);

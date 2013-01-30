@@ -1,7 +1,7 @@
 package kr.co.bettersoft.checkmileage.domain;
 /*
- * viewwrapper ¿¹Á¦¼Ò½º --  ÀÌ¹ÌÁö, ÅØ½ºÆ®·Î ÀÌ·ç¾îÁ®ÀÖÀ½.
- * (»ç¿ë ¾ÈÇÔ)
+ * viewwrapper ì˜ˆì œì†ŒìŠ¤ --  ì´ë¯¸ì§€, í…ìŠ¤íŠ¸ë¡œ ì´ë£¨ì–´ì ¸ìˆìŒ.
+ * (ì‚¬ìš© ì•ˆí•¨)
  * 
  */
 import kr.co.bettersoft.checkmileage.activities.R;

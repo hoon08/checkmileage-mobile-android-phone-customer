@@ -301,7 +301,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     // barcode was found (e.g. contact info) rather than the full contents, which they won't
     // have time to read.
     ResultHandler resultHandler = ResultHandlerFactory.makeResultHandler(this, rawResult);
-    statusView.setText("ÄÚµå ÀÎ½Ä ¿Ï·á");
+    statusView.setText("ì½”ë“œ ì¸ì‹ ì™„ë£Œ");
 
     if (copyToClipboard) {
       ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
@@ -347,15 +347,15 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
   private void displayFrameworkBugMessageAndExit() {
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
     builder.setTitle(getString(R.string.app_name));
-    builder.setMessage("Ä«¸Ş¶ó ÀÎ½Ä¿¡ ¹®Á¦°¡ ¹ß»ıÇÏ¿´½À´Ï´Ù. µğ¹ÙÀÌ½º¸¦ Àç½ÃÀÛÇÏ¿© ÁÖ½Ê½Ã¿À");
-    builder.setPositiveButton("È®ÀÎ", new FinishListener(this));
+    builder.setMessage("ì¹´ë©”ë¼ ì¸ì‹ì— ë¬¸ì œê°€ ë°œìƒí•˜ì˜€ìŠµë‹ˆë‹¤. ë””ë°”ì´ìŠ¤ë¥¼ ì¬ì‹œì‘í•˜ì—¬ ì£¼ì‹­ì‹œì˜¤");
+    builder.setPositiveButton("í™•ì¸", new FinishListener(this));
     builder.setOnCancelListener(new FinishListener(this));
     builder.show();
   }
 
   private void resetStatusView() {
     resultView.setVisibility(View.GONE);
-    statusView.setText("»ç°¢Çü ¿µ¿ªÀ» ÄÚµå¿¡ ¸ÂÃß¸é ÀÚµ¿À¸·Î ÀÎ½ÄÇÕ´Ï´Ù");
+    statusView.setText("ì‚¬ê°í˜• ì˜ì—­ì„ ì½”ë“œì— ë§ì¶”ë©´ ìë™ìœ¼ë¡œ ì¸ì‹í•©ë‹ˆë‹¤");
     statusView.setVisibility(View.VISIBLE);
     viewfinderView.setVisibility(View.VISIBLE);
     lastResult = null;

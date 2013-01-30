@@ -3,9 +3,9 @@
  */
 
 /*
- *  »ç¿ë ÇÏ´Â °Ì´Ï´Ù. Settings_PasswordPageActivity  ¼³Á¤È­¸é¿¡¼­ ºñ¹ø »ı¼º ¹× º¯°æ½Ã È£ÃâµË´Ï´Ù.
+ *  ì‚¬ìš© í•˜ëŠ” ê²ë‹ˆë‹¤. Settings_PasswordPageActivity  ì„¤ì •í™”ë©´ì—ì„œ ë¹„ë²ˆ ìƒì„± ë° ë³€ê²½ì‹œ í˜¸ì¶œë©ë‹ˆë‹¤.
  *  
- *  ¼¼ÆÃÀ» ÂÉ°³¼­ ºñ¹ø ¼¼ÆÃ ÆäÀÌÁö°¡ ÀÖ´Âµ¥ °Å±â¼­ ÀÌ ÆäÀÌÁö¸¦ È£ÃâÇØ¼­ »ç¿ëÇÕ´Ï´Ù.
+ *  ì„¸íŒ…ì„ ìª¼ê°œì„œ ë¹„ë²ˆ ì„¸íŒ… í˜ì´ì§€ê°€ ìˆëŠ”ë° ê±°ê¸°ì„œ ì´ í˜ì´ì§€ë¥¼ í˜¸ì¶œí•´ì„œ ì‚¬ìš©í•©ë‹ˆë‹¤.
  * 
  */
 
@@ -13,7 +13,7 @@ package kr.co.bettersoft.checkmileage.pref;
 /**
  * Password
  * 
- * ºñ¹ø ÀÔ·Â ¹× ¼³Á¤ ¹× º¯°æ½Ã ³ª¿À´Â ºñ¹ø È­¸é
+ * ë¹„ë²ˆ ì…ë ¥ ë° ì„¤ì • ë° ë³€ê²½ì‹œ ë‚˜ì˜¤ëŠ” ë¹„ë²ˆ í™”ë©´
  */
 import kr.co.bettersoft.checkmileage.activities.R;
 import android.app.Activity; 
@@ -46,51 +46,51 @@ public class Password extends Activity {
 	public static final String RESULT_PASSWORD = "resultPassword";
 	public static final String MODE = "mode";
 
-	public static final int MODE_CHANGE_PASSWORD = 0;		// º¯°æ ¸ğµå
-	public static final int MODE_INIT_PASSWORD = 1;			// ÃÊ±âÈ­ ¸ğµå
-	public static final int MODE_CHECK_PASSWORD = 2;		// È®ÀÎ ¸ğµå
+	public static final int MODE_CHANGE_PASSWORD = 0;		// ë³€ê²½ ëª¨ë“œ
+	public static final int MODE_INIT_PASSWORD = 1;			// ì´ˆê¸°í™” ëª¨ë“œ
+	public static final int MODE_CHECK_PASSWORD = 2;		// í™•ì¸ ëª¨ë“œ
 
-	public static final int PHASE_INIT_PASSWORD = 0;		// ÃÊ±âÈ­
-	public static final int PHASE_INPUT_PASSWORD = 1;		// ÀÔ·Â
-	public static final int PHASE_CONFIRM_PASSWORD = 2;		// È®ÀÎ
+	public static final int PHASE_INIT_PASSWORD = 0;		// ì´ˆê¸°í™”
+	public static final int PHASE_INPUT_PASSWORD = 1;		// ì…ë ¥
+	public static final int PHASE_CONFIRM_PASSWORD = 2;		// í™•ì¸
 
 	private int currentMode = PHASE_CONFIRM_PASSWORD;		
 	private int initMode = PHASE_CONFIRM_PASSWORD;			
-	private String currentPassword;						// ¸¶Áö¸· ¼³Á¤µÈ ºñ¹ø
+	private String currentPassword;						// ë§ˆì§€ë§‰ ì„¤ì •ëœ ë¹„ë²ˆ
 
-	//	private int passwordLength = 4;		// 1Ä­Â¥¸®ÀÏ °æ¿ì ºñ¹ø ÃÖ´ë ±æÀÌ.
+	//	private int passwordLength = 4;		// 1ì¹¸ì§œë¦¬ì¼ ê²½ìš° ë¹„ë²ˆ ìµœëŒ€ ê¸¸ì´.
 	private Intent nextActivity;
 	//	private EditText passwordForm, passwordConfirmForm;
 
-	// ºñ¹øÀÔ·Â1, ºñ¹øÈ®ÀÎ2 ·¹ÀÌ¾Æ¿ô
+	// ë¹„ë²ˆì…ë ¥1, ë¹„ë²ˆí™•ì¸2 ë ˆì´ì•„ì›ƒ
 	LinearLayout password_linear1, password_linear2;
-	// ÀÔ·Â 4Ä­ + È®ÀÎ 4Ä­  (1Ä­¿¡ 1±ÛÀÚ)
-	private EditText pwpart1, pwpart2, pwpart3, pwpart4, pw_cnfrmpart1, pw_cnfrmpart2, pw_cnfrmpart3, pw_cnfrmpart4;		// ºñ¹ø 4Ä­Â¥¸®
-	String pwForms, pw_cnfrmForms;				// ºñ¹ø 4Ä­Â¥¸® °ª ¸ğÀº ½ºÆ®¸µ. - ºñ¹ø ÀúÀå¿ë
-	String tempStr1="", tempStr2="", tempStr3="", tempStr4="";		// ºñ¹ø 4Ä­Â¥¸® ÀÓ½Ã ÀúÀå¿ë. ºñ¹øÄ­¿¡´Â µ¿±×¶ó¹Ì¸¦ º¸¿©ÁÖ°í °ªÀº ÀÓ½Ã ÀúÀå¼Ò¿¡ ÀúÀå.
+	// ì…ë ¥ 4ì¹¸ + í™•ì¸ 4ì¹¸  (1ì¹¸ì— 1ê¸€ì)
+	private EditText pwpart1, pwpart2, pwpart3, pwpart4, pw_cnfrmpart1, pw_cnfrmpart2, pw_cnfrmpart3, pw_cnfrmpart4;		// ë¹„ë²ˆ 4ì¹¸ì§œë¦¬
+	String pwForms, pw_cnfrmForms;				// ë¹„ë²ˆ 4ì¹¸ì§œë¦¬ ê°’ ëª¨ì€ ìŠ¤íŠ¸ë§. - ë¹„ë²ˆ ì €ì¥ìš©
+	String tempStr1="", tempStr2="", tempStr3="", tempStr4="";		// ë¹„ë²ˆ 4ì¹¸ì§œë¦¬ ì„ì‹œ ì €ì¥ìš©. ë¹„ë²ˆì¹¸ì—ëŠ” ë™ê·¸ë¼ë¯¸ë¥¼ ë³´ì—¬ì£¼ê³  ê°’ì€ ì„ì‹œ ì €ì¥ì†Œì— ì €ì¥.
 	private String passwordString;
 	//	private ViewFlipper passwordFlipper;
 	private ViewFlipper passwordFlipper2;
 	private TextView textMessage;
-	private TranslateAnimation pushLeftIn, pushLeftOut, shakeAni;			// µîÀå, ÅğÀå, Æ²·ÈÀ»¶§ ¾Ö´Ï¸ŞÀÌ¼Ç È¿°ú
+	private TranslateAnimation pushLeftIn, pushLeftOut, shakeAni;			// ë“±ì¥, í‡´ì¥, í‹€ë ¸ì„ë•Œ ì• ë‹ˆë©”ì´ì…˜ íš¨ê³¼
 
-	int dontTwice = 1;		// Áßº¹ ½ÇÇà ¹æÁö
+	int dontTwice = 1;		// ì¤‘ë³µ ì‹¤í–‰ ë°©ì§€
 
-	SharedPreferences sharedPrefCustom;	// °ø¿ë ÇÁ¸³½º
-	Boolean loginYN = false;			// ·Î±×ÀÎ ¿©ºÎ		-- (·Î±×ÀÎÀÏ °æ¿ì = ºñ¹ø ÀÔ·Â¹Ş°í ¸ŞÀÎ °¡¾ß ÇÏ´Â °æ¿ì)
+	SharedPreferences sharedPrefCustom;	// ê³µìš© í”„ë¦½ìŠ¤
+	Boolean loginYN = false;			// ë¡œê·¸ì¸ ì—¬ë¶€		-- (ë¡œê·¸ì¸ì¼ ê²½ìš° = ë¹„ë²ˆ ì…ë ¥ë°›ê³  ë©”ì¸ ê°€ì•¼ í•˜ëŠ” ê²½ìš°)
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature( Window.FEATURE_NO_TITLE );		// no title
 		setContentView(R.layout.password);
-		sharedPrefCustom = getSharedPreferences("MyCustomePref",		// ÇÁ¸®ÆÛ·±½º - ¿¡ ºñ¹ø ÀúÀåµÇ¾î ÀÖÀ½
+		sharedPrefCustom = getSharedPreferences("MyCustomePref",		// í”„ë¦¬í¼ëŸ°ìŠ¤ - ì— ë¹„ë²ˆ ì €ì¥ë˜ì–´ ìˆìŒ
 				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
 		init();
 		initAnimation();
 	}
 
-	private Runnable passwordRunnable = new Runnable(){		// ½º·¹µå·Î ºñ¹ø Ã¼Å©
+	private Runnable passwordRunnable = new Runnable(){		// ìŠ¤ë ˆë“œë¡œ ë¹„ë²ˆ ì²´í¬
 		@Override
 		public void run() {
 			checkPassword();
@@ -99,7 +99,7 @@ public class Password extends Activity {
 
 	/**
 	 * checkPassword
-	 *  ºñ¹Ğ¹øÈ£¸¦ Ã¼Å©ÇÑ´Ù. Ã¹ÀÔ·Â ¸¶Ä£°æ¿ì, µÎ¹øÂ°ÀÔ·Â ¼º°ø/½ÇÆĞ
+	 *  ë¹„ë°€ë²ˆí˜¸ë¥¼ ì²´í¬í•œë‹¤. ì²«ì…ë ¥ ë§ˆì¹œê²½ìš°, ë‘ë²ˆì§¸ì…ë ¥ ì„±ê³µ/ì‹¤íŒ¨
 	 *
 	 * @param
 	 * @param
@@ -108,71 +108,71 @@ public class Password extends Activity {
 	private void checkPassword(){  	
 		Log.i("Password", "checkPassword");
 		switch(currentMode){
-		case PHASE_INIT_PASSWORD:			// 0 ºñ¹ø º¯°æ ¸ğµå. ±âÁ¸ ºñ¹ø°ú ºñ±³ÇÏ¿© ÁøÇàÇÑ´Ù. 
+		case PHASE_INIT_PASSWORD:			// 0 ë¹„ë²ˆ ë³€ê²½ ëª¨ë“œ. ê¸°ì¡´ ë¹„ë²ˆê³¼ ë¹„êµí•˜ì—¬ ì§„í–‰í•œë‹¤. 
 			Log.i("Password", "checkPassword--PHASE_INIT_PASSWORD");
 
-			// 1°³Â¥¸®
-			//    		if( passwordString.equals(passwordForm.getText().toString()) ){		// ÀÔ·ÂÇÑ  ºñ¹øÀÌ ÀÏÄ¡ÇÔ. (±âÁ¸ ºñ¹ø°ú)
-			//    			textMessage.setText("¹Ù²Ü ºñ¹Ğ¹øÈ£¸¦ ÀÔ·ÂÇØ ÁÖ½Ê½Ã¿À.");
+			// 1ê°œì§œë¦¬
+			//    		if( passwordString.equals(passwordForm.getText().toString()) ){		// ì…ë ¥í•œ  ë¹„ë²ˆì´ ì¼ì¹˜í•¨. (ê¸°ì¡´ ë¹„ë²ˆê³¼)
+			//    			textMessage.setText("ë°”ê¿€ ë¹„ë°€ë²ˆí˜¸ë¥¼ ì…ë ¥í•´ ì£¼ì‹­ì‹œì˜¤.");
 			//    			goToNextPhase();
-			//    		}else{																// ÀÔ·ÂÇÑ  ºñ¹øÀÌ ÀÏÄ¡ÇÏÁö ¾ÊÀ½.
+			//    		}else{																// ì…ë ¥í•œ  ë¹„ë²ˆì´ ì¼ì¹˜í•˜ì§€ ì•ŠìŒ.
 			//                passwordForm.startAnimation(shakeAni);
-			//                textMessage.setText("ÀÔ·ÂÇÏ½Å ºñ¹Ğ¹øÈ£°¡ ÀÏÄ¡ÇÏÁö ¾Ê½À´Ï´Ù.");
+			//                textMessage.setText("ì…ë ¥í•˜ì‹  ë¹„ë°€ë²ˆí˜¸ê°€ ì¼ì¹˜í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
 			//    		}
 
-			// 4°³Â¥¸®
-			if( passwordString.equals(pwForms) ){		// ÀÔ·ÂÇÑ  ºñ¹øÀÌ ÀÏÄ¡ÇÔ. (±âÁ¸ ºñ¹ø°ú)
+			// 4ê°œì§œë¦¬
+			if( passwordString.equals(pwForms) ){		// ì…ë ¥í•œ  ë¹„ë²ˆì´ ì¼ì¹˜í•¨. (ê¸°ì¡´ ë¹„ë²ˆê³¼)
 				textMessage.setText(R.string.password_input_new);
 				pwpart4.setFocusableInTouchMode(false);
 				pwpart1.setFocusableInTouchMode(true);
 				pwpart1.requestFocus();
 				goToNextPhase();
-			}else{																// ÀÔ·ÂÇÑ  ºñ¹øÀÌ ÀÏÄ¡ÇÏÁö ¾ÊÀ½.
+			}else{																// ì…ë ¥í•œ  ë¹„ë²ˆì´ ì¼ì¹˜í•˜ì§€ ì•ŠìŒ.
 				password_linear1.startAnimation(shakeAni);
-				textMessage.setText(R.string.password_not_equals);				// 4ÀÚ¸® ÃÊ±âÈ­ÇÏ°í µîµî ÁøÇà ÇÊ¿ä...		
+				textMessage.setText(R.string.password_not_equals);				// 4ìë¦¬ ì´ˆê¸°í™”í•˜ê³  ë“±ë“± ì§„í–‰ í•„ìš”...		
 				pwpart4.setFocusableInTouchMode(false);
 				pwpart1.setFocusableInTouchMode(true);
 				pwpart1.requestFocus();
 			}
 			break;
-		case PHASE_INPUT_PASSWORD:		// »õ ºñ¹ø ÀÔ·Â 1								// »õ ºñ¹ø1 ÀÔ·ÂÇÑ »óÅÂ. ºñ¹ø 2¸¦ ¹Ş¾Æ¾ß ÇÑ´Ù.
+		case PHASE_INPUT_PASSWORD:		// ìƒˆ ë¹„ë²ˆ ì…ë ¥ 1								// ìƒˆ ë¹„ë²ˆ1 ì…ë ¥í•œ ìƒíƒœ. ë¹„ë²ˆ 2ë¥¼ ë°›ì•„ì•¼ í•œë‹¤.
 			Log.i("Password", "checkPassword--PHASE_INPUT_PASSWORD");
 			textMessage.setText(R.string.password_input_again);
 			goToNextPhase();
 			break;
-		case PHASE_CONFIRM_PASSWORD:	// »õ ºñ¹ø È®ÀÎ 2 ¹× ·Î±×ÀÎ È®ÀÎ
+		case PHASE_CONFIRM_PASSWORD:	// ìƒˆ ë¹„ë²ˆ í™•ì¸ 2 ë° ë¡œê·¸ì¸ í™•ì¸
 			Log.i("Password", "checkPassword--PHASE_CONFIRM_PASSWORD");
 
-			// 1Ä­¿ë
-			//    		EditText currentForm = passwordConfirmForm; 											// ¿¡µ÷ ÅØ½ºÆ®. (ºñ¹ø ÀúÀå ¹× ºñ±³¿ë)
-			//    		if(initMode == PHASE_CONFIRM_PASSWORD) currentForm = passwordForm;		// È®ÀÎ ´Ü°è 
-			//    		if( currentPassword.equals(currentForm.getText().toString()) ){		// ¸Â¾Æ¿ä
+			// 1ì¹¸ìš©
+			//    		EditText currentForm = passwordConfirmForm; 											// ì—ë”§ í…ìŠ¤íŠ¸. (ë¹„ë²ˆ ì €ì¥ ë° ë¹„êµìš©)
+			//    		if(initMode == PHASE_CONFIRM_PASSWORD) currentForm = passwordForm;		// í™•ì¸ ë‹¨ê³„ 
+			//    		if( currentPassword.equals(currentForm.getText().toString()) ){		// ë§ì•„ìš”
 			//    			goToNextPhase();
-			//    		}else{																// Æ²·Á¿ä
+			//    		}else{																// í‹€ë ¤ìš”
 			//    			passwordForm.startAnimation(shakeAni);
-			//    			textMessage.setText("ÀÔ·ÂÇÏ½Å ºñ¹Ğ¹øÈ£°¡ ÀÏÄ¡ÇÏÁö ¾Ê½À´Ï´Ù.");
+			//    			textMessage.setText("ì…ë ¥í•˜ì‹  ë¹„ë°€ë²ˆí˜¸ê°€ ì¼ì¹˜í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
 			//    		}
 
-			// 4Ä­¿ë
+			// 4ì¹¸ìš©
 			String confStr = pw_cnfrmForms;
-			//    		EditText currentForm = passwordConfirmForm; 												// ¿¡µ÷ ÅØ½ºÆ®. (ºñ¹ø ÀúÀå ¹× ºñ±³¿ë)		pwForms, pw_cnfrmForms
-			// 1Â÷ ÀÔ·Â °ª°ú ºñ±³ÇÑ´Ù.  (»ç¿ëÀÚ ÀÔ·Â°ªÀÌ µÎ¹øÂ° ÀÔ·Â, ±âÁ¸ ºñ¹øÀÌ Ã¹ÀÔ·ÂÀ¸·Î °¡Á¤). ·Î±×ÀÎÇÒ¶§¿Í »ı¼º ¹× º¯°æÇÒ¶§.
-			if(initMode == PHASE_CONFIRM_PASSWORD) 	// ÀÎÁõ ´Ü°è 	(·Î±×ÀÎ)								
+			//    		EditText currentForm = passwordConfirmForm; 												// ì—ë”§ í…ìŠ¤íŠ¸. (ë¹„ë²ˆ ì €ì¥ ë° ë¹„êµìš©)		pwForms, pw_cnfrmForms
+			// 1ì°¨ ì…ë ¥ ê°’ê³¼ ë¹„êµí•œë‹¤.  (ì‚¬ìš©ì ì…ë ¥ê°’ì´ ë‘ë²ˆì§¸ ì…ë ¥, ê¸°ì¡´ ë¹„ë²ˆì´ ì²«ì…ë ¥ìœ¼ë¡œ ê°€ì •). ë¡œê·¸ì¸í• ë•Œì™€ ìƒì„± ë° ë³€ê²½í• ë•Œ.
+			if(initMode == PHASE_CONFIRM_PASSWORD) 	// ì¸ì¦ ë‹¨ê³„ 	(ë¡œê·¸ì¸)								
 			{
 				confStr = pwForms;	
-				if( currentPassword.equals(confStr) ){		// ¸Â¾Æ¿ä
+				if( currentPassword.equals(confStr) ){		// ë§ì•„ìš”
 					goToNextPhase();
-				}else{																// Æ²·Á¿ä
+				}else{																// í‹€ë ¤ìš”
 					password_linear1.startAnimation(shakeAni);
 					textMessage.setText(R.string.password_not_equals);
 					pwpart4.setFocusableInTouchMode(false);
 					pwpart1.setFocusableInTouchMode(true);
 					pwpart1.requestFocus();
 				}
-			}else{									// ÀÎÁõ ¾Æ´Ñ °æ¿ì. »ı¼º ¹× º¯°æ																							
-				if( currentPassword.equals(confStr) ){		// ¸Â¾Æ¿ä			// ºñ¹ø ¼³Á¤½Ã ÀçÀÔ·Â(È®ÀÎ¿ë)
+			}else{									// ì¸ì¦ ì•„ë‹Œ ê²½ìš°. ìƒì„± ë° ë³€ê²½																							
+				if( currentPassword.equals(confStr) ){		// ë§ì•„ìš”			// ë¹„ë²ˆ ì„¤ì •ì‹œ ì¬ì…ë ¥(í™•ì¸ìš©)
 					goToNextPhase();
-				}else{																// Æ²·Á¿ä
+				}else{																// í‹€ë ¤ìš”
 					password_linear2.startAnimation(shakeAni);
 					textMessage.setText(R.string.password_not_equals);
 					pw_cnfrmpart4.setFocusableInTouchMode(false);
@@ -181,10 +181,10 @@ public class Password extends Activity {
 				}
 			}
 		}
-		// È­¸é¿¡ ³ª¿Â ÀÔ·ÂÄ­ Ã»¼Ò
-		//    	passwordForm.setText("");			// 1Ä­¿ë
+		// í™”ë©´ì— ë‚˜ì˜¨ ì…ë ¥ì¹¸ ì²­ì†Œ
+		//    	passwordForm.setText("");			// 1ì¹¸ìš©
 		//    	passwordConfirmForm.setText("");
-		pwpart1.setText("");			// 4Ä­¿ë		
+		pwpart1.setText("");			// 4ì¹¸ìš©		
 		pwpart2.setText("");
 		pwpart3.setText("");
 		pwpart4.setText("");
@@ -196,50 +196,50 @@ public class Password extends Activity {
 
 	/**
 	 * goToNextPhase
-	 *  ºñ¹ø - (ÇöÀç ¸ğµå¿¡ µû¶ó)´ÙÀ½´Ü°è·Î ³Ñ¾î°£´Ù.  
+	 *  ë¹„ë²ˆ - (í˜„ì¬ ëª¨ë“œì— ë”°ë¼)ë‹¤ìŒë‹¨ê³„ë¡œ ë„˜ì–´ê°„ë‹¤.  
 	 *
 	 * @param
 	 * @param
 	 * @return
 	 */
 	private void goToNextPhase(){
-		Log.i("Password", "goToNextPhase,, currentMode::"+currentMode);		// ºñ¹ø º¯°æ ¸ğµå : 0
+		Log.i("Password", "goToNextPhase,, currentMode::"+currentMode);		// ë¹„ë²ˆ ë³€ê²½ ëª¨ë“œ : 0
 		switch(currentMode){
 		case PHASE_INIT_PASSWORD:		// 0
 			Log.i("Password", "goToNextPhase--PHASE_INIT_PASSWORD");
-			currentMode = PHASE_INPUT_PASSWORD;			// 1¸ğµå·Î. (»õ ºñ¹ø1 ÀÔ·Â¸ğµå)
+			currentMode = PHASE_INPUT_PASSWORD;			// 1ëª¨ë“œë¡œ. (ìƒˆ ë¹„ë²ˆ1 ì…ë ¥ëª¨ë“œ)
 			break;
 
 		case PHASE_INPUT_PASSWORD:		// 1
 			Log.i("Password", "goToNextPhase--PHASE_INPUT_PASSWORD");
 
-			//    		currentPassword = passwordForm.getText().toString();			// 1Ä­¿ë
-			currentPassword = pwForms;									// 4Ä­¿ë
+			//    		currentPassword = passwordForm.getText().toString();			// 1ì¹¸ìš©
+			currentPassword = pwForms;									// 4ì¹¸ìš©
 
 			currentMode = PHASE_CONFIRM_PASSWORD;
-			//    		passwordFlipper.setInAnimation(pushLeftIn);					// 1Ä­¿ë
+			//    		passwordFlipper.setInAnimation(pushLeftIn);					// 1ì¹¸ìš©
 			//    		passwordFlipper.setOutAnimation(pushLeftOut);
 			//    		passwordFlipper.showPrevious();
-			passwordFlipper2.setInAnimation(pushLeftIn);					// 4Ä­¿ë
+			passwordFlipper2.setInAnimation(pushLeftIn);					// 4ì¹¸ìš©
 			passwordFlipper2.setOutAnimation(pushLeftOut);
 			passwordFlipper2.showPrevious();
 			break;
 
-		case PHASE_CONFIRM_PASSWORD:			// 2 Ã³¸® ³¡³ª°í ´ÙÀ½ ¾×Æ¼ºñÆ¼·Î °£´Ù. 		 ºñ¹ø ½Å±Ô ¶Ç´Â º¯°æÀÌ ¿Ï·áµÈ ½ÃÁ¡ÀÌ¹Ç·Î ºñ¹øÀ» ÀúÀåÇØ¾ß ÇÑ´Ù. currentPassword ¸¦ pref ¿¡ ÀúÀå.
+		case PHASE_CONFIRM_PASSWORD:			// 2 ì²˜ë¦¬ ëë‚˜ê³  ë‹¤ìŒ ì•¡í‹°ë¹„í‹°ë¡œ ê°„ë‹¤. 		 ë¹„ë²ˆ ì‹ ê·œ ë˜ëŠ” ë³€ê²½ì´ ì™„ë£Œëœ ì‹œì ì´ë¯€ë¡œ ë¹„ë²ˆì„ ì €ì¥í•´ì•¼ í•œë‹¤. currentPassword ë¥¼ pref ì— ì €ì¥.
 			Log.i("Password", "goToNextPhase--PHASE_CONFIRM_PASSWORD::"+currentPassword);
-			//    		nextActivity.putExtra(RESULT_PASSWORD, currentPassword);		// Å×½ºÆ®¿ë. ¹Ù²Û ºñ¹ø È®ÀÎ È­¸é.
-			if(loginYN){		// ·Î±×ÀÎÀÎ °æ¿ì¿¡´Â ´Ù½Ã ¸ŞÀÎ ÆäÀÌÁö·Î µ¹¾Æ°£´Ù. (·Î±×ÀÎ ÀÌÈÄ ´Ü°è¸¦ ÁøÇàÇÑ´Ù.)
+			//    		nextActivity.putExtra(RESULT_PASSWORD, currentPassword);		// í…ŒìŠ¤íŠ¸ìš©. ë°”ê¾¼ ë¹„ë²ˆ í™•ì¸ í™”ë©´.
+			if(loginYN){		// ë¡œê·¸ì¸ì¸ ê²½ìš°ì—ëŠ” ë‹¤ì‹œ ë©”ì¸ í˜ì´ì§€ë¡œ ëŒì•„ê°„ë‹¤. (ë¡œê·¸ì¸ ì´í›„ ë‹¨ê³„ë¥¼ ì§„í–‰í•œë‹¤.)
 				kr.co.bettersoft.checkmileage.activities.MainActivity.loginYN = true;
 				startActivity(nextActivity);    	
-			}else{				// ºñ¹ø º¯°æ ¼³Á¤ µîÀÎ °æ¿ì ¼³Á¤ ÆäÀÌÁö·Î µ¹¾Æ°£´Ù.(ºñ¹ø ÀúÀåÈÄ Á¾·áÇÏ¸é µ¹¾Æ°¡Áø´Ù.)
-				SharedPreferences.Editor savePWcustom = sharedPrefCustom.edit();		// °ø¿ëÀ¸·Î ºñ¹øµµ ÀúÀåÇØ ÁØ´Ù.
+			}else{				// ë¹„ë²ˆ ë³€ê²½ ì„¤ì • ë“±ì¸ ê²½ìš° ì„¤ì • í˜ì´ì§€ë¡œ ëŒì•„ê°„ë‹¤.(ë¹„ë²ˆ ì €ì¥í›„ ì¢…ë£Œí•˜ë©´ ëŒì•„ê°€ì§„ë‹¤.)
+				SharedPreferences.Editor savePWcustom = sharedPrefCustom.edit();		// ê³µìš©ìœ¼ë¡œ ë¹„ë²ˆë„ ì €ì¥í•´ ì¤€ë‹¤.
 				savePWcustom.putString("password" , currentPassword);
 				savePWcustom.commit();
 
-				PrefActivityFromResource.memberInfo.setPassword(currentPassword);		// º¯°æµÈ ºñ¹øÀ» ¼­¹ö¿¡ ÀúÀå½ÃÅ²´Ù..
+				PrefActivityFromResource.memberInfo.setPassword(currentPassword);		// ë³€ê²½ëœ ë¹„ë²ˆì„ ì„œë²„ì— ì €ì¥ì‹œí‚¨ë‹¤..
 				PrefActivityFromResource.updateLv = PrefActivityFromResource.updateLv+1;
 
-				//    			 PrefActivityFromResource.updateToServer();		// resume °°Àºµ¥¼­ °Ë»çÇØ¼­ Ã³¸® ÇÏµµ·Ï ½ÃÄÑ.. *** 
+				//    			 PrefActivityFromResource.updateToServer();		// resume ê°™ì€ë°ì„œ ê²€ì‚¬í•´ì„œ ì²˜ë¦¬ í•˜ë„ë¡ ì‹œì¼œ.. *** 
 				Toast.makeText(Password.this, R.string.password_set_success, Toast.LENGTH_SHORT).show();
 			}
 			finish();
@@ -249,7 +249,7 @@ public class Password extends Activity {
 
 	/**
 	 * init
-	 *  ÃÊ±âÈ­ - ºñ¹ø È®ÀÎ ¹× ¼³Á¤ »çÀü ÁØºñ¸¦ ÇÑ´Ù. 
+	 *  ì´ˆê¸°í™” - ë¹„ë²ˆ í™•ì¸ ë° ì„¤ì • ì‚¬ì „ ì¤€ë¹„ë¥¼ í•œë‹¤. 
 	 *
 	 * @param
 	 * @param
@@ -257,30 +257,30 @@ public class Password extends Activity {
 	 */
 	private void init(){
 		Intent intent = getIntent();
-		String nextActivityClassString = intent.getStringExtra(NEXT_ACTIVITY);		// ³¡³ª°í °¡¾ßÇÒ °÷
+		String nextActivityClassString = intent.getStringExtra(NEXT_ACTIVITY);		// ëë‚˜ê³  ê°€ì•¼í•  ê³³
 		Log.i("Password", "nextActivityClassString::"+nextActivityClassString);	
 		nextActivity = new Intent();						
 		nextActivity.setClassName(Password.this, nextActivityClassString);		
 
 		initMode = intent.getIntExtra(MODE, MODE_CHECK_PASSWORD);
 		Log.i("Password", "initMode::"+initMode);
-		if(initMode==2){		// ·Î±×ÀÎÀÏ °æ¿ì - ºñ¹ø ÀÔ·Â¹Ş°í ¸ŞÀÎ °¡¾ß ÇÏ´Â °æ¿ì
+		if(initMode==2){		// ë¡œê·¸ì¸ì¼ ê²½ìš° - ë¹„ë²ˆ ì…ë ¥ë°›ê³  ë©”ì¸ ê°€ì•¼ í•˜ëŠ” ê²½ìš°
 			loginYN = true;
 		}
 		passwordString = intent.getStringExtra(PASSWORD);
 		Log.i("Password", "passwordString::"+passwordString);
 		currentMode = initMode;
 		currentPassword = passwordString;
-		//        passwordLength = 4;		// ºñ¹øÀº ¹«Á¶°Ç 4±ÛÀÚ¿©¾ß¸¸ ÇÑ´Ù.  --> 4Ä­À¸·Î ³ª´²¼­ ÀÌ·± ¼³Á¤ ÇÊ¿äÇÏÁö ¾ÊÀ½
+		//        passwordLength = 4;		// ë¹„ë²ˆì€ ë¬´ì¡°ê±´ 4ê¸€ìì—¬ì•¼ë§Œ í•œë‹¤.  --> 4ì¹¸ìœ¼ë¡œ ë‚˜ëˆ ì„œ ì´ëŸ° ì„¤ì • í•„ìš”í•˜ì§€ ì•ŠìŒ
 
-		// ºñ¹ø ÀÔ·ÂÃ¢°ú ¾È³» ¸Ş½ÃÁöÃ¢.
+		// ë¹„ë²ˆ ì…ë ¥ì°½ê³¼ ì•ˆë‚´ ë©”ì‹œì§€ì°½.
 		textMessage = (TextView)findViewById(R.id.password_message);
-		//        passwordFlipper = (ViewFlipper)findViewById(R.id.password_flipper);		// 1Ä­¿ë
-		passwordFlipper2 = (ViewFlipper)findViewById(R.id.password_flipper2);		// 4Ä­¿ë
+		//        passwordFlipper = (ViewFlipper)findViewById(R.id.password_flipper);		// 1ì¹¸ìš©
+		passwordFlipper2 = (ViewFlipper)findViewById(R.id.password_flipper2);		// 4ì¹¸ìš©
 
-		//        passwordForm = (EditText)findViewById(R.id.password); 						// 1Ä­¿ë
+		//        passwordForm = (EditText)findViewById(R.id.password); 						// 1ì¹¸ìš©
 
-		password_linear1 = (LinearLayout)findViewById(R.id.password_linear1);		// 4Ä­¿ë
+		password_linear1 = (LinearLayout)findViewById(R.id.password_linear1);		// 4ì¹¸ìš©
 		password_linear2 = (LinearLayout)findViewById(R.id.password_linear2);
 		pwpart1 = (EditText)findViewById(R.id.pwpart1); 
 		pwpart2 = (EditText)findViewById(R.id.pwpart2); 
@@ -291,22 +291,22 @@ public class Password extends Activity {
 		pw_cnfrmpart3 = (EditText)findViewById(R.id.pw_cnfrmpart3); 
 		pw_cnfrmpart4 = (EditText)findViewById(R.id.pw_cnfrmpart4); 
 
-		if(passwordString.length()>0){		// ºñ¹ø º¯°æ ¸ğµå.  & ·Î±×ÀÎ ¸ğµå.
+		if(passwordString.length()>0){		// ë¹„ë²ˆ ë³€ê²½ ëª¨ë“œ.  & ë¡œê·¸ì¸ ëª¨ë“œ.
 			if(loginYN){
 				textMessage.setText(R.string.password_input_pw);
 			}else{
 				textMessage.setText(R.string.password_input_old);
 			}
-		}else{								// ÃÖÃÊ ºñ¹ø ÀÔ·Â ¸ğµå
+		}else{								// ìµœì´ˆ ë¹„ë²ˆ ì…ë ¥ ëª¨ë“œ
 			textMessage.setText(R.string.password_input_new);
 		}
 
-		// ºñ¹ø ÀÔ·Â Áß Ã¼Å©ÇÏ±â  -- 1Ä­¿ë
+		// ë¹„ë²ˆ ì…ë ¥ ì¤‘ ì²´í¬í•˜ê¸°  -- 1ì¹¸ìš©
 		//        passwordForm.addTextChangedListener(new TextWatcher() {
 		//        	public void  afterTextChanged (Editable s){}
 		//            public void  beforeTextChanged  (CharSequence s, int start, int count, int after){}
 		//            public void  onTextChanged  (CharSequence s, int start, int before, int count) {
-		//            	// ±æÀÌ°¡ °°´Ù¸é ºñ¹ø È®ÀÎ ¸Ş¼­µå ¼öÇà
+		//            	// ê¸¸ì´ê°€ ê°™ë‹¤ë©´ ë¹„ë²ˆ í™•ì¸ ë©”ì„œë“œ ìˆ˜í–‰
 		//            	if(passwordForm.getText().toString().length() == passwordLength){
 		//            		Handler passwordHandler = new Handler();
 		//            		passwordHandler.postDelayed(passwordRunnable, 200);
@@ -314,16 +314,16 @@ public class Password extends Activity {
 		//            } 
 		//        });
 
-		// ºñ¹ø È®ÀÎ Ã¢ -- 1Ä­¿ë
+		// ë¹„ë²ˆ í™•ì¸ ì°½ -- 1ì¹¸ìš©
 		//        passwordConfirmForm = (EditText)findViewById(R.id.password_confirm);    
-		//        // °ª º¯°æµÇ¸é °Ë»ç
+		//        // ê°’ ë³€ê²½ë˜ë©´ ê²€ì‚¬
 		//        passwordConfirmForm.addTextChangedListener(new TextWatcher() {
 		//        	public void  afterTextChanged (Editable s){
 		//        	}
 		//            public void  beforeTextChanged  (CharSequence s, int start, int count, int after){
 		//            }
 		//            public void  onTextChanged  (CharSequence s, int start, int before, int count) {
-		//            	// ºñ¹ø°ú ±æÀÌ°¡ °°´Ù¸é ºñ¹ø È®ÀÎ °Ë»ç.
+		//            	// ë¹„ë²ˆê³¼ ê¸¸ì´ê°€ ê°™ë‹¤ë©´ ë¹„ë²ˆ í™•ì¸ ê²€ì‚¬.
 		//            	if(passwordConfirmForm.getText().toString().length() == passwordLength){
 		//            		Handler passwordHandler = new Handler();
 		//            		passwordHandler.postDelayed(passwordRunnable, 200);
@@ -331,12 +331,12 @@ public class Password extends Activity {
 		//            } 
 		//        });
 
-		// 4Ä­Â¥¸®. ºñ¹ø ÀÔ·ÂÃ¢.
+		// 4ì¹¸ì§œë¦¬. ë¹„ë²ˆ ì…ë ¥ì°½.
 		/**
 		 * pwpart1.setOnKeyListener , pwpart1.addTextChangedListener
-		 *  Ã¹Ä­ ¸®½º³Ê. °ª µé¾î¿Ã¶§, Áö¿ì±â ¹öÆ° ´­·¶À»¶§¿¡ ´ëÇÑ µ¿ÀÛ
+		 *  ì²«ì¹¸ ë¦¬ìŠ¤ë„ˆ. ê°’ ë“¤ì–´ì˜¬ë•Œ, ì§€ìš°ê¸° ë²„íŠ¼ ëˆŒë €ì„ë•Œì— ëŒ€í•œ ë™ì‘
 		 */
-		pwpart1.setOnKeyListener(new OnKeyListener() {                  // Áö¿ì±â ¹öÆ° ´­·¶À»¶§. ¾Õ±ÛÀÚ Áö¿ì°í Ä¿¼­ ÀÌµ¿    (Ã¹Ä­Àº µ¿ÀÛ¾øÀ½) 
+		pwpart1.setOnKeyListener(new OnKeyListener() {                  // ì§€ìš°ê¸° ë²„íŠ¼ ëˆŒë €ì„ë•Œ. ì•ê¸€ì ì§€ìš°ê³  ì»¤ì„œ ì´ë™    (ì²«ì¹¸ì€ ë™ì‘ì—†ìŒ) 
 			@Override 
 			public boolean onKey(View v, int keyCode, KeyEvent event) { 
 				//        		Log.e(TAG,"pwpart1");
@@ -344,25 +344,25 @@ public class Password extends Activity {
 				if(keyCode == KeyEvent.KEYCODE_DEL){   
 					if(dontTwice==1){
 						//this is for backspace 
-						// Ã¹ °ª¿¡¼± µüÈ÷ ÇÒ°Å ¾øÀ½..
+						// ì²« ê°’ì—ì„  ë”±íˆ í• ê±° ì—†ìŒ..
 						pwpart1.setText("");
 					}
-					dontTwice = dontTwice * -1;	// Åä±Û. 2¹ø ½Ç½Ã ¹æÁö.
+					dontTwice = dontTwice * -1;	// í† ê¸€. 2ë²ˆ ì‹¤ì‹œ ë°©ì§€.
 					return true; 
 				}else{
 					return false;
 				}
 			}
 		}); 
-		pwpart1.addTextChangedListener(new TextWatcher() {		// Ã¹Ä­ ¸®½º³Ê
+		pwpart1.addTextChangedListener(new TextWatcher() {		// ì²«ì¹¸ ë¦¬ìŠ¤ë„ˆ
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				if((pwpart1.length()==1) && !((pwpart1.getText()+"").equals("¡Ü"))){  // edit1  °ªÀÇ Á¦ÇÑ°ªÀ» 6ÀÌ¶ó°í °¡Á¤ÇßÀ»¶§
-					tempStr1 = pwpart1.getText()+"";		// µ¥ÀÌÅÍ ²¨³»¼­ ÀúÀåÇÏ°í µ¿±×¶ó¹Ì·Î º¸¿©ÁÜ
-					pwpart1.setText("¡Ü");
+				if((pwpart1.length()==1) && !((pwpart1.getText()+"").equals("â—"))){  // edit1  ê°’ì˜ ì œí•œê°’ì„ 6ì´ë¼ê³  ê°€ì •í–ˆì„ë•Œ
+					tempStr1 = pwpart1.getText()+"";		// ë°ì´í„° êº¼ë‚´ì„œ ì €ì¥í•˜ê³  ë™ê·¸ë¼ë¯¸ë¡œ ë³´ì—¬ì¤Œ
+					pwpart1.setText("â—");
 					pwpart1.setFocusableInTouchMode(false);
 					pwpart2.setFocusableInTouchMode(true);
-					pwpart2.requestFocus(); // µÎ¹øÂ°EditText ·Î Æ÷Ä¿½º°¡ ³Ñ¾î°¡°Ô µË´Ï´Ù
+					pwpart2.requestFocus(); // ë‘ë²ˆì§¸EditText ë¡œ í¬ì»¤ìŠ¤ê°€ ë„˜ì–´ê°€ê²Œ ë©ë‹ˆë‹¤
 				}
 			}
 			@Override
@@ -372,38 +372,38 @@ public class Password extends Activity {
 		});
 		/**
 		 * pwpart2.setOnKeyListener , pwpart2.addTextChangedListener
-		 *  µÎ¹øÂ°Ä­ ¸®½º³Ê. °ª µé¾î¿Ã¶§, Áö¿ì±â ¹öÆ° ´­·¶À»¶§¿¡ ´ëÇÑ µ¿ÀÛ
+		 *  ë‘ë²ˆì§¸ì¹¸ ë¦¬ìŠ¤ë„ˆ. ê°’ ë“¤ì–´ì˜¬ë•Œ, ì§€ìš°ê¸° ë²„íŠ¼ ëˆŒë €ì„ë•Œì— ëŒ€í•œ ë™ì‘
 		 */
-		pwpart2.setOnKeyListener(new OnKeyListener() {          // Áö¿ì±â ¹öÆ° ´­·¶À»¶§. ¾Õ±ÛÀÚ Áö¿ì°í Ä¿¼­ ÀÌµ¿    
+		pwpart2.setOnKeyListener(new OnKeyListener() {          // ì§€ìš°ê¸° ë²„íŠ¼ ëˆŒë €ì„ë•Œ. ì•ê¸€ì ì§€ìš°ê³  ì»¤ì„œ ì´ë™    
 			@Override 
 			public boolean onKey(View v, int keyCode, KeyEvent event) { 
 				//You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_ 
 				if(keyCode == KeyEvent.KEYCODE_DEL){   
 					if(dontTwice==1){
 						//this is for backspace 
-						// pwpart1 °ª Áö¿ì°í ±×ÂÊÀ¸·Î °£´Ù.
+						// pwpart1 ê°’ ì§€ìš°ê³  ê·¸ìª½ìœ¼ë¡œ ê°„ë‹¤.
 						pwpart1.setText("");
 						pwpart2.setFocusableInTouchMode(false);
 						pwpart1.setFocusableInTouchMode(true);
 						pwpart1.requestFocus();
 					}
-					dontTwice = dontTwice * -1;	// Åä±Û. 2¹ø ½Ç½Ã ¹æÁö. (È­¸é °ªÀ» ¹Ù²Ù¸é ¸®½º³Ê°¡ ´Ù½Ã µ¿ÀÛµÇ±â ¶§¹®)
+					dontTwice = dontTwice * -1;	// í† ê¸€. 2ë²ˆ ì‹¤ì‹œ ë°©ì§€. (í™”ë©´ ê°’ì„ ë°”ê¾¸ë©´ ë¦¬ìŠ¤ë„ˆê°€ ë‹¤ì‹œ ë™ì‘ë˜ê¸° ë•Œë¬¸)
 					return true; 
 				}else{
 					return false;
 				}     
 			}
 		}); 
-		pwpart2.addTextChangedListener(new TextWatcher() {			 // µÎ¹øÂ°Ä­ ¸®½º³Ê
+		pwpart2.addTextChangedListener(new TextWatcher() {			 // ë‘ë²ˆì§¸ì¹¸ ë¦¬ìŠ¤ë„ˆ
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-				if((pwpart2.length()==1) && !((pwpart2.getText()+"").equals("¡Ü"))){  // edit1  °ªÀÇ Á¦ÇÑ°ªÀ» 6ÀÌ¶ó°í °¡Á¤ÇßÀ»¶§
+				if((pwpart2.length()==1) && !((pwpart2.getText()+"").equals("â—"))){  // edit1  ê°’ì˜ ì œí•œê°’ì„ 6ì´ë¼ê³  ê°€ì •í–ˆì„ë•Œ
 					tempStr2 = pwpart2.getText()+"";
-					pwpart2.setText("¡Ü");
+					pwpart2.setText("â—");
 					pwpart2.setFocusableInTouchMode(false);
 					pwpart3.setFocusableInTouchMode(true);
-					pwpart3.requestFocus(); // µÎ¹øÂ°EditText ·Î Æ÷Ä¿½º°¡ ³Ñ¾î°¡°Ô µË´Ï´Ù
+					pwpart3.requestFocus(); // ë‘ë²ˆì§¸EditText ë¡œ í¬ì»¤ìŠ¤ê°€ ë„˜ì–´ê°€ê²Œ ë©ë‹ˆë‹¤
 				}
 			}
 			@Override
@@ -413,9 +413,9 @@ public class Password extends Activity {
 		});
 		/**
 		 * pwpart3.setOnKeyListener , pwpart3.addTextChangedListener
-		 *  ¼¼¹øÂ°Ä­ ¸®½º³Ê. °ª µé¾î¿Ã¶§, Áö¿ì±â ¹öÆ° ´­·¶À»¶§¿¡ ´ëÇÑ µ¿ÀÛ
+		 *  ì„¸ë²ˆì§¸ì¹¸ ë¦¬ìŠ¤ë„ˆ. ê°’ ë“¤ì–´ì˜¬ë•Œ, ì§€ìš°ê¸° ë²„íŠ¼ ëˆŒë €ì„ë•Œì— ëŒ€í•œ ë™ì‘
 		 */
-		pwpart3.setOnKeyListener(new OnKeyListener() {                  // Áö¿ì±â ¹öÆ° ´­·¶À»¶§. ¾Õ±ÛÀÚ Áö¿ì°í Ä¿¼­ ÀÌµ¿    
+		pwpart3.setOnKeyListener(new OnKeyListener() {                  // ì§€ìš°ê¸° ë²„íŠ¼ ëˆŒë €ì„ë•Œ. ì•ê¸€ì ì§€ìš°ê³  ì»¤ì„œ ì´ë™    
 			@Override 
 			public boolean onKey(View v, int keyCode, KeyEvent event) { 
 				//You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_ 
@@ -427,7 +427,7 @@ public class Password extends Activity {
 						pwpart2.setFocusableInTouchMode(true);
 						pwpart2.requestFocus();
 					}
-					dontTwice = dontTwice * -1;	// Åä±Û. 2¹ø ½Ç½Ã ¹æÁö.
+					dontTwice = dontTwice * -1;	// í† ê¸€. 2ë²ˆ ì‹¤ì‹œ ë°©ì§€.
 					return true; 
 				}else{
 					return false;
@@ -437,12 +437,12 @@ public class Password extends Activity {
 		pwpart3.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				if((pwpart3.length()==1) && !((pwpart3.getText()+"").equals("¡Ü"))){
+				if((pwpart3.length()==1) && !((pwpart3.getText()+"").equals("â—"))){
 					tempStr3 = pwpart3.getText()+"";
-					pwpart3.setText("¡Ü");
+					pwpart3.setText("â—");
 					pwpart3.setFocusableInTouchMode(false);
 					pwpart4.setFocusableInTouchMode(true);
-					pwpart4.requestFocus(); // µÎ¹øÂ°EditText ·Î Æ÷Ä¿½º°¡ ³Ñ¾î°¡°Ô µË´Ï´Ù
+					pwpart4.requestFocus(); // ë‘ë²ˆì§¸EditText ë¡œ í¬ì»¤ìŠ¤ê°€ ë„˜ì–´ê°€ê²Œ ë©ë‹ˆë‹¤
 				}
 			}
 			@Override
@@ -452,9 +452,9 @@ public class Password extends Activity {
 		});
 		/**
 		 * pwpart4.setOnKeyListener , pwpart4.addTextChangedListener
-		 *  ³×¹øÂ°Ä­ ¸®½º³Ê. °ª µé¾î¿Ã¶§, Áö¿ì±â ¹öÆ° ´­·¶À»¶§¿¡ ´ëÇÑ µ¿ÀÛ
+		 *  ë„¤ë²ˆì§¸ì¹¸ ë¦¬ìŠ¤ë„ˆ. ê°’ ë“¤ì–´ì˜¬ë•Œ, ì§€ìš°ê¸° ë²„íŠ¼ ëˆŒë €ì„ë•Œì— ëŒ€í•œ ë™ì‘
 		 */
-		pwpart4.setOnKeyListener(new OnKeyListener() {                  // Áö¿ì±â ¹öÆ° ´­·¶À»¶§. ¾Õ±ÛÀÚ Áö¿ì°í Ä¿¼­ ÀÌµ¿    
+		pwpart4.setOnKeyListener(new OnKeyListener() {                  // ì§€ìš°ê¸° ë²„íŠ¼ ëˆŒë €ì„ë•Œ. ì•ê¸€ì ì§€ìš°ê³  ì»¤ì„œ ì´ë™    
 			@Override 
 			public boolean onKey(View v, int keyCode, KeyEvent event) { 
 				//You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_ 
@@ -467,7 +467,7 @@ public class Password extends Activity {
 						pwpart3.setFocusableInTouchMode(true);
 						pwpart3.requestFocus();
 					}
-					dontTwice = dontTwice * -1;	// Åä±Û. 2¹ø ½Ç½Ã ¹æÁö.
+					dontTwice = dontTwice * -1;	// í† ê¸€. 2ë²ˆ ì‹¤ì‹œ ë°©ì§€.
 					return true; 
 				}else{
 					return false;
@@ -477,10 +477,10 @@ public class Password extends Activity {
 		pwpart4.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				if((pwpart4.length()==1) && !((pwpart4.getText()+"").equals("¡Ü"))){  // edit1  °ªÀÇ Á¦ÇÑ°ªÀ» 6ÀÌ¶ó°í °¡Á¤ÇßÀ»¶§
+				if((pwpart4.length()==1) && !((pwpart4.getText()+"").equals("â—"))){  // edit1  ê°’ì˜ ì œí•œê°’ì„ 6ì´ë¼ê³  ê°€ì •í–ˆì„ë•Œ
 					tempStr4 = pwpart4.getText()+"";
-					pwpart4.setText("¡Ü");
-					// ºñ¹ø 4°³ ´Ù¹Ş¾Ò´Ù..
+					pwpart4.setText("â—");
+					// ë¹„ë²ˆ 4ê°œ ë‹¤ë°›ì•˜ë‹¤..
 					pwForms = tempStr1+tempStr2+tempStr3+tempStr4;
 					Log.d(TAG, "got password:"+pwForms);
 					Handler passwordHandler = new Handler();
@@ -494,12 +494,12 @@ public class Password extends Activity {
 		});
 
 
-		// 4Ä­Â¥¸® ºñ¹ø È®ÀÎÃ¢.
+		// 4ì¹¸ì§œë¦¬ ë¹„ë²ˆ í™•ì¸ì°½.
 		/**
 		 * pw_cnfrmpart1.setOnKeyListener , pw_cnfrmpart1.addTextChangedListener
-		 *  È®ÀÎ¿ë Ã¹Ä­ ¸®½º³Ê. °ª µé¾î¿Ã¶§, Áö¿ì±â ¹öÆ° ´­·¶À»¶§¿¡ ´ëÇÑ µ¿ÀÛ
+		 *  í™•ì¸ìš© ì²«ì¹¸ ë¦¬ìŠ¤ë„ˆ. ê°’ ë“¤ì–´ì˜¬ë•Œ, ì§€ìš°ê¸° ë²„íŠ¼ ëˆŒë €ì„ë•Œì— ëŒ€í•œ ë™ì‘
 		 */
-		pw_cnfrmpart1.setOnKeyListener(new OnKeyListener() {             // Áö¿ì±â ¹öÆ° ´­·¶À»¶§. ¾Õ±ÛÀÚ Áö¿ì°í Ä¿¼­ ÀÌµ¿(Ã¹Ä­ÀÌ¶ó µ¿ÀÛ ¾øÀ½)     
+		pw_cnfrmpart1.setOnKeyListener(new OnKeyListener() {             // ì§€ìš°ê¸° ë²„íŠ¼ ëˆŒë €ì„ë•Œ. ì•ê¸€ì ì§€ìš°ê³  ì»¤ì„œ ì´ë™(ì²«ì¹¸ì´ë¼ ë™ì‘ ì—†ìŒ)     
 			@Override 
 			public boolean onKey(View v, int keyCode, KeyEvent event) { 
 				Log.d(TAG,"pw_cnfrmpart1");
@@ -507,10 +507,10 @@ public class Password extends Activity {
 				if(keyCode == KeyEvent.KEYCODE_DEL){   
 					if(dontTwice==1){
 						//this is for backspace 
-						// Ã¹ °ª¿¡¼± µüÈ÷ ÇÒ°Å ¾øÀ½..
+						// ì²« ê°’ì—ì„  ë”±íˆ í• ê±° ì—†ìŒ..
 						pw_cnfrmpart1.setText("");
 					}
-					dontTwice = dontTwice * -1;	// Åä±Û. 2¹ø ½Ç½Ã ¹æÁö.
+					dontTwice = dontTwice * -1;	// í† ê¸€. 2ë²ˆ ì‹¤ì‹œ ë°©ì§€.
 					return true; 
 				}else{
 					return false;
@@ -520,12 +520,12 @@ public class Password extends Activity {
 		pw_cnfrmpart1.addTextChangedListener(new TextWatcher() {		
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {					
-				if((pw_cnfrmpart1.length()==1) && !((pw_cnfrmpart1.getText()+"").equals("¡Ü"))){  // edit1  °ªÀÇ Á¦ÇÑ°ªÀ» 6ÀÌ¶ó°í °¡Á¤ÇßÀ»¶§
+				if((pw_cnfrmpart1.length()==1) && !((pw_cnfrmpart1.getText()+"").equals("â—"))){  // edit1  ê°’ì˜ ì œí•œê°’ì„ 6ì´ë¼ê³  ê°€ì •í–ˆì„ë•Œ
 					tempStr1 = pw_cnfrmpart1.getText()+"";
-					pw_cnfrmpart1.setText("¡Ü");
+					pw_cnfrmpart1.setText("â—");
 					pw_cnfrmpart1.setFocusableInTouchMode(false);
 					pw_cnfrmpart2.setFocusableInTouchMode(true);
-					pw_cnfrmpart2.requestFocus(); // µÎ¹øÂ°EditText ·Î Æ÷Ä¿½º°¡ ³Ñ¾î°¡°Ô µË´Ï´Ù
+					pw_cnfrmpart2.requestFocus(); // ë‘ë²ˆì§¸EditText ë¡œ í¬ì»¤ìŠ¤ê°€ ë„˜ì–´ê°€ê²Œ ë©ë‹ˆë‹¤
 				}
 			}
 			@Override
@@ -535,7 +535,7 @@ public class Password extends Activity {
 		});
 		/**
 		 * pw_cnfrmpart2.setOnKeyListener , pw_cnfrmpart2.addTextChangedListener
-		 *  È®ÀÎ¿ë µÎ¹øÂ°Ä­ ¸®½º³Ê. °ª µé¾î¿Ã¶§, Áö¿ì±â ¹öÆ° ´­·¶À»¶§¿¡ ´ëÇÑ µ¿ÀÛ
+		 *  í™•ì¸ìš© ë‘ë²ˆì§¸ì¹¸ ë¦¬ìŠ¤ë„ˆ. ê°’ ë“¤ì–´ì˜¬ë•Œ, ì§€ìš°ê¸° ë²„íŠ¼ ëˆŒë €ì„ë•Œì— ëŒ€í•œ ë™ì‘
 		 */
 		pw_cnfrmpart2.setOnKeyListener(new OnKeyListener() {                  
 			@Override 
@@ -544,28 +544,28 @@ public class Password extends Activity {
 				if(keyCode == KeyEvent.KEYCODE_DEL){   
 					if(dontTwice==1){
 						//this is for backspace 
-						// pw_cnfrmpart1 °ª Áö¿ì°í ±×ÂÊÀ¸·Î °£´Ù.
+						// pw_cnfrmpart1 ê°’ ì§€ìš°ê³  ê·¸ìª½ìœ¼ë¡œ ê°„ë‹¤.
 						pw_cnfrmpart1.setText("");
 						pw_cnfrmpart2.setFocusableInTouchMode(false);
 						pw_cnfrmpart1.setFocusableInTouchMode(true);
 						pw_cnfrmpart1.requestFocus();
 					}
-					dontTwice = dontTwice * -1;	// Åä±Û. 2¹ø ½Ç½Ã ¹æÁö.
+					dontTwice = dontTwice * -1;	// í† ê¸€. 2ë²ˆ ì‹¤ì‹œ ë°©ì§€.
 					return true; 
 				}else{
 					return false;
 				}     
 			}
 		}); 
-		pw_cnfrmpart2.addTextChangedListener(new TextWatcher() {		// Áö¿ì±â ¹öÆ° ´­·¶À»¶§. ¾Õ±ÛÀÚ Áö¿ì°í Ä¿¼­ ÀÌµ¿    
+		pw_cnfrmpart2.addTextChangedListener(new TextWatcher() {		// ì§€ìš°ê¸° ë²„íŠ¼ ëˆŒë €ì„ë•Œ. ì•ê¸€ì ì§€ìš°ê³  ì»¤ì„œ ì´ë™    
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				if((pw_cnfrmpart2.length()==1) && !((pw_cnfrmpart2.getText()+"").equals("¡Ü"))){  // edit1  °ªÀÇ Á¦ÇÑ°ªÀ» 6ÀÌ¶ó°í °¡Á¤ÇßÀ»¶§
+				if((pw_cnfrmpart2.length()==1) && !((pw_cnfrmpart2.getText()+"").equals("â—"))){  // edit1  ê°’ì˜ ì œí•œê°’ì„ 6ì´ë¼ê³  ê°€ì •í–ˆì„ë•Œ
 					tempStr2 = pw_cnfrmpart2.getText()+"";
-					pw_cnfrmpart2.setText("¡Ü");
+					pw_cnfrmpart2.setText("â—");
 					pw_cnfrmpart2.setFocusableInTouchMode(false);
 					pw_cnfrmpart3.setFocusableInTouchMode(true);
-					pw_cnfrmpart3.requestFocus(); // µÎ¹øÂ°EditText ·Î Æ÷Ä¿½º°¡ ³Ñ¾î°¡°Ô µË´Ï´Ù
+					pw_cnfrmpart3.requestFocus(); // ë‘ë²ˆì§¸EditText ë¡œ í¬ì»¤ìŠ¤ê°€ ë„˜ì–´ê°€ê²Œ ë©ë‹ˆë‹¤
 				}
 			}
 			@Override
@@ -575,9 +575,9 @@ public class Password extends Activity {
 		});
 		/**
 		 * pw_cnfrmpart3.setOnKeyListener , pw_cnfrmpart3.addTextChangedListener
-		 *  È®ÀÎ¿ë ¼¼¹øÂ°Ä­ ¸®½º³Ê. °ª µé¾î¿Ã¶§, Áö¿ì±â ¹öÆ° ´­·¶À»¶§¿¡ ´ëÇÑ µ¿ÀÛ
+		 *  í™•ì¸ìš© ì„¸ë²ˆì§¸ì¹¸ ë¦¬ìŠ¤ë„ˆ. ê°’ ë“¤ì–´ì˜¬ë•Œ, ì§€ìš°ê¸° ë²„íŠ¼ ëˆŒë €ì„ë•Œì— ëŒ€í•œ ë™ì‘
 		 */
-		pw_cnfrmpart3.setOnKeyListener(new OnKeyListener() {               		// Áö¿ì±â ¹öÆ° ´­·¶À»¶§. ¾Õ±ÛÀÚ Áö¿ì°í Ä¿¼­ ÀÌµ¿       
+		pw_cnfrmpart3.setOnKeyListener(new OnKeyListener() {               		// ì§€ìš°ê¸° ë²„íŠ¼ ëˆŒë €ì„ë•Œ. ì•ê¸€ì ì§€ìš°ê³  ì»¤ì„œ ì´ë™       
 			@Override 
 			public boolean onKey(View v, int keyCode, KeyEvent event) { 
 				//You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_ 
@@ -589,7 +589,7 @@ public class Password extends Activity {
 						pw_cnfrmpart2.setFocusableInTouchMode(true);
 						pw_cnfrmpart2.requestFocus();
 					}
-					dontTwice = dontTwice * -1;	// Åä±Û. 2¹ø ½Ç½Ã ¹æÁö.
+					dontTwice = dontTwice * -1;	// í† ê¸€. 2ë²ˆ ì‹¤ì‹œ ë°©ì§€.
 					return true; 
 				}else{
 					return false;
@@ -599,12 +599,12 @@ public class Password extends Activity {
 		pw_cnfrmpart3.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				if((pw_cnfrmpart3.length()==1) && !((pw_cnfrmpart3.getText()+"").equals("¡Ü"))){  // edit1  °ªÀÇ Á¦ÇÑ°ªÀ» 6ÀÌ¶ó°í °¡Á¤ÇßÀ»¶§
+				if((pw_cnfrmpart3.length()==1) && !((pw_cnfrmpart3.getText()+"").equals("â—"))){  // edit1  ê°’ì˜ ì œí•œê°’ì„ 6ì´ë¼ê³  ê°€ì •í–ˆì„ë•Œ
 					tempStr3 = pw_cnfrmpart3.getText()+"";
-					pw_cnfrmpart3.setText("¡Ü");
+					pw_cnfrmpart3.setText("â—");
 					pw_cnfrmpart3.setFocusableInTouchMode(false);
 					pw_cnfrmpart4.setFocusableInTouchMode(true);
-					pw_cnfrmpart4.requestFocus(); // µÎ¹øÂ°EditText ·Î Æ÷Ä¿½º°¡ ³Ñ¾î°¡°Ô µË´Ï´Ù
+					pw_cnfrmpart4.requestFocus(); // ë‘ë²ˆì§¸EditText ë¡œ í¬ì»¤ìŠ¤ê°€ ë„˜ì–´ê°€ê²Œ ë©ë‹ˆë‹¤
 				}
 			}
 			@Override
@@ -614,9 +614,9 @@ public class Password extends Activity {
 		});
 		/**
 		 * pw_cnfrmpart4.setOnKeyListener , pw_cnfrmpart4.addTextChangedListener
-		 *  È®ÀÎ¿ë ³×¹øÂ°Ä­ ¸®½º³Ê. °ª µé¾î¿Ã¶§, Áö¿ì±â ¹öÆ° ´­·¶À»¶§¿¡ ´ëÇÑ µ¿ÀÛ
+		 *  í™•ì¸ìš© ë„¤ë²ˆì§¸ì¹¸ ë¦¬ìŠ¤ë„ˆ. ê°’ ë“¤ì–´ì˜¬ë•Œ, ì§€ìš°ê¸° ë²„íŠ¼ ëˆŒë €ì„ë•Œì— ëŒ€í•œ ë™ì‘
 		 */
-		pw_cnfrmpart4.setOnKeyListener(new OnKeyListener() {              // Áö¿ì±â ¹öÆ° ´­·¶À»¶§. ¾Õ±ÛÀÚ Áö¿ì°í Ä¿¼­ ÀÌµ¿    
+		pw_cnfrmpart4.setOnKeyListener(new OnKeyListener() {              // ì§€ìš°ê¸° ë²„íŠ¼ ëˆŒë €ì„ë•Œ. ì•ê¸€ì ì§€ìš°ê³  ì»¤ì„œ ì´ë™    
 			@Override 
 			public boolean onKey(View v, int keyCode, KeyEvent event) { 
 				//You can identify which key pressed buy checking keyCode value with KeyEvent.KEYCODE_ 
@@ -629,20 +629,20 @@ public class Password extends Activity {
 						pw_cnfrmpart3.setFocusableInTouchMode(true);
 						pw_cnfrmpart3.requestFocus();
 					}
-					dontTwice = dontTwice * -1;	// Åä±Û. 2¹ø ½Ç½Ã ¹æÁö.
+					dontTwice = dontTwice * -1;	// í† ê¸€. 2ë²ˆ ì‹¤ì‹œ ë°©ì§€.
 					return true; 
 				}else{
 					return false;
 				}      
 			}
 		}); 
-		pw_cnfrmpart4.addTextChangedListener(new TextWatcher() {	// °ª ÀÔ·Â½Ã ¸®½º³Ê. °ª ÀúÀåÈÄ µ¿±×¶ó¹Ì·Î º¯°æ
+		pw_cnfrmpart4.addTextChangedListener(new TextWatcher() {	// ê°’ ì…ë ¥ì‹œ ë¦¬ìŠ¤ë„ˆ. ê°’ ì €ì¥í›„ ë™ê·¸ë¼ë¯¸ë¡œ ë³€ê²½
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				if((pw_cnfrmpart4.length()==1) && !((pw_cnfrmpart4.getText()+"").equals("¡Ü"))){  // edit1  °ªÀÇ Á¦ÇÑ°ªÀ» 6ÀÌ¶ó°í °¡Á¤ÇßÀ»¶§
+				if((pw_cnfrmpart4.length()==1) && !((pw_cnfrmpart4.getText()+"").equals("â—"))){  // edit1  ê°’ì˜ ì œí•œê°’ì„ 6ì´ë¼ê³  ê°€ì •í–ˆì„ë•Œ
 					tempStr4 = pw_cnfrmpart4.getText()+"";
-					pw_cnfrmpart4.setText("¡Ü");
-					// ºñ¹ø 4°³ ´Ù¹Ş¾Ò´Ù..
+					pw_cnfrmpart4.setText("â—");
+					// ë¹„ë²ˆ 4ê°œ ë‹¤ë°›ì•˜ë‹¤..
 					pw_cnfrmForms = tempStr1 + tempStr2 + tempStr3 + tempStr4;
 					//       	    	Log.i(TAG, "pw all get(4th) 2. "+pw_cnfrmForms);
 					Handler passwordHandler = new Handler();
@@ -655,10 +655,10 @@ public class Password extends Activity {
 			public void afterTextChanged(Editable s) {}
 		});
 	}
-	// ¾Ö´Ï¸ŞÀÌ¼Ç È¿°ú.
+	// ì• ë‹ˆë©”ì´ì…˜ íš¨ê³¼.
 	/**
 	 * initAnimation
-	 *  ºñ¹øÃ¢ µîÀå ¶Ç´Â Æ²·ÈÀ» °æ¿ì¿¡ ´ëÇÑ ¾Ö´Ï¸ŞÀÌ¼Ç È¿°ú¸¦ ÁØ´Ù
+	 *  ë¹„ë²ˆì°½ ë“±ì¥ ë˜ëŠ” í‹€ë ¸ì„ ê²½ìš°ì— ëŒ€í•œ ì• ë‹ˆë©”ì´ì…˜ íš¨ê³¼ë¥¼ ì¤€ë‹¤
 	 *
 	 * @param
 	 * @param
@@ -666,7 +666,7 @@ public class Password extends Activity {
 	 */
 	private void initAnimation(){
 		pushLeftIn = new TranslateAnimation(
-				TranslateAnimation.RELATIVE_TO_SELF, 1.0f,   	// µîÀå.»õ ºñ¹ø ÀÔ·Â ¹Ş´Â Ã¢ÀÌ ³ªÅ¸³­´Ù. 
+				TranslateAnimation.RELATIVE_TO_SELF, 1.0f,   	// ë“±ì¥.ìƒˆ ë¹„ë²ˆ ì…ë ¥ ë°›ëŠ” ì°½ì´ ë‚˜íƒ€ë‚œë‹¤. 
 				TranslateAnimation.RELATIVE_TO_SELF, 0.0f,		
 				TranslateAnimation.RELATIVE_TO_SELF, 0.0f,
 				TranslateAnimation.RELATIVE_TO_SELF, 0.0f);
@@ -675,13 +675,13 @@ public class Password extends Activity {
 
 		pushLeftOut = new TranslateAnimation(
 				TranslateAnimation.RELATIVE_TO_SELF, 0.0f,   
-				TranslateAnimation.RELATIVE_TO_SELF, -2.0f,		// ÅğÀå.±âÁ¸ ºñ¹øÀº È­¸é ¹ÛÀ¸·Î »ç¶óÁø´Ù. 
+				TranslateAnimation.RELATIVE_TO_SELF, -2.0f,		// í‡´ì¥.ê¸°ì¡´ ë¹„ë²ˆì€ í™”ë©´ ë°–ìœ¼ë¡œ ì‚¬ë¼ì§„ë‹¤. 
 				TranslateAnimation.RELATIVE_TO_SELF, 0.0f,
 				TranslateAnimation.RELATIVE_TO_SELF, 0.0f);
 		pushLeftOut.setDuration(200);
 		pushLeftOut.setFillAfter(true);
 
-		shakeAni = new TranslateAnimation(						// Èçµé±â. Æ²·ÈÀ»¶§.
+		shakeAni = new TranslateAnimation(						// í”ë“¤ê¸°. í‹€ë ¸ì„ë•Œ.
 				TranslateAnimation.RELATIVE_TO_SELF, 0.0f,   
 				TranslateAnimation.RELATIVE_TO_SELF, 0.05f,
 				TranslateAnimation.RELATIVE_TO_SELF, 0.0f,

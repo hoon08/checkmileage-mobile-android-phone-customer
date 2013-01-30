@@ -1,12 +1,12 @@
 package kr.co.bettersoft.checkmileage.activities;
 /**
  * MyMileagePageActivity
- *  ³» ¸¶ÀÏ¸®Áö º¸±â È­¸é
+ *  ë‚´ ë§ˆì¼ë¦¬ì§€ ë³´ê¸° í™”ë©´
  */
 
 
 /*
- * ¾Æ´äÅÍ¸¦ ²¿Áø°Å¸¦ ½á¼­ ÆäÀÌÁö ¿Ã¶§¸¶´Ù getView ÇÑ´Ù.. ³ªÁß¿¡ °íÃÄ¾ß °Ú´Ù..
+ * ì•„ë‹µí„°ë¥¼ ê¼¬ì§„ê±°ë¥¼ ì¨ì„œ í˜ì´ì§€ ì˜¬ë•Œë§ˆë‹¤ getView í•œë‹¤.. ë‚˜ì¤‘ì— ê³ ì³ì•¼ ê² ë‹¤..
  * 
  */
 import java.io.BufferedReader;
@@ -65,7 +65,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 public class MyMileagePageActivity extends Activity {
-	int app_end = 0;	// µÚ·Î°¡±â ¹öÆ°À¸·Î ´İÀ»¶§ 2¹ø¸¸¿¡ ´İÈ÷µµ·Ï
+	int app_end = 0;	// ë’¤ë¡œê°€ê¸° ë²„íŠ¼ìœ¼ë¡œ ë‹«ì„ë•Œ 2ë²ˆë§Œì— ë‹«íˆë„ë¡
 
 	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
 	MainActivity mainActivity = (MainActivity)MainActivity.mainActivity;
@@ -79,22 +79,22 @@ public class MyMileagePageActivity extends Activity {
 	String methodName = "";
 	String serverName = CommonUtils.serverNames;
 
-	String imgthumbDomain = CommonUtils.imgthumbDomain; 					// Img °¡Á®¿Ã¶§ ÆÄÀÏ¸í¸¸ ÀÖÀ» °æ¿ì ¾Õ¿¡ ºÙÀÏ µµ¸ŞÀÎ.   
-	public List<CheckMileageMileage> entries;	// 1Â÷ÀûÀ¸·Î Á¶È¸ÇÑ °á°ú. (°¡¸ÍÁ¡ »ó¼¼ Á¤º¸ Á¦¿Ü)
-	public List<CheckMileageMileage> dbInEntries;	// db¿¡ ³ÖÀ» °Å
-	public List<CheckMileageMileage> dbOutEntries;	// db¿¡¼­ ²¨³½°Å
+	String imgthumbDomain = CommonUtils.imgthumbDomain; 					// Img ê°€ì ¸ì˜¬ë•Œ íŒŒì¼ëª…ë§Œ ìˆì„ ê²½ìš° ì•ì— ë¶™ì¼ ë„ë©”ì¸.   
+	public List<CheckMileageMileage> entries;	// 1ì°¨ì ìœ¼ë¡œ ì¡°íšŒí•œ ê²°ê³¼. (ê°€ë§¹ì  ìƒì„¸ ì •ë³´ ì œì™¸)
+	public List<CheckMileageMileage> dbInEntries;	// dbì— ë„£ì„ ê±°
+	public List<CheckMileageMileage> dbOutEntries;	// dbì—ì„œ êº¼ë‚¸ê±°
 	Boolean dbSaveEnable = true;
 
-	public static Boolean searched = false;		// Á¶È¸ Çß´Â°¡?
+	public static Boolean searched = false;		// ì¡°íšŒ í–ˆëŠ”ê°€?
 
 	URL postUrl2;
 	HttpURLConnection connection2;
-	//	int reTry = 1;		// Àç½Ãµµ È½¼ö
+	//	int reTry = 1;		// ì¬ì‹œë„ íšŸìˆ˜
 
-	int merchantNameMaxLength = 9;			// °¡¸ÍÁ¡¸í Ç¥½ÃµÉ ÃÖ´ë ±ÛÀÚ¼ö.
+	int merchantNameMaxLength = 9;			// ê°€ë§¹ì ëª… í‘œì‹œë  ìµœëŒ€ ê¸€ììˆ˜.
 	String newMerchantName="";
 
-	public boolean connected = false;  // ÀÎÅÍ³İ ¿¬°á»óÅÂ
+	public boolean connected = false;  // ì¸í„°ë„· ì—°ê²°ìƒíƒœ
 
 	List<CheckMileageMileage> entriesFn = null;
 	float fImgSize = 0;
@@ -102,44 +102,44 @@ public class MyMileagePageActivity extends Activity {
 
 	View emptyView;
 
-	// ÁøÇà¹Ù
+	// ì§„í–‰ë°”
 	ProgressBar pb1;
 
 
 
 	/*
-	 * ¸ğ¹ÙÀÏ sqlite ¸¦ »ç¿ëÇÏ¿© ³» ¸¶ÀÏ¸®Áö ¸ñ·ÏÀ» ¹Ş¾Æ¿Í¼­ ÀúÀå. 
-	 * ÀÌÈÄ Åë½Å ºÒ°¡ÀÏ¶§ ¸¶Áö¸·À¸·Î ÀúÀåÇÑ µ¥ÀÌÅÍ¸¦ º¸¿©ÁØ´Ù.
-	 * ÀúÀåÇÒ °ªµé.. 
+	 * ëª¨ë°”ì¼ sqlite ë¥¼ ì‚¬ìš©í•˜ì—¬ ë‚´ ë§ˆì¼ë¦¬ì§€ ëª©ë¡ì„ ë°›ì•„ì™€ì„œ ì €ì¥. 
+	 * ì´í›„ í†µì‹  ë¶ˆê°€ì¼ë•Œ ë§ˆì§€ë§‰ìœ¼ë¡œ ì €ì¥í•œ ë°ì´í„°ë¥¼ ë³´ì—¬ì¤€ë‹¤.
+	 * ì €ì¥í•  ê°’ë“¤.. 
 	 * tmp_idCheckMileageMileages  / tmp_mileage  / tmp_modifyDate  / tmp_checkMileageMembersCheckMileageId  / 
 	 * tmp_checkMileageMerchantsMerchantId  / tmp_companyName  / tmp_introduction  / tmp_workPhoneNumber  / tmp_profileThumbnailImageUrl  / bm
 	 * 
-	 * Åë½Å ½ÇÆĞ½Ã ¾Ë¸²Ã¢À» ¶ç¿öÁØ´Ù.
-	 * Åë½Å ¼º°ø½Ã ÀÌÀü db Å×ÀÌºíÀ» Áö¿ì°í »õ·Î Å×ÀÌºíÀ» ¸¸µé¾î¼­ µ¥ÀÌÅÍ¸¦ ³Ö¾îÁØ´Ù.
+	 * í†µì‹  ì‹¤íŒ¨ì‹œ ì•Œë¦¼ì°½ì„ ë„ì›Œì¤€ë‹¤.
+	 * í†µì‹  ì„±ê³µì‹œ ì´ì „ db í…Œì´ë¸”ì„ ì§€ìš°ê³  ìƒˆë¡œ í…Œì´ë¸”ì„ ë§Œë“¤ì–´ì„œ ë°ì´í„°ë¥¼ ë„£ì–´ì¤€ë‹¤.
 	 * 
-	 * Åë½Å ¼º°ø ¿©ºÎ¿Í »ó°ü¾øÀÌ db Å×ÀÌºíÀÌ ÀÖ°í µ¥ÀÌÅÍ°¡ ÀÖÀ¸¸é ÇØ´ç µ¥ÀÌÅÍ¸¦ º¸¿©ÁØ´Ù.
+	 * í†µì‹  ì„±ê³µ ì—¬ë¶€ì™€ ìƒê´€ì—†ì´ db í…Œì´ë¸”ì´ ìˆê³  ë°ì´í„°ê°€ ìˆìœ¼ë©´ í•´ë‹¹ ë°ì´í„°ë¥¼ ë³´ì—¬ì¤€ë‹¤.
 	 */
 	////----------------------- SQLite  Query-----------------------//
 
-	// Å×ÀÌºí »èÁ¦ Äõ¸® ---> Å×ÀÌºíÀº init ¿¡¼­ ÀÌ¹Ì ¸¸µé¾úÀ¸´Ï ¾ÈÀÇ ³»¿ë¸¸ Áö¿ì°í...´Ù½Ã ÇÏÀÚ
+	// í…Œì´ë¸” ì‚­ì œ ì¿¼ë¦¬ ---> í…Œì´ë¸”ì€ init ì—ì„œ ì´ë¯¸ ë§Œë“¤ì—ˆìœ¼ë‹ˆ ì•ˆì˜ ë‚´ìš©ë§Œ ì§€ìš°ê³ ...ë‹¤ì‹œ í•˜ì
 	private static final String Q_INIT_TABLE = "DELETE FROM mileage_info;" ;
 
-	// Å×ÀÌºí »ı¼º Äõ¸®.
+	// í…Œì´ë¸” ìƒì„± ì¿¼ë¦¬.
 	private static final String Q_CREATE_TABLE = "CREATE TABLE mileage_info (" +
-	"_id INTEGER PRIMARY KEY AUTOINCREMENT," +					// ¸ğ¹ÙÀÏ db ÀúÀåµÇ´Â ÀÚµ¿Áõ°¡  ÀÎµ¦½º Å°
-	"idCheckMileageMileages TEXT," +								// ¼­¹ö db¿¡ ÀúÀåµÈ ÀÎµ¦½º Å°
-	"mileage TEXT," +											// ¸¶ÀÏ¸®Áö °ª
-	"modifyDate TEXT," +											// ¼öÁ¤ÀÏ½Ã
-	"checkMileageMembersCheckMileageId TEXT," +					// »ç¿ëÀÚ ¾ÆÀÌµğ
-	"checkMileageMerchantsMerchantId TEXT," +					// °¡¸ÍÁ¡ ¾ÆÀÌµğ
-	"companyName TEXT," +										// °¡¸ÍÁ¡ ÀÌ¸§
-	"introduction TEXT," +										// °¡¸ÍÁ¡ ¼Ò°³±Û
-	"workPhoneNumber TEXT," +									// °¡¸ÍÁ¡ Àü¹ø
-	"profileThumbnailImageUrl TEXT," +							// ¼¶³×ÀÏ ÀÌ¹ÌÁö url
-	"bm TEXT" +													// ¼¶³×ÀÏ ÀÌ¹ÌÁö(stringÈ­ ½ÃÅ² °ª)
+	"_id INTEGER PRIMARY KEY AUTOINCREMENT," +					// ëª¨ë°”ì¼ db ì €ì¥ë˜ëŠ” ìë™ì¦ê°€  ì¸ë±ìŠ¤ í‚¤
+	"idCheckMileageMileages TEXT," +								// ì„œë²„ dbì— ì €ì¥ëœ ì¸ë±ìŠ¤ í‚¤
+	"mileage TEXT," +											// ë§ˆì¼ë¦¬ì§€ ê°’
+	"modifyDate TEXT," +											// ìˆ˜ì •ì¼ì‹œ
+	"checkMileageMembersCheckMileageId TEXT," +					// ì‚¬ìš©ì ì•„ì´ë””
+	"checkMileageMerchantsMerchantId TEXT," +					// ê°€ë§¹ì  ì•„ì´ë””
+	"companyName TEXT," +										// ê°€ë§¹ì  ì´ë¦„
+	"introduction TEXT," +										// ê°€ë§¹ì  ì†Œê°œê¸€
+	"workPhoneNumber TEXT," +									// ê°€ë§¹ì  ì „ë²ˆ
+	"profileThumbnailImageUrl TEXT," +							// ì„¬ë„¤ì¼ ì´ë¯¸ì§€ url
+	"bm TEXT" +													// ì„¬ë„¤ì¼ ì´ë¯¸ì§€(stringí™” ì‹œí‚¨ ê°’)
 	");" ;
 
-	// Å×ÀÌºí Á¶È¸ Äõ¸®
+	// í…Œì´ë¸” ì¡°íšŒ ì¿¼ë¦¬
 	private final String Q_GET_LIST = "SELECT * FROM mileage_info";
 
 
@@ -148,11 +148,11 @@ public class MyMileagePageActivity extends Activity {
 
 	//----------------------- SQLite -----------------------//
 
-	// ÃÊ±âÈ­ÀÛ¾÷- db ¹× Å×ÀÌºí °Ë»çÇÏ°í ¾øÀ¸¸é ¸¸µé±â.
+	// ì´ˆê¸°í™”ì‘ì—…- db ë° í…Œì´ë¸” ê²€ì‚¬í•˜ê³  ì—†ìœ¼ë©´ ë§Œë“¤ê¸°.
 	SQLiteDatabase db = null;
 	/**
 	 * initDB
-	 *  db ¸¦ ÃÊ±âÈ­ÇÑ´Ù
+	 *  db ë¥¼ ì´ˆê¸°í™”í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -160,35 +160,35 @@ public class MyMileagePageActivity extends Activity {
 	 */
 	public void initDB(){
 		Log.i(TAG,"initDB");
-		// db °ü·Ã ÀÛ¾÷ ÃÊ±âÈ­, DB ¿­¾î SQLiteDatabase ÀÎ½ºÅÏ½º »ı¼º          db ¿­°Å³ª ¾øÀ¸¸é »ı¼º
+		// db ê´€ë ¨ ì‘ì—… ì´ˆê¸°í™”, DB ì—´ì–´ SQLiteDatabase ì¸ìŠ¤í„´ìŠ¤ ìƒì„±          db ì—´ê±°ë‚˜ ì—†ìœ¼ë©´ ìƒì„±
 		if(db== null ){
 			db= openOrCreateDatabase( "sqlite_carrotDB.db", SQLiteDatabase.CREATE_IF_NECESSARY ,null );
 		}
-		// Å×ÀÌºí¿¡¼­ µ¥ÀÌÅÍ °¡Á®¿À±â Àü Å×ÀÌºí »ı¼º È®ÀÎ ¾øÀ¸¸é »ı¼º.
+		// í…Œì´ë¸”ì—ì„œ ë°ì´í„° ê°€ì ¸ì˜¤ê¸° ì „ í…Œì´ë¸” ìƒì„± í™•ì¸ ì—†ìœ¼ë©´ ìƒì„±.
 		checkTableIsCreated(db);
 	}
 	/**
 	 * checkTableIsCreated
-	 *  db »ı¼º È®ÀÎÇÏ¿© ¾øÀ¸¸é »ı¼ºÇÑ´Ù
+	 *  db ìƒì„± í™•ì¸í•˜ì—¬ ì—†ìœ¼ë©´ ìƒì„±í•œë‹¤
 	 *
 	 * @param db
 	 * @param
 	 * @return
 	 */
-	public void checkTableIsCreated(SQLiteDatabase db){		// mileage_info ¶ó´Â ÀÌ¸§ÀÇ Å×ÀÌºíÀ» °Ë»öÇÏ°í ¾øÀ¸¸é »ı¼º.
+	public void checkTableIsCreated(SQLiteDatabase db){		// mileage_info ë¼ëŠ” ì´ë¦„ì˜ í…Œì´ë¸”ì„ ê²€ìƒ‰í•˜ê³  ì—†ìœ¼ë©´ ìƒì„±.
 		Log.i(TAG, "checkTableIsCreated");
 		try{
 			//			Cursor c = db.query(String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy);
 			Cursor c = db.query("sqlite_master" , new String[] {"count(*)"}, "name=?" , new String[] {"mileage_info"}, null ,null , null);
 			Integer cnt=0;
-			c.moveToFirst();                                 // Ä¿¼­¸¦ Ã¹¶óÀÎÀ¸·Î ¿Å±è
-			while(c.isAfterLast()== false ){                   // ¸¶Áö¸· ¶óÀÎÀÌ µÉ¶§±îÁö 1¾¿ Áõ°¡ÇÏ¸é¼­ º»´Ù
+			c.moveToFirst();                                 // ì»¤ì„œë¥¼ ì²«ë¼ì¸ìœ¼ë¡œ ì˜®ê¹€
+			while(c.isAfterLast()== false ){                   // ë§ˆì§€ë§‰ ë¼ì¸ì´ ë ë•Œê¹Œì§€ 1ì”© ì¦ê°€í•˜ë©´ì„œ ë³¸ë‹¤
 				cnt=c.getInt(0);
 				c.moveToNext();
 			}
-			//Ä¿¼­´Â »ç¿ë Á÷ÈÄ ´İ´Â´Ù
+			//ì»¤ì„œëŠ” ì‚¬ìš© ì§í›„ ë‹«ëŠ”ë‹¤
 			c.close();
-			//Å×ÀÌºí ¾øÀ¸¸é »ı¼º
+			//í…Œì´ë¸” ì—†ìœ¼ë©´ ìƒì„±
 			if(cnt==0){
 				db.execSQL(Q_CREATE_TABLE);
 			}
@@ -197,16 +197,16 @@ public class MyMileagePageActivity extends Activity {
 		}
 	}
 
-	// server¿¡¼­ ¹ŞÀº data¸¦ db·Î
+	// serverì—ì„œ ë°›ì€ dataë¥¼ dbë¡œ
 	/**
 	 * saveDataToDB
-	 *  server¿¡¼­ ¹ŞÀº data¸¦ db·ÎÀúÀåÇÑ´Ù
+	 *  serverì—ì„œ ë°›ì€ dataë¥¼ dbë¡œì €ì¥í•œë‹¤
 	 *
 	 * @param
 	 * @param
 	 * @return
 	 */
-	public void saveDataToDB(){			//	db Å×ÀÌºíÀ» ÃÊ±âÈ­ ÈÄ »õ µ¥ÀÌÅÍ¸¦ ³Ö½À´Ï´Ù.	  // oncreate()¿¡¼­ Å×ÀÌºí °Ë»çÇØ¼­ ¸¸µé¾ú±â ¶§¹®¿¡ ÃÖÃÊ µîÀº °ÆÁ¤ÇÏÁö ¾Ê´Â´Ù.
+	public void saveDataToDB(){			//	db í…Œì´ë¸”ì„ ì´ˆê¸°í™” í›„ ìƒˆ ë°ì´í„°ë¥¼ ë„£ìŠµë‹ˆë‹¤.	  // oncreate()ì—ì„œ í…Œì´ë¸” ê²€ì‚¬í•´ì„œ ë§Œë“¤ì—ˆê¸° ë•Œë¬¸ì— ìµœì´ˆ ë“±ì€ ê±±ì •í•˜ì§€ ì•ŠëŠ”ë‹¤.
 		Log.i(TAG, "saveDataToDB");
 		try{
 			if(db==null){
@@ -222,7 +222,7 @@ public class MyMileagePageActivity extends Activity {
 			int entrySize = dbInEntries.size();
 			if(entrySize>0){
 				for(int i =0; i<entrySize; i++){
-					initialValues = new ContentValues(); 			// µ¥ÀÌÅÍ ³Ö¾îº»°Å. »ç¿ë ¾ÈÇÔ. ¾øÀ¸¸é ¾ø´Â°Å¶ó...  --> µ¥ÀÌÅÍ ³ÖÀ»¶§
+					initialValues = new ContentValues(); 			// ë°ì´í„° ë„£ì–´ë³¸ê±°. ì‚¬ìš© ì•ˆí•¨. ì—†ìœ¼ë©´ ì—†ëŠ”ê±°ë¼...  --> ë°ì´í„° ë„£ì„ë•Œ
 					initialValues.put("idCheckMileageMileages", dbInEntries.get(i).getIdCheckMileageMileages()); 
 					initialValues.put("mileage", dbInEntries.get(i).getMileage()); 
 					initialValues.put("modifyDate", dbInEntries.get(i).getModifyDate()); 
@@ -232,7 +232,7 @@ public class MyMileagePageActivity extends Activity {
 					initialValues.put("introduction", dbInEntries.get(i).getIntroduction()); 
 					initialValues.put("workPhoneNumber", dbInEntries.get(i).getWorkPhoneNumber()); 
 					initialValues.put("profileThumbnailImageUrl", dbInEntries.get(i).getMerchantImg()); 		
-					// img ´Â ¹®ÀÚ¿­·Î ¹Ù²ã¼­ ³Ö´Â´Ù. ²¨³¾¶© ¿ª¼øÀÓ.			 // BMP -> ¹®ÀÚ¿­ 		
+					// img ëŠ” ë¬¸ìì—´ë¡œ ë°”ê¿”ì„œ ë„£ëŠ”ë‹¤. êº¼ë‚¼ë• ì—­ìˆœì„.			 // BMP -> ë¬¸ìì—´ 		
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();   
 					String bitmapToStr = "";
 					dbInEntries.get(i).getMerchantImage().compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object    
@@ -248,10 +248,10 @@ public class MyMileagePageActivity extends Activity {
 	}
 
 
-	// db ¿¡ ÀúÀåµÈ µ¥ÀÌÅÍ¸¦ È­¸é¿¡
+	// db ì— ì €ì¥ëœ ë°ì´í„°ë¥¼ í™”ë©´ì—
 	/**
 	 * getDBData
-	 *  db ¿¡ ÀúÀåµÈ µ¥ÀÌÅÍ¸¦ È­¸é¿¡º¸¿©ÁÖ±â À§ÇØ ²¨³½´Ù
+	 *  db ì— ì €ì¥ëœ ë°ì´í„°ë¥¼ í™”ë©´ì—ë³´ì—¬ì£¼ê¸° ìœ„í•´ êº¼ë‚¸ë‹¤
 	 *
 	 * @param
 	 * @param
@@ -275,15 +275,15 @@ public class MyMileagePageActivity extends Activity {
 		String tmp_bm_str = "";
 		Bitmap tmp_bm = null;
 		try{
-			// Á¶È¸
+			// ì¡°íšŒ
 			Cursor c = db.rawQuery( Q_GET_LIST, null );
 			if(c.getCount()==0){
 				Log.i(TAG, "saved mileage data NotExist");
 			}else{
-				Log.i(TAG, "saved mileage data Exist");				// µ¥ÀÌÅÍ ÀÖÀ¸¸é ²¨³»¼­ »ç¿ëÇÔ.			// µ¥ÀÌÅÍ ²¨³¾¶§
-				dbOutEntries = new ArrayList<CheckMileageMileage>(c.getCount());		// °³¼ö¸¸Å­ »ı¼ºÇÏ±â.
-				c.moveToFirst();                                 // Ä¿¼­¸¦ Ã¹¶óÀÎÀ¸·Î ¿Å±è
-				while(c.isAfterLast()== false ){                   // ¸¶Áö¸· ¶óÀÎÀÌ µÉ¶§±îÁö 1¾¿ Áõ°¡ÇÏ¸é¼­ º»´Ù
+				Log.i(TAG, "saved mileage data Exist");				// ë°ì´í„° ìˆìœ¼ë©´ êº¼ë‚´ì„œ ì‚¬ìš©í•¨.			// ë°ì´í„° êº¼ë‚¼ë•Œ
+				dbOutEntries = new ArrayList<CheckMileageMileage>(c.getCount());		// ê°œìˆ˜ë§Œí¼ ìƒì„±í•˜ê¸°.
+				c.moveToFirst();                                 // ì»¤ì„œë¥¼ ì²«ë¼ì¸ìœ¼ë¡œ ì˜®ê¹€
+				while(c.isAfterLast()== false ){                   // ë§ˆì§€ë§‰ ë¼ì¸ì´ ë ë•Œê¹Œì§€ 1ì”© ì¦ê°€í•˜ë©´ì„œ ë³¸ë‹¤
 					tmp_idCheckMileageMileages = c.getString(1);	
 					tmp_mileage = c.getString(2);	
 					tmp_modifyDate = c.getString(3);	
@@ -312,21 +312,21 @@ public class MyMileagePageActivity extends Activity {
 			}
 			c.close();
 			db.close();
-			entriesFn = dbOutEntries;						//  *** ²¨³½ µ¥ÀÌÅÍ¸¦ °á°ú µ¥ÀÌÅÍ¿¡ ¼¼ÆÃ 
+			entriesFn = dbOutEntries;						//  *** êº¼ë‚¸ ë°ì´í„°ë¥¼ ê²°ê³¼ ë°ì´í„°ì— ì„¸íŒ… 
 		}catch(Exception e){e.printStackTrace();}
-		showInfo();									//  *** °á°ú µ¥ÀÌÅÍ¸¦ È­¸é¿¡ º¸¿©ÁØ´Ù.		 µ¥ÀÌÅÍ ÀÖ´ÂÁö ¿©ºÎ´Â °á°ú Ã³¸®¿¡¼­ ÇÔ²²..
+		showInfo();									//  *** ê²°ê³¼ ë°ì´í„°ë¥¼ í™”ë©´ì— ë³´ì—¬ì¤€ë‹¤.		 ë°ì´í„° ìˆëŠ”ì§€ ì—¬ë¶€ëŠ” ê²°ê³¼ ì²˜ë¦¬ì—ì„œ í•¨ê»˜..
 	}
 	////---------------------SQLite ----------------------////
 
 
-	// ÇÚµé·¯
+	// í•¸ë“¤ëŸ¬
 	Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg){
 			Bundle b = msg.getData();
 			try{
-				if(b.getInt("showYN")==1){		// ¹Ş¾Æ¿Â ¸¶ÀÏ¸®Áö °á°ú¸¦ È­¸é¿¡ »Ñ·ÁÁØ´Ù.
-					// ÃÖÁ¾ °á°ú ¹è¿­Àº entriesFn ¿¡ ÀúÀåµÇ¾î ÀÖ´Ù.. 
+				if(b.getInt("showYN")==1){		// ë°›ì•„ì˜¨ ë§ˆì¼ë¦¬ì§€ ê²°ê³¼ë¥¼ í™”ë©´ì— ë¿Œë ¤ì¤€ë‹¤.
+					// ìµœì¢… ê²°ê³¼ ë°°ì—´ì€ entriesFn ì— ì €ì¥ë˜ì–´ ìˆë‹¤.. 
 					if(entriesFn!=null && entriesFn.size()>0){
 						setListing();
 					}else{
@@ -340,13 +340,13 @@ public class MyMileagePageActivity extends Activity {
 					isRunning = 0;
 				}
 				if(b.getInt("order")==1){
-					// ·¯´×¹Ù ½ÇÇà
+					// ëŸ¬ë‹ë°” ì‹¤í–‰
 					if(pb1==null){
 						pb1=(ProgressBar) findViewById(R.id.ProgressBar01);
 					}
 					pb1.setVisibility(View.VISIBLE);
 				}else if(b.getInt("order")==2){
-					// ·¯´×¹Ù Á¾·á
+					// ëŸ¬ë‹ë°” ì¢…ë£Œ
 					if(pb1==null){
 						pb1=(ProgressBar) findViewById(R.id.ProgressBar01);
 					}
@@ -368,7 +368,7 @@ public class MyMileagePageActivity extends Activity {
 
 	/**
 	 * returnThis
-	 *  ÄÁÅÃ½ºÆ®¸¦ ¸®ÅÏÇÑ´Ù
+	 *  ì»¨íƒìŠ¤íŠ¸ë¥¼ ë¦¬í„´í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -377,10 +377,10 @@ public class MyMileagePageActivity extends Activity {
 	public Context returnThis(){
 		return this;
 	}
-	// ÁøÇà¹Ù º¸ÀÓ / ¼û±è
+	// ì§„í–‰ë°” ë³´ì„ / ìˆ¨ê¹€
 	/**
 	 * showPb
-	 *  Áß¾Ó ÇÁ·Î±×·¡½º¹Ù °¡½ÃÈ­ÇÑ´Ù
+	 *  ì¤‘ì•™ í”„ë¡œê·¸ë˜ìŠ¤ë°” ê°€ì‹œí™”í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -401,7 +401,7 @@ public class MyMileagePageActivity extends Activity {
 	}
 	/**
 	 * hidePb
-	 *  Áß¾Ó ÇÁ·Î±×·¡½º¹Ù ºñ°¡½ÃÈ­ÇÑ´Ù
+	 *  ì¤‘ì•™ í”„ë¡œê·¸ë˜ìŠ¤ë°” ë¹„ê°€ì‹œí™”í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -422,13 +422,13 @@ public class MyMileagePageActivity extends Activity {
 	}
 	/**
 	 * showMSG
-	 *  È­¸é¿¡ error Åä½ºÆ® ¶ç¿î´Ù
+	 *  í™”ë©´ì— error í† ìŠ¤íŠ¸ ë„ìš´ë‹¤
 	 *
 	 * @param
 	 * @param
 	 * @return
 	 */
-	public void showMSG(){			// È­¸é¿¡ Åä½ºÆ® ¶ç¿ò..
+	public void showMSG(){			// í™”ë©´ì— í† ìŠ¤íŠ¸ ë„ì›€..
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -442,10 +442,10 @@ public class MyMileagePageActivity extends Activity {
 		).start();
 	}
 
-	// ¸®½ºÆ® º¸¿©ÁÖ°í Å¬¸¯ ÀÌº¥Æ® µî·Ï (°¡¸ÍÁ¡ »ó¼¼ º¸±â)
+	// ë¦¬ìŠ¤íŠ¸ ë³´ì—¬ì£¼ê³  í´ë¦­ ì´ë²¤íŠ¸ ë“±ë¡ (ê°€ë§¹ì  ìƒì„¸ ë³´ê¸°)
 	/**
 	 * setListing
-	 *  ¸®½ºÆ® º¸¿©ÁÖ°í Å¬¸¯ ÀÌº¥Æ® µî·Ï (°¡¸ÍÁ¡ »ó¼¼ º¸±â)ÇÑ´Ù
+	 *  ë¦¬ìŠ¤íŠ¸ ë³´ì—¬ì£¼ê³  í´ë¦­ ì´ë²¤íŠ¸ ë“±ë¡ (ê°€ë§¹ì  ìƒì„¸ ë³´ê¸°)í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -458,10 +458,10 @@ public class MyMileagePageActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
 				Intent intent = new Intent(MyMileagePageActivity.this, MemberStoreInfoPage.class);
-				intent.putExtra("checkMileageMerchantsMerchantID", entriesFn.get(position).getCheckMileageMerchantsMerchantID());		// °¡¸ÍÁ¡ ¾ÆÀÌµğ
-				intent.putExtra("idCheckMileageMileages", entriesFn.get(position).getIdCheckMileageMileages());		// °íÀ¯ ½Äº° ¹øÈ£. (»ó¼¼º¸±â Á¶È¸¿ëµµ)
-				intent.putExtra("myMileage", entriesFn.get(position).getMileage());									// ³» ¸¶ÀÏ¸®Áö    // °¡¸ÍÁ¡¿¡ ´ëÇÑ ³» ¸¶ÀÏ¸®Áö
-				//				// img ´Â ¹®ÀÚ¿­·Î ¹Ù²ã¼­ ³Ö´Â´Ù. ²¨³¾¶© ¿ª¼øÀÓ.			 // BMP -> ¹®ÀÚ¿­ 		
+				intent.putExtra("checkMileageMerchantsMerchantID", entriesFn.get(position).getCheckMileageMerchantsMerchantID());		// ê°€ë§¹ì  ì•„ì´ë””
+				intent.putExtra("idCheckMileageMileages", entriesFn.get(position).getIdCheckMileageMileages());		// ê³ ìœ  ì‹ë³„ ë²ˆí˜¸. (ìƒì„¸ë³´ê¸° ì¡°íšŒìš©ë„)
+				intent.putExtra("myMileage", entriesFn.get(position).getMileage());									// ë‚´ ë§ˆì¼ë¦¬ì§€    // ê°€ë§¹ì ì— ëŒ€í•œ ë‚´ ë§ˆì¼ë¦¬ì§€
+				//				// img ëŠ” ë¬¸ìì—´ë¡œ ë°”ê¿”ì„œ ë„£ëŠ”ë‹¤. êº¼ë‚¼ë• ì—­ìˆœì„.			 // BMP -> ë¬¸ìì—´ 		
 				//				ByteArrayOutputStream baos = new ByteArrayOutputStream();   
 				//				String bitmapToStr = "";
 				//				entriesFn.get(position).getMerchantImage().compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object    
@@ -481,12 +481,12 @@ public class MyMileagePageActivity extends Activity {
 
 		pb1 = (ProgressBar) findViewById(R.id.ProgressBar01);
 
-		// DB ¾µ°Å´Ï±î ÃÊ±âÈ­ ÇØÁØ´Ù.
+		// DB ì“¸ê±°ë‹ˆê¹Œ ì´ˆê¸°í™” í•´ì¤€ë‹¤.
 		initDB();
 
-		myQRcode = MyQRPageActivity.qrCode;			// ³» QR ÄÚµå. 
+		myQRcode = MyQRPageActivity.qrCode;			// ë‚´ QR ì½”ë“œ. 
 
-		// Å©±â ÃøÁ¤
+		// í¬ê¸° ì¸¡ì •
 		float screenWidth = this.getResources().getDisplayMetrics().widthPixels;
 		Log.i(TAG, "screenWidth : " + screenWidth);
 		float screenHeight = this.getResources().getDisplayMetrics().heightPixels;
@@ -503,10 +503,10 @@ public class MyMileagePageActivity extends Activity {
 
 		searched = false;		 
 
-		if(isRunning<1){								// ´ÙÁß ½ÇÇà ¹æÁö. 
+		if(isRunning<1){								// ë‹¤ì¤‘ ì‹¤í–‰ ë°©ì§€. 
 			isRunning = 1;
 			myQRcode = MyQRPageActivity.qrCode;
-			new backgroundGetMyMileageList().execute();	// ºñµ¿±â. ¼­¹ö·ÎºÎÅÍ ¸¶ÀÏ¸®Áö ¸®½ºÆ® Á¶È¸
+			new backgroundGetMyMileageList().execute();	// ë¹„ë™ê¸°. ì„œë²„ë¡œë¶€í„° ë§ˆì¼ë¦¬ì§€ ë¦¬ìŠ¤íŠ¸ ì¡°íšŒ
 		}else{
 			Log.w(TAG, "already running..");
 		}
@@ -514,10 +514,10 @@ public class MyMileagePageActivity extends Activity {
 
 
 
-	// ºñµ¿±â·Î ¸¶ÀÏ¸®Áö ¸ñ·Ï °¡Á®¿À´Â ÇÔ¼ö È£Ãâ.
+	// ë¹„ë™ê¸°ë¡œ ë§ˆì¼ë¦¬ì§€ ëª©ë¡ ê°€ì ¸ì˜¤ëŠ” í•¨ìˆ˜ í˜¸ì¶œ.
 	/**
 	 * backgroundGetMyMileageList
-	 *  ºñµ¿±â·Î ¸¶ÀÏ¸®Áö ¸ñ·Ï °¡Á®¿À´Â ÇÔ¼ö È£ÃâÇÑ´Ù
+	 *  ë¹„ë™ê¸°ë¡œ ë§ˆì¼ë¦¬ì§€ ëª©ë¡ ê°€ì ¸ì˜¤ëŠ” í•¨ìˆ˜ í˜¸ì¶œí•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -545,17 +545,17 @@ public class MyMileagePageActivity extends Activity {
 
 
 	/*
-	 * ¼­¹ö¿Í Åë½ÅÇÏ¿© ³» ¸¶ÀÏ¸®Áö ¸ñ·ÏÀ» °¡Á®¿Â´Ù.
-	 * ±× °á°ú¸¦ List<CheckMileageMileage> Object ·Î ¹İÈ¯ ÇÑ´Ù.
+	 * ì„œë²„ì™€ í†µì‹ í•˜ì—¬ ë‚´ ë§ˆì¼ë¦¬ì§€ ëª©ë¡ì„ ê°€ì ¸ì˜¨ë‹¤.
+	 * ê·¸ ê²°ê³¼ë¥¼ List<CheckMileageMileage> Object ë¡œ ë°˜í™˜ í•œë‹¤.
 	 * 
-	 * º¸³»´Â Á¤º¸ : ¾×Æ¼º£ÀÌÆ®Y, ³»QRÄÚµå ½ºÆ®¸µ
+	 * ë³´ë‚´ëŠ” ì •ë³´ : ì•¡í‹°ë² ì´íŠ¸Y, ë‚´QRì½”ë“œ ìŠ¤íŠ¸ë§
 	 *   	checkMileageMileage :: activateYn, checkMileageMembersCheckMileageId
-	 *  ¹Ş´Â Á¤º¸ : °¡¸ÍÁ¡ µî·Ï ÀÌ¹ÌÁö , °¡¸ÍÁ¡ ÀÌ¸§, ÇØ´ç °¡¸ÍÁ¡¿¡ ´ëÇÑ ³» ¸¶ÀÏ¸®Áö, ¸¶Áö¸· »ç¿ë ÀÏ½Ã, 
-	 *  ÅÍÄ¡ÇÏ¸é °¡¸ÍÁ¡ »ó¼¼Á¤º¸·Î °¡¾ßÇÏ±â ¶§¹®¿¡ Å°µµ ÇÊ¿äÇÏ´Ù..
+	 *  ë°›ëŠ” ì •ë³´ : ê°€ë§¹ì  ë“±ë¡ ì´ë¯¸ì§€ , ê°€ë§¹ì  ì´ë¦„, í•´ë‹¹ ê°€ë§¹ì ì— ëŒ€í•œ ë‚´ ë§ˆì¼ë¦¬ì§€, ë§ˆì§€ë§‰ ì‚¬ìš© ì¼ì‹œ, 
+	 *  í„°ì¹˜í•˜ë©´ ê°€ë§¹ì  ìƒì„¸ì •ë³´ë¡œ ê°€ì•¼í•˜ê¸° ë•Œë¬¸ì— í‚¤ë„ í•„ìš”í•˜ë‹¤..
 	 *  
 	 * -----------------------------------
-	 * |[ÀÌ¹ÌÁö »ó]  [°¡¸ÍÁ¡ ÀÌ¸§]  [³» Æ÷ÀÎÆ®] |
-	 * |[ÀÌ¹ÌÁö ÇÏ]	[ °¡ ¸Í Á¡ ÀÌ ¿ë ½Ã °¢ ]    |  Àü¹ø. 
+	 * |[ì´ë¯¸ì§€ ìƒ]  [ê°€ë§¹ì  ì´ë¦„]  [ë‚´ í¬ì¸íŠ¸] |
+	 * |[ì´ë¯¸ì§€ í•˜]	[ ê°€ ë§¹ ì  ì´ ìš© ì‹œ ê° ]    |  ì „ë²ˆ. 
 	 * ------------------------------------
 	 */
 	//	public void getMyMileageList_pre(){
@@ -586,7 +586,7 @@ public class MyMileagePageActivity extends Activity {
 	//	}
 	/**
 	 * getMyMileageList
-	 * ¼­¹ö¿Í Åë½ÅÇÏ¿© ³» ¸¶ÀÏ¸®Áö ¸ñ·ÏÀ» °¡Á®¿Â´Ù.
+	 * ì„œë²„ì™€ í†µì‹ í•˜ì—¬ ë‚´ ë§ˆì¼ë¦¬ì§€ ëª©ë¡ì„ ê°€ì ¸ì˜¨ë‹¤.
 	 *
 	 * @param
 	 * @param
@@ -605,7 +605,7 @@ public class MyMileagePageActivity extends Activity {
 						public void run(){
 							JSONObject obj = new JSONObject();
 							try{
-								// ÀÚ½ÅÀÇ ¾ÆÀÌµğ¸¦ ³Ö¾î¼­ Á¶È¸
+								// ìì‹ ì˜ ì•„ì´ë””ë¥¼ ë„£ì–´ì„œ ì¡°íšŒ
 								obj.put("activateYn", "Y");
 								obj.put("checkMileageMembersCheckMileageId", myQRcode);
 								Log.i(TAG, "myQRcode::"+myQRcode);
@@ -629,15 +629,15 @@ public class MyMileagePageActivity extends Activity {
 								os2.flush();
 								Thread.sleep(200);
 								//								System.out.println("postUrl      : " + postUrl2);
-								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : Á¤»ó
+								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : ì •ìƒ
 								responseCode = connection2.getResponseCode();
 								InputStream in =  connection2.getInputStream();
 								//								os2.close();
-								// Á¶È¸ÇÑ °á°ú¸¦ Ã³¸®.
+								// ì¡°íšŒí•œ ê²°ê³¼ë¥¼ ì²˜ë¦¬.
 								theData1(in);
 								//								connection2.disconnect();
 							}catch(Exception e){ 
-								// ´Ù½Ã
+								// ë‹¤ì‹œ
 								e.printStackTrace();
 								//								connection2.disconnect();
 								//								if(reTry>0){
@@ -654,27 +654,27 @@ public class MyMileagePageActivity extends Activity {
 								//									reTry = 1;
 								hidePb();
 								isRunning = 0;
-								getDBData();						// 5È¸ Àç½Ãµµ¿¡µµ ½ÇÆĞÇÏ¸é db¿¡¼­ ²¨³»¼­ º¸¿©ÁØ´Ù.
+								getDBData();						// 5íšŒ ì¬ì‹œë„ì—ë„ ì‹¤íŒ¨í•˜ë©´ dbì—ì„œ êº¼ë‚´ì„œ ë³´ì—¬ì¤€ë‹¤.
 								//								}
 							}
 							//							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-							//							if(CommonUtils.usingNetwork < 0){	// 0 º¸´Ù ÀÛÁö´Â ¾Ê°Ô
+							//							if(CommonUtils.usingNetwork < 0){	// 0 ë³´ë‹¤ ì‘ì§€ëŠ” ì•Šê²Œ
 							//								CommonUtils.usingNetwork = 0;
 							//							}
 						}
 					}
 			).start();
 		}else{
-			isRunning = 0;		// ÀÛ¾÷ÁßÀÎ Ä«¿îÆÃ-1
+			isRunning = 0;		// ì‘ì—…ì¤‘ì¸ ì¹´ìš´íŒ…-1
 		}
 	}
 
 	/*
-	 * ÀÏ´Ü ¸¶ÀÏ¸®Áö ¸ñ·Ï °á°ú¸¦ ¹ŞÀ½. (°¡¸ÍÁ¡ Á¤º¸´Â ¾øÀÌ ¾ÆÀÌµğ¸¸ µé¾îÀÖ´Â »óÅÂ) -- 1Â÷ °Ë»ö °á°ú Ã³¸®ºÎ
+	 * ì¼ë‹¨ ë§ˆì¼ë¦¬ì§€ ëª©ë¡ ê²°ê³¼ë¥¼ ë°›ìŒ. (ê°€ë§¹ì  ì •ë³´ëŠ” ì—†ì´ ì•„ì´ë””ë§Œ ë“¤ì–´ìˆëŠ” ìƒíƒœ) -- 1ì°¨ ê²€ìƒ‰ ê²°ê³¼ ì²˜ë¦¬ë¶€
 	 */
 	/**
 	 * theData1
-	 *  ¸¶ÀÏ¸®Áö ¸ñ·ÏÀ» °¡Á®¿Â°ÍÀ» Ã³¸®ÇÑ´Ù
+	 *  ë§ˆì¼ë¦¬ì§€ ëª©ë¡ì„ ê°€ì ¸ì˜¨ê²ƒì„ ì²˜ë¦¬í•œë‹¤
 	 *
 	 * @param in
 	 * @param
@@ -693,7 +693,7 @@ public class MyMileagePageActivity extends Activity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//		Log.d(TAG,"¼ö½Å::"+builder.toString());
+		//		Log.d(TAG,"ìˆ˜ì‹ ::"+builder.toString());
 		String tempstr = builder.toString();		
 
 		JSONArray jsonArray2 = null;
@@ -723,7 +723,7 @@ public class MyMileagePageActivity extends Activity {
 						doneCnt++;
 						JSONObject jsonObj = jsonArray2.getJSONObject(i).getJSONObject("checkMileageMileage");
 						//  idCheckMileageMileages,  mileage,  modifyDate,  checkMileageMembersCheckMileageID,  checkMileageMerchantsMerchantID
-						// °´Ã¼ ¸¸µé°í °ª ¹ŞÀº°Å ³Ö¾î¼­ ÀúÀå..  ÀúÀå°ª: ÀÎµ¦½º¹øÈ£, ¼öÁ¤³¯Â¥, ¾ÆÀÌµğ, °¡¸ÍÁ¡¾ÆÀÌµğ.
+						// ê°ì²´ ë§Œë“¤ê³  ê°’ ë°›ì€ê±° ë„£ì–´ì„œ ì €ì¥..  ì €ì¥ê°’: ì¸ë±ìŠ¤ë²ˆí˜¸, ìˆ˜ì •ë‚ ì§œ, ì•„ì´ë””, ê°€ë§¹ì ì•„ì´ë””.
 
 						tmp_idCheckMileageMileages = jsonObj.getString("idCheckMileageMileages");
 						try{
@@ -739,11 +739,11 @@ public class MyMileagePageActivity extends Activity {
 								//								tmp_shortDate = tmp_modifyDate.substring(0, 10);
 								//								tmp_modifyDate = tmp_shortDate;
 								//								Log.d(TAG,"tmp_modifyDate.substring(0, 4):"+tmp_modifyDate.substring(0, 4)+"//tmp_modifyDate.substring(5, 7):"+tmp_modifyDate.substring(5, 7)+"//tmp_modifyDate.substring(8, 10):"+tmp_modifyDate.substring(8, 10));
-								tmpstr2 = tmp_modifyDate.substring(0, 4)+ getString(R.string.year) 		// ³â
-								+ tmp_modifyDate.substring(5, 7)+ getString(R.string.month) 					// ¿ù
-								+ tmp_modifyDate.substring(8, 10)+ getString(R.string.day) 					// ÀÏ
-								//								+ tmp_modifyDate.substring(0, 4)+ getString(R.string.year)					// ½Ã
-								//								+ tmp_modifyDate.substring(0, 4)+ getString(R.string.year)					// ºĞ
+								tmpstr2 = tmp_modifyDate.substring(0, 4)+ getString(R.string.year) 		// ë…„
+								+ tmp_modifyDate.substring(5, 7)+ getString(R.string.month) 					// ì›”
+								+ tmp_modifyDate.substring(8, 10)+ getString(R.string.day) 					// ì¼
+								//								+ tmp_modifyDate.substring(0, 4)+ getString(R.string.year)					// ì‹œ
+								//								+ tmp_modifyDate.substring(0, 4)+ getString(R.string.year)					// ë¶„
 								;
 								tmp_modifyDate = tmpstr2;
 							}
@@ -781,13 +781,13 @@ public class MyMileagePageActivity extends Activity {
 						}catch(Exception e){
 							tmp_profileThumbnailImageUrl = "";
 						}
-						// tmp_profileThumbnailImageUrl ÀÖÀ»¶§.
+						// tmp_profileThumbnailImageUrl ìˆì„ë•Œ.
 						if(tmp_profileThumbnailImageUrl!=null && tmp_profileThumbnailImageUrl.length()>0){
-							if(tmp_profileThumbnailImageUrl.contains("http")){		// url Æ÷ÇÔÇÑ °æ¿ì
+							if(tmp_profileThumbnailImageUrl.contains("http")){		// url í¬í•¨í•œ ê²½ìš°
 								try{
 									bm = LoadImage(tmp_profileThumbnailImageUrl);				 
 								}catch(Exception e3){}
-							}else{		// url Æ÷ÇÔÇÏÁö ¾ÊÀ¸¸é ºÙ¿©ÁØ´Ù.
+							}else{		// url í¬í•¨í•˜ì§€ ì•Šìœ¼ë©´ ë¶™ì—¬ì¤€ë‹¤.
 								try{
 									bm = LoadImage(imgthumbDomain+tmp_profileThumbnailImageUrl);				 
 								}catch(Exception e3){
@@ -798,7 +798,7 @@ public class MyMileagePageActivity extends Activity {
 							BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.empty_60_60);
 							bm = dw.getBitmap();
 						}
-						if(bm==null){		//  ¾øÀ»¶§.. 
+						if(bm==null){		//  ì—†ì„ë•Œ.. 
 							//							dbSaveEnable = false;
 							BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.empty_60_60);
 							bm = dw.getBitmap();
@@ -814,7 +814,7 @@ public class MyMileagePageActivity extends Activity {
 								tmp_profileThumbnailImageUrl,
 								//								bm2
 								bm
-								// ±× ¿Ü ¼¶³×ÀÏ ÀÌ¹ÌÁö, °¡¸ÍÁ¡ ÀÌ¸§
+								// ê·¸ ì™¸ ì„¬ë„¤ì¼ ì´ë¯¸ì§€, ê°€ë§¹ì  ì´ë¦„
 						));
 					}
 				}
@@ -824,28 +824,28 @@ public class MyMileagePageActivity extends Activity {
 				e.printStackTrace();
 			}finally{
 				dbInEntries = entries; 
-				//				reTry = 1;				// Àç½Ãµµ È½¼ö º¹±¸
+				//				reTry = 1;				// ì¬ì‹œë„ íšŸìˆ˜ ë³µêµ¬
 				searched = true;
-				// db ¿¡ µ¥ÀÌÅÍ¸¦ ³Ö´Â´Ù.
+				// db ì— ë°ì´í„°ë¥¼ ë„£ëŠ”ë‹¤.
 				try{
-					if(dbSaveEnable){		// ÀÌ¹ÌÁö±îÁö ¼º°øÀûÀ¸·Î °¡Á®¿Â °æ¿ì.
+					if(dbSaveEnable){		// ì´ë¯¸ì§€ê¹Œì§€ ì„±ê³µì ìœ¼ë¡œ ê°€ì ¸ì˜¨ ê²½ìš°.
 						saveDataToDB();
 					}else{
-						alertToUser();		// ÀÌ¹ÌÁö °¡Á®¿À´Âµ¥ ½ÇÆĞÇÑ °æ¿ì.
-						// ¾î¤eµç Ã³¸®°¡ ³¡³ª¸é (°øÅë) -  db¸¦ °Ë»çÇÏ¿© µ¥ÀÌÅÍ°¡ ÀÖÀ¸¸é º¸¿©ÁÖ°í  entriesFn = dbOutEntries
-					}	// Ã³¸®°¡ ³¡³ª¸é °øÅëÀ¸·Î ÇØ¾ßÇÒ showInfo(); (±×Àü¿¡ entriesFn ¼³Á¤ ÇÑ´Ù)
+						alertToUser();		// ì´ë¯¸ì§€ ê°€ì ¸ì˜¤ëŠ”ë° ì‹¤íŒ¨í•œ ê²½ìš°.
+						// ì–´ì¨ë“  ì²˜ë¦¬ê°€ ëë‚˜ë©´ (ê³µí†µ) -  dbë¥¼ ê²€ì‚¬í•˜ì—¬ ë°ì´í„°ê°€ ìˆìœ¼ë©´ ë³´ì—¬ì£¼ê³   entriesFn = dbOutEntries
+					}	// ì²˜ë¦¬ê°€ ëë‚˜ë©´ ê³µí†µìœ¼ë¡œ í•´ì•¼í•  showInfo(); (ê·¸ì „ì— entriesFn ì„¤ì • í•œë‹¤)
 				}catch(Exception e){}
 				finally{
-					getDBData();			//db ¿¡ ÀÕÀ¸¸é ±×°Å ¾²°í ¾øÀ¸¸é ¾ø´Ù°í ¾Ë¸². * ¿¡·¯³ª¸é ÀÌÀü µ¥ÀÌÅÍ¸¦ º¸¿©ÁÖ±â ¶§¹®¿¡ db¿¡ ÀÖ´Â Á¤º¸°¡ Á¤È®ÇÏ´Ù°í º¼¼ö´Â ¾øÀ½.. 
+					getDBData();			//db ì— ì‡ìœ¼ë©´ ê·¸ê±° ì“°ê³  ì—†ìœ¼ë©´ ì—†ë‹¤ê³  ì•Œë¦¼. * ì—ëŸ¬ë‚˜ë©´ ì´ì „ ë°ì´í„°ë¥¼ ë³´ì—¬ì£¼ê¸° ë•Œë¬¸ì— dbì— ìˆëŠ” ì •ë³´ê°€ ì •í™•í•˜ë‹¤ê³  ë³¼ìˆ˜ëŠ” ì—†ìŒ.. 
 				}
 			}
-		}else{			// ¿äÃ» ½ÇÆĞ½Ã	 Åä½ºÆ® ¶ç¿ì°í È­¸é À¯Áö. -- Åä½ºÆ®´Â ¿¡·¯³²
+		}else{			// ìš”ì²­ ì‹¤íŒ¨ì‹œ	 í† ìŠ¤íŠ¸ ë„ìš°ê³  í™”ë©´ ìœ ì§€. -- í† ìŠ¤íŠ¸ëŠ” ì—ëŸ¬ë‚¨
 			showMSG();
 			//			Toast.makeText(MyMileagePageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 		}
 	}
 
-	public void alertToUser(){				// 	data Á¶È¸°¡ Àß ¾ÈµÆ¾î¿ä. // º°µµ ¾Ë¸² ¾øÀÌ ·Î±×¸¸ Âï´Â´Ù.
+	public void alertToUser(){				// 	data ì¡°íšŒê°€ ì˜ ì•ˆëì–´ìš”. // ë³„ë„ ì•Œë¦¼ ì—†ì´ ë¡œê·¸ë§Œ ì°ëŠ”ë‹¤.
 		Log.d(TAG,"Get Data from Server -> Error Occured..");
 	}
 
@@ -853,10 +853,10 @@ public class MyMileagePageActivity extends Activity {
 
 
 
-	// entries3 ¸¦ Àü¿ª¿¡ ÀúÀåÈÄ ½º·¹µå ÀÌ¿ëÇÏ¿© µ¹¸°´Ù. È­¸é¿¡ º¸¿©ÁØ´Ù.		-- 2Â÷ Ã³¸®.
+	// entries3 ë¥¼ ì „ì—­ì— ì €ì¥í›„ ìŠ¤ë ˆë“œ ì´ìš©í•˜ì—¬ ëŒë¦°ë‹¤. í™”ë©´ì— ë³´ì—¬ì¤€ë‹¤.		-- 2ì°¨ ì²˜ë¦¬.
 	/**
 	 * showInfo
-	 *  °á°ú µµ¸ŞÀÎÀ» È­¸é¿¡ »Ñ·ÁÁØ´Ù
+	 *  ê²°ê³¼ ë„ë©”ì¸ì„ í™”ë©´ì— ë¿Œë ¤ì¤€ë‹¤
 	 *
 	 * @param
 	 * @param
@@ -864,7 +864,7 @@ public class MyMileagePageActivity extends Activity {
 	 */
 	public void showInfo(){
 		hidePb();
-		//  °¡Á®¿Â µ¥ÀÌÅÍ È­¸é¿¡ º¸¿©ÁÖ±â.
+		//  ê°€ì ¸ì˜¨ ë°ì´í„° í™”ë©´ì— ë³´ì—¬ì£¼ê¸°.
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -878,10 +878,10 @@ public class MyMileagePageActivity extends Activity {
 		).start();
 	}
 
-	// °¡¸ÍÁ¡ ÀÌ¹ÌÁö URL ¿¡¼­ ÀÌ¹ÌÁö ¹Ş¾Æ¿Í¼­ µµ¸ŞÀÎ¿¡ ÀúÀåÇÏ´Â ºÎºĞ.
+	// ê°€ë§¹ì  ì´ë¯¸ì§€ URL ì—ì„œ ì´ë¯¸ì§€ ë°›ì•„ì™€ì„œ ë„ë©”ì¸ì— ì €ì¥í•˜ëŠ” ë¶€ë¶„.
 	/**
 	 * LoadImage
-	 *  °¡¸ÍÁ¡ ÀÌ¹ÌÁö URL ¿¡¼­ ÀÌ¹ÌÁö ¹Ş¾Æ¿Â ½ºÆ®¸²À» ºñÆ®¸ÊÀ¸·Î ÀúÀåÇÑ´Ù
+	 *  ê°€ë§¹ì  ì´ë¯¸ì§€ URL ì—ì„œ ì´ë¯¸ì§€ ë°›ì•„ì˜¨ ìŠ¤íŠ¸ë¦¼ì„ ë¹„íŠ¸ë§µìœ¼ë¡œ ì €ì¥í•œë‹¤
 	 *
 	 * @param $imagePath
 	 * @param
@@ -894,7 +894,7 @@ public class MyMileagePageActivity extends Activity {
 	}
 	/**
 	 * OpenHttpConnection
-	 *  °¡¸ÍÁ¡ ÀÌ¹ÌÁö URL ¿¡¼­ ÀÌ¹ÌÁö ¹Ş¾Æ¿Í¼­ ½ºÆ®¸²À¸·Î ÀúÀåÇÑ´Ù
+	 *  ê°€ë§¹ì  ì´ë¯¸ì§€ URL ì—ì„œ ì´ë¯¸ì§€ ë°›ì•„ì™€ì„œ ìŠ¤íŠ¸ë¦¼ìœ¼ë¡œ ì €ì¥í•œë‹¤
 	 *
 	 * @param $imagePath
 	 * @param
@@ -919,7 +919,7 @@ public class MyMileagePageActivity extends Activity {
 	}
 	/**
 	 * onResume
-	 *  ¸¶ÀÏ¸®Áö ¸®½ºÆ® Á¶È¸°¡ µÇÁö ¾Ê¾Ò´Ù¸é ¾×Æ¼ºñÆ¼ ¸®Áí½Ã ¸¶ÀÏ¸®Áö ¸®½ºÆ®¸¦ ÀçÁ¶È¸ÇÑ´Ù
+	 *  ë§ˆì¼ë¦¬ì§€ ë¦¬ìŠ¤íŠ¸ ì¡°íšŒê°€ ë˜ì§€ ì•Šì•˜ë‹¤ë©´ ì•¡í‹°ë¹„í‹° ë¦¬ì¥¼ì‹œ ë§ˆì¼ë¦¬ì§€ ë¦¬ìŠ¤íŠ¸ë¥¼ ì¬ì¡°íšŒí•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -953,12 +953,12 @@ public class MyMileagePageActivity extends Activity {
 
 
 	/*
-	 *  ´İ±â ¹öÆ° 2¹ø ´©¸£¸é Á¾·á µÊ.(non-Javadoc)
+	 *  ë‹«ê¸° ë²„íŠ¼ 2ë²ˆ ëˆ„ë¥´ë©´ ì¢…ë£Œ ë¨.(non-Javadoc)
 	 * @see android.app.Activity#onBackPressed()
 	 */
 	/**
 	 * onBackPressed
-	 *  ´İ±â ¹öÆ° 2¹ø ´©¸£¸é Á¾·áÇÑ´Ù
+	 *  ë‹«ê¸° ë²„íŠ¼ 2ë²ˆ ëˆ„ë¥´ë©´ ì¢…ë£Œí•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -970,8 +970,8 @@ public class MyMileagePageActivity extends Activity {
 		if(app_end == 1){
 			Log.w(TAG,"kill all");
 			mainActivity.finish();
-			dummyActivity.finish();		// ´õ¹Ìµµ Á¾·á
-			DummyActivity.count = 0;		// °³¼ö 0À¸·Î ÃÊ±âÈ­ ½ÃÄÑÁØ´Ù. ´Ù½Ã ½ÇÇàµÉ¼ö ÀÖµµ·Ï
+			dummyActivity.finish();		// ë”ë¯¸ë„ ì¢…ë£Œ
+			DummyActivity.count = 0;		// ê°œìˆ˜ 0ìœ¼ë¡œ ì´ˆê¸°í™” ì‹œì¼œì¤€ë‹¤. ë‹¤ì‹œ ì‹¤í–‰ë ìˆ˜ ìˆë„ë¡
 			finish();
 		}else{
 			app_end = 1;
@@ -990,24 +990,24 @@ public class MyMileagePageActivity extends Activity {
 	}
 
 
-	////////////////////////   ÇÏµå¿ş¾î ¸Ş´º ¹öÆ°.  ////////////////
+	////////////////////////   í•˜ë“œì›¨ì–´ ë©”ë‰´ ë²„íŠ¼.  ////////////////
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		String tmpstr = getString(R.string.refresh);
-		menu.add(Menu. NONE, Menu.FIRST+1, Menu.NONE, tmpstr );             // ½Å±Ôµî·Ï ¸Ş´º Ãß°¡.
+		menu.add(Menu. NONE, Menu.FIRST+1, Menu.NONE, tmpstr );             // ì‹ ê·œë“±ë¡ ë©”ë‰´ ì¶”ê°€.
 		//	          getMenuInflater().inflate(R.menu.activity_main, menu);
 		return (super .onCreateOptionsMenu(menu));
 	}
 
 
-	// ¿É¼Ç ¸Ş´º Æ¯Á¤ ¾ÆÀÌÅÛ Å¬¸¯½Ã ÇÊ¿äÇÑ ÀÏ Ã³¸®
+	// ì˜µì…˜ ë©”ë‰´ íŠ¹ì • ì•„ì´í…œ í´ë¦­ì‹œ í•„ìš”í•œ ì¼ ì²˜ë¦¬
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item){
 		return (itemCallback(item)|| super.onOptionsItemSelected(item));
 	}
 
-	// ¾ÆÀÌÅÛ ¾ÆÀÌµğ °ª ±âÁØ ÇÊ¿äÇÑ ÀÏ Ã³¸®
+	// ì•„ì´í…œ ì•„ì´ë”” ê°’ ê¸°ì¤€ í•„ìš”í•œ ì¼ ì²˜ë¦¬
 	public boolean itemCallback(MenuItem item){
 		switch(item.getItemId()){
 		case Menu. FIRST+1:
@@ -1027,12 +1027,12 @@ public class MyMileagePageActivity extends Activity {
 
 
 	/*
-	 * ³×Æ®¿öÅ© »óÅÂ °¨Áö
+	 * ë„¤íŠ¸ì›Œí¬ ìƒíƒœ ê°ì§€
 	 * 
 	 */
 	/**
 	 * CheckNetwork
-	 *  ³×Æ®¿öÅ© »óÅÂ °¨ÁöÇÑ´Ù
+	 *  ë„¤íŠ¸ì›Œí¬ ìƒíƒœ ê°ì§€í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -1065,7 +1065,7 @@ public class MyMileagePageActivity extends Activity {
 					}
 			).start();
 			hidePb();
-			getDBData();		// Åë½Å ¾ÈµÇ¸é db°Å º¸¿©ÁÖ±â·Î..
+			getDBData();		// í†µì‹  ì•ˆë˜ë©´ dbê±° ë³´ì—¬ì£¼ê¸°ë¡œ..
 			isRunning = 0;
 			connected = false;
 		}else{

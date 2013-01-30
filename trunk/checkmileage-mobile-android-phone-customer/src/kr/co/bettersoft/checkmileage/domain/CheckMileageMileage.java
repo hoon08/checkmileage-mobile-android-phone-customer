@@ -1,32 +1,32 @@
 package kr.co.bettersoft.checkmileage.domain;
 
 /*
- * °¡¸ÍÁ¡ Á¤º¸, ÇØ´ç °¡¸ÍÁ¡¿¡ ´ëÇÑ ¸¶ÀÏ¸®Áö°¡ ÀÖÀ¸¹Ç·Î ³» ¸¶ÀÏ¸®Áö ¸ñ·Ï¿¡ »ç¿ëµÈ´Ù.
+ * ê°€ë§¹ì  ì •ë³´, í•´ë‹¹ ê°€ë§¹ì ì— ëŒ€í•œ ë§ˆì¼ë¦¬ì§€ê°€ ìˆìœ¼ë¯€ë¡œ ë‚´ ë§ˆì¼ë¦¬ì§€ ëª©ë¡ì— ì‚¬ìš©ëœë‹¤.
  * 
- * °¡¸ÍÁ¡ ÀÌ¹ÌÁö, ÀÌ¸§ÀÌ ÀÖÀ¸¹Ç·Î, °¡¸ÍÁ¡ ¸ñ·Ï º¸±â¿¡¼­µµ »ç¿ë µÈ´Ù.
+ * ê°€ë§¹ì  ì´ë¯¸ì§€, ì´ë¦„ì´ ìˆìœ¼ë¯€ë¡œ, ê°€ë§¹ì  ëª©ë¡ ë³´ê¸°ì—ì„œë„ ì‚¬ìš© ëœë‹¤.
  * 
- * °¡¸ÍÁ¡ ÀÌ¹ÌÁö´Â °¡¸ÍÁ¡ Á¤º¸¸¦ ¹Ş¾Æ¿À°í ³­ ÈÄ¿¡ ±× Áß °¡¸ÍÁ¡ ID ¸¦ ÅëÇØ 2Â÷ °Ë»öÀ» ÇÏ¿© °¡Á®¿Â´Ù.
+ * ê°€ë§¹ì  ì´ë¯¸ì§€ëŠ” ê°€ë§¹ì  ì •ë³´ë¥¼ ë°›ì•„ì˜¤ê³  ë‚œ í›„ì— ê·¸ ì¤‘ ê°€ë§¹ì  ID ë¥¼ í†µí•´ 2ì°¨ ê²€ìƒ‰ì„ í•˜ì—¬ ê°€ì ¸ì˜¨ë‹¤.
  */
 
 import android.graphics.Bitmap;
 
 public class CheckMileageMileage {
-	private String idCheckMileageMileages;						// °íÀ¯½Äº° ¹øÈ£. key
-	private String mileage;										// °¡¸ÍÁ¡¿¡ ´ëÇÑ ¸¶ÀÏ¸®Áö
+	private String idCheckMileageMileages;						// ê³ ìœ ì‹ë³„ ë²ˆí˜¸. key
+	private String mileage;										// ê°€ë§¹ì ì— ëŒ€í•œ ë§ˆì¼ë¦¬ì§€
 	private String activateYN;									// Y 
-	private String modifyDate;									// ¼öÁ¤ÀÏ
-	private String registerDate;								// µî·ÏÀÏ
-	private String checkMileageMembersCheckMileageID;			// »ç¿ëÀÚ ID 
-	private String checkMileageMerchantsMerchantID;				// °¡¸ÍÁ¡ ID
-	private String introduction;				// °¡¸ÍÁ¡ ID
+	private String modifyDate;									// ìˆ˜ì •ì¼
+	private String registerDate;								// ë“±ë¡ì¼
+	private String checkMileageMembersCheckMileageID;			// ì‚¬ìš©ì ID 
+	private String checkMileageMerchantsMerchantID;				// ê°€ë§¹ì  ID
+	private String introduction;				// ê°€ë§¹ì  ID
 	
 	private String workPhoneNumber;
 	
-	private String merchantName;						// °¡¸ÍÁ¡ ÀÌ¸§
-	private String merchantImg;							// °¡¸ÍÁ¡ ÀÌ¹ÌÁö URL
-	private Bitmap merchantImage;						// °¡¸ÍÁ¡ ÀÌ¹ÌÁö
+	private String merchantName;						// ê°€ë§¹ì  ì´ë¦„
+	private String merchantImg;							// ê°€ë§¹ì  ì´ë¯¸ì§€ URL
+	private Bitmap merchantImage;						// ê°€ë§¹ì  ì´ë¯¸ì§€
 	
-	public String getIdCheckMileageMileages() {			// °íÀ¯ ½Äº° ¹øÈ£
+	public String getIdCheckMileageMileages() {			// ê³ ìœ  ì‹ë³„ ë²ˆí˜¸
 		return idCheckMileageMileages;
 	}
 	public void setIdCheckMileageMileages(String idCheckMileageMileages) {
@@ -105,11 +105,11 @@ public class CheckMileageMileage {
 	public CheckMileageMileage(String idCheckMileageMileages, String mileage, String modifyDate, 
 			String checkMileageMembersCheckMileageID, String checkMileageMerchantsMerchantID
 			,String companyName,String introduction, String workPhoneNumber, String profileThumbnailImageUrl, Bitmap merchantImage){
-		this.idCheckMileageMileages = idCheckMileageMileages;		// Å° °ª --> ·Î±×º¼¶§ ÇÊ¿ä
-		this.mileage = mileage;										// ¸¶ÀÏ¸®Áö
-		this.modifyDate = modifyDate;								// ¼öÁ¤ÀÏ
-		this.checkMileageMembersCheckMileageID = checkMileageMembersCheckMileageID;	// ³» ¾ÆÀÌµğ
-		this.checkMileageMerchantsMerchantID = checkMileageMerchantsMerchantID;		// °¡¸ÍÁ¡ ¾ÆÀÌµğ.
+		this.idCheckMileageMileages = idCheckMileageMileages;		// í‚¤ ê°’ --> ë¡œê·¸ë³¼ë•Œ í•„ìš”
+		this.mileage = mileage;										// ë§ˆì¼ë¦¬ì§€
+		this.modifyDate = modifyDate;								// ìˆ˜ì •ì¼
+		this.checkMileageMembersCheckMileageID = checkMileageMembersCheckMileageID;	// ë‚´ ì•„ì´ë””
+		this.checkMileageMerchantsMerchantID = checkMileageMerchantsMerchantID;		// ê°€ë§¹ì  ì•„ì´ë””.
 		
 		this.merchantName = companyName;
 		this.introduction = introduction;

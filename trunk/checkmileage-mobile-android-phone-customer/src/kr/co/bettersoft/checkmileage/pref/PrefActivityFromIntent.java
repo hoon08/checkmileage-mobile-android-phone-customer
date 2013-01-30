@@ -1,12 +1,12 @@
-// Intent¸¦ ÀÌ¿ëÇØ Preference¸¦ ±¸¼ºÇÏ´Â ¹æ¹ıÀÎµ¥ 
-// ¾ÆÁ÷ ÇØ°áÀÌ ¾ÈµÇ´Â criticalÇÑ ¹®Á¦Á¡ÀÌ ÀÖ½À´Ï´Ù.
-// main preference´Â Á¤»óÀûÀ¸·Î Ç¥ÇöÀÌ µÇ´Âµ¥
-// dialog¸¦ ¶ç¿ì·Á°í ÇÏ¸é WindowManager°¡ BadTokenExceptionÀ» ¹ß»ı½ÃÅµ´Ï´Ù.
-// ÀÌÀ¯¿Í ÇØ°á ¹æ¹ıÀ» ¾Æ½Ã´Â ºĞÀº ²À ¿¬¶ô ¹Ù¶ø´Ï´Ù.
+// Intentë¥¼ ì´ìš©í•´ Preferenceë¥¼ êµ¬ì„±í•˜ëŠ” ë°©ë²•ì¸ë° 
+// ì•„ì§ í•´ê²°ì´ ì•ˆë˜ëŠ” criticalí•œ ë¬¸ì œì ì´ ìˆìŠµë‹ˆë‹¤.
+// main preferenceëŠ” ì •ìƒì ìœ¼ë¡œ í‘œí˜„ì´ ë˜ëŠ”ë°
+// dialogë¥¼ ë„ìš°ë ¤ê³  í•˜ë©´ WindowManagerê°€ BadTokenExceptionì„ ë°œìƒì‹œí‚µë‹ˆë‹¤.
+// ì´ìœ ì™€ í•´ê²° ë°©ë²•ì„ ì•„ì‹œëŠ” ë¶„ì€ ê¼­ ì—°ë½ ë°”ëë‹ˆë‹¤.
 
 package kr.co.bettersoft.checkmileage.pref;
 /*
- * ¿¡·¯³ª¹Ç·Î »ç¿ëÇÏÁö ¾ÊÀ½. º» ÇÁ·ÎÁ§Æ®¿¡¼­ »ç¿ë ¾ÈÇÔ
+ * ì—ëŸ¬ë‚˜ë¯€ë¡œ ì‚¬ìš©í•˜ì§€ ì•ŠìŒ. ë³¸ í”„ë¡œì íŠ¸ì—ì„œ ì‚¬ìš© ì•ˆí•¨
  */
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,9 +27,9 @@ public class PrefActivityFromIntent extends PreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 				
-		// Intent »ç¿ëÇØ Preference ±¸¼º½Ã
-		// Preference¸¦ Á¦°øÇÏ´Â Activity´Â androidManifest.xmlÀÇ <activity> ¹Ø¿¡
-		// <meta-data> Å×±×¸¦ ¼±¾ğ ÇØ¾ß ÇÔ. androidManefist.xml Âü°í
+		// Intent ì‚¬ìš©í•´ Preference êµ¬ì„±ì‹œ
+		// Preferenceë¥¼ ì œê³µí•˜ëŠ” ActivityëŠ” androidManifest.xmlì˜ <activity> ë°‘ì—
+		// <meta-data> í…Œê·¸ë¥¼ ì„ ì–¸ í•´ì•¼ í•¨. androidManefist.xml ì°¸ê³ 
 		addPreferencesFromIntent(new Intent(this, PrefActivityFromResource.class));
 				
 		mainPreference = PreferenceManager.getDefaultSharedPreferences(this); 

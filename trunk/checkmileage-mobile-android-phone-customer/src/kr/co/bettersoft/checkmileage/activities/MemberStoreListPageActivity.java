@@ -1,7 +1,7 @@
 package kr.co.bettersoft.checkmileage.activities;
 /**
  * MemberStoreListPageActivity
- *  °¡¸ÍÁ¡ ¸ñ·Ï. 
+ *  ê°€ë§¹ì  ëª©ë¡. 
  *  
  */
 import java.io.BufferedReader;
@@ -78,7 +78,7 @@ import android.os.AsyncTask;
 public class MemberStoreListPageActivity extends Activity implements OnItemSelectedListener, OnEditorActionListener{
 
 	String TAG = "MemberStoreListPageActivity";
-	int app_end = 0;	// µÚ·Î°¡±â ¹öÆ°À¸·Î ´İÀ»¶§ 2¹ø¸¸¿¡ ´İÈ÷µµ·Ï	// Ã³À½ µÎ¹ø ÀÚµ¿ ½ÇÇà  µÇ´Â°Å.
+	int app_end = 0;	// ë’¤ë¡œê°€ê¸° ë²„íŠ¼ìœ¼ë¡œ ë‹«ì„ë•Œ 2ë²ˆë§Œì— ë‹«íˆë„ë¡	// ì²˜ìŒ ë‘ë²ˆ ìë™ ì‹¤í–‰  ë˜ëŠ”ê±°.
 
 	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
 	MainActivity mainActivity = (MainActivity)MainActivity.mainActivity;
@@ -91,94 +91,94 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	String strCountry = "" ;
 	String strLanguage = "" ;
 
-	//	int dontTwice = 1;				// ½ºÇÇ³Ê ¸®½º³Ê·Î ÀÎÇÑ ÃÊ±â 2È¸ Á¶È¸ ¹æÁö. 
-	public boolean connected = false;  // ÀÎÅÍ³İ ¿¬°á»óÅÂ
-	String myQRcode = "";			// ³» ¾ÆÀÌµğ
+	//	int dontTwice = 1;				// ìŠ¤í”¼ë„ˆ ë¦¬ìŠ¤ë„ˆë¡œ ì¸í•œ ì´ˆê¸° 2íšŒ ì¡°íšŒ ë°©ì§€. 
+	public boolean connected = false;  // ì¸í„°ë„· ì—°ê²°ìƒíƒœ
+	String myQRcode = "";			// ë‚´ ì•„ì´ë””
 
-	int responseCode = 0;			// ¼­¹ö Á¶È¸ °á°ú ÄÚµå
-	String controllerName = "";		// ¼­¹ö Á¶È¸½Ã ÄÁÆ®·Ñ·¯ ÀÌ¸§
-	String methodName = "";			// ¼­¹ö Á¶È¸½Ã ¸Ş¼­µå ÀÌ¸§
-	String searchWordArea = "";		// ¼­¹ö Á¶È¸½Ã Áö¿ª¸í
-	String searchWordType = "";		// ¼­¹ö Á¶È¸½Ã ¾÷Á¾¸í
+	int responseCode = 0;			// ì„œë²„ ì¡°íšŒ ê²°ê³¼ ì½”ë“œ
+	String controllerName = "";		// ì„œë²„ ì¡°íšŒì‹œ ì»¨íŠ¸ë¡¤ëŸ¬ ì´ë¦„
+	String methodName = "";			// ì„œë²„ ì¡°íšŒì‹œ ë©”ì„œë“œ ì´ë¦„
+	String searchWordArea = "";		// ì„œë²„ ì¡°íšŒì‹œ ì§€ì—­ëª…
+	String searchWordType = "";		// ì„œë²„ ì¡°íšŒì‹œ ì—…ì¢…ëª…
 
-	String imgthumbDomain = CommonUtils.imgthumbDomain; 					// Img °¡Á®¿Ã¶§ ÆÄÀÏ¸í¸¸ ÀÖÀ» °æ¿ì ¾Õ¿¡ ºÙÀÏ µµ¸ŞÀÎ. 
+	String imgthumbDomain = CommonUtils.imgthumbDomain; 					// Img ê°€ì ¸ì˜¬ë•Œ íŒŒì¼ëª…ë§Œ ìˆì„ ê²½ìš° ì•ì— ë¶™ì¼ ë„ë©”ì¸. 
 
-	//	Spinner searchSpinnerArea;		// »ó´Ü Áö¿ª ¸ñ·Ï
-	Spinner searchSpinnerType;		// »ó´Ü ¾÷Á¾ ¸ñ·Ï
+	//	Spinner searchSpinnerArea;		// ìƒë‹¨ ì§€ì—­ ëª©ë¡
+	Spinner searchSpinnerType;		// ìƒë‹¨ ì—…ì¢… ëª©ë¡
 
-	TextView searchText;			//°Ë»ö¾î
-	Button searchBtn;				//°Ë»ö¹öÆ°
-	View parentLayout;			// Å°º¸µå ÀÚµ¿ ¼û±è¿ëµµ
-	//	View parentLayout2;			// Å°º¸µå ÀÚµ¿ ¼û±è¿ëµµ
+	TextView searchText;			//ê²€ìƒ‰ì–´
+	Button searchBtn;				//ê²€ìƒ‰ë²„íŠ¼
+	View parentLayout;			// í‚¤ë³´ë“œ ìë™ ìˆ¨ê¹€ìš©ë„
+	//	View parentLayout2;			// í‚¤ë³´ë“œ ìë™ ìˆ¨ê¹€ìš©ë„
 	InputMethodManager imm;
-	int indexDataFirst = 0;			// ºÎºĞ °Ë»ö À§ÇÑ ÀÎµ¦½º. ½ÃÀÛÁ¡
-	int indexDataLast = 0;			// ºÎºĞ °Ë»ö À§ÇÑ ÀÎµ¦½º. ³¡Á¡
-	int indexDataTotal = 0;			// ºÎºĞ °Ë»ö À§ÇÑ ÀÎµ¦½º. ÀüÃ¼ °³¼ö
+	int indexDataFirst = 0;			// ë¶€ë¶„ ê²€ìƒ‰ ìœ„í•œ ì¸ë±ìŠ¤. ì‹œì‘ì 
+	int indexDataLast = 0;			// ë¶€ë¶„ ê²€ìƒ‰ ìœ„í•œ ì¸ë±ìŠ¤. ëì 
+	int indexDataTotal = 0;			// ë¶€ë¶„ ê²€ìƒ‰ ìœ„í•œ ì¸ë±ìŠ¤. ì „ì²´ ê°œìˆ˜
 
 	URL postUrl2 ;
 	HttpURLConnection connection2;
 
-	Boolean mIsLast = false;			// ³¡±îÁö °¬À½. true ¶ó¸é ´õÀÌ»óÀÇ Ãß°¡ ¾øÀ½. »õ Á¶È¸½Ã false ·Î ÃÊ±âÈ­
-	Boolean adding = false;			// µ¥ÀÌÅÍ ´õÇÏ±â ÁøÇà ÁßÀÓ.
-	Boolean newSearch = false; 		// »õ·Î¿î Á¶È¸ÀÎÁö ¿©ºÎ. »õ·Î¿î Á¶È¸¶ó¸é ±âÁ¸ µ¥ÀÌÅÍ´Â Áö¿ì°í »õ·Î °Ë»öÇÑ µ¥ÀÌÅÍ¸¸ »ç¿ë. »õ·Î¿î Á¶È¸°¡ ¾Æ´Ï¶ó¸é ±âÁ¸ µ¥ÀÌÅÍ¿¡ Ãß°¡ µ¥ÀÌÅÍ¸¦ Ãß°¡.
+	Boolean mIsLast = false;			// ëê¹Œì§€ ê°”ìŒ. true ë¼ë©´ ë”ì´ìƒì˜ ì¶”ê°€ ì—†ìŒ. ìƒˆ ì¡°íšŒì‹œ false ë¡œ ì´ˆê¸°í™”
+	Boolean adding = false;			// ë°ì´í„° ë”í•˜ê¸° ì§„í–‰ ì¤‘ì„.
+	Boolean newSearch = false; 		// ìƒˆë¡œìš´ ì¡°íšŒì¸ì§€ ì—¬ë¶€. ìƒˆë¡œìš´ ì¡°íšŒë¼ë©´ ê¸°ì¡´ ë°ì´í„°ëŠ” ì§€ìš°ê³  ìƒˆë¡œ ê²€ìƒ‰í•œ ë°ì´í„°ë§Œ ì‚¬ìš©. ìƒˆë¡œìš´ ì¡°íšŒê°€ ì•„ë‹ˆë¼ë©´ ê¸°ì¡´ ë°ì´í„°ì— ì¶”ê°€ ë°ì´í„°ë¥¼ ì¶”ê°€.
 	Boolean jobKindSearched = false;
 	Bitmap bm = null;
 	//	int reTry = 1;
 
 	private MemberStoreSearchListAdapter imgAdapter;
 
-	public ArrayList<CheckMileageMerchants> entries1 = new ArrayList<CheckMileageMerchants>();	// 1Â÷ÀûÀ¸·Î Á¶È¸ÇÑ °á°ú. (°¡¸ÍÁ¡ »ó¼¼ Á¤º¸ Á¦¿Ü)   // ÀúÀå¿ë.
-	ArrayList<CheckMileageMerchants> entries2 = new ArrayList<CheckMileageMerchants>();			// Àß¶ó¼­ ´õÇÏ´Â ºÎºĞ.
-	List<CheckMileageMerchants> entriesFn = new ArrayList<CheckMileageMerchants>();			// ÃÖÁ¾ »êÃâ¹°
+	public ArrayList<CheckMileageMerchants> entries1 = new ArrayList<CheckMileageMerchants>();	// 1ì°¨ì ìœ¼ë¡œ ì¡°íšŒí•œ ê²°ê³¼. (ê°€ë§¹ì  ìƒì„¸ ì •ë³´ ì œì™¸)   // ì €ì¥ìš©.
+	ArrayList<CheckMileageMerchants> entries2 = new ArrayList<CheckMileageMerchants>();			// ì˜ë¼ì„œ ë”í•˜ëŠ” ë¶€ë¶„.
+	List<CheckMileageMerchants> entriesFn = new ArrayList<CheckMileageMerchants>();			// ìµœì¢… ì‚°ì¶œë¬¼
 
 
-	float fImgSize = 0;			// ÀÌ¹ÌÁö »çÀÌÁî ÀúÀåº¯¼ö.
-	int isRunning = 0;			// ¿¬¼Ó ½ÇÇà ¹æÁö. ½ÇÇà Áß¿¡ ´Ù¸¥ ½ÇÇà ¿äÃ»ÀÌ µé¾î¿Ã °æ¿ì, ¹«½ÃÇÑ´Ù.
-	View emptyView;				// µ¥ÀÌÅÍ ¾øÀ½ ºä
+	float fImgSize = 0;			// ì´ë¯¸ì§€ ì‚¬ì´ì¦ˆ ì €ì¥ë³€ìˆ˜.
+	int isRunning = 0;			// ì—°ì† ì‹¤í–‰ ë°©ì§€. ì‹¤í–‰ ì¤‘ì— ë‹¤ë¥¸ ì‹¤í–‰ ìš”ì²­ì´ ë“¤ì–´ì˜¬ ê²½ìš°, ë¬´ì‹œí•œë‹¤.
+	View emptyView;				// ë°ì´í„° ì—†ìŒ ë·°
 
-	// ÁøÇà¹Ù
-	ProgressBar pb1;		// Áß´Ü ·Îµù ÁøÇà¹Ù
-	ProgressBar pb2;		// ÇÏ´Ü Ãß°¡ ÁøÇà¹Ù
+	// ì§„í–‰ë°”
+	ProgressBar pb1;		// ì¤‘ë‹¨ ë¡œë”© ì§„í–‰ë°”
+	ProgressBar pb2;		// í•˜ë‹¨ ì¶”ê°€ ì§„í–‰ë°”
 
-	// ListView¿¡ »Ñ¸± Data ¸¦ À§ÇÑ ½ºÇÇ³Ê µ¥ÀÌÅÍµé. --> ³ªÁß¿¡ ¼­¹ö Åë½ÅÇÏ¿© Ã³À½¿¡ °¡Á®¿Í¼­ ¸¸µé¾î Áöµµ·Ï ÇÑ´Ù.
-	//	String[] areas = {"ÀüÁö¿ª", "È«´ë", "½ÅÃÌ", "¿µµîÆ÷", "½Å¸²", "°­³²", "Á¾·Î", "°Ç´ë", "³ë¿ø", "´ëÇĞ·Î", "¿©ÀÇµµ"};			// ³ªÁß¿¡ Á¶È¸ ÇØ ¿Ã °Í..
+	// ListViewì— ë¿Œë¦´ Data ë¥¼ ìœ„í•œ ìŠ¤í”¼ë„ˆ ë°ì´í„°ë“¤. --> ë‚˜ì¤‘ì— ì„œë²„ í†µì‹ í•˜ì—¬ ì²˜ìŒì— ê°€ì ¸ì™€ì„œ ë§Œë“¤ì–´ ì§€ë„ë¡ í•œë‹¤.
+	//	String[] areas = {"ì „ì§€ì—­", "í™ëŒ€", "ì‹ ì´Œ", "ì˜ë“±í¬", "ì‹ ë¦¼", "ê°•ë‚¨", "ì¢…ë¡œ", "ê±´ëŒ€", "ë…¸ì›", "ëŒ€í•™ë¡œ", "ì—¬ì˜ë„"};			// ë‚˜ì¤‘ì— ì¡°íšŒ í•´ ì˜¬ ê²ƒ..
 	String[] jobs = {"", ""};
 	String[] tmpJobs = null;
 	GridView gridView;
 
-	// ÇÚµé·¯
+	// í•¸ë“¤ëŸ¬
 	Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg){
 			Bundle b = msg.getData();
 			try{
-				if(b.getInt("showYN")==1){		// ¹Ş¾Æ¿Â ¸¶ÀÏ¸®Áö °á°ú¸¦ È­¸é¿¡ »Ñ·ÁÁØ´Ù.
+				if(b.getInt("showYN")==1){		// ë°›ì•„ì˜¨ ë§ˆì¼ë¦¬ì§€ ê²°ê³¼ë¥¼ í™”ë©´ì— ë¿Œë ¤ì¤€ë‹¤.
 					Log.d(TAG,"showYN");
-					// ÃÖÁ¾ °á°ú ¹è¿­Àº entriesFn ¿¡ ÀúÀåµÇ¾î ÀÖ´Ù.. ¿©±â ¸®½ºÆ® ·¹ÀÌ¾Æ¿ô.
+					// ìµœì¢… ê²°ê³¼ ë°°ì—´ì€ entriesFn ì— ì €ì¥ë˜ì–´ ìˆë‹¤.. ì—¬ê¸° ë¦¬ìŠ¤íŠ¸ ë ˆì´ì•„ì›ƒ.
 					if((entriesFn!=null)&&(entriesFn.size()>0)){
 						//						Log.e(TAG,"indexDataFirst::"+indexDataFirst);
-						if(newSearch){		// »õ·Î¿î °Ë»öÀÏ °æ¿ì »õ·Î ¼³Á¤, Ãß°¡ÀÏ °æ¿ì ¾Ë¸²¸¸ ÇÏ±â À§ÇÔ.
+						if(newSearch){		// ìƒˆë¡œìš´ ê²€ìƒ‰ì¼ ê²½ìš° ìƒˆë¡œ ì„¤ì •, ì¶”ê°€ì¼ ê²½ìš° ì•Œë¦¼ë§Œ í•˜ê¸° ìœ„í•¨.
 							setGriding();
-							newSearch = false;		// ´Ù½Ã µ¹·Á³õ´Â´Ù. ÀÌÁ¦´Â ÃÖÃÊ °Ë»öÀÌ ¾Æ´Ô.
+							newSearch = false;		// ë‹¤ì‹œ ëŒë ¤ë†“ëŠ”ë‹¤. ì´ì œëŠ” ìµœì´ˆ ê²€ìƒ‰ì´ ì•„ë‹˜.
 						}else{
 							//							Log.e(TAG,"notifyDataSetChanged");
-							imgAdapter.notifyDataSetChanged();		// ¾Ë¸² -> º¯°æ»çÇ×ÀÌ È­¸é»ó¿¡ ¾÷µ¥ÀÌÆ® µÇµµ·ÏÇÔ.
+							imgAdapter.notifyDataSetChanged();		// ì•Œë¦¼ -> ë³€ê²½ì‚¬í•­ì´ í™”ë©´ìƒì— ì—…ë°ì´íŠ¸ ë˜ë„ë¡í•¨.
 						}
-						gridView.setEnabled(true);			// ±×¸®µå ºä Çã¿ëÇÔ.
+						gridView.setEnabled(true);			// ê·¸ë¦¬ë“œ ë·° í—ˆìš©í•¨.
 					}else{
 						Log.d(TAG,"no data");
 						if(gridView==null){
 							gridView  = (GridView)findViewById(R.id.gridview);
 						}
-						emptyView = findViewById(R.id.empty1);		// µ¥ÀÌÅÍ ¾øÀ¸¸é 'ºó ÆäÀÌÁö'(µ¥ÀÌÅÍ ¾øÀ½ ¸Ş½ÃÁö)Ç¥½Ã
+						emptyView = findViewById(R.id.empty1);		// ë°ì´í„° ì—†ìœ¼ë©´ 'ë¹ˆ í˜ì´ì§€'(ë°ì´í„° ì—†ìŒ ë©”ì‹œì§€)í‘œì‹œ
 						gridView.setEmptyView(emptyView);
 						gridView.setVisibility(8);			//   0 visible   4 invisible   8 gone
 						emptyView.setVisibility(0);
 					}
-					adding = false;		// Á¶È¸ ¹× Ãß°¡ ³¡³µÀ½. ´Ù¸¥°Å Á¶È¸½Ã ¶Ç Ãß°¡ °¡´É.. (½ºÅ©·Ñ ¸®½º³Ê¸¦ ´Ù·ê¶§ »ç¿ë)
-					// ÇÏ´Ü ·Îµù¹Ù¸¦ ¼û±ä´Ù.
+					adding = false;		// ì¡°íšŒ ë° ì¶”ê°€ ëë‚¬ìŒ. ë‹¤ë¥¸ê±° ì¡°íšŒì‹œ ë˜ ì¶”ê°€ ê°€ëŠ¥.. (ìŠ¤í¬ë¡¤ ë¦¬ìŠ¤ë„ˆë¥¼ ë‹¤ë£°ë•Œ ì‚¬ìš©)
+					// í•˜ë‹¨ ë¡œë”©ë°”ë¥¼ ìˆ¨ê¸´ë‹¤.
 					hidePb2();
-					isRunning = 0;		// ÁøÇàÁßÀÌÁö ¾ÊÀ½. - ÀÌÈÄ Ãß°¡ Á¶ÀÛÀ¸·Î »õ Á¶È¸ °¡´É.
+					isRunning = 0;		// ì§„í–‰ì¤‘ì´ì§€ ì•ŠìŒ. - ì´í›„ ì¶”ê°€ ì¡°ì‘ìœ¼ë¡œ ìƒˆ ì¡°íšŒ ê°€ëŠ¥.
 					//					searchSpinnerArea.setEnabled(true);
 					searchSpinnerType.setEnabled(true);
 					searchText.setEnabled(true); 
@@ -194,13 +194,13 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 					searchBtn.setEnabled(false);
 				}
 				if(b.getInt("order")==1){
-					// ÇÁ·Î±×·¡½º¹Ù ½ÇÇà
+					// í”„ë¡œê·¸ë˜ìŠ¤ë°” ì‹¤í–‰
 					if(pb1==null){
 						pb1=(ProgressBar) findViewById(R.id.memberstore_list_ProgressBar01);
 					}
 					pb1.setVisibility(View.VISIBLE);
 				}else if(b.getInt("order")==2){
-					// ÇÁ·Î±×·¡½º¹Ù  Á¾·á
+					// í”„ë¡œê·¸ë˜ìŠ¤ë°”  ì¢…ë£Œ
 					if(pb1==null){
 						pb1=(ProgressBar) findViewById(R.id.memberstore_list_ProgressBar01);
 					}
@@ -208,31 +208,31 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 				}
 
 				if(b.getInt("order")==3){
-					// ÇÏ´Ü ÇÁ·Î±×·¡½º¹Ù ½ÇÇà
+					// í•˜ë‹¨ í”„ë¡œê·¸ë˜ìŠ¤ë°” ì‹¤í–‰
 					if(pb2==null){
 						pb2=(ProgressBar) findViewById(R.id.memberstore_list_ProgressBar02);
 					}
 					pb2.setVisibility(View.VISIBLE);
 				}else if(b.getInt("order")==4){
-					// ÇÏ´Ü ÇÁ·Î±×·¡½º¹Ù  Á¾·á
+					// í•˜ë‹¨ í”„ë¡œê·¸ë˜ìŠ¤ë°”  ì¢…ë£Œ
 					if(pb2==null){
 						pb2=(ProgressBar) findViewById(R.id.memberstore_list_ProgressBar02);
 					}
 					pb2.setVisibility(View.INVISIBLE);
 				}
-				if(b.getInt("showErrToast")==1){			// ÀÏ¹İ ¿¡·¯ Åä½ºÆ®
+				if(b.getInt("showErrToast")==1){			// ì¼ë°˜ ì—ëŸ¬ í† ìŠ¤íŠ¸
 					Toast.makeText(MemberStoreListPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 				}
-				if(b.getInt("showNetErrToast")==1){			// ³×Æ®¿öÅ© ¿¡·¯ Åä½ºÆ®
+				if(b.getInt("showNetErrToast")==1){			// ë„¤íŠ¸ì›Œí¬ ì—ëŸ¬ í† ìŠ¤íŠ¸
 					Toast.makeText(MemberStoreListPageActivity.this, R.string.network_error, Toast.LENGTH_SHORT).show();
 				}
-				if(b.getInt("setJobsList")==1){			// ¾÷Á¾ ¸ñ·Ï °¡Á®¿ÔÀ»¶§ ½ºÇÇ³Ê¿¡ ¼¼ÆÃ
+				if(b.getInt("setJobsList")==1){			// ì—…ì¢… ëª©ë¡ ê°€ì ¸ì™”ì„ë•Œ ìŠ¤í”¼ë„ˆì— ì„¸íŒ…
 					jobs = tmpJobs;
-					// ½ºÇÇ³Ê µ¥ÀÌÅÍ ¼¼ÆÃ. 
+					// ìŠ¤í”¼ë„ˆ ë°ì´í„° ì„¸íŒ…. 
 					ArrayAdapter<String> aa2 =  new ArrayAdapter<String>(getThis(), android.R.layout.simple_spinner_item, jobs);
 					aa2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 					searchSpinnerType.setAdapter(aa2);
-					jobKindSearched = true;			// ¾÷Á¾ °Ë»ö ³¡.
+					jobKindSearched = true;			// ì—…ì¢… ê²€ìƒ‰ ë.
 				}
 			}catch(Exception e){
 				e.printStackTrace();
@@ -249,15 +249,15 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		super.onCreate(icicle);
 		setContentView(R.layout.member_store_list);
 
-		// ³» QR ÄÚµå. 
+		// ë‚´ QR ì½”ë“œ. 
 		myQRcode = MyQRPageActivity.qrCode;		
 		entriesFn = new ArrayList<CheckMileageMerchants>();
 
-		parentLayout = findViewById(R.id.member_store_list_parent_layout);		// ºÎ¸ğ ·¹ÀÌ¾Æ¿ô- ¸®½º³Ê¸¦ ´Ş¾Æ¼­ Å°º¸µå ÀÚµ¿ ¼û±è¿¡ »ç¿ë
-		//		parentLayout2 = findViewById(R.id.member_store_list_parent_layout2);		// ºÎ¸ğ ·¹ÀÌ¾Æ¿ô- ¸®½º³Ê¸¦ ´Ş¾Æ¼­ Å°º¸µå ÀÚµ¿ ¼û±è¿¡ »ç¿ë
-		imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE); 	// °¡»óÅ°º¸µå ´İ±âÀ§ÇÔ
+		parentLayout = findViewById(R.id.member_store_list_parent_layout);		// ë¶€ëª¨ ë ˆì´ì•„ì›ƒ- ë¦¬ìŠ¤ë„ˆë¥¼ ë‹¬ì•„ì„œ í‚¤ë³´ë“œ ìë™ ìˆ¨ê¹€ì— ì‚¬ìš©
+		//		parentLayout2 = findViewById(R.id.member_store_list_parent_layout2);		// ë¶€ëª¨ ë ˆì´ì•„ì›ƒ- ë¦¬ìŠ¤ë„ˆë¥¼ ë‹¬ì•„ì„œ í‚¤ë³´ë“œ ìë™ ìˆ¨ê¹€ì— ì‚¬ìš©
+		imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE); 	// ê°€ìƒí‚¤ë³´ë“œ ë‹«ê¸°ìœ„í•¨
 
-		// Å©±â ÃøÁ¤
+		// í¬ê¸° ì¸¡ì •
 		float screenWidth = this.getResources().getDisplayMetrics().widthPixels;
 		Log.i("screenWidth : ", "" + screenWidth);
 		float screenHeight = this.getResources().getDisplayMetrics().heightPixels;
@@ -266,11 +266,11 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		}else{fImgSize = screenHeight;}
 
 		// progress bar
-		pb1 = (ProgressBar) findViewById(R.id.memberstore_list_ProgressBar01);		// ·Îµù(Áß¾Ó)
-		pb2 = (ProgressBar) findViewById(R.id.memberstore_list_ProgressBar02);		// ·Îµù(ÇÏ´Ü)
+		pb1 = (ProgressBar) findViewById(R.id.memberstore_list_ProgressBar01);		// ë¡œë”©(ì¤‘ì•™)
+		pb2 = (ProgressBar) findViewById(R.id.memberstore_list_ProgressBar02);		// ë¡œë”©(í•˜ë‹¨)
 
-		searchText = (TextView) findViewById(R.id.store_search_text);			//°Ë»ö¾î
-		searchBtn = (Button) findViewById(R.id.store_search_btn);				//°Ë»ö¹öÆ°
+		searchText = (TextView) findViewById(R.id.store_search_text);			//ê²€ìƒ‰ì–´
+		searchBtn = (Button) findViewById(R.id.store_search_btn);				//ê²€ìƒ‰ë²„íŠ¼
 		searchText.setOnEditorActionListener(this);  
 		searchText.addTextChangedListener(textWatcherInput);  
 
@@ -279,7 +279,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		// spinner listener
 		searchSpinnerType.setOnItemSelectedListener(this);
 
-		// ºÎ¸ğ ·¹ÀÌ¾Æ¿ô ¸®½º³Ê - ¿ÜºÎ ÅÍÄ¡ ½Ã Å°º¸µå ¼û±è ¿ëµµ
+		// ë¶€ëª¨ ë ˆì´ì•„ì›ƒ ë¦¬ìŠ¤ë„ˆ - ì™¸ë¶€ í„°ì¹˜ ì‹œ í‚¤ë³´ë“œ ìˆ¨ê¹€ ìš©ë„
 		parentLayout.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -298,15 +298,15 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		//		});
 		searchBtn.setOnClickListener(new Button.OnClickListener()  {
 			public void onClick(View v)  {
-				goSearch();		 // ´Ü¾î·Î °Ë»ö ¤¡¤¡ 
+				goSearch();		 // ë‹¨ì–´ë¡œ ê²€ìƒ‰ ã„±ã„± 
 			}
 		});
 	}
 
-	// µ¥ÀÌÅÍ¸¦ È­¸é¿¡ ¼¼ÆÃ
+	// ë°ì´í„°ë¥¼ í™”ë©´ì— ì„¸íŒ…
 	/**
 	 * setGriding
-	 *   µ¥ÀÌÅÍ¸¦ È­¸é¿¡ ¼¼ÆÃÇÑ´Ù
+	 *   ë°ì´í„°ë¥¼ í™”ë©´ì— ì„¸íŒ…í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -317,7 +317,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		gridView  = (GridView)findViewById(R.id.gridview);
 		gridView.setAdapter(imgAdapter);
 
-		// Å¬¸¯½Ã »ó¼¼º¸±â ÆäÀÌÁö·Î
+		// í´ë¦­ì‹œ ìƒì„¸ë³´ê¸° í˜ì´ì§€ë¡œ
 		gridView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
@@ -326,10 +326,10 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 				Log.i(TAG, "checkMileageMerchantsMerchantID::"+entriesFn.get(position).getMerchantID());
 				//					Log.i(TAG, "idCheckMileageMileages::"+myQRcode);
 				Log.i(TAG, "myMileage::"+entriesFn.get(position).getMileage());
-				intent.putExtra("checkMileageMerchantsMerchantID", entriesFn.get(position).getMerchantID());		// °¡¸ÍÁ¡ ¾ÆÀÌµğ
-				intent.putExtra("idCheckMileageMileages", entriesFn.get(position).getIdCheckMileageMileages());		// °íÀ¯ ½Äº° ¹øÈ£. (»ó¼¼º¸±â Á¶È¸¿ëµµ)
-				intent.putExtra("myMileage", entriesFn.get(position).getMileage());									// ³» ¸¶ÀÏ¸®Áö
-				//				// img ´Â ¹®ÀÚ¿­·Î ¹Ù²ã¼­ ³Ö´Â´Ù. ²¨³¾¶© ¿ª¼øÀÓ.			 // BMP -> ¹®ÀÚ¿­ 		 // ¼¶³×ÀÏ°ú ÇÁ·ÎÇÊ ÀÌ¹ÌÁö´Â ´Ù¸£¹Ç·Î ³ÖÁö ¾ÊÀ½.
+				intent.putExtra("checkMileageMerchantsMerchantID", entriesFn.get(position).getMerchantID());		// ê°€ë§¹ì  ì•„ì´ë””
+				intent.putExtra("idCheckMileageMileages", entriesFn.get(position).getIdCheckMileageMileages());		// ê³ ìœ  ì‹ë³„ ë²ˆí˜¸. (ìƒì„¸ë³´ê¸° ì¡°íšŒìš©ë„)
+				intent.putExtra("myMileage", entriesFn.get(position).getMileage());									// ë‚´ ë§ˆì¼ë¦¬ì§€
+				//				// img ëŠ” ë¬¸ìì—´ë¡œ ë°”ê¿”ì„œ ë„£ëŠ”ë‹¤. êº¼ë‚¼ë• ì—­ìˆœì„.			 // BMP -> ë¬¸ìì—´ 		 // ì„¬ë„¤ì¼ê³¼ í”„ë¡œí•„ ì´ë¯¸ì§€ëŠ” ë‹¤ë¥´ë¯€ë¡œ ë„£ì§€ ì•ŠìŒ.
 				//				ByteArrayOutputStream baos = new ByteArrayOutputStream();   
 				//				String bitmapToStr = "";
 				//				entriesFn.get(position).getMerchantImage().compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object    
@@ -339,46 +339,46 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 				startActivity(intent);
 			}
 		});
-		gridView.setOnScrollListener(listScrollListener);		// ¸®½º³Ê µî·Ï. ½ºÅ©·Ñ½Ã ÇÏ´Ü¿¡ µµÂøÇÏ¸é Ãß°¡ µ¥ÀÌÅÍ Á¶È¸ÇÏµµ·Ï.
+		gridView.setOnScrollListener(listScrollListener);		// ë¦¬ìŠ¤ë„ˆ ë“±ë¡. ìŠ¤í¬ë¡¤ì‹œ í•˜ë‹¨ì— ë„ì°©í•˜ë©´ ì¶”ê°€ ë°ì´í„° ì¡°íšŒí•˜ë„ë¡.
 	}
 
 
 
-	// ¿Â ½ºÅ©·Ñ ÀÌº¥Æ®. 
+	// ì˜¨ ìŠ¤í¬ë¡¤ ì´ë²¤íŠ¸. 
 	/**
 	 * listScrollListener
-	 *   ¿Â ½ºÅ©·Ñ ÀÌº¥Æ®ÀÌ´Ù. ¸®½ºÆ® ³¡À¸·Î °¬À»¶§ Ãß°¡ ÀÌ¹ÌÁö°¡ ÀÖ´Ù¸é ·ÎµåÇÑ´Ù.
+	 *   ì˜¨ ìŠ¤í¬ë¡¤ ì´ë²¤íŠ¸ì´ë‹¤. ë¦¬ìŠ¤íŠ¸ ëìœ¼ë¡œ ê°”ì„ë•Œ ì¶”ê°€ ì´ë¯¸ì§€ê°€ ìˆë‹¤ë©´ ë¡œë“œí•œë‹¤.
 	 */
 	private OnScrollListener listScrollListener = new OnScrollListener(){
-		// °Çµé±â¸¸ ÇÏ¸é ÁÖ¸£¸¤ ¶á´Ù.  ¾µ¼ö ÀÖ±ä ÇÑµ¥ ³Ê¹« ¸·¶°¼­.... boolean À¸·Î Á¶ÀıÇÑ´Ù.
+		// ê±´ë“¤ê¸°ë§Œ í•˜ë©´ ì£¼ë¥´ë¥µ ëœ¬ë‹¤.  ì“¸ìˆ˜ ìˆê¸´ í•œë° ë„ˆë¬´ ë§‰ë– ì„œ.... boolean ìœ¼ë¡œ ì¡°ì ˆí•œë‹¤.
 		@Override
 		public void onScroll(AbsListView view, int firstVisibleItem,
 				int visibleItemCount, int totalItemCount) {
 			//			Log.d(TAG,"indexDataFirst:"+indexDataFirst+"/indexDataLast:"+indexDataLast+"/indexDataTotal:"+indexDataTotal);
-			if((indexDataFirst + indexDataLast < indexDataTotal)||(indexDataLast!=indexDataTotal)){	// ¾ÆÁ÷ ³²À½ ¶Ç´Â ³¡¿¡ µµ´ŞÇÏÁö ¾ÊÀ½.
+			if((indexDataFirst + indexDataLast < indexDataTotal)||(indexDataLast!=indexDataTotal)){	// ì•„ì§ ë‚¨ìŒ ë˜ëŠ” ëì— ë„ë‹¬í•˜ì§€ ì•ŠìŒ.
 				mIsLast = false;
 			}
-			if((totalItemCount<10) ||(indexDataLast==indexDataTotal)){		// 10°³ ÀÌÇÏ(ÀÌ¹Ì´Ù º¸¿©ÁÜ) ¶Ç´Â ¸¶Áö¸·=ÀüÃ¼ (³¡¿¡ µµ´Ş)
+			if((totalItemCount<10) ||(indexDataLast==indexDataTotal)){		// 10ê°œ ì´í•˜(ì´ë¯¸ë‹¤ ë³´ì—¬ì¤Œ) ë˜ëŠ” ë§ˆì§€ë§‰=ì „ì²´ (ëì— ë„ë‹¬)
 				mIsLast = true;
 			}
 			//			Log.d(TAG,"adding:"+adding+",mIsLast:"+mIsLast);
-			//			  if(indexDataFirst==indexDataLast){		// ½ÃÀÛÀÌ ´õ Å©¸é ¹®Á¦ ÀÖ´Â°Å
+			//			  if(indexDataFirst==indexDataLast){		// ì‹œì‘ì´ ë” í¬ë©´ ë¬¸ì œ ìˆëŠ”ê±°
 			//				  mIsLast = true;
 			//			  }
-			// ¸®½ºÆ® °¡Àå ÇÏ´Ü¿¡ µµ´ŞÇßÀ» °æ¿ì.. 
-			//			if(firstVisibleItem+visibleItemCount==totalItemCount &&(!adding)&&(!mIsLast)){			// °¡Àå ÇÏ´Ü.
-			if(firstVisibleItem+visibleItemCount>=(totalItemCount-2) &&(!adding)&&(!mIsLast)){		// °¡Àå ÇÏ´Ü -2ÀÏ¶§ ¹Ì¸®µ¿ÀÛ? - Á»´õ ³ªÀºµí.
+			// ë¦¬ìŠ¤íŠ¸ ê°€ì¥ í•˜ë‹¨ì— ë„ë‹¬í–ˆì„ ê²½ìš°.. 
+			//			if(firstVisibleItem+visibleItemCount==totalItemCount &&(!adding)&&(!mIsLast)){			// ê°€ì¥ í•˜ë‹¨.
+			if(firstVisibleItem+visibleItemCount>=(totalItemCount-2) &&(!adding)&&(!mIsLast)){		// ê°€ì¥ í•˜ë‹¨ -2ì¼ë•Œ ë¯¸ë¦¬ë™ì‘? - ì¢€ë” ë‚˜ì€ë“¯.
 				//				Log.e(TAG, "onScroll event Occured."+"//view::"+view+"//firstVisibleItem::"+firstVisibleItem+"//visibleItemCount:"+visibleItemCount+"//totalItemCount::"+totalItemCount);
 				showPb2();
 				indexDataTotal = entries1.size();
 				Log.d(TAG,"onScroll indexDataTotal:"+indexDataTotal);
-				new backgroundGetMerchantInfo().execute();		// ºñµ¿±â ½ÇÇà
+				new backgroundGetMerchantInfo().execute();		// ë¹„ë™ê¸° ì‹¤í–‰
 			}
 		}
-		// ½ºÅ©·Ñ ½ÃÀÛ, ³¡, ½ºÅ©·Ñ Áß.. ÀÌ¶ó´Â »ç½ÇÀ» ¾Ë¼ö ÀÖ´Ù. »ç½Ç ÇÊ¿ä ¾øÀ½..  --> ÇÊ¿äÇØÁü.. ½ºÅ©·ÑÁß Á¶È¸½Ã ¿¡·¯°¡ ¹ß»ıÇÏ±â ¶§¹®¿¡ ½ºÅ©·Ñ Áß¿¡´Â Á¶È¸°¡ µÇÁö ¾Êµµ·Ï ÇÑ´Ù.. 
+		// ìŠ¤í¬ë¡¤ ì‹œì‘, ë, ìŠ¤í¬ë¡¤ ì¤‘.. ì´ë¼ëŠ” ì‚¬ì‹¤ì„ ì•Œìˆ˜ ìˆë‹¤. ì‚¬ì‹¤ í•„ìš” ì—†ìŒ..  --> í•„ìš”í•´ì§.. ìŠ¤í¬ë¡¤ì¤‘ ì¡°íšŒì‹œ ì—ëŸ¬ê°€ ë°œìƒí•˜ê¸° ë•Œë¬¸ì— ìŠ¤í¬ë¡¤ ì¤‘ì—ëŠ” ì¡°íšŒê°€ ë˜ì§€ ì•Šë„ë¡ í•œë‹¤.. 
 		/**
 		 * onScrollStateChanged
-		 *  ½ºÅ©·ÑÁß Á¶È¸½Ã ¿¡·¯°¡ ¹ß»ıÇÏ±â ¶§¹®¿¡ ½ºÅ©·Ñ Áß¿¡´Â Á¶È¸°¡ µÇÁö ¾Êµµ·Ï ÇÑ´Ù.. 
+		 *  ìŠ¤í¬ë¡¤ì¤‘ ì¡°íšŒì‹œ ì—ëŸ¬ê°€ ë°œìƒí•˜ê¸° ë•Œë¬¸ì— ìŠ¤í¬ë¡¤ ì¤‘ì—ëŠ” ì¡°íšŒê°€ ë˜ì§€ ì•Šë„ë¡ í•œë‹¤.. 
 		 *
 		 * @param view
 		 * @param scrollState
@@ -399,10 +399,10 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		}
 	};
 
-	// Áß´Ü ÇÁ·Î±×·¡½º¹Ù º¸ÀÓ, ¼û±è
+	// ì¤‘ë‹¨ í”„ë¡œê·¸ë˜ìŠ¤ë°” ë³´ì„, ìˆ¨ê¹€
 	/**
 	 * showPb
-	 *  Áß¾Ó ÇÁ·Î±×·¡½º¹Ù °¡½ÃÈ­ÇÑ´Ù
+	 *  ì¤‘ì•™ í”„ë¡œê·¸ë˜ìŠ¤ë°” ê°€ì‹œí™”í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -423,7 +423,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	}
 	/**
 	 * hidePb
-	 *  Áß¾Ó ÇÁ·Î±×·¡½º¹Ù ºñ°¡½ÃÈ­ÇÑ´Ù
+	 *  ì¤‘ì•™ í”„ë¡œê·¸ë˜ìŠ¤ë°” ë¹„ê°€ì‹œí™”í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -442,10 +442,10 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 				}
 		).start();
 	}
-	// ÇÏ´Ü ÇÁ·Î±×·¡½º¹Ù º¸ÀÓ, ¼û±è
+	// í•˜ë‹¨ í”„ë¡œê·¸ë˜ìŠ¤ë°” ë³´ì„, ìˆ¨ê¹€
 	/**
 	 * showPb2
-	 *  ÇÏ´Ü ÇÁ·Î±×·¡½º¹Ù °¡½ÃÈ­ÇÑ´Ù
+	 *  í•˜ë‹¨ í”„ë¡œê·¸ë˜ìŠ¤ë°” ê°€ì‹œí™”í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -466,7 +466,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	}
 	/**
 	 * hidePb2
-	 *  ÇÏ´Ü ÇÁ·Î±×·¡½º¹Ù ºñ°¡½ÃÈ­ÇÑ´Ù
+	 *  í•˜ë‹¨ í”„ë¡œê·¸ë˜ìŠ¤ë°” ë¹„ê°€ì‹œí™”í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -487,13 +487,13 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	}
 	/**
 	 * showMSG
-	 *  È­¸é¿¡ error Åä½ºÆ® ¶ç¿î´Ù
+	 *  í™”ë©´ì— error í† ìŠ¤íŠ¸ ë„ìš´ë‹¤
 	 *
 	 * @param
 	 * @param
 	 * @return
 	 */
-	public void showMSG(){			// È­¸é¿¡ error Åä½ºÆ® ¶ç¿ò..
+	public void showMSG(){			// í™”ë©´ì— error í† ìŠ¤íŠ¸ ë„ì›€..
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -509,13 +509,13 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 
 
 	/*
-	 * °Ë»öÀ» À§ÇÑ °¡¸ÍÁ¡ ¾÷Á¾¸®½ºÆ®¸¦ °¡Á®¿Â´Ù.
-	 *   µµ¸ŞÀÎ ÀÌ¸§ : checkMileageBusinessKind
-	 *   ÄÁÆ®·Ñ·¯ : checkMileageBusinessKindController
-	 *   ¸Ş¼Òµå : selectBusinessKindList
-	 *   ÇÊ¿ä ÆÄ¶ó¹ÌÅÍ : countryCode / languageCode / activateYn
-	 *   ¾ÕÀÇ µÎ°³´Â ¸ğ¹ÙÀÏ¿¡¼­ °ªÀ» ²¨³»¼­ »ç¿ëÇÑ´Ù. ¾×Æ¼ºê´Â Y °ªÀ» »ç¿ë.
-	 *   °á°ú °ª : List<checkMileageBusinessKind>  ÀÇ content ¸¦ »ç¿ëÇÑ´Ù.
+	 * ê²€ìƒ‰ì„ ìœ„í•œ ê°€ë§¹ì  ì—…ì¢…ë¦¬ìŠ¤íŠ¸ë¥¼ ê°€ì ¸ì˜¨ë‹¤.
+	 *   ë„ë©”ì¸ ì´ë¦„ : checkMileageBusinessKind
+	 *   ì»¨íŠ¸ë¡¤ëŸ¬ : checkMileageBusinessKindController
+	 *   ë©”ì†Œë“œ : selectBusinessKindList
+	 *   í•„ìš” íŒŒë¼ë¯¸í„° : countryCode / languageCode / activateYn
+	 *   ì•ì˜ ë‘ê°œëŠ” ëª¨ë°”ì¼ì—ì„œ ê°’ì„ êº¼ë‚´ì„œ ì‚¬ìš©í•œë‹¤. ì•¡í‹°ë¸ŒëŠ” Y ê°’ì„ ì‚¬ìš©.
+	 *   ê²°ê³¼ ê°’ : List<checkMileageBusinessKind>  ì˜ content ë¥¼ ì‚¬ìš©í•œë‹¤.
 	 */
 	//	public void getBusinessKindList_pre(){
 	//		new Thread(
@@ -539,7 +539,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	//	}
 	/**
 	 * getBusinessKindList
-	 *  °Ë»öÀ» À§ÇÑ °¡¸ÍÁ¡ ¾÷Á¾¸®½ºÆ®¸¦ °¡Á®¿Â´Ù.
+	 *  ê²€ìƒ‰ì„ ìœ„í•œ ê°€ë§¹ì  ì—…ì¢…ë¦¬ìŠ¤íŠ¸ë¥¼ ê°€ì ¸ì˜¨ë‹¤.
 	 *
 	 * @param
 	 * @param
@@ -549,7 +549,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		if(true){
 			//		if(CheckNetwork()){
 			Log.i(TAG, "getBusinessKindList");
-			// ·ÎµùÁßÀÔ´Ï´Ù..  
+			// ë¡œë”©ì¤‘ì…ë‹ˆë‹¤..  
 			new Thread(	
 					new Runnable(){
 						public void run(){
@@ -562,7 +562,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 						}
 					}
 			).start();
-			//			searchSpinnerType.setEnabled(false);			// handler ¿¡¼­ Ã³¸® 		b.putInt("enableOrDisable", 2);
+			//			searchSpinnerType.setEnabled(false);			// handler ì—ì„œ ì²˜ë¦¬ 		b.putInt("enableOrDisable", 2);
 			//			searchText.setEnabled(false); 
 			//			searchBtn.setEnabled(false);
 
@@ -575,14 +575,14 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			strCountry = systemLocale .getCountry();
 			strLanguage = systemLocale .getLanguage();
 
-			// ¼­¹ö Åë½ÅºÎ
+			// ì„œë²„ í†µì‹ ë¶€
 			new Thread(
 					new Runnable(){
 						public void run(){
 							JSONObject obj = new JSONObject();
 							try{
-								obj.put("countryCode", strCountry);		// ±¹°¡ ÄÚµå
-								obj.put("languageCode", strLanguage);			// ¾ğ¾îÄÚµå
+								obj.put("countryCode", strCountry);		// êµ­ê°€ ì½”ë“œ
+								obj.put("languageCode", strLanguage);			// ì–¸ì–´ì½”ë“œ
 								obj.put("activateYn", "Y");
 								Log.w(TAG,"countryCode::"+strCountry+",languageCode:"+strLanguage);
 							}catch(Exception e){
@@ -605,12 +605,12 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 								os2.write(jsonString.getBytes("UTF-8"));
 								os2.flush();
 								Thread.sleep(200);
-								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : Á¤»ó
+								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : ì •ìƒ
 								responseCode = connection2.getResponseCode();
 								//								os2.close();
 								if(responseCode==200||responseCode==204){
 									InputStream in =  connection2.getInputStream();
-									// Á¶È¸ÇÑ °á°ú¸¦ Ã³¸®.
+									// ì¡°íšŒí•œ ê²°ê³¼ë¥¼ ì²˜ë¦¬.
 									setBusinessKindList(in);
 								}
 								//								connection2.disconnect();
@@ -632,11 +632,11 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 								//									searchSpinnerType.setEnabled(true);
 								//									searchText.setEnabled(true); 
 								//									searchBtn.setEnabled(true);
-								showInfo();		// ÇÚµé·¯¿¡¼­ ÇÔ²² Ã³¸®
+								showInfo();		// í•¸ë“¤ëŸ¬ì—ì„œ í•¨ê»˜ ì²˜ë¦¬
 								//								}
 							}
 							//							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-							//							if(CommonUtils.usingNetwork < 0){	// 0 º¸´Ù ÀÛÁö´Â ¾Ê°Ô
+							//							if(CommonUtils.usingNetwork < 0){	// 0 ë³´ë‹¤ ì‘ì§€ëŠ” ì•Šê²Œ
 							//								CommonUtils.usingNetwork = 0;
 							//							}
 						}
@@ -646,11 +646,11 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	}
 
 	/*
-	 * °¡¸ÍÁ¡ Á¤º¸ 1Â÷ µ¥ÀÌÅÍ ¹ŞÀ½. entries µµ¸ŞÀÎ¿¡ ÀúÀå. ÀÌÈÄ url Á¤º¸¸¦ ²¨³» ÀÌ¹ÌÁö¸¦ ¹Ş¾Æ¿À´Â ÇÔ¼ö¸¦ È£ÃâÇÑ´Ù.
+	 * ê°€ë§¹ì  ì •ë³´ 1ì°¨ ë°ì´í„° ë°›ìŒ. entries ë„ë©”ì¸ì— ì €ì¥. ì´í›„ url ì •ë³´ë¥¼ êº¼ë‚´ ì´ë¯¸ì§€ë¥¼ ë°›ì•„ì˜¤ëŠ” í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•œë‹¤.
 	 */
 	/**
 	 * setBusinessKindList
-	 *  °¡¸ÍÁ¡ Á¤º¸ 1Â÷ µ¥ÀÌÅÍ ¹ŞÀ½. entries µµ¸ŞÀÎ¿¡ ÀúÀå. ÀÌÈÄ url Á¤º¸¸¦ ²¨³» ÀÌ¹ÌÁö¸¦ ¹Ş¾Æ¿À´Â ÇÔ¼ö¸¦ È£ÃâÇÑ´Ù.
+	 *  ê°€ë§¹ì  ì •ë³´ 1ì°¨ ë°ì´í„° ë°›ìŒ. entries ë„ë©”ì¸ì— ì €ì¥. ì´í›„ url ì •ë³´ë¥¼ êº¼ë‚´ ì´ë¯¸ì§€ë¥¼ ë°›ì•„ì˜¤ëŠ” í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•œë‹¤.
 	 *
 	 * @param in
 	 * @param
@@ -668,8 +668,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//		Log.d(TAG,"¼ö½Å::"+builder.toString());
-		String tempstr = builder.toString();		// ¹ŞÀº µ¥ÀÌÅÍ¸¦ °¡°øÇÏ¿© »ç¿ëÇÒ ¼ö ÀÖ´Ù
+		//		Log.d(TAG,"ìˆ˜ì‹ ::"+builder.toString());
+		String tempstr = builder.toString();		// ë°›ì€ ë°ì´í„°ë¥¼ ê°€ê³µí•˜ì—¬ ì‚¬ìš©í•  ìˆ˜ ìˆë‹¤
 		JSONArray jsonArray2 = null;
 		try {
 			jsonArray2 = new JSONArray(tempstr);
@@ -677,25 +677,25 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			e1.printStackTrace();
 		}
 		int max = jsonArray2.length();
-		Log.d(TAG,"max:"+max);				// 0 ¹øÂ° ¸ğµç ¾÷Á¾ Á¦°Å.
+		Log.d(TAG,"max:"+max);				// 0 ë²ˆì§¸ ëª¨ë“  ì—…ì¢… ì œê±°.
 		try {
-			tmpJobs = new String[max];		// 0¹øÂ° Á¦°Å·Î max+1 --> max
-			//			tmpJobs[0] = "¸ğµç ¾÷Á¾";			// ³ªÁß¿¡ ¹Ù²ã¾ß ÇÏ´Âµ¥.. ´Ù±¹¾î·Î. *** 		--> 0¹øÂ° ¸ğµç ¾÷Á¾ Ç×¸ñ Á¦°Å
+			tmpJobs = new String[max];		// 0ë²ˆì§¸ ì œê±°ë¡œ max+1 --> max
+			//			tmpJobs[0] = "ëª¨ë“  ì—…ì¢…";			// ë‚˜ì¤‘ì— ë°”ê¿”ì•¼ í•˜ëŠ”ë°.. ë‹¤êµ­ì–´ë¡œ. *** 		--> 0ë²ˆì§¸ ëª¨ë“  ì—…ì¢… í•­ëª© ì œê±°
 			if(max>0){
 				for ( int i = 0; i < max; i++ ){
-					JSONObject jsonObj = jsonArray2.getJSONObject(i).getJSONObject("checkMileageBusinessKind");		// ´ë¼Ò¹®ÀÚ ÁÖÀÇ
-					tmpJobs[i] = jsonObj.getString("content");		// 0 ¹øÂ° Ç×¸ñ "¸ğµç ¾÷Á¾" Á¦°Å --> i+1 --> i
+					JSONObject jsonObj = jsonArray2.getJSONObject(i).getJSONObject("checkMileageBusinessKind");		// ëŒ€ì†Œë¬¸ì ì£¼ì˜
+					tmpJobs[i] = jsonObj.getString("content");		// 0 ë²ˆì§¸ í•­ëª© "ëª¨ë“  ì—…ì¢…" ì œê±° --> i+1 --> i
 				}
 			}else{
 				tmpJobs = new String[1];
-				tmpJobs[0] = "Not Available";				// °Ë»ö ºÒ°¡. (¼­¹ö¿¡¼­ ¹Ş¾Æ¿Â ¾÷Á¾ °³¼ö°¡ 0°³ÀÓ.)
+				tmpJobs[0] = "Not Available";				// ê²€ìƒ‰ ë¶ˆê°€. (ì„œë²„ì—ì„œ ë°›ì•„ì˜¨ ì—…ì¢… ê°œìˆ˜ê°€ 0ê°œì„.)
 			}
 
-			isRunning = 0;			// ´Ù¸¥ °Ë»ö °¡´É.
+			isRunning = 0;			// ë‹¤ë¥¸ ê²€ìƒ‰ ê°€ëŠ¥.
 			new Thread(
 					new Runnable(){
 						public void run(){
-							Message message = handler.obtainMessage();					// ¾÷Á¾ ¸ñ·Ï ¹Ş¾Æ¿Â°Í ½ºÇÇ³Ê¿¡ ¼¼ÆÃ..
+							Message message = handler.obtainMessage();					// ì—…ì¢… ëª©ë¡ ë°›ì•„ì˜¨ê²ƒ ìŠ¤í”¼ë„ˆì— ì„¸íŒ…..
 							Bundle b = new Bundle();
 							b.putInt("setJobsList", 1);
 							message.setData(b);
@@ -710,24 +710,24 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 
 
 	/*
-	 * ¼­¹ö¿Í Åë½ÅÇÏ¿©   °¡¸ÍÁ¡ ¸ñ·ÏÀ» °¡Á®¿Â´Ù. »õ·Î Á¶È¸.			 Á¶È¸ 1.
-	 * ±× °á°ú¸¦ List<CheckMileageMerchant> Object ·Î ¹İÈ¯ ÇÑ´Ù.  
+	 * ì„œë²„ì™€ í†µì‹ í•˜ì—¬   ê°€ë§¹ì  ëª©ë¡ì„ ê°€ì ¸ì˜¨ë‹¤. ìƒˆë¡œ ì¡°íšŒ.			 ì¡°íšŒ 1.
+	 * ê·¸ ê²°ê³¼ë¥¼ List<CheckMileageMerchant> Object ë¡œ ë°˜í™˜ í•œë‹¤.  
 	 * 
-	 *  È£Ãâ ´ë»ó :: 
+	 *  í˜¸ì¶œ ëŒ€ìƒ :: 
 	 * checkMileageMerchantController // selectSearchMerchantList // checkMileageMerchant 
 	 * 
-	 *  º¸³»´Â Á¤º¸ :  businessArea01 / businessKind03 / activateYn							// ±¹°¡ÄÚµå, ¾ğ¾îÄÚµå..
+	 *  ë³´ë‚´ëŠ” ì •ë³´ :  businessArea01 / businessKind03 / activateYn							// êµ­ê°€ì½”ë“œ, ì–¸ì–´ì½”ë“œ..
 	 * 	
-	 *	¹Ş´Â Á¤º¸.
+	 *	ë°›ëŠ” ì •ë³´.
 	 *  merchantId // companyName / // profileImageUrl / 
 	 *  workPhoneNumber / zipCode01 / address01/ address02 / businessArea01 // latitude // longitude
 	 * 
-	 *  ÅÍÄ¡ÇÏ¸é °¡¸ÍÁ¡ »ó¼¼Á¤º¸·Î °¡¾ßÇÏ±â ¶§¹®¿¡ Å°µµ ÇÊ¿äÇÏ´Ù..  merchantId °°Àº°Å..	
+	 *  í„°ì¹˜í•˜ë©´ ê°€ë§¹ì  ìƒì„¸ì •ë³´ë¡œ ê°€ì•¼í•˜ê¸° ë•Œë¬¸ì— í‚¤ë„ í•„ìš”í•˜ë‹¤..  merchantId ê°™ì€ê±°..	
 	 *  
 	 */
 	/**
 	 * getMemberStoreList
-	 *  ¼­¹ö¿Í Åë½ÅÇÏ¿©   °¡¸ÍÁ¡ ¸ñ·ÏÀ» °¡Á®¿Â´Ù
+	 *  ì„œë²„ì™€ í†µì‹ í•˜ì—¬   ê°€ë§¹ì  ëª©ë¡ì„ ê°€ì ¸ì˜¨ë‹¤
 	 *
 	 * @param
 	 * @param
@@ -739,12 +739,12 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			Log.i(TAG, "getMemberStoreList");
 			controllerName = "checkMileageMerchantController";
 			methodName = "selectSearchMerchantList";
-			indexDataFirst = 0; // È­¸é Ã¹ °ª ÀÎµ¦½º. ÃÊ±âÈ­.. ´Ù½Ã 0ºÎÅÍ
-			indexDataLast = 0;	// È­¸é¿¡ º¸¿©Áö´Â ³¡°ª ÀÎµ¦½º. ÇÔ²² ÃÊ±âÈ­.. 0ºÎÅÍ
-			entriesFn.clear();		// ÀÌ°Íµµ ÃÊ±âÈ­ ÇØº¸ÀÚ. È­¸é¿¡ º¸¿©Áö´Â µ¥ÀÌÅÍ ¸®½ºÆ®.
-			newSearch = true;			// »õ·Î¿î °Ë»öÀÓ. true ¶ó¸é ±âÁ¸ µ¥ÀÌÅÍ´Â Áö¿ö¾ßÇÔ.
-			//			mIsLast = false;		// ÃÊ±âÈ­. ³¡ÀÌ ¾Æ´Ï¹Ç·Î Ãß°¡ °¡´É.
-			// ·ÎµùÁßÀÔ´Ï´Ù..  
+			indexDataFirst = 0; // í™”ë©´ ì²« ê°’ ì¸ë±ìŠ¤. ì´ˆê¸°í™”.. ë‹¤ì‹œ 0ë¶€í„°
+			indexDataLast = 0;	// í™”ë©´ì— ë³´ì—¬ì§€ëŠ” ëê°’ ì¸ë±ìŠ¤. í•¨ê»˜ ì´ˆê¸°í™”.. 0ë¶€í„°
+			entriesFn.clear();		// ì´ê²ƒë„ ì´ˆê¸°í™” í•´ë³´ì. í™”ë©´ì— ë³´ì—¬ì§€ëŠ” ë°ì´í„° ë¦¬ìŠ¤íŠ¸.
+			newSearch = true;			// ìƒˆë¡œìš´ ê²€ìƒ‰ì„. true ë¼ë©´ ê¸°ì¡´ ë°ì´í„°ëŠ” ì§€ì›Œì•¼í•¨.
+			//			mIsLast = false;		// ì´ˆê¸°í™”. ëì´ ì•„ë‹ˆë¯€ë¡œ ì¶”ê°€ ê°€ëŠ¥.
+			// ë¡œë”©ì¤‘ì…ë‹ˆë‹¤..  
 			new Thread(	
 					new Runnable(){
 						public void run(){
@@ -757,7 +757,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 					}
 			).start();
 
-			if(isRunning==0){		// ÁøÇàÁß¿¡ ´Ù¸¥ Á¶ÀÛ »çÀı
+			if(isRunning==0){		// ì§„í–‰ì¤‘ì— ë‹¤ë¥¸ ì¡°ì‘ ì‚¬ì ˆ
 				isRunning=1;
 				//				searchSpinnerArea.setEnabled(false);
 				new Thread(	
@@ -774,17 +774,17 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 				//				searchSpinnerType.setEnabled(false);
 				//				searchText.setEnabled(false); 
 				//				searchBtn.setEnabled(false);
-				// ¼­¹ö Åë½ÅºÎ
+				// ì„œë²„ í†µì‹ ë¶€
 				new Thread(
 						new Runnable(){
 							public void run(){
 								JSONObject obj = new JSONObject();
 								try{
 									obj.put("activateYn", "Y");
-									//									obj.put("businessArea01", searchWordArea);		// Áö¿ª		  
-									obj.put("businessKind03", searchWordType);		// ¾÷Á¾					// °íÀ¯ ¹øÈ£ ¾òÀ¸·Á¸é, ³» ¾ÆÀÌµğµµ ÇÊ¿ä...
-									obj.put("checkMileageId", myQRcode);			// ³» ¾ÆÀÌµğ
-									obj.put("companyName", searchText.getText());			// ³» ¾ÆÀÌµğ
+									//									obj.put("businessArea01", searchWordArea);		// ì§€ì—­		  
+									obj.put("businessKind03", searchWordType);		// ì—…ì¢…					// ê³ ìœ  ë²ˆí˜¸ ì–»ìœ¼ë ¤ë©´, ë‚´ ì•„ì´ë””ë„ í•„ìš”...
+									obj.put("checkMileageId", myQRcode);			// ë‚´ ì•„ì´ë””
+									obj.put("companyName", searchText.getText());			// ë‚´ ì•„ì´ë””
 
 									//									Log.w(TAG,"myQRcode::"+myQRcode+",searchWordArea:"+searchWordArea+",searchWordType:"+searchWordType+",companyName:"+searchText.getText());
 									Log.w(TAG,"myQRcode::"+myQRcode+",searchWordType:"+searchWordType+",companyName:"+searchText.getText());
@@ -807,14 +807,14 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 									os2.write(jsonString.getBytes("UTF-8"));
 									os2.flush();
 									//								System.out.println("postUrl      : " + postUrl2);
-									System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : Á¤»ó
+									System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : ì •ìƒ
 									responseCode = connection2.getResponseCode();
 									if(responseCode==200||responseCode==204){
 										InputStream in =  connection2.getInputStream();
-										// Á¶È¸ÇÑ °á°ú¸¦ Ã³¸®.
+										// ì¡°íšŒí•œ ê²°ê³¼ë¥¼ ì²˜ë¦¬.
 										theData1(in);
 									}else{
-										// °á°ú°¡ ¿¡·¯¸é ·Îµù¹Ù ¾ø¾Ö°í ´Ù½Ã ÇÒ¼ö ÀÖµµ·Ï
+										// ê²°ê³¼ê°€ ì—ëŸ¬ë©´ ë¡œë”©ë°” ì—†ì• ê³  ë‹¤ì‹œ í• ìˆ˜ ìˆë„ë¡
 										new Thread(
 												new Runnable(){
 													public void run(){
@@ -832,7 +832,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 								}catch(Exception e){ 
 									e.printStackTrace();
 									//									connection2.disconnect();
-									// ½ÇÇàÁß ¿¡·¯³ª¸é ·Îµù¹Ù ¾ø¾Ö°í ´Ù½Ã ÇÒ¼ö ÀÖµµ·Ï
+									// ì‹¤í–‰ì¤‘ ì—ëŸ¬ë‚˜ë©´ ë¡œë”©ë°” ì—†ì• ê³  ë‹¤ì‹œ í• ìˆ˜ ìˆë„ë¡
 									new Thread(
 											new Runnable(){
 												public void run(){
@@ -849,7 +849,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 									//										try{
 									//											Log.w(TAG,"failed, retry all again. remain retry : "+reTry);
 									//											reTry = reTry -1;
-									//											Thread.sleep(200);		// Àç½Ãµµ?
+									//											Thread.sleep(200);		// ì¬ì‹œë„?
 									//											getMemberStoreList();
 									//										}catch(Exception e2){}
 									//									}else{
@@ -888,11 +888,11 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	}
 
 	/*
-	 * °¡¸ÍÁ¡ Á¤º¸ 1Â÷ µ¥ÀÌÅÍ ¹ŞÀ½. entries µµ¸ŞÀÎ¿¡ ÀúÀå. ÀÌÈÄ url Á¤º¸¸¦ ²¨³» ÀÌ¹ÌÁö¸¦ ¹Ş¾Æ¿À´Â ÇÔ¼ö¸¦ È£ÃâÇÑ´Ù.
+	 * ê°€ë§¹ì  ì •ë³´ 1ì°¨ ë°ì´í„° ë°›ìŒ. entries ë„ë©”ì¸ì— ì €ì¥. ì´í›„ url ì •ë³´ë¥¼ êº¼ë‚´ ì´ë¯¸ì§€ë¥¼ ë°›ì•„ì˜¤ëŠ” í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•œë‹¤.
 	 */
 	/**
 	 * theData1
-	 *  °¡¸ÍÁ¡ Á¤º¸ 1Â÷ µ¥ÀÌÅÍ ¹ŞÀ½. entries µµ¸ŞÀÎ¿¡ ÀúÀå. ÀÌÈÄ url Á¤º¸¸¦ ²¨³» ÀÌ¹ÌÁö¸¦ ¹Ş¾Æ¿À´Â ÇÔ¼ö¸¦ È£ÃâÇÑ´Ù.
+	 *  ê°€ë§¹ì  ì •ë³´ 1ì°¨ ë°ì´í„° ë°›ìŒ. entries ë„ë©”ì¸ì— ì €ì¥. ì´í›„ url ì •ë³´ë¥¼ êº¼ë‚´ ì´ë¯¸ì§€ë¥¼ ë°›ì•„ì˜¤ëŠ” í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•œë‹¤.
 	 *
 	 * @param in
 	 * @param
@@ -911,9 +911,9 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//		Log.d(TAG,"¼ö½Å::"+builder.toString());
-		String tempstr = builder.toString();		// ¹ŞÀº µ¥ÀÌÅÍ¸¦ °¡°øÇÏ¿© »ç¿ëÇÒ ¼ö ÀÖ´Ù
-		// // // // // // // ¹Ù·Î ¹Ù·Î È­¸é¿¡ add ÇÏ°í ÅÍÄ¡½Ã °ª °¡Á®´Ù°¡ »ó¼¼ Á¤º¸ º¸µµ·Ï....
+		//		Log.d(TAG,"ìˆ˜ì‹ ::"+builder.toString());
+		String tempstr = builder.toString();		// ë°›ì€ ë°ì´í„°ë¥¼ ê°€ê³µí•˜ì—¬ ì‚¬ìš©í•  ìˆ˜ ìˆë‹¤
+		// // // // // // // ë°”ë¡œ ë°”ë¡œ í™”ë©´ì— add í•˜ê³  í„°ì¹˜ì‹œ ê°’ ê°€ì ¸ë‹¤ê°€ ìƒì„¸ ì •ë³´ ë³´ë„ë¡....
 
 		JSONArray jsonArray2 = null;
 		try {
@@ -928,12 +928,12 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			if(max>0){
 				entries1 = new ArrayList<CheckMileageMerchants>(max);
 				for ( int i = 0; i < max; i++ ){
-					JSONObject jsonObj = jsonArray2.getJSONObject(i).getJSONObject("checkMileageMerchant");		// ´ë¼Ò¹®ÀÚ ÁÖÀÇ
+					JSONObject jsonObj = jsonArray2.getJSONObject(i).getJSONObject("checkMileageMerchant");		// ëŒ€ì†Œë¬¸ì ì£¼ì˜
 					/*
 					 *
-					 * °¡¸ÍÁ¡ ID, °¡¸ÍÁ¡ ÀÌ¸§, °¡¸ÍÁ¡ URL(ÀÌ¹ÌÁö º¸¿©ÁÖ±â ¿ëµµ)
+					 * ê°€ë§¹ì  ID, ê°€ë§¹ì  ì´ë¦„, ê°€ë§¹ì  URL(ì´ë¯¸ì§€ ë³´ì—¬ì£¼ê¸° ìš©ë„)
 					 *
-					private String idCheckMileageMileages;					// °íÀ¯ ½Äº° ¹øÈ£.!!	
+					private String idCheckMileageMileages;					// ê³ ìœ  ì‹ë³„ ë²ˆí˜¸.!!	
 					private String mileage;											
 					private String activateYN;
 					private String modifyDate;
@@ -945,16 +945,16 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 					private Bitmap merchantImage;
 					 *
 					 *  workPhoneNumber  zipCode01  address01  address02
-					 *   latitude  longitude								´ÙÀ½ÆäÀÌÁö·Î °¥¶§ µû·Î Á¶È¸ ¾ÈÇÏµµ·Ï °¡Áö°í ÀÖÀ¸¸é?..¾îÂ÷ÇÇ Á¶È¸ ÇØ¾ß ÇÏ´Âµí.
+					 *   latitude  longitude								ë‹¤ìŒí˜ì´ì§€ë¡œ ê°ˆë•Œ ë”°ë¡œ ì¡°íšŒ ì•ˆí•˜ë„ë¡ ê°€ì§€ê³  ìˆìœ¼ë©´?..ì–´ì°¨í”¼ ì¡°íšŒ í•´ì•¼ í•˜ëŠ”ë“¯.
 					 *
-					 * °¡¸ÍÁ¡ Á¤º¸·Î °¥¶§ ÇÊ¿äÇÑ °Íµé.
+					 * ê°€ë§¹ì  ì •ë³´ë¡œ ê°ˆë•Œ í•„ìš”í•œ ê²ƒë“¤.
 					 * intent.putExtra("checkMileageMerchantsMerchantID", entriesFn.get(arg2).getCheckMileageMerchantsMerchantID());		merchantId
-					 *	intent.putExtra("idCheckMileageMileages", entriesFn.get(arg2).getIdCheckMileageMileages());							»ó¼¼ ³»¿ªº¸±â À§ÇØ ÇÊ¿ä.. - Á¶È¸ ÇÊ¿ä.. ¼öÁ¤? ³»¾Æµğ
-					 *	intent.putExtra("myMileage", entriesFn.get(arg2).getMileage());														°¡¸ÍÁ¡¿¡ ´ëÇÑ ³» ¸¶ÀÏ¸®Áö - Á¶È¸ ÇÊ¿ä.. ¼öÁ¤ÇÒ°Í. 
+					 *	intent.putExtra("idCheckMileageMileages", entriesFn.get(arg2).getIdCheckMileageMileages());							ìƒì„¸ ë‚´ì—­ë³´ê¸° ìœ„í•´ í•„ìš”.. - ì¡°íšŒ í•„ìš”.. ìˆ˜ì •? ë‚´ì•„ë””
+					 *	intent.putExtra("myMileage", entriesFn.get(arg2).getMileage());														ê°€ë§¹ì ì— ëŒ€í•œ ë‚´ ë§ˆì¼ë¦¬ì§€ - ì¡°íšŒ í•„ìš”.. ìˆ˜ì •í• ê²ƒ. 
 					 *
 					 */
 					//  merchantId,  companyName,  profileImageUrl,  
-					// °´Ã¼ ¸¸µé°í °ª ¹ŞÀº°Å ³Ö¾î¼­ ÀúÀå..  ÀúÀå°ª:  °¡¸ÍÁ¡¾ÆÀÌµğ. °¡¸ÍÁ¡ ÀÌ¸§, ÇÁ·ÎÇÊ URL
+					// ê°ì²´ ë§Œë“¤ê³  ê°’ ë°›ì€ê±° ë„£ì–´ì„œ ì €ì¥..  ì €ì¥ê°’:  ê°€ë§¹ì ì•„ì´ë””. ê°€ë§¹ì  ì´ë¦„, í”„ë¡œí•„ URL
 					String tempMerchantId="";
 					String tempCompanyName="";
 					String tempProfileThumbnailImageUrl="";
@@ -990,15 +990,15 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}finally{
-			new backgroundGetMerchantInfo().execute();	// getMerchantInfo(entries1); ¸¦ ºñµ¿±â·Î ½ÇÇà
+			new backgroundGetMerchantInfo().execute();	// getMerchantInfo(entries1); ë¥¼ ë¹„ë™ê¸°ë¡œ ì‹¤í–‰
 		}
 	}
 
 
-	// °¡¸ÍÁ¡ URL·Î ÀÌ¹ÌÁö °¡Á®¿À±â.°¡¸ÍÁ¡ ÀÌ¹ÌÁö URL·ÎºÎÅÍ ÀÌ¹ÌÁö ¹Ş¾Æ¿Í¼­ µµ¸ŞÀÎ¿¡ ÀúÀåÇÑ´Ù. + °á°ú¹°¿¡ ´õÇÏ±â			-- 2Â÷ °Ë»ö
+	// ê°€ë§¹ì  URLë¡œ ì´ë¯¸ì§€ ê°€ì ¸ì˜¤ê¸°.ê°€ë§¹ì  ì´ë¯¸ì§€ URLë¡œë¶€í„° ì´ë¯¸ì§€ ë°›ì•„ì™€ì„œ ë„ë©”ì¸ì— ì €ì¥í•œë‹¤. + ê²°ê³¼ë¬¼ì— ë”í•˜ê¸°			-- 2ì°¨ ê²€ìƒ‰
 	/**
 	 * getMerchantInfo
-	 *  °¡¸ÍÁ¡ URL·Î ÀÌ¹ÌÁö °¡Á®¿À±â.°¡¸ÍÁ¡ ÀÌ¹ÌÁö URL·ÎºÎÅÍ ÀÌ¹ÌÁö ¹Ş¾Æ¿Í¼­ µµ¸ŞÀÎ¿¡ ÀúÀåÇÑ´Ù
+	 *  ê°€ë§¹ì  URLë¡œ ì´ë¯¸ì§€ ê°€ì ¸ì˜¤ê¸°.ê°€ë§¹ì  ì´ë¯¸ì§€ URLë¡œë¶€í„° ì´ë¯¸ì§€ ë°›ì•„ì™€ì„œ ë„ë©”ì¸ì— ì €ì¥í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -1007,12 +1007,12 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	public void getMerchantInfo(){
 		try{
 			Log.i(TAG, "merchantInfoGet   indexDataLast:"+indexDataLast+",indexDataTotal:"+indexDataTotal);
-			// ¸¶Áö¸· ÀÎµ¦½º+10°³°¡ ÀüÃ¼ °³¼öº¸´Ù Ä¿Áö¸é ÀüÃ¼ °³¼ö ±îÁö¸¸.
+			// ë§ˆì§€ë§‰ ì¸ë±ìŠ¤+10ê°œê°€ ì „ì²´ ê°œìˆ˜ë³´ë‹¤ ì»¤ì§€ë©´ ì „ì²´ ê°œìˆ˜ ê¹Œì§€ë§Œ.
 			if(indexDataLast+10>=indexDataTotal){
 				indexDataLast = indexDataTotal;
 				//				mIsLast = true;
 				Log.d(TAG,"indexDataLast:"+indexDataLast+",indexDataTotal:"+indexDataTotal );
-			}else{		// ÀüÃ¼ °³¼öº¸´Ù ÀÛ´Ù¸é 10°³. Ãß°¡ °¡´É.
+			}else{		// ì „ì²´ ê°œìˆ˜ë³´ë‹¤ ì‘ë‹¤ë©´ 10ê°œ. ì¶”ê°€ ê°€ëŠ¥.
 				indexDataLast = indexDataLast + 10;
 			}
 			Log.i(TAG,"indexDataFirst::"+indexDataFirst+"//indexDataLast::"+indexDataLast+"//indexDataTotal::"+indexDataTotal);
@@ -1071,12 +1071,12 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 				}
 			}
 
-			if(indexDataFirst+10>indexDataLast){	// ¸¶Áö¸·±îÁö µµ´ŞÇß´Ù¸é ¸¶Áö¸·¹øÈ£.
+			if(indexDataFirst+10>indexDataLast){	// ë§ˆì§€ë§‰ê¹Œì§€ ë„ë‹¬í–ˆë‹¤ë©´ ë§ˆì§€ë§‰ë²ˆí˜¸.
 				indexDataFirst = indexDataLast;
-			}else{									// ¸¶Áö¸·±îÁö µµ´ŞÇÏÁö ¾Ê¾Ò´Ù¸é +10
+			}else{									// ë§ˆì§€ë§‰ê¹Œì§€ ë„ë‹¬í•˜ì§€ ì•Šì•˜ë‹¤ë©´ +10
 				indexDataFirst = indexDataFirst + 10;
 			}
-			//			Log.d(TAG,"°¡¸ÍÁ¡ Á¤º¸ ¼ö½Å ¿Ï·á. ");
+			//			Log.d(TAG,"ê°€ë§¹ì  ì •ë³´ ìˆ˜ì‹  ì™„ë£Œ. ");
 			showInfo();
 		}catch(Exception e){
 			e.printStackTrace();
@@ -1085,10 +1085,10 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		}
 	}
 
-	// entries3 ¸¦ Àü¿ª¿¡ ÀúÀåÈÄ ½º·¹µå ÀÌ¿ëÇÏ¿© µ¹¸°´Ù. È­¸é¿¡ º¸¿©ÁØ´Ù.
+	// entries3 ë¥¼ ì „ì—­ì— ì €ì¥í›„ ìŠ¤ë ˆë“œ ì´ìš©í•˜ì—¬ ëŒë¦°ë‹¤. í™”ë©´ì— ë³´ì—¬ì¤€ë‹¤.
 	/**
 	 * showInfo
-	 *  entries3 ¸¦ Àü¿ª¿¡ ÀúÀåÈÄ ½º·¹µå ÀÌ¿ëÇÏ¿© µ¹¸°´Ù. È­¸é¿¡ º¸¿©ÁØ´Ù.
+	 *  entries3 ë¥¼ ì „ì—­ì— ì €ì¥í›„ ìŠ¤ë ˆë“œ ì´ìš©í•˜ì—¬ ëŒë¦°ë‹¤. í™”ë©´ì— ë³´ì—¬ì¤€ë‹¤.
 	 *
 	 * @param
 	 * @param
@@ -1097,7 +1097,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	public void showInfo(){
 		Log.d(TAG, "showInfo");
 		new Thread(
-				new Runnable(){		// ·¯´×¹Ù ³¡
+				new Runnable(){		// ëŸ¬ë‹ë°” ë
 					public void run(){
 						Message message = handler.obtainMessage();
 						Bundle b = new Bundle();
@@ -1112,7 +1112,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 					public void run(){
 						Message message = handler.obtainMessage();
 						Bundle b = new Bundle();
-						b.putInt("showYN", 1);		// º¸¿©ÁÖ±â.
+						b.putInt("showYN", 1);		// ë³´ì—¬ì£¼ê¸°.
 						message.setData(b);
 						handler.sendMessage(message);
 					}
@@ -1120,10 +1120,10 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		).start();
 	}
 
-	// °¡¸ÍÁ¡ ÀÌ¹ÌÁö URL ¿¡¼­ ÀÌ¹ÌÁö ¹Ş¾Æ¿Í¼­ µµ¸ŞÀÎ¿¡ ÀúÀåÇÏ´Â ºÎºĞ.
+	// ê°€ë§¹ì  ì´ë¯¸ì§€ URL ì—ì„œ ì´ë¯¸ì§€ ë°›ì•„ì™€ì„œ ë„ë©”ì¸ì— ì €ì¥í•˜ëŠ” ë¶€ë¶„.
 	/**
 	 * LoadImage
-	 *  °¡¸ÍÁ¡ ÀÌ¹ÌÁö URL ¿¡¼­ ÀÌ¹ÌÁö ¹Ş¾Æ¿Â ½ºÆ®¸²À» ºñÆ®¸ÊÀ¸·Î ÀúÀåÇÑ´Ù
+	 *  ê°€ë§¹ì  ì´ë¯¸ì§€ URL ì—ì„œ ì´ë¯¸ì§€ ë°›ì•„ì˜¨ ìŠ¤íŠ¸ë¦¼ì„ ë¹„íŠ¸ë§µìœ¼ë¡œ ì €ì¥í•œë‹¤
 	 *
 	 * @param $imagePath
 	 * @param
@@ -1136,7 +1136,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	}
 	/**
 	 * OpenHttpConnection
-	 *  °¡¸ÍÁ¡ ÀÌ¹ÌÁö URL ¿¡¼­ ÀÌ¹ÌÁö ¹Ş¾Æ¿Í¼­ ½ºÆ®¸²À¸·Î ÀúÀåÇÑ´Ù
+	 *  ê°€ë§¹ì  ì´ë¯¸ì§€ URL ì—ì„œ ì´ë¯¸ì§€ ë°›ì•„ì™€ì„œ ìŠ¤íŠ¸ë¦¼ìœ¼ë¡œ ì €ì¥í•œë‹¤
 	 *
 	 * @param $imagePath
 	 * @param
@@ -1161,11 +1161,11 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	}
 
 	/*
-	 * Bitmap ÀÌ¹ÌÁö ¸®»çÀÌÁî
-	 * Src : ¿øº» Bitmap
-	 * newHeight : »õ·Î¿î ³ôÀÌ
-	 * newWidth : »õ·Î¿î ³ĞÀÌ
-	 * Âü°í ¼Ò½º : http://skyswim42.egloos.com/3477279 ( webview ¿¡¼­ capture È­¸é resizing ÇÏ´Â source µµ ÀÖÀ½ )
+	 * Bitmap ì´ë¯¸ì§€ ë¦¬ì‚¬ì´ì¦ˆ
+	 * Src : ì›ë³¸ Bitmap
+	 * newHeight : ìƒˆë¡œìš´ ë†’ì´
+	 * newWidth : ìƒˆë¡œìš´ ë„“ì´
+	 * ì°¸ê³  ì†ŒìŠ¤ : http://skyswim42.egloos.com/3477279 ( webview ì—ì„œ capture í™”ë©´ resizing í•˜ëŠ” source ë„ ìˆìŒ )
 	 */
 	//	private BitmapDrawable BitmapResizePrc( Bitmap Src, float newHeight, float newWidth)
 	//	{
@@ -1185,7 +1185,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	//		// resize the bit map
 	//		matrix.postScale(scaleWidth, scaleHeight);
 	//
-	//		// rotate the Bitmap È¸Àü ½ÃÅ°·Á¸é ÁÖ¼® ÇØÁ¦!
+	//		// rotate the Bitmap íšŒì „ ì‹œí‚¤ë ¤ë©´ ì£¼ì„ í•´ì œ!
 	//		//matrix.postRotate(45);
 	//
 	//		// recreate the new Bitmap
@@ -1205,7 +1205,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 
 	/**
 	 * onResume
-	 *  ¸®Áí½Ã¸¶´Ù °¡¸ÍÁ¡ ¸ñ·ÏÀ» °»½ÅÇÏµµ·Ï ÇÑ´Ù
+	 *  ë¦¬ì¥¼ì‹œë§ˆë‹¤ ê°€ë§¹ì  ëª©ë¡ì„ ê°±ì‹ í•˜ë„ë¡ í•œë‹¤
 	 *
 	 * @param 
 	 * @param
@@ -1215,23 +1215,23 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	public void onResume(){
 		super.onResume();
 		app_end = 0;
-		// °¡¸ÍÁ¡ ¾÷Á¾ ¸ñ·Ï °¡Á®¿À±â.
-		if((!jobKindSearched) && (isRunning==0)){				// ¾÷Á¾ °Ë»öÀÌ ¿Ï·áµÇÁö ¾Ê¾Ò°í, ½ÇÇàÁßÀÎ ÀÛ¾÷ÀÌ ¾øÀ» °æ¿ì.
-			isRunning = 1;		// ¿¬¼Ó ½ÇÇà ¹æÁö (´Ù¸¥ ½ÇÇà °ÅºÎ)
+		// ê°€ë§¹ì  ì—…ì¢… ëª©ë¡ ê°€ì ¸ì˜¤ê¸°.
+		if((!jobKindSearched) && (isRunning==0)){				// ì—…ì¢… ê²€ìƒ‰ì´ ì™„ë£Œë˜ì§€ ì•Šì•˜ê³ , ì‹¤í–‰ì¤‘ì¸ ì‘ì—…ì´ ì—†ì„ ê²½ìš°.
+			isRunning = 1;		// ì—°ì† ì‹¤í–‰ ë°©ì§€ (ë‹¤ë¥¸ ì‹¤í–‰ ê±°ë¶€)
 			showPb();
 			//			getBusinessKindList();
-			new backgroundGetBusinessKindList().execute();			// ºñµ¿±â·Î º¯È¯
+			new backgroundGetBusinessKindList().execute();			// ë¹„ë™ê¸°ë¡œ ë³€í™˜
 		}
 	}
 
 	/*
-	 *  ´İ±â ¹öÆ° 2¹ø ´©¸£¸é Á¾·á µÊ.
+	 *  ë‹«ê¸° ë²„íŠ¼ 2ë²ˆ ëˆ„ë¥´ë©´ ì¢…ë£Œ ë¨.
 	 *  (non-Javadoc)
 	 * @see android.app.Activity#onBackPressed()
 	 */
 	/**
 	 * onBackPressed
-	 *  ´İ±â ¹öÆ° 2¹ø ´©¸£¸é Á¾·áÇÑ´Ù
+	 *  ë‹«ê¸° ë²„íŠ¼ 2ë²ˆ ëˆ„ë¥´ë©´ ì¢…ë£Œí•œë‹¤
 	 *
 	 * @param 
 	 * @param
@@ -1243,8 +1243,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		if(app_end == 1){
 			Log.d(TAG,"kill all");
 			//			mainActivity.finish();
-			dummyActivity.finish();		// ´õ¹Ìµµ Á¾·á
-			DummyActivity.count = 0;		// °³¼ö 0À¸·Î ÃÊ±âÈ­ ½ÃÄÑÁØ´Ù. ´Ù½Ã ½ÇÇàµÉ¼ö ÀÖµµ·Ï
+			dummyActivity.finish();		// ë”ë¯¸ë„ ì¢…ë£Œ
+			DummyActivity.count = 0;		// ê°œìˆ˜ 0ìœ¼ë¡œ ì´ˆê¸°í™” ì‹œì¼œì¤€ë‹¤. ë‹¤ì‹œ ì‹¤í–‰ë ìˆ˜ ìˆë„ë¡
 			finish();
 		}else{
 			app_end = 1;
@@ -1253,7 +1253,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 					new Runnable(){
 						public void run(){
 							try {
-								Thread.sleep(3000);		// 3ÃÊÈÄ º¹¿ø. ´Ù½Ã µÚ·Î °¡±â ´­·¶À»¶§ Á¾·á ¿©ºÎ È®ÀÎ.
+								Thread.sleep(3000);		// 3ì´ˆí›„ ë³µì›. ë‹¤ì‹œ ë’¤ë¡œ ê°€ê¸° ëˆŒë €ì„ë•Œ ì¢…ë£Œ ì—¬ë¶€ í™•ì¸.
 								app_end = 0;
 							} catch (InterruptedException e) {e.printStackTrace();}
 						}
@@ -1264,21 +1264,21 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 
 
 	/*
-	 * ½ºÇÇ³Ê. ´Ù¸¥ ¾ÆÀÌÅÛ ¼±ÅÃ½Ã, ¶Ç´Â ±âÁ¸ ¾ÆÀÌÅÛ ¼±ÅÃ½Ã¿¡ ´ëÇÑ ÀÌº¥Æ®. 
-	 * ´Ù¸¥°Å ¼±ÅÃÇÏ¸é ¼­¹ö Åë½ÅÇÏ¿© Á¶È¸ÇØ¿Â´Ù. º¯È­ ¾øÀ»½Ã º¯È­ ¾øÀ½.
+	 * ìŠ¤í”¼ë„ˆ. ë‹¤ë¥¸ ì•„ì´í…œ ì„ íƒì‹œ, ë˜ëŠ” ê¸°ì¡´ ì•„ì´í…œ ì„ íƒì‹œì— ëŒ€í•œ ì´ë²¤íŠ¸. 
+	 * ë‹¤ë¥¸ê±° ì„ íƒí•˜ë©´ ì„œë²„ í†µì‹ í•˜ì—¬ ì¡°íšŒí•´ì˜¨ë‹¤. ë³€í™” ì—†ì„ì‹œ ë³€í™” ì—†ìŒ.
 	 * (non-Javadoc)
 	 * @see android.widget.AdapterView.OnItemSelectedListener#onItemSelected(android.widget.AdapterView, android.view.View, int, long)
 	 */
 	/**
 	 * onItemSelected
-	 *  ½ºÇÇ³Ê  ´Ù¸¥°Å ¼±ÅÃÇÏ¸é ¼­¹ö Åë½ÅÇÏ¿© Á¶È¸ÇØ¿Â´Ù
+	 *  ìŠ¤í”¼ë„ˆ  ë‹¤ë¥¸ê±° ì„ íƒí•˜ë©´ ì„œë²„ í†µì‹ í•˜ì—¬ ì¡°íšŒí•´ì˜¨ë‹¤
 	 *
 	 */
 	@Override
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
 			long arg3) {
 		gridView  = (GridView)findViewById(R.id.gridview);
-		gridView.setEnabled(false);					// ±×¸®µå ºä Çã¿ë ¾ÈÇÔ. °Ë»ö µµÁß ÀÌÀü °Ë»ö ¸®½ºÆ®¸¦ ½ºÅ©·ÑÇÏ¸é ¾îÇÃ °­Á¦ Á¾·áµÊ. -- ÀÎµ¦½º ¹®Á¦ ¶§¹®.
+		gridView.setEnabled(false);					// ê·¸ë¦¬ë“œ ë·° í—ˆìš© ì•ˆí•¨. ê²€ìƒ‰ ë„ì¤‘ ì´ì „ ê²€ìƒ‰ ë¦¬ìŠ¤íŠ¸ë¥¼ ìŠ¤í¬ë¡¤í•˜ë©´ ì–´í”Œ ê°•ì œ ì¢…ë£Œë¨. -- ì¸ë±ìŠ¤ ë¬¸ì œ ë•Œë¬¸.
 		Log.i(TAG,"searchSpinnerJobs//"+jobs[arg2]);
 
 		searchWordType = jobs[arg2];
@@ -1292,12 +1292,12 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	}
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {
-		// ½ºÇÇ³Ê ¾È¹Ù²Ù¸é ¹İÀÀx
+		// ìŠ¤í”¼ë„ˆ ì•ˆë°”ê¾¸ë©´ ë°˜ì‘x
 	}
 
 	/**
 	 * backgroundGetMerchantInfo
-	 *  ºñµ¿±â·Î °¡¸ÍÁ¡ Á¤º¸ ¾ò¾î¿À´ÂÇÔ¼ö È£Ãâ
+	 *  ë¹„ë™ê¸°ë¡œ ê°€ë§¹ì  ì •ë³´ ì–»ì–´ì˜¤ëŠ”í•¨ìˆ˜ í˜¸ì¶œ
 	 *
 	 * @param 
 	 * @param
@@ -1311,26 +1311,26 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		@Override protected Void doInBackground(Void... params) {  
 			Log.d(TAG,"backgroundGetMerchantInfo");
 			Log.w(TAG, "indexDataTotal::"+indexDataTotal+"//indexDataFirst::"+indexDataFirst+"//indexDataLast::"+indexDataLast+"/adding:"+adding);
-			if(indexDataTotal==0){				// ÀüÃ¼ °³¼ö°¡ 0ÀÏ °æ¿ì..  º¸¿©ÁÜ -> "¾ø½À´Ï´Ù"
+			if(indexDataTotal==0){				// ì „ì²´ ê°œìˆ˜ê°€ 0ì¼ ê²½ìš°..  ë³´ì—¬ì¤Œ -> "ì—†ìŠµë‹ˆë‹¤"
 				showInfo();
-			}else{								// °³¼ö°¡ 0ÀÌ ¾Æ´Ò¶§.
-				if(!((indexDataTotal<indexDataFirst)||(indexDataTotal<indexDataLast))){		// Á¤»óÀûÀÎ °æ¿ì
+			}else{								// ê°œìˆ˜ê°€ 0ì´ ì•„ë‹ë•Œ.
+				if(!((indexDataTotal<indexDataFirst)||(indexDataTotal<indexDataLast))){		// ì •ìƒì ì¸ ê²½ìš°
 					if(!adding){
 						adding = true;
-						getMerchantInfo();						// µ¥ÀÌÅÍ¸¦ °¡Á®¿È
+						getMerchantInfo();						// ë°ì´í„°ë¥¼ ê°€ì ¸ì˜´
 					}
 				}else{
-					indexDataLast = indexDataTotal;				// ºñÁ¤»óÀûÀÎ °æ¿ì. ¸¶Áö¸· µ¥ÀÌÅÍ°¡ ÃÖ´ë°ªÀ» ³Ñ°åÀ»¶§.
+					indexDataLast = indexDataTotal;				// ë¹„ì •ìƒì ì¸ ê²½ìš°. ë§ˆì§€ë§‰ ë°ì´í„°ê°€ ìµœëŒ€ê°’ì„ ë„˜ê²¼ì„ë•Œ.
 					Log.w(TAG, "indexDataTotal::"+indexDataTotal+"//indexDataFirst::"+indexDataFirst+"//indexDataLast::"+indexDataLast);
 				}
 			}
 			return null; 
 		}
 	}
-	// ºñµ¿±â·Î ¾÷Á¾ ¸ñ·Ï °¡Á®¿À±â.
+	// ë¹„ë™ê¸°ë¡œ ì—…ì¢… ëª©ë¡ ê°€ì ¸ì˜¤ê¸°.
 	/**
 	 * backgroundGetBusinessKindList
-	 *  ºñµ¿±â·Î ¾÷Á¾ ¸ñ·Ï °¡Á®¿À´Â ÇÔ¼ö È£Ãâ
+	 *  ë¹„ë™ê¸°ë¡œ ì—…ì¢… ëª©ë¡ ê°€ì ¸ì˜¤ëŠ” í•¨ìˆ˜ í˜¸ì¶œ
 	 *
 	 * @param 
 	 * @param
@@ -1350,12 +1350,12 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	}
 
 	/*
-	 * ³×Æ®¿öÅ© »óÅÂ °¨Áö
+	 * ë„¤íŠ¸ì›Œí¬ ìƒíƒœ ê°ì§€
 	 * 
 	 */
 	/**
 	 * CheckNetwork
-	 *  ³×Æ®¿öÅ© »óÅÂ °¨ÁöÇÑ´Ù
+	 *  ë„¤íŠ¸ì›Œí¬ ìƒíƒœ ê°ì§€í•œë‹¤
 	 *
 	 * @param 
 	 * @param
@@ -1376,7 +1376,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		+"//Conn="+isMobileConn;
 		if(!(isWifiConn||isMobileConn)){
 			Log.w(TAG,status);
-			//			AlertShow("Wifi È¤Àº 3G ¸ÁÀÌ ¿¬°áµÇÁö ¾Ê¾Ò°Å³ª ¿øÇÒÇÏÁö ¾Ê½À´Ï´Ù. ³×Æ®¿öÅ© È®ÀÎ ÈÄ ´Ù½Ã Á¢¼ÓÇØ ÁÖ¼¼¿ä.");
+			//			AlertShow("Wifi í˜¹ì€ 3G ë§ì´ ì—°ê²°ë˜ì§€ ì•Šì•˜ê±°ë‚˜ ì›í• í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤. ë„¤íŠ¸ì›Œí¬ í™•ì¸ í›„ ë‹¤ì‹œ ì ‘ì†í•´ ì£¼ì„¸ìš”.");
 			Log.d(TAG,"1");
 			if(gridView==null){
 				gridView  = (GridView)findViewById(R.id.gridview);
@@ -1411,9 +1411,9 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			//			alert_internet_status.show();
 			////			AlertShow_networkErr();
 
-			// »óÅÂ º¹¿ø. °Ë»ö °¡´ÉÇÏµµ·Ï. 
+			// ìƒíƒœ ë³µì›. ê²€ìƒ‰ ê°€ëŠ¥í•˜ë„ë¡. 
 			connected = false;
-			isRunning = 0;		// ³ªÁß¿¡ Àç½Ãµµ °¡´ÉÇÏµµ·Ï.
+			isRunning = 0;		// ë‚˜ì¤‘ì— ì¬ì‹œë„ ê°€ëŠ¥í•˜ë„ë¡.
 		}else{
 			connected = true;
 		}
@@ -1424,7 +1424,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 
 	/**
 	 * onPause
-	 *  pause ¿¡ È­¸é ÃÊ±âÈ­ÇÏ°í °¡»ó Å°º¸µå¸¦ ¼û±ä´Ù
+	 *  pause ì— í™”ë©´ ì´ˆê¸°í™”í•˜ê³  ê°€ìƒ í‚¤ë³´ë“œë¥¼ ìˆ¨ê¸´ë‹¤
 	 *
 	 * @param 
 	 * @param
@@ -1434,20 +1434,20 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	public void onPause(){
 		super.onPause();
 		searchText.setText("");
-		imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0); 		//°¡»óÅ°º¸µå ²ô±â
+		imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0); 		//ê°€ìƒí‚¤ë³´ë“œ ë„ê¸°
 	}
 
 
 	/**
 	 * goSearch
-	 *  ´Ü¾î¸íÀ¸·Î °¡¸ÍÁ¡ °Ë»öÀ» ½Ç½ÃÇÏµµ·Ï ÇÔ¼ö¸¦ È£ÃâÇÑ´Ù
+	 *  ë‹¨ì–´ëª…ìœ¼ë¡œ ê°€ë§¹ì  ê²€ìƒ‰ì„ ì‹¤ì‹œí•˜ë„ë¡ í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•œë‹¤
 	 *
 	 * @param 
 	 * @param
 	 * @return 
 	 */
-	public void goSearch(){		// ´Ü¾î °Ë»ö ¤¡¤¡
-		imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0); 		//°¡»óÅ°º¸µå ²ô±â
+	public void goSearch(){		// ë‹¨ì–´ ê²€ìƒ‰ ã„±ã„±
+		imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0); 		//ê°€ìƒí‚¤ë³´ë“œ ë„ê¸°
 		gridView  = (GridView)findViewById(R.id.gridview);
 		gridView.setEnabled(false);
 		try {
@@ -1461,7 +1461,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	}
 	/**
 	 * onEditorAction
-	 *  °Ë»öÃ¢¿¡¼­ ¿£ÅÍ¸¦ ´­·¯µµ °Ë»öµÇµµ·Ï ÇÑ´Ù
+	 *  ê²€ìƒ‰ì°½ì—ì„œ ì—”í„°ë¥¼ ëˆŒëŸ¬ë„ ê²€ìƒ‰ë˜ë„ë¡ í•œë‹¤
 	 *
 	 * @param 
 	 * @param
@@ -1473,10 +1473,10 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		{  
 		case R.id.store_search_text:  
 		{  
-			if(event.getAction() == KeyEvent.ACTION_DOWN)  		// ¿£ÅÍ½Ã¿¡µµ °Ë»ö ¤¡¤¡
+			if(event.getAction() == KeyEvent.ACTION_DOWN)  		// ì—”í„°ì‹œì—ë„ ê²€ìƒ‰ ã„±ã„±
 			{  
 				String searchTxt =  searchText.getText()+"";
-				//		            	 searchTxt = searchTxt.substring(0, searchTxt.length()-1);	// ¿£ÅÍ Àß¶ó?
+				//		            	 searchTxt = searchTxt.substring(0, searchTxt.length()-1);	// ì—”í„° ì˜ë¼?
 				searchText.setText(searchTxt);
 				goSearch();
 				return true;
@@ -1506,7 +1506,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	//		AlertDialog.Builder alert_internet_status = new AlertDialog.Builder(this);
 	//		alert_internet_status.setTitle("Warning");
 	//		alert_internet_status.setMessage(msg);
-	//		alert_internet_status.setPositiveButton("´İ±â", new DialogInterface.OnClickListener() {
+	//		alert_internet_status.setPositiveButton("ë‹«ê¸°", new DialogInterface.OnClickListener() {
 	//			@Override
 	//			public void onClick(DialogInterface dialog, int which) {
 	//				dialog.dismiss();

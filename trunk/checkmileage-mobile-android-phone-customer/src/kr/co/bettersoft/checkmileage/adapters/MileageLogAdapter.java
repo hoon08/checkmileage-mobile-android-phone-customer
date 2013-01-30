@@ -17,7 +17,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 /*
- * ∏∂¿œ∏Æ¡ˆ ∑Œ±◊øÎ æ∆¥‰≈Õ
+ * ÎßàÏùºÎ¶¨ÏßÄ Î°úÍ∑∏Ïö© ÏïÑÎãµÌÑ∞
  */
 public class MileageLogAdapter extends BaseAdapter {
 	private Context context;
@@ -40,7 +40,7 @@ public class MileageLogAdapter extends BaseAdapter {
  
 			listView = inflater.inflate(R.layout.member_store_log_list, null);
  
-			// ** ¿Ã º“Ω∫∏¶ ø©±‚ø° µŒ∏È «— »≠∏È¿« ¿ÃπÃ¡ˆ∞° π›∫π µ»¥Ÿ. æ∆∑°¬  return ¿ß∑Œ ø≈∞‹¡÷∏È ¿ÃπÃ¡ˆ π›∫π «ˆªÛ¿Ã æ¯¥Ÿ. 
+			// ** Ïù¥ ÏÜåÏä§Î•º Ïó¨Í∏∞Ïóê ÎëêÎ©¥ Ìïú ÌôîÎ©¥Ïùò Ïù¥ÎØ∏ÏßÄÍ∞Ä Î∞òÎ≥µ ÎêúÎã§. ÏïÑÎûòÏ™Ω return ÏúÑÎ°ú ÏòÆÍ≤®Ï£ºÎ©¥ Ïù¥ÎØ∏ÏßÄ Î∞òÎ≥µ ÌòÑÏÉÅÏù¥ ÏóÜÎã§. 
 //			// set value into textview
 //			TextView textView = (TextView) gridView
 //					.findViewById(R.id.label);
@@ -54,7 +54,7 @@ public class MileageLogAdapter extends BaseAdapter {
 			listView = (View) convertView;
 		}
  
-		// ** ¿ÃπÃ¡ˆ π›∫π «ˆªÛ¿ª æ¯æ÷±‚ ¿ß«ÿ ¿ß¬ ¿« º“Ω∫∏¶ ø©±‚∑Œ ø≈∞‹¡ÿ¥Ÿ. --> πÆ¡¶ «ÿ∞· µ .
+		// ** Ïù¥ÎØ∏ÏßÄ Î∞òÎ≥µ ÌòÑÏÉÅÏùÑ ÏóÜÏï†Í∏∞ ÏúÑÌï¥ ÏúÑÏ™ΩÏùò ÏÜåÏä§Î•º Ïó¨Í∏∞Î°ú ÏòÆÍ≤®Ï§ÄÎã§. --> Î¨∏Ï†ú Ìï¥Í≤∞ Îê®.
 		// set value into textview
 		TextView textView1 = (TextView) listView
 		.findViewById(R.id.merchant_log_info2);

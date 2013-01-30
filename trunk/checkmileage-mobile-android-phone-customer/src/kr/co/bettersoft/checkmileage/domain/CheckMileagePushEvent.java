@@ -5,21 +5,21 @@ import android.graphics.Bitmap;
 public class CheckMileagePushEvent {
 //	private String idCheckMileageMerchantMarketings;
 	// 49
-	private String subject;					// ÀÌº¥Æ® Á¦¸ñ
-	// ½¦ÇÁÀÇ ÆÄ½ºÅ¸ ÀÔ´Ï´Ù
-	private String content;					// ÀÌº¥Æ® ±Û±Í
-	//¾Ë¸² ¼­ºñ½º\r\nÇÑÁÙ¾¿¸¸\r\nÅ×½ºÆ® ÇÏ°Ú½À´Ï´Ù.
-	private String imageFileUrl;			// ÀÌº¥Æ® ±¤°í ÀÌ¹ÌÁö ÁÖ¼Ò
-	private Bitmap imageFile;				// ÀÌº¥Æ® ±¤°í ÀÌ¹ÌÁö
-	private String imageFileStr;			// ÀÌº¥Æ® ±¤°í ÀÌ¹ÌÁö -> ¹®ÀÚ¿­È­
+	private String subject;					// ì´ë²¤íŠ¸ ì œëª©
+	// ì‰í”„ì˜ íŒŒìŠ¤íƒ€ ì…ë‹ˆë‹¤
+	private String content;					// ì´ë²¤íŠ¸ ê¸€ê·€
+	//ì•Œë¦¼ ì„œë¹„ìŠ¤\r\ní•œì¤„ì”©ë§Œ\r\ní…ŒìŠ¤íŠ¸ í•˜ê² ìŠµë‹ˆë‹¤.
+	private String imageFileUrl;			// ì´ë²¤íŠ¸ ê´‘ê³  ì´ë¯¸ì§€ ì£¼ì†Œ
+	private Bitmap imageFile;				// ì´ë²¤íŠ¸ ê´‘ê³  ì´ë¯¸ì§€
+	private String imageFileStr;			// ì´ë²¤íŠ¸ ê´‘ê³  ì´ë¯¸ì§€ -> ë¬¸ìì—´í™”
 	// asdfasdfsfsdfsdfsdfsdf
 //	private String activateYn;
 	//Y
-	private String modifyDate;				// ÀÛ¼ºÀÏ 
+	private String modifyDate;				// ì‘ì„±ì¼ 
 	//2012-11-08 17:43:58
 //	private String registerDate;
 	//2012-11-08 17:43:58
-	private String companyName;				// °¡¸ÍÁ¡ ÀÌ¸§ 
+	private String companyName;				// ê°€ë§¹ì  ì´ë¦„ 
 	public CheckMileagePushEvent(String subject, String content,
 			String imageFileUrl, String modifyDate,
 			String companyName, String imageFileStr,
@@ -33,7 +33,7 @@ public class CheckMileagePushEvent {
 		this.companyName = companyName;
 	}
 	public CheckMileagePushEvent() { }
-	//¼ÎÇÁÀÇ ÆÄ½ºÅ¸
+	//ì…°í”„ì˜ íŒŒìŠ¤íƒ€
 	public String getSubject() {
 		return subject;
 	}

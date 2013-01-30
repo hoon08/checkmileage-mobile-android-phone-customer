@@ -1,5 +1,5 @@
 package kr.co.bettersoft.checkmileage.activities;
-// ÀÎÆ®·Î
+// ì¸íŠ¸ë¡œ
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -35,11 +35,11 @@ import android.widget.Toast;
 
 /**
  * MainActivity
- *  intro È­¸é
- * ±â´É : ÀÎÆ®·Î È­¸éÀ» º¸¿©ÁÜ.
- * QR ÄÚµå°¡ ÀÖ´ÂÁö °Ë»çÇÏ¿©
- *  QRÄÚµå°¡ ÀÖÀ¸¸é ¸ŞÀÎ½Ã¸®Áî·Î ÀÌµ¿(¸ŞÀÎ ½Ã¸®Áî Áß Ã¹È­¸é)
- *  QRÄÚµå°¡ ¾ø´Ù¸é QR ¼±ÅÃ ÆäÀÌÁö·Î ÀÌµ¿ÇÏ¿© ½Å±Ô »ı¼º ¶Ç´Â ÀÖ´Â °Í µî·Ï. ÈÄ ¸ŞÀÎ½Ã¸®Áî·Î ÀÌµ¿.
+ *  intro í™”ë©´
+ * ê¸°ëŠ¥ : ì¸íŠ¸ë¡œ í™”ë©´ì„ ë³´ì—¬ì¤Œ.
+ * QR ì½”ë“œê°€ ìˆëŠ”ì§€ ê²€ì‚¬í•˜ì—¬
+ *  QRì½”ë“œê°€ ìˆìœ¼ë©´ ë©”ì¸ì‹œë¦¬ì¦ˆë¡œ ì´ë™(ë©”ì¸ ì‹œë¦¬ì¦ˆ ì¤‘ ì²«í™”ë©´)
+ *  QRì½”ë“œê°€ ì—†ë‹¤ë©´ QR ì„ íƒ í˜ì´ì§€ë¡œ ì´ë™í•˜ì—¬ ì‹ ê·œ ìƒì„± ë˜ëŠ” ìˆëŠ” ê²ƒ ë“±ë¡. í›„ ë©”ì¸ì‹œë¦¬ì¦ˆë¡œ ì´ë™.
  *  
  */
 
@@ -52,15 +52,15 @@ public class MainActivity extends Activity {
 	String methodName = "";
 	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
 
-	// ³» QR ÄÚµå
+	// ë‚´ QR ì½”ë“œ
 	static String myQR = "";
-	// QR ÀúÀå¼ÒÀÌ¿ë °á°ú.
+	// QR ì €ì¥ì†Œì´ìš© ê²°ê³¼.
 	static int qrResult = 0;
 
-	String qrFromPref = ""; //¼³Á¤¿¡¼­ ÀĞÀº qr ÄÚµå
-	String qrFromFile = "";		// ÆÄÀÏ¿¡¼­ ÀĞÀº qr ÄÚµå
+	String qrFromPref = ""; //ì„¤ì •ì—ì„œ ì½ì€ qr ì½”ë“œ
+	String qrFromFile = "";		// íŒŒì¼ì—ì„œ ì½ì€ qr ì½”ë“œ
 	
-	// ¼³Á¤ ÆÄÀÏ ÀúÀå¼Ò  --> QR ÄÚµåµµ ÀúÀåÇÏ´Â°É·Î..
+	// ì„¤ì • íŒŒì¼ ì €ì¥ì†Œ  --> QR ì½”ë“œë„ ì €ì¥í•˜ëŠ”ê±¸ë¡œ..
 	String strForLog = "";
 	SharedPreferences sharedPrefForThis;
 	SharedPreferences sharedPrefCustom;
@@ -70,14 +70,14 @@ public class MainActivity extends Activity {
 
 	//	public static String REGISTRATION_ID;			
 
-	// Å×ÀÌºí »ı¼º Äõ¸®.
+	// í…Œì´ë¸” ìƒì„± ì¿¼ë¦¬.
 	private static final String Q_CREATE_TABLE = "CREATE TABLE user_info (" +
 	"_id INTEGER PRIMARY KEY AUTOINCREMENT," +
 	"key_of_data TEXT," +
 	"value_of_data TEXT" +
 	");" ;
 
-	// Å×ÀÌºí Á¶È¸ Äõ¸®
+	// í…Œì´ë¸” ì¡°íšŒ ì¿¼ë¦¬
 	private final String Q_GET_LIST = "SELECT * FROM user_info"
 		+ " WHERE key_of_data = 'user_img'";
 
@@ -86,7 +86,7 @@ public class MainActivity extends Activity {
 	SQLiteDatabase db = null;
 	/**
 	 * initDB
-	 *  DB ÃÊ±âÈ­ÇÑ´Ù.
+	 *  DB ì´ˆê¸°í™”í•œë‹¤.
 	 *
 	 * @param
 	 * @param
@@ -94,64 +94,64 @@ public class MainActivity extends Activity {
 	 */
 	public void initDB(){
 		Log.i(TAG,"initDB");
-		// db °ü·Ã ÀÛ¾÷ ÃÊ±âÈ­, DB ¿­¾î SQLiteDatabase ÀÎ½ºÅÏ½º »ı¼º          db ¿­°Å³ª ¾øÀ¸¸é »ı¼º
+		// db ê´€ë ¨ ì‘ì—… ì´ˆê¸°í™”, DB ì—´ì–´ SQLiteDatabase ì¸ìŠ¤í„´ìŠ¤ ìƒì„±          db ì—´ê±°ë‚˜ ì—†ìœ¼ë©´ ìƒì„±
 		if(db== null ){
 			db= openOrCreateDatabase( "sqlite_carrotDB.db",             
 					SQLiteDatabase.CREATE_IF_NECESSARY ,null );
 		}
-		// Å×ÀÌºí¿¡¼­ µ¥ÀÌÅÍ °¡Á®¿À±â Àü Å×ÀÌºí »ı¼º È®ÀÎ ¾øÀ¸¸é »ı¼º.
+		// í…Œì´ë¸”ì—ì„œ ë°ì´í„° ê°€ì ¸ì˜¤ê¸° ì „ í…Œì´ë¸” ìƒì„± í™•ì¸ ì—†ìœ¼ë©´ ìƒì„±.
 		checkTableIsCreated(db);
 	}
 	/**
 	 * checkTableIsCreated
-	 *  db Å×ÀÌºíÀ» ÁØºñÇÑ´Ù
+	 *  db í…Œì´ë¸”ì„ ì¤€ë¹„í•œë‹¤
 	 *
 	 * @param db
 	 * @param
 	 * @return
 	 */
-	public void checkTableIsCreated(SQLiteDatabase db){		// user_info ¶ó´Â ÀÌ¸§ÀÇ Å×ÀÌºíÀ» °Ë»öÇÏ°í ¾øÀ¸¸é »ı¼º.
+	public void checkTableIsCreated(SQLiteDatabase db){		// user_info ë¼ëŠ” ì´ë¦„ì˜ í…Œì´ë¸”ì„ ê²€ìƒ‰í•˜ê³  ì—†ìœ¼ë©´ ìƒì„±.
 		Log.i(TAG, "checkTableIsCreated");
 		Cursor c = db.query( "sqlite_master" , new String[] { "count(*)"}, "name=?" , new String[] { "user_info"}, null ,null , null);
 		Integer cnt=0;
-		c.moveToFirst();                                 // Ä¿¼­¸¦ Ã¹¶óÀÎÀ¸·Î ¿Å±è
-		while(c.isAfterLast()== false ){                   // ¸¶Áö¸· ¶óÀÎÀÌ µÉ¶§±îÁö 1¾¿ Áõ°¡ÇÏ¸é¼­ º»´Ù
+		c.moveToFirst();                                 // ì»¤ì„œë¥¼ ì²«ë¼ì¸ìœ¼ë¡œ ì˜®ê¹€
+		while(c.isAfterLast()== false ){                   // ë§ˆì§€ë§‰ ë¼ì¸ì´ ë ë•Œê¹Œì§€ 1ì”© ì¦ê°€í•˜ë©´ì„œ ë³¸ë‹¤
 			cnt=c.getInt(0);
 			c.moveToNext();
 		}
-		//Ä¿¼­´Â »ç¿ë Á÷ÈÄ ´İ´Â´Ù
+		//ì»¤ì„œëŠ” ì‚¬ìš© ì§í›„ ë‹«ëŠ”ë‹¤
 		c.close();
-		//Å×ÀÌºí ¾øÀ¸¸é »ı¼º
+		//í…Œì´ë¸” ì—†ìœ¼ë©´ ìƒì„±
 		if(cnt==0){
 			db.execSQL(Q_CREATE_TABLE);
 		}
 	}
 	/**
 	 * getDBData
-	 *  db µ¥ÀÌÅÍ¸¦ ²¨³½´Ù
+	 *  db ë°ì´í„°ë¥¼ êº¼ë‚¸ë‹¤
 	 *
 	 * @param
 	 * @param
 	 * @return
 	 */
-	public void getDBData(){				// db ¿¡ ÀÖ´Â µ¥ÀÌÅÍ ²¨³»¾î »ç¿ë
+	public void getDBData(){				// db ì— ìˆëŠ” ë°ì´í„° êº¼ë‚´ì–´ ì‚¬ìš©
 		Log.i(TAG, "getDBData");
 		String data_key="";
 		String data_value="";
-		// Á¶È¸
+		// ì¡°íšŒ
 		Cursor c = db.rawQuery( Q_GET_LIST, null );
 		//		Log.i(TAG, Integer.toString(c.getCount()));			// qr img
 		if(c.getCount()==0){
 			Log.i(TAG, "saved QR Image NotExist");
 		}else{
-			Log.i(TAG, "saved QR Image Exist");				// µ¥ÀÌÅÍ ÀÖÀ¸¸é ²¨³»¼­ »ç¿ëÇÔ.
-			c.moveToFirst();                                 // Ä¿¼­¸¦ Ã¹¶óÀÎÀ¸·Î ¿Å±è
-			while(c.isAfterLast()== false ){                   // ¸¶Áö¸· ¶óÀÎÀÌ µÉ¶§±îÁö 1¾¿ Áõ°¡ÇÏ¸é¼­ º»´Ù
+			Log.i(TAG, "saved QR Image Exist");				// ë°ì´í„° ìˆìœ¼ë©´ êº¼ë‚´ì„œ ì‚¬ìš©í•¨.
+			c.moveToFirst();                                 // ì»¤ì„œë¥¼ ì²«ë¼ì¸ìœ¼ë¡œ ì˜®ê¹€
+			while(c.isAfterLast()== false ){                   // ë§ˆì§€ë§‰ ë¼ì¸ì´ ë ë•Œê¹Œì§€ 1ì”© ì¦ê°€í•˜ë©´ì„œ ë³¸ë‹¤
 				data_key = c.getString(1);	
 				data_value = c.getString(2);	
 				c.moveToNext();
 			}
-			//			Log.i(TAG, "key:"+data_key+"/value:"+data_value);		// idx / key / value				// qr ¹®ÀÚÅ¸ÀÔ µ¥ÀÌÅÍ -> ÀÌ¹ÌÁö·Î µÇµ¹¸²
+			//			Log.i(TAG, "key:"+data_key+"/value:"+data_value);		// idx / key / value				// qr ë¬¸ìíƒ€ì… ë°ì´í„° -> ì´ë¯¸ì§€ë¡œ ë˜ëŒë¦¼
 			byte[] decodedString = Base64.decode(data_value, Base64.DEFAULT); 
 			Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 			MyQRPageActivity.savedBMP = decodedByte;
@@ -168,17 +168,17 @@ public class MainActivity extends Activity {
 		Log.i("MainActivity", "Success Starting MainActivity");
 		requestWindowFeature( Window.FEATURE_NO_TITLE );		// no title
 
-		Intent receiveIntent = getIntent();						// Çª½¬ ·Î ÀÎÇÑ ½ÇÇà¿¡ ´ëÇÑ Á¶Ä¡.
+		Intent receiveIntent = getIntent();						// í‘¸ì‰¬ ë¡œ ì¸í•œ ì‹¤í–‰ì— ëŒ€í•œ ì¡°ì¹˜.
 		RunMode = receiveIntent.getStringExtra("RunMode");		
 		if(RunMode==null || RunMode.length()<1){
 			RunMode = "";
 		}
 
-		mainActivity = MainActivity.this;		// ´Ù¸¥µ¥¼­ ¿©±â Á¾·á½ÃÅ°±â À§ÇÔ.
+		mainActivity = MainActivity.this;		// ë‹¤ë¥¸ë°ì„œ ì—¬ê¸° ì¢…ë£Œì‹œí‚¤ê¸° ìœ„í•¨.
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.intro);
 
-		//		CommonUtils.usingNetwork = 0;		// ¼­¹ö Åë½Å Ä«¿îÅÍ ÃÊ±âÈ­
+		//		CommonUtils.usingNetwork = 0;		// ì„œë²„ í†µì‹  ì¹´ìš´í„° ì´ˆê¸°í™”
 
 		initDB();
 		getDBData();
@@ -188,33 +188,33 @@ public class MainActivity extends Activity {
 				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
 
 
-		// prefs ¸¦ ÀĞ¾î¼­ ºñ¹ø ÀÔ·Â Ã¢À» ¶ç¿ïÁö ¿©ºÎ¸¦ °áÁ¤ÇÑ´Ù.. ¿©±â°¡ Ã¹ ÆäÀÌÁö´Ï±î ¿©±â¼­ ÇÑ´Ù.. 
+		// prefs ë¥¼ ì½ì–´ì„œ ë¹„ë²ˆ ì…ë ¥ ì°½ì„ ë„ìš¸ì§€ ì—¬ë¶€ë¥¼ ê²°ì •í•œë‹¤.. ì—¬ê¸°ê°€ ì²« í˜ì´ì§€ë‹ˆê¹Œ ì—¬ê¸°ì„œ í•œë‹¤.. 
 		//        Toast.makeText(MainActivity.this, "::"+sharedPrefCustom.getBoolean("appLocked", false), Toast.LENGTH_SHORT).show();	
 		//        Toast.makeText(MainActivity.this, "::"+sharedPrefCustom.getString("password", ""), Toast.LENGTH_SHORT).show();	
 		Boolean locked = sharedPrefCustom.getBoolean("appLocked", false);
-		// Àá±İ ¼³Á¤ »óÅÂ
+		// ì ê¸ˆ ì„¤ì • ìƒíƒœ
 		if(locked&&(!loginYN)){
 			//			Toast.makeText(MainActivity.this, "locked", Toast.LENGTH_SHORT).show();	
 			Intent intent = new Intent(MainActivity.this, Password.class);
-			// ºñ¹ø ÀÌÈÄ ¾×Æ¼ºñÆ¼ ¼³Á¤(³ª)
+			// ë¹„ë²ˆ ì´í›„ ì•¡í‹°ë¹„í‹° ì„¤ì •(ë‚˜)
 			intent.putExtra(Password.NEXT_ACTIVITY, CommonUtils.packageNames+".MainActivity");
-			// ÇöÀç È­¸é ºñ¹ø Àü´Ş
+			// í˜„ì¬ í™”ë©´ ë¹„ë²ˆ ì „ë‹¬
 			intent.putExtra(Password.PASSWORD, sharedPrefCustom.getString("password", "1234"));
-			// ºñ¹ø ÀÔ·Â ¸ğµå
+			// ë¹„ë²ˆ ì…ë ¥ ëª¨ë“œ
 			intent.putExtra(Password.MODE, Password.MODE_CHECK_PASSWORD);
 			startActivity(intent);   
 			finish();
-			// Àá±İ ÇØÁ¦ »óÅÂ
+			// ì ê¸ˆ í•´ì œ ìƒíƒœ
 		}else{
 			//			Toast.makeText(MainActivity.this, "opened", Toast.LENGTH_SHORT).show();	
-			loginYN = false;		// ¹®´Ü¼Ó. ´Ù½Ã Ä×À»¶§ ¶Ç ¶ß¶ó°í
-			nextProcessing();		// ´ÙÀ½ ´Ü°è
+			loginYN = false;		// ë¬¸ë‹¨ì†. ë‹¤ì‹œ ì¼°ì„ë•Œ ë˜ ëœ¨ë¼ê³ 
+			nextProcessing();		// ë‹¤ìŒ ë‹¨ê³„
 		}
 	}
 
 	/**
 	 * nextProcessing
-	 *  ´ÙÀ½ ´Ü°è - ·ÎµùÈ­¸é, ÀúÀåµÈ qr ÀÖ´ÂÁö È®ÀÎÇÏ¿© ¸ŞÀÎ°¥Áö, qr »ı¼ºÈ­¸é °¥Áö °áÁ¤
+	 *  ë‹¤ìŒ ë‹¨ê³„ - ë¡œë”©í™”ë©´, ì €ì¥ëœ qr ìˆëŠ”ì§€ í™•ì¸í•˜ì—¬ ë©”ì¸ê°ˆì§€, qr ìƒì„±í™”ë©´ ê°ˆì§€ ê²°ì •
 	 *
 	 * @param
 	 * @param
@@ -222,66 +222,66 @@ public class MainActivity extends Activity {
 	 */
 	public void nextProcessing(){
 
-		//		////////////////////////////////////////////GCM ¼¼ÆÃ  --> ¾ÈÇÔ      ///////////////////////////////////////////////////////////////		
+		//		////////////////////////////////////////////GCM ì„¸íŒ…  --> ì•ˆí•¨      ///////////////////////////////////////////////////////////////		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
 
 
-		readQR();			// ÀÏ´Ü ÀúÀåµÈ QR °ªÀÌ ÀÖ´ÂÁöºÎÅÍ È®ÀÎ ÇÑ´Ù.. ÀÖ´Ù¸é ÀÎÁõÀ»ÇÏÁö ¾Ê´Â´Ù..
+		readQR();			// ì¼ë‹¨ ì €ì¥ëœ QR ê°’ì´ ìˆëŠ”ì§€ë¶€í„° í™•ì¸ í•œë‹¤.. ìˆë‹¤ë©´ ì¸ì¦ì„í•˜ì§€ ì•ŠëŠ”ë‹¤..
 
-		// ½ÃÀÛ. °Ë»ç¸¦ ÅëÇØ ´ÙÀ½ Áø·Î °áÁ¤.
+		// ì‹œì‘. ê²€ì‚¬ë¥¼ í†µí•´ ë‹¤ìŒ ì§„ë¡œ ê²°ì •.
 		new Thread(
 				new Runnable(){
 					public void run(){
 						try{
-							Thread.sleep(2000);		// ÃÊ±â ·Îµù ½Ã°£. 2ÃÊ°£ ÀÎÆ®·Î È­¸é º¸¿©ÁÜ
-							// Àá±İ±â´É »ç¿ë½Ã ºñ¹ø ÀÔ·Â ÆäÀÌÁö·Î ÀÌµ¿.. // Àº ¾ÆÁ÷ ¹Ì±¸Çö.
-							if(finishApp){							// ·ÎµùÁß µÚ·Î°¡±â ´©¸£¸é ´Ù¸¥ Çàµ¿ ¾ÈÇÏ°í Á¶¿ëÈ÷ ³¡³².
+							Thread.sleep(2000);		// ì´ˆê¸° ë¡œë”© ì‹œê°„. 2ì´ˆê°„ ì¸íŠ¸ë¡œ í™”ë©´ ë³´ì—¬ì¤Œ
+							// ì ê¸ˆê¸°ëŠ¥ ì‚¬ìš©ì‹œ ë¹„ë²ˆ ì…ë ¥ í˜ì´ì§€ë¡œ ì´ë™.. // ì€ ì•„ì§ ë¯¸êµ¬í˜„.
+							if(finishApp){							// ë¡œë”©ì¤‘ ë’¤ë¡œê°€ê¸° ëˆ„ë¥´ë©´ ë‹¤ë¥¸ í–‰ë™ ì•ˆí•˜ê³  ì¡°ìš©íˆ ëë‚¨.
 								Log.d(TAG,"finishApp"+DummyActivity.count);
 								DummyActivity.count=0;
 								finishApp = false;
 								finish();
 							}else{
 								/*
-								 * QR À» ÆÄÀÏÀ» ÅëÇÑ ÀĞ±â ¾²±â½Ã »ç¿ë.  PREF ¼³Á¤À» »ç¿ëÇÒ ¿¹Á¤ ÀÌ¹Ç·Î  »ç¿ë ¾ÈÇÔ.
+								 * QR ì„ íŒŒì¼ì„ í†µí•œ ì½ê¸° ì“°ê¸°ì‹œ ì‚¬ìš©.  PREF ì„¤ì •ì„ ì‚¬ìš©í•  ì˜ˆì • ì´ë¯€ë¡œ  ì‚¬ìš© ì•ˆí•¨.
 								 */
-								Log.i("MainActivity", "qrResult::"+qrResult);		// ÀĞ±â °á°ú ¹ŞÀ½.
+								Log.i("MainActivity", "qrResult::"+qrResult);		// ì½ê¸° ê²°ê³¼ ë°›ìŒ.
 								//--------------------------------------------------------------------------------------//
 
-								// QR ÄÚµå°¡ ÀÖ´Ù¸é QR È­¸éÀ¸·Î ÀÌµ¿ÇÏ°í, QR ÄÚµå°¡ ¾ø´Ù¸é QR µî·Ï È­¸éÀ¸·Î ÀÌµ¿ÇÑ´Ù.
-								if((myQR!=null) &&  myQR.length()>0){ // QRÄÚµå°¡ ÀÖ´ÂÁö È®ÀÎ. ÀÖÀ¸¸é ¹Ù·Î ³» QR ÆäÀÌÁö·Î ÀÌµ¿.	// ÀúÀåµÈ QRÀÌ null ÀÏ °æ¿ì¿¡µµ »ı¼ºÀ¸·Î ÀÌµ¿..
+								// QR ì½”ë“œê°€ ìˆë‹¤ë©´ QR í™”ë©´ìœ¼ë¡œ ì´ë™í•˜ê³ , QR ì½”ë“œê°€ ì—†ë‹¤ë©´ QR ë“±ë¡ í™”ë©´ìœ¼ë¡œ ì´ë™í•œë‹¤.
+								if((myQR!=null) &&  myQR.length()>0){ // QRì½”ë“œê°€ ìˆëŠ”ì§€ í™•ì¸. ìˆìœ¼ë©´ ë°”ë¡œ ë‚´ QR í˜ì´ì§€ë¡œ ì´ë™.	// ì €ì¥ëœ QRì´ null ì¼ ê²½ìš°ì—ë„ ìƒì„±ìœ¼ë¡œ ì´ë™..
 									Log.i("MainActivity", "QR code checked success, Go Main Pages::"+myQR);
 
 									Intent intent = new Intent(MainActivity.this, Main_TabsActivity.class);
 									intent.putExtra("RunMode", RunMode);
 									intent.putExtra("myQR", myQR);
-									if(DummyActivity.count>0){		// °­Á¦ Á¾·áÇÏ¸é ´ÙÀ½ ¾×Æ¼ºñÆ¼µµ ¾ø´Ù.
+									if(DummyActivity.count>0){		// ê°•ì œ ì¢…ë£Œí•˜ë©´ ë‹¤ìŒ ì•¡í‹°ë¹„í‹°ë„ ì—†ë‹¤.
 										startActivity(intent);
 									}
-									finish();		// ´Ù¸¥ ¾×Æ¼ºñÆ¼¸¦ È£ÃâÇÏ°í ÀÚ½ÅÀº Á¾·á. 
-								}else {				// QR ÄÚµå°¡ ¾øÀ¸¸é ¼³Ä¡ÈÄ ÃÖÃÊ ½ÇÇàÇÏ´Â »ç¶÷. 
+									finish();		// ë‹¤ë¥¸ ì•¡í‹°ë¹„í‹°ë¥¼ í˜¸ì¶œí•˜ê³  ìì‹ ì€ ì¢…ë£Œ. 
+								}else {				// QR ì½”ë“œê°€ ì—†ìœ¼ë©´ ì„¤ì¹˜í›„ ìµœì´ˆ ì‹¤í–‰í•˜ëŠ” ì‚¬ëŒ. 
 									/*
-									 *  ±âÁ¸¿¡ ÀÎÁõ ¹ŞÀº »ç¿ëÀÚÀÎÁö È®ÀÎÀÌ ÇÊ¿äÇÏ´Ù.
-									 *  QR ÀúÀå ÆÄÀÏ¿¡ QR °ªÀÌ ¾øÀ» ½Ã¿¡´Â ¾îÇÃ ¼³Ä¡ ÈÄ ÃÖÃÊ ½ÇÇàÀÌ¹Ç·Î ÀÎÁõÀ» ¹Ş¾Æ¾ß ÇÑ´Ù..
-									 *  ÀÎÁõ 1´Ü°èÀÎ [ÈŞ´ëÆù ¹øÈ£ ÀÎÁõ]À¸·Î  ¼­¹ö¿Í Åë½ÅÀ» ÇÏ¿© ÀÌÀü µî·ÏµÈ »ç¿ëÀÚÀÎÁö È®ÀÎÀ» ÇÑ´Ù. (ÀÌÀü µî·ÏµÈ »ç¿ëÀÚ¶ó¸é ÀÌÀü µî·ÏÇÑ QR ÄÚµå¸¦ ¹Ş¾Æ¼­ ±×´ë·Î »ç¿ë) 
-									 *  ¼­¹ö¿¡µµ QR °ªÀÌ ¾øÀ» °æ¿ì¿¡´Â 2Â÷ ÀÎÁõ(ÀÎÁõ¹øÈ£ ÀÎÁõ) ÈÄ¿¡ QR »ı¼º ¼±ÅÃ Ã¢À¸·Î ÀÌµ¿ÇÑ´Ù.
-									 *  1Â÷ ÀÎÁõÀ» ÅëÇØ ¼­¹ö¿¡¼­ QR °ªÀ» ¹Ş¾Æ¿Â °æ¿ì ÀÎÁõ 2´Ü°èÀÎ [ÀÎÁõ¹øÈ£ È®ÀÎ] ÀıÂ÷¸¦ »ı·«ÇÏ°í ³» QRº¸±â È­¸éÀ¸·Î ÀÌµ¿ÇÑ´Ù. 
+									 *  ê¸°ì¡´ì— ì¸ì¦ ë°›ì€ ì‚¬ìš©ìì¸ì§€ í™•ì¸ì´ í•„ìš”í•˜ë‹¤.
+									 *  QR ì €ì¥ íŒŒì¼ì— QR ê°’ì´ ì—†ì„ ì‹œì—ëŠ” ì–´í”Œ ì„¤ì¹˜ í›„ ìµœì´ˆ ì‹¤í–‰ì´ë¯€ë¡œ ì¸ì¦ì„ ë°›ì•„ì•¼ í•œë‹¤..
+									 *  ì¸ì¦ 1ë‹¨ê³„ì¸ [íœ´ëŒ€í° ë²ˆí˜¸ ì¸ì¦]ìœ¼ë¡œ  ì„œë²„ì™€ í†µì‹ ì„ í•˜ì—¬ ì´ì „ ë“±ë¡ëœ ì‚¬ìš©ìì¸ì§€ í™•ì¸ì„ í•œë‹¤. (ì´ì „ ë“±ë¡ëœ ì‚¬ìš©ìë¼ë©´ ì´ì „ ë“±ë¡í•œ QR ì½”ë“œë¥¼ ë°›ì•„ì„œ ê·¸ëŒ€ë¡œ ì‚¬ìš©) 
+									 *  ì„œë²„ì—ë„ QR ê°’ì´ ì—†ì„ ê²½ìš°ì—ëŠ” 2ì°¨ ì¸ì¦(ì¸ì¦ë²ˆí˜¸ ì¸ì¦) í›„ì— QR ìƒì„± ì„ íƒ ì°½ìœ¼ë¡œ ì´ë™í•œë‹¤.
+									 *  1ì°¨ ì¸ì¦ì„ í†µí•´ ì„œë²„ì—ì„œ QR ê°’ì„ ë°›ì•„ì˜¨ ê²½ìš° ì¸ì¦ 2ë‹¨ê³„ì¸ [ì¸ì¦ë²ˆí˜¸ í™•ì¸] ì ˆì°¨ë¥¼ ìƒëµí•˜ê³  ë‚´ QRë³´ê¸° í™”ë©´ìœ¼ë¡œ ì´ë™í•œë‹¤. 
 									 */
-									// ÀÎÁõ È­¸éÀ¸·Î ÀÌµ¿ÇÑ´Ù. (Á¤»ó »ç¿ë) --> ÀÎÁõ »ç¿ë ¾ÈÇÔ
+									// ì¸ì¦ í™”ë©´ìœ¼ë¡œ ì´ë™í•œë‹¤. (ì •ìƒ ì‚¬ìš©) --> ì¸ì¦ ì‚¬ìš© ì•ˆí•¨
 									//Log.i("MainActivity", "There is no saved QR code.. Go to Certification");
 									//Intent intent = new Intent(MainActivity.this, CertificationStep1.class);
 
-									// ÀÎÁõ È­¸é 2·Î ÀÌµ¿(Å×½ºÆ®¿ë)  -->ÀÎÁõ »ç¿ë ¾ÈÇÔ
+									// ì¸ì¦ í™”ë©´ 2ë¡œ ì´ë™(í…ŒìŠ¤íŠ¸ìš©)  -->ì¸ì¦ ì‚¬ìš© ì•ˆí•¨
 									//									Log.i("MainActivity", "Test for Certification2");
 									//									Intent intent = new Intent(MainActivity.this, CertificationStep2.class);
 
-									// QR »ı¼º ¼±ÅÃ Ã¢À¸·Î ÀÌµ¿. (ÀÎÁõ °³¹ß Àü±îÁö ÀÓ½Ã »ç¿ë) -- ÀÎÁõ »ç¿ë ¾ÈÇÏ¸é¼­ Á¤»ó È£Ãâ ¹æ½ÄÀÌ µÊ
+									// QR ìƒì„± ì„ íƒ ì°½ìœ¼ë¡œ ì´ë™. (ì¸ì¦ ê°œë°œ ì „ê¹Œì§€ ì„ì‹œ ì‚¬ìš©) -- ì¸ì¦ ì‚¬ìš© ì•ˆí•˜ë©´ì„œ ì •ìƒ í˜¸ì¶œ ë°©ì‹ì´ ë¨
 									Log.i("MainActivity", "There is no saved QR code.. Go get QR");
 									Intent intent = new Intent(MainActivity.this, No_QR_PageActivity.class);
 
-									if(DummyActivity.count>0){			// °­Á¦ Á¾·áÇÏ¸é ´ÙÀ½ ¾×Æ¼ºñÆ¼µµ ¾ø´Ù.
+									if(DummyActivity.count>0){			// ê°•ì œ ì¢…ë£Œí•˜ë©´ ë‹¤ìŒ ì•¡í‹°ë¹„í‹°ë„ ì—†ë‹¤.
 										startActivity(intent);
 									}
-									finish();		// ´Ù¸¥ ¾×Æ¼ºñÆ¼¸¦ È£ÃâÇÏ°í ÀÚ½ÅÀº Á¾·á.
+									finish();		// ë‹¤ë¥¸ ì•¡í‹°ë¹„í‹°ë¥¼ í˜¸ì¶œí•˜ê³  ìì‹ ì€ ì¢…ë£Œ.
 								}
 							}
 						}catch(InterruptedException ie){
@@ -292,10 +292,10 @@ public class MainActivity extends Activity {
 		).start();
 	}
 
-	////////////// ¼³Á¤ ÆÄÀÏÀ» ÀÌ¿ëÇÑ Á¤º¸ ¾ò±â. ¼³Á¤ Á¤º¸¸¦ ÀĞµµ·Ï ÇÒ ¿¹Á¤. QR. ////////////////////////////
+	////////////// ì„¤ì • íŒŒì¼ì„ ì´ìš©í•œ ì •ë³´ ì–»ê¸°. ì„¤ì • ì •ë³´ë¥¼ ì½ë„ë¡ í•  ì˜ˆì •. QR. ////////////////////////////
 	/**
 	 * readQRFromPref
-	 *  ÇÁ¸®ÆÛ·±½º¿¡¼­ qr Á¤º¸¸¦ ¾ò´Â´Ù
+	 *  í”„ë¦¬í¼ëŸ°ìŠ¤ì—ì„œ qr ì •ë³´ë¥¼ ì–»ëŠ”ë‹¤
 	 *
 	 * @param
 	 * @param
@@ -308,7 +308,7 @@ public class MainActivity extends Activity {
 	}
 	
 	/**
-	 * ÆÄÀÏ·ÎºÎÅÍ qrÀ» ÀĞ´Â´Ù.
+	 * íŒŒì¼ë¡œë¶€í„° qrì„ ì½ëŠ”ë‹¤.
 	 */
 	public void readQRFromFile(){
 		Log.d(TAG,"try get qr from file");
@@ -332,32 +332,32 @@ public class MainActivity extends Activity {
 	/////////////////////////////////////////////////////////////////////////////////////////////////    
 
 
-	/////////////////////////////////////// ÆÄÀÏÀ» ÀÌ¿ëÇÑ QR ÀĞ±â, ¾²±â, ÃÊ±âÈ­ //////////////////////////    
-	// QR ÄÚµå ÀúÀå¼Ò¿¡¼­ QR ÄÚµå¸¦ ÀĞ¾î¿Â´Ù. --> ¼³Á¤ÆÄÀÏ¿¡¼­ ÀĞ´Â´Ù
+	/////////////////////////////////////// íŒŒì¼ì„ ì´ìš©í•œ QR ì½ê¸°, ì“°ê¸°, ì´ˆê¸°í™” //////////////////////////    
+	// QR ì½”ë“œ ì €ì¥ì†Œì—ì„œ QR ì½”ë“œë¥¼ ì½ì–´ì˜¨ë‹¤. --> ì„¤ì •íŒŒì¼ì—ì„œ ì½ëŠ”ë‹¤
 	public void readQR(){
 		readQRFromPref();
 		readQRFromFile();
 		
-		if(qrFromPref==null || qrFromPref.length()<1){		// ¼³Á¤¿¡ ¾ø´Â °æ¿ì
+		if(qrFromPref==null || qrFromPref.length()<1){		// ì„¤ì •ì— ì—†ëŠ” ê²½ìš°
 			Log.d(TAG,"pref no qr");
 			if(qrFromFile==null || qrFromFile.length()<1){	
-				//(ÆÄÀÏ¿¡µµ ¾ø´Â °æ¿ì -> ¾çÂÊ¿¡ ¸ğµÎ ¾øÀ¸¸é ÆĞ½º --> »ı¼ºÈ­¸éÀ¸·Î ÀÌµ¿µÊ.)	
-			}else{		// ÆÄÀÏ¿¡´Â ÀÖ´Â °æ¿ì 
-				myQR = qrFromFile;	// ÆÄÀÏ°ÍÀ» »ç¿ë
-				// ÆÄÀÏ µ¥ÀÌÅÍ¸¦ ¼³Á¤¿¡ ÀúÀå  -- ÆÄÀÏ¿¡ ÀÖ´Â°É·Î ¾²±â·Î Çß±â ¶§¹®¿¡ ¼³Á¤¿¡ ÀúÀåÇØµĞ´Ù.
+				//(íŒŒì¼ì—ë„ ì—†ëŠ” ê²½ìš° -> ì–‘ìª½ì— ëª¨ë‘ ì—†ìœ¼ë©´ íŒ¨ìŠ¤ --> ìƒì„±í™”ë©´ìœ¼ë¡œ ì´ë™ë¨.)	
+			}else{		// íŒŒì¼ì—ëŠ” ìˆëŠ” ê²½ìš° 
+				myQR = qrFromFile;	// íŒŒì¼ê²ƒì„ ì‚¬ìš©
+				// íŒŒì¼ ë°ì´í„°ë¥¼ ì„¤ì •ì— ì €ì¥  -- íŒŒì¼ì— ìˆëŠ”ê±¸ë¡œ ì“°ê¸°ë¡œ í–ˆê¸° ë•Œë¬¸ì— ì„¤ì •ì— ì €ì¥í•´ë‘”ë‹¤.
 				sharedPrefCustom = getSharedPreferences("MyCustomePref",
 						Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
 				SharedPreferences.Editor saveQR = sharedPrefCustom.edit();
 				saveQR.putString("qrcode", qrFromFile);
 				saveQR.commit();
 				
-				// ´ÙÀ½ ¾×Æ¼ºñÆ¼·Î Àü´Ş (ÆÄÀÏ°ª»ç¿ë)
+				// ë‹¤ìŒ ì•¡í‹°ë¹„í‹°ë¡œ ì „ë‹¬ (íŒŒì¼ê°’ì‚¬ìš©)
 				myQR = qrFromFile;	
 				qrResult = 1;
 				MyQRPageActivity.qrCode = myQR;
 			}
-		}else if(qrFromFile==null || qrFromFile.length()<1){		// ¼³Á¤¿¡ ÀÖ´Â °æ¿ì + ÆÄÀÏ¿¡ ¾ø´Â °æ¿ì
-			// ¼³Á¤¿¡ ÀÖ´Â °ÍÀ» ÆÄÀÏ·Î º¹»ç
+		}else if(qrFromFile==null || qrFromFile.length()<1){		// ì„¤ì •ì— ìˆëŠ” ê²½ìš° + íŒŒì¼ì— ì—†ëŠ” ê²½ìš°
+			// ì„¤ì •ì— ìˆëŠ” ê²ƒì„ íŒŒì¼ë¡œ ë³µì‚¬
 			try {
 				File qrFileDirectory = new File(CommonUtils.qrFileSavedPath);
 				qrFileDirectory.mkdirs();
@@ -374,14 +374,14 @@ public class MainActivity extends Activity {
 				e.printStackTrace();
 			}
 			
-			myQR = qrFromPref;		// ´ÙÀ½ ¾×Æ¼ºñÆ¼·Î Àü´Ş (¼³Á¤°ª»ç¿ë)
+			myQR = qrFromPref;		// ë‹¤ìŒ ì•¡í‹°ë¹„í‹°ë¡œ ì „ë‹¬ (ì„¤ì •ê°’ì‚¬ìš©)
 			qrResult = 1;
 			MyQRPageActivity.qrCode = myQR;
-		}else{			// ¼³Á¤¿¡ ÀÖ´Â °æ¿ì + ÆÄÀÏ¿¡µµ ÀÖ´Â °æ¿ì
-			// ºñ±³ÇÏ¿© ´Ù¸£´Ù¸é ¼³Á¤¿¡ ÀÖ´Â °ÍÀ» ÆÄÀÏ·Î º¹»ç
+		}else{			// ì„¤ì •ì— ìˆëŠ” ê²½ìš° + íŒŒì¼ì—ë„ ìˆëŠ” ê²½ìš°
+			// ë¹„êµí•˜ì—¬ ë‹¤ë¥´ë‹¤ë©´ ì„¤ì •ì— ìˆëŠ” ê²ƒì„ íŒŒì¼ë¡œ ë³µì‚¬
 			if(!(qrFromPref.equals(qrFromFile))){
 				Log.d(TAG,"not equals qrFromFile,qrFromPref ");
-				// ¼³Á¤¿¡ ÀÖ´Â °ÍÀ» ÆÄÀÏ·Î º¹»ç
+				// ì„¤ì •ì— ìˆëŠ” ê²ƒì„ íŒŒì¼ë¡œ ë³µì‚¬
 				try {
 					File qrFileDirectory = new File(CommonUtils.qrFileSavedPath);
 					qrFileDirectory.mkdirs();
@@ -398,7 +398,7 @@ public class MainActivity extends Activity {
 					e.printStackTrace();
 				}
 			}
-			myQR = qrFromPref;				// ´ÙÀ½ ¾×Æ¼ºñÆ¼·Î Àü´Ş (¼³Á¤°ª»ç¿ë)
+			myQR = qrFromPref;				// ë‹¤ìŒ ì•¡í‹°ë¹„í‹°ë¡œ ì „ë‹¬ (ì„¤ì •ê°’ì‚¬ìš©)
 			qrResult = 1;
 			MyQRPageActivity.qrCode = myQR;
 		}
@@ -408,7 +408,7 @@ public class MainActivity extends Activity {
 
 	/**
 	 * onPause
-	 *  È¨¹öÆ° ´­·¶À»¶§ ¾îÇÃÀ» Á¾·á½ÃÅ²´Ù
+	 *  í™ˆë²„íŠ¼ ëˆŒë €ì„ë•Œ ì–´í”Œì„ ì¢…ë£Œì‹œí‚¨ë‹¤
 	 *
 	 * @param
 	 * @param
@@ -417,22 +417,22 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		// È¨¹öÆ° ´­·¶À»¶§ Á¾·á ¿©ºÎ..
+		// í™ˆë²„íŠ¼ ëˆŒë €ì„ë•Œ ì¢…ë£Œ ì—¬ë¶€..
 		if(!isForeGround()){
 			Log.d(TAG,"go home, bye");
-			dummyActivity.finish();		// ´õ¹Ìµµ Á¾·á
-			DummyActivity.count = 0;		// °³¼ö 0À¸·Î ÃÊ±âÈ­ ½ÃÄÑÁØ´Ù. ´Ù½Ã ½ÇÇàµÉ¼ö ÀÖµµ·Ï
+			dummyActivity.finish();		// ë”ë¯¸ë„ ì¢…ë£Œ
+			DummyActivity.count = 0;		// ê°œìˆ˜ 0ìœ¼ë¡œ ì´ˆê¸°í™” ì‹œì¼œì¤€ë‹¤. ë‹¤ì‹œ ì‹¤í–‰ë ìˆ˜ ìˆë„ë¡
 			finish();
 		}
 	}
 
 	/*
-	 * ÇÁ·Î¼¼½º°¡ ÃÖ»óÀ§·Î ½ÇÇàÁßÀÎÁö °Ë»ç.
-	 * @return true = ÃÖ»óÀ§
+	 * í”„ë¡œì„¸ìŠ¤ê°€ ìµœìƒìœ„ë¡œ ì‹¤í–‰ì¤‘ì¸ì§€ ê²€ì‚¬.
+	 * @return true = ìµœìƒìœ„
 	 */
 	/**
 	 * isForeGround
-	 * È¨¹öÆ° ´­·¶´ÂÁö È®ÀÎÇÏ±â À§ÇØ ÇÁ·Î¼¼½º°¡ ÃÖ»óÀ§·Î ½ÇÇàÁßÀÎÁö °Ë»çÇÑ´Ù.
+	 * í™ˆë²„íŠ¼ ëˆŒë €ëŠ”ì§€ í™•ì¸í•˜ê¸° ìœ„í•´ í”„ë¡œì„¸ìŠ¤ê°€ ìµœìƒìœ„ë¡œ ì‹¤í–‰ì¤‘ì¸ì§€ ê²€ì‚¬í•œë‹¤.
 	 *
 	 * @param
 	 * @param
@@ -452,7 +452,7 @@ public class MainActivity extends Activity {
 		return rtn;
 	}
 
-	// ·ÎµùÁß¿¡ Ãë¼Ò¹öÆ°À¸·Î Á¾·á ¸øÇÏ°Ô ¸·À½. Á¾·áÇØµµ ¸ŞÀÎ ÆäÀÌÁö°¡ ¶ß±â ¶§¹®.		// --< Á¾·áÇÏ¸é ·Îµù³¡³ª°í Á¾·áÇÏµµ·Ï ÇÔ.
+	// ë¡œë”©ì¤‘ì— ì·¨ì†Œë²„íŠ¼ìœ¼ë¡œ ì¢…ë£Œ ëª»í•˜ê²Œ ë§‰ìŒ. ì¢…ë£Œí•´ë„ ë©”ì¸ í˜ì´ì§€ê°€ ëœ¨ê¸° ë•Œë¬¸.		// --< ì¢…ë£Œí•˜ë©´ ë¡œë”©ëë‚˜ê³  ì¢…ë£Œí•˜ë„ë¡ í•¨.
 	@Override
 	public void onBackPressed() {
 		finishApp = true;

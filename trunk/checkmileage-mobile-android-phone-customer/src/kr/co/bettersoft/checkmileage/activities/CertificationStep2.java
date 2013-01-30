@@ -1,15 +1,15 @@
 package kr.co.bettersoft.checkmileage.activities;
 /*
- * ÀÎÁõ2´Ü°è.     -- »ç¿ë ¾ÈÇÔ
- * ½Å±Ô À¯ÀúÀÏ °æ¿ì ¼­¹ö¿¡¼­ ÀÎÁõ¹øÈ£¸¦ SMS ·Î ¹ß¼ÛÇØ ÁØ´Ù.
- * ¸ğ¹ÙÀÏ¿¡¼­´Â ÀÎÁõ¹øÈ£ ¿äÃ» È­¸é¿¡¼­ ÀÎÁõ¹øÈ£ È®ÀÎ È­¸é(ÇöÀç È­¸é) À¸·Î º¯°æµÈ´Ù.
+ * ì¸ì¦2ë‹¨ê³„.     -- ì‚¬ìš© ì•ˆí•¨
+ * ì‹ ê·œ ìœ ì €ì¼ ê²½ìš° ì„œë²„ì—ì„œ ì¸ì¦ë²ˆí˜¸ë¥¼ SMS ë¡œ ë°œì†¡í•´ ì¤€ë‹¤.
+ * ëª¨ë°”ì¼ì—ì„œëŠ” ì¸ì¦ë²ˆí˜¸ ìš”ì²­ í™”ë©´ì—ì„œ ì¸ì¦ë²ˆí˜¸ í™•ì¸ í™”ë©´(í˜„ì¬ í™”ë©´) ìœ¼ë¡œ ë³€ê²½ëœë‹¤.
  * 
- * SMS·Î ³¯¶ó¿Â ÀÎÁõ¹øÈ£¸¦ È­¸é »ó´ÜÀÇ ÀÎÁõ¹øÈ£ ÀÔ·Â ¶õ¿¡ ³Ö°í 
- *   È­¸é Áß´ÜÀÇ [ÀÎÁõÇÏ±â] ¹öÆ°À» ´­·¯ ¼­¹ö¿Í Åë½ÅÇÏ¿© ÀÎÁõÀ» ¹Ş´Â´Ù.
+ * SMSë¡œ ë‚ ë¼ì˜¨ ì¸ì¦ë²ˆí˜¸ë¥¼ í™”ë©´ ìƒë‹¨ì˜ ì¸ì¦ë²ˆí˜¸ ì…ë ¥ ë€ì— ë„£ê³  
+ *   í™”ë©´ ì¤‘ë‹¨ì˜ [ì¸ì¦í•˜ê¸°] ë²„íŠ¼ì„ ëˆŒëŸ¬ ì„œë²„ì™€ í†µì‹ í•˜ì—¬ ì¸ì¦ì„ ë°›ëŠ”ë‹¤.
  *   
- * ¼­¹ö·ÎºÎÅÍ ÀÎÁõ °á°ú¸¦ ¹Ş¾Æ¼­ ±×¿¡ µû¶ó È­¸éÀÌ ºĞ±â µÈ´Ù.
- *  ÀÎÁõ ¼º°ø ½Ã QR »ı¼º - ¼±ÅÃ È­¸éÀ¸·Î ÀÌµ¿ÇÑ´Ù.
- *  ÀÎÁõ ½ÇÆĞ ½Ã ÀÎÁõ1 È­¸éÀ¸·Î µ¹¾Æ°£´Ù. (Ã³À½ ÀÎÁõ 1 È­¸é ¿­¸±¶§Ã³·³ Æù¹øÈ£ ÀĞ°í, ¹öÆ° ´­·¯ ¼­¹ö¿¡ ¿äÃ»..µîÀº °°´Ù.)  
+ * ì„œë²„ë¡œë¶€í„° ì¸ì¦ ê²°ê³¼ë¥¼ ë°›ì•„ì„œ ê·¸ì— ë”°ë¼ í™”ë©´ì´ ë¶„ê¸° ëœë‹¤.
+ *  ì¸ì¦ ì„±ê³µ ì‹œ QR ìƒì„± - ì„ íƒ í™”ë©´ìœ¼ë¡œ ì´ë™í•œë‹¤.
+ *  ì¸ì¦ ì‹¤íŒ¨ ì‹œ ì¸ì¦1 í™”ë©´ìœ¼ë¡œ ëŒì•„ê°„ë‹¤. (ì²˜ìŒ ì¸ì¦ 1 í™”ë©´ ì—´ë¦´ë•Œì²˜ëŸ¼ í°ë²ˆí˜¸ ì½ê³ , ë²„íŠ¼ ëˆŒëŸ¬ ì„œë²„ì— ìš”ì²­..ë“±ì€ ê°™ë‹¤.)  
  *   
  */
 import java.io.BufferedReader;
@@ -51,11 +51,11 @@ public class CertificationStep2 extends Activity {
 	String registerDate = "";
 	int responseCode = 0;
 	
-	String controllerName = "";		// ¼­¹ö Á¶È¸½Ã ÄÁÆ®·Ñ·¯ ÀÌ¸§
-	String methodName = "";			// ¼­¹ö Á¶È¸½Ã ¸Ş¼­µå ÀÌ¸§
+	String controllerName = "";		// ì„œë²„ ì¡°íšŒì‹œ ì»¨íŠ¸ë¡¤ëŸ¬ ì´ë¦„
+	String methodName = "";			// ì„œë²„ ì¡°íšŒì‹œ ë©”ì„œë“œ ì´ë¦„
 	String serverName = CommonUtils.serverNames;
 	
-	// ÇÚµé·¯
+	// í•¸ë“¤ëŸ¬
 	Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg){
@@ -95,7 +95,7 @@ public class CertificationStep2 extends Activity {
 	    button2 = (Button) findViewById(R.id.certi_btn2);
 	    txt2 = (TextView)findViewById(R.id.certi_text2);
 	    
-//		button2.setText("ÀÎÁõÈ®ÀÎ");
+//		button2.setText("ì¸ì¦í™•ì¸");
 		button2.setText(R.string.certi_step2_btn1);
 		
 		button2.setOnClickListener(new OnClickListener() {
@@ -115,32 +115,32 @@ public class CertificationStep2 extends Activity {
 	}
 	
 	/*
-	 * ¼­¹ö¿Í Åë½ÅÇÏ¿© ÀÎÁõ2´Ü°è ¼öÇà.
+	 * ì„œë²„ì™€ í†µì‹ í•˜ì—¬ ì¸ì¦2ë‹¨ê³„ ìˆ˜í–‰.
 	 */
 	public void certificationStep2() throws JSONException, IOException {
     	Log.i(TAG, "certificationStep2");
     	
-    	controllerName = "checkMileageCertificationController";		// ¼­¹ö Á¶È¸½Ã ÄÁÆ®·Ñ·¯ ÀÌ¸§
-    	methodName = "selectCertificationNumber";			// ¼­¹ö Á¶È¸½Ã ¸Ş¼­µå ÀÌ¸§
+    	controllerName = "checkMileageCertificationController";		// ì„œë²„ ì¡°íšŒì‹œ ì»¨íŠ¸ë¡¤ëŸ¬ ì´ë¦„
+    	methodName = "selectCertificationNumber";			// ì„œë²„ ì¡°íšŒì‹œ ë©”ì„œë“œ ì´ë¦„
     	
     	new Thread(
     			new Runnable(){
     				public void run(){
-    					 // Àü´Ş µ¥ÀÌÅÍ
+    					 // ì „ë‹¬ ë°ì´í„°
 						JSONObject obj = new JSONObject();
-    					// °¡ÀÔÀÏ½Ã
+    					// ê°€ì…ì¼ì‹œ
     					Date today = new Date();
 //    				    registerDate = today.toString();
 //    				    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
     				    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     				    registerDate = sf.format(today);
-    				    // ½ÂÀÎ ¹øÈ£
+    				    // ìŠ¹ì¸ ë²ˆí˜¸
 						certificationNumber = (String) txt2.getText();
 						try{
-//							obj.put("phoneNumber", phoneNum);					// ½Ç»ç¿ë.
+//							obj.put("phoneNumber", phoneNum);					// ì‹¤ì‚¬ìš©.
 //							obj.put("certificationNumber", certificationNumber);
 //							obj.put("registerDate", registerDate);
-							// Å×½ºÆ®¿ë ÇÏµåÄÚµù
+							// í…ŒìŠ¤íŠ¸ìš© í•˜ë“œì½”ë”©
 							obj.put("phoneNumber", "01022173645");
 							obj.put("certificationNumber", "1122");
 							obj.put("registerDate", registerDate);
@@ -159,7 +159,7 @@ public class CertificationStep2 extends Activity {
 					  		  os2.write(jsonString.getBytes("UTF-8"));
 					  		  os2.flush();
 					  		  System.out.println("postUrl      : " + postUrl2);
-					  		  System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : Á¤»ó
+					  		  System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : ì •ìƒ
 					  		  responseCode = connection2.getResponseCode();
 					  		  InputStream in =  connection2.getInputStream();
 					  		  theData(in);
@@ -171,7 +171,7 @@ public class CertificationStep2 extends Activity {
     	).start();
 	}
 	/*
-	 * ÀÎÁõ 2´Ü°èÀÇ °á°ú¸¦ ¹ŞÀ½.
+	 * ì¸ì¦ 2ë‹¨ê³„ì˜ ê²°ê³¼ë¥¼ ë°›ìŒ.
 	 */
 	public void theData(InputStream in){
 		Log.d(TAG,"theData");
@@ -186,7 +186,7 @@ public class CertificationStep2 extends Activity {
 			e.printStackTrace();
 		}
     	Log.d(TAG,"get ::"+builder.toString());
-    	String tempstr = builder.toString();		// ¹ŞÀº µ¥ÀÌÅÍ¸¦ °¡°øÇÏ¿© »ç¿ëÇÒ ¼ö ÀÖ´Ù... ¿ëµµ¿¡ ¸Â°Ô ±¸ÇöÇÒ °Í.
+    	String tempstr = builder.toString();		// ë°›ì€ ë°ì´í„°ë¥¼ ê°€ê³µí•˜ì—¬ ì‚¬ìš©í•  ìˆ˜ ìˆë‹¤... ìš©ë„ì— ë§ê²Œ êµ¬í˜„í•  ê²ƒ.
 //    	try{
 //    		String result = "";
 //    		JSONArray ja = new JSONArray(tempstr);
@@ -195,25 +195,25 @@ public class CertificationStep2 extends Activity {
 //    			result+=""
 //    		}
 //    	}
-    	if(responseCode==200||responseCode==204){		// ÀÎÁõ ¼º°ø½Ã - QR »ı¼º ÆäÀÌÁö·Î ÀÌµ¿.
+    	if(responseCode==200||responseCode==204){		// ì¸ì¦ ì„±ê³µì‹œ - QR ìƒì„± í˜ì´ì§€ë¡œ ì´ë™.
     		Log.i(TAG, "Thanks Your Registering. Go to Get Your QR Code");
     		new Thread(
     				new Runnable(){
     					public void run(){
     						try{
     							Thread.sleep(1000);
-    							// ³ªÀÇ QR ÄÚµå º¸±â·Î ÀÌµ¿.
+    							// ë‚˜ì˜ QR ì½”ë“œ ë³´ê¸°ë¡œ ì´ë™.
     							Intent intent2 = new Intent(CertificationStep2.this, No_QR_PageActivity.class);
     							intent2.putExtra("phoneNumber", phoneNum);
     							startActivity(intent2);
-    							finish();		// ´Ù¸¥ ¾×Æ¼ºñÆ¼¸¦ È£ÃâÇÏ°í ÀÚ½ÅÀº Á¾·á.
+    							finish();		// ë‹¤ë¥¸ ì•¡í‹°ë¹„í‹°ë¥¼ í˜¸ì¶œí•˜ê³  ìì‹ ì€ ì¢…ë£Œ.
     						}catch(InterruptedException ie){
     							ie.printStackTrace();
     						}
     					}
     				}
     		).start();
-    	}else{			// ÀÎÁõ ½ÇÆĞ½Ã	 Åä½ºÆ® ¶ç¿ì°í ÀÎÁõ 1´Ü°è·Î µ¹¾Æ°¨.
+    	}else{			// ì¸ì¦ ì‹¤íŒ¨ì‹œ	 í† ìŠ¤íŠ¸ ë„ìš°ê³  ì¸ì¦ 1ë‹¨ê³„ë¡œ ëŒì•„ê°.
     		alertMsg();
 //    		Toast.makeText(CertificationStep2.this, R.string.certi_fail_msg, Toast.LENGTH_SHORT).show();
     		new Thread(
@@ -221,10 +221,10 @@ public class CertificationStep2 extends Activity {
     					public void run(){
     						try{
     							Thread.sleep(1000);
-    							// ³ªÀÇ QR ÄÚµå º¸±â·Î ÀÌµ¿.
+    							// ë‚˜ì˜ QR ì½”ë“œ ë³´ê¸°ë¡œ ì´ë™.
     							Intent intent2 = new Intent(CertificationStep2.this, CertificationStep1.class);
     							startActivity(intent2);
-    							finish();		// ´Ù¸¥ ¾×Æ¼ºñÆ¼¸¦ È£ÃâÇÏ°í ÀÚ½ÅÀº Á¾·á.
+    							finish();		// ë‹¤ë¥¸ ì•¡í‹°ë¹„í‹°ë¥¼ í˜¸ì¶œí•˜ê³  ìì‹ ì€ ì¢…ë£Œ.
     						}catch(InterruptedException ie){
     							ie.printStackTrace();
     						}

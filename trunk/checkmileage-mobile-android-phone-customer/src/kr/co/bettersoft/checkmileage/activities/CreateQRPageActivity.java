@@ -1,5 +1,5 @@
 package kr.co.bettersoft.checkmileage.activities;
-// QR »ı¼º ÆäÀÌÁö
+// QR ìƒì„± í˜ì´ì§€
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -27,8 +27,8 @@ import org.json.JSONObject;
 
 /**
  *  CreateQRPageActivity
- * QR À» »ı¼ºÇÏ°í ¹Ù·Î ´ÙÀ½´Ü°èÀÎ ³ªÀÇ QR ÄÚµå º¸±â¾×Æ¼ºñÆ¼·Î ³Ñ¾î°£´Ù.
- * »ç¿ëÀÚ¿¡°Ô ÀÌ ¾×Æ¼ºñÆ¼´Â º¸¿©ÁöÁö ¾Ê°í ¹Ù·Î ³ªÀÇ QR ÄÚµåº¸±â È­¸éÀÌ ³ªÅ¸³ª°Ô µÈ1´Ù.
+ * QR ì„ ìƒì„±í•˜ê³  ë°”ë¡œ ë‹¤ìŒë‹¨ê³„ì¸ ë‚˜ì˜ QR ì½”ë“œ ë³´ê¸°ì•¡í‹°ë¹„í‹°ë¡œ ë„˜ì–´ê°„ë‹¤.
+ * ì‚¬ìš©ìì—ê²Œ ì´ ì•¡í‹°ë¹„í‹°ëŠ” ë³´ì—¬ì§€ì§€ ì•Šê³  ë°”ë¡œ ë‚˜ì˜ QR ì½”ë“œë³´ê¸° í™”ë©´ì´ ë‚˜íƒ€ë‚˜ê²Œ ëœ1ë‹¤.
  */
 public class CreateQRPageActivity extends Activity {
 	String TAG = "CreateQRPageActivity";
@@ -42,13 +42,13 @@ public class CreateQRPageActivity extends Activity {
 	String qrcode = "";		 
 	String phoneNumber = "";
 	String tmpStr = "";
-	// ½Ã°£ °ü·Ã
+	// ì‹œê°„ ê´€ë ¨
 	Calendar c = Calendar.getInstance();
 
 	URL postUrl2;
 	HttpURLConnection connection2;
 
-	int todayYear = 0;						// Áö±İ -  ³â ¿ù ÀÏ ½Ã ºĞ
+	int todayYear = 0;						// ì§€ê¸ˆ -  ë…„ ì›” ì¼ ì‹œ ë¶„
 	int todayMonth = 0;
 	int todayDay = 0;
 	int todayHour = 0;
@@ -62,13 +62,13 @@ public class CreateQRPageActivity extends Activity {
 	String strLanguage = "" ;
 
 
-	// ÇÚµé·¯
+	// í•¸ë“¤ëŸ¬
 	Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg){
 			Bundle b = msg.getData();
 			try{
-				if(b.getInt("showErrToast")==1){				// È­¸é¿¡ ¿¡·¯ Åä½ºÆ® ¶ç¿ò
+				if(b.getInt("showErrToast")==1){				// í™”ë©´ì— ì—ëŸ¬ í† ìŠ¤íŠ¸ ë„ì›€
 					Toast.makeText(CreateQRPageActivity.this,b.getString("msg"), Toast.LENGTH_SHORT).show();
 				}
 			}catch(Exception e){
@@ -78,13 +78,13 @@ public class CreateQRPageActivity extends Activity {
 	};
 	/**
 	 * alertMsg
-	 *  È­¸é¿¡ error Åä½ºÆ® ¶ç¿î´Ù
+	 *  í™”ë©´ì— error í† ìŠ¤íŠ¸ ë„ìš´ë‹¤
 	 *
 	 * @param alrtmsg
 	 * @param
 	 * @return
 	 */
-	public void alertMsg(final String alrtmsg){						// ¿¡·¯ Åä½ºÆ® ÇÔ¼öÈ­
+	public void alertMsg(final String alrtmsg){						// ì—ëŸ¬ í† ìŠ¤íŠ¸ í•¨ìˆ˜í™”
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -105,7 +105,7 @@ public class CreateQRPageActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// ½Ã°£ -> »ı¼ºÇÒ ¾ÆÀÌµğ
+		// ì‹œê°„ -> ìƒì„±í•  ì•„ì´ë””
 		Calendar c = Calendar. getInstance();
 		String timeID = Long.toString( c.getTimeInMillis());
 		Log.e(TAG, "Now to millis : "+ timeID);
@@ -116,21 +116,21 @@ public class CreateQRPageActivity extends Activity {
 		if(tmpStr!=null && tmpStr.length()>0){
 			phoneNumber = rIntent.getStringExtra("phoneNumber");
 		}
-		qrcode = timeID;			// ÀÌ ÁÙÀ»  ÁÖ¼® Ã³¸®ÇÏ¸é ±âº» °ª test1234 »ç¿ë - test¿ëµµ. , ÁÖ¼® Ç®¸é »õ·Î ¸¸µç ½Ã°£ ¾ÆÀÌµğ »ç¿ë- ½ÇÁ¦ »ç¿ë ¿ëµµ.. *** 
+		qrcode = timeID;			// ì´ ì¤„ì„  ì£¼ì„ ì²˜ë¦¬í•˜ë©´ ê¸°ë³¸ ê°’ test1234 ì‚¬ìš© - testìš©ë„. , ì£¼ì„ í’€ë©´ ìƒˆë¡œ ë§Œë“  ì‹œê°„ ì•„ì´ë”” ì‚¬ìš©- ì‹¤ì œ ì‚¬ìš© ìš©ë„.. *** 
 
 		/*
-		 *  ¼­¹ö¿Í Åë½ÅÇÏ¿© QR »ı¼º.
+		 *  ì„œë²„ì™€ í†µì‹ í•˜ì—¬ QR ìƒì„±.
 		 */
-		// QR ÄÚµå ÀÚÃ¼ »ı¼ºÇÏ´Â ºÎºĞ..
-		// ... QR ÄÚµå¸¦ »ı¼ºÇÏ°í, ¼­¹ö¿¡ µî·ÏÇÑ´Ù.
-		// ÇöÀç À§ÀÇ ÇÏµåÄÚµù ÅØ½ºÆ® »ç¿ëÇÔ. --> ¸¸µç°Å.
+		// QR ì½”ë“œ ìì²´ ìƒì„±í•˜ëŠ” ë¶€ë¶„..
+		// ... QR ì½”ë“œë¥¼ ìƒì„±í•˜ê³ , ì„œë²„ì— ë“±ë¡í•œë‹¤.
+		// í˜„ì¬ ìœ„ì˜ í•˜ë“œì½”ë”© í…ìŠ¤íŠ¸ ì‚¬ìš©í•¨. --> ë§Œë“ ê±°.
 
 		/*
-		 * QR ÀúÀå¼Ò ÆÄÀÏ¿¡ ÀúÀå.
+		 * QR ì €ì¥ì†Œ íŒŒì¼ì— ì €ì¥.
 		 */
 		Log.i("CreateQRPageActivity", "save qrcode to file : "+qrcode);
 
-		new backgroundSaveQRforPref().execute();		// ºñµ¿±â ½ÇÇà - ¼³Á¤¿¡ ÀúÀå -- ³¡³ª¸é ¼­¹ö¿¡ ÀúÀå -- ÀÌÈÄ ÀÌµ¿ÇÏ´Â °É·Î..
+		new backgroundSaveQRforPref().execute();		// ë¹„ë™ê¸° ì‹¤í–‰ - ì„¤ì •ì— ì €ì¥ -- ëë‚˜ë©´ ì„œë²„ì— ì €ì¥ -- ì´í›„ ì´ë™í•˜ëŠ” ê±¸ë¡œ..
 	}
 
 	
@@ -138,7 +138,7 @@ public class CreateQRPageActivity extends Activity {
 	
 	public void goMainTabs(){
 		/*
-		 * MyQRÆäÀÌÁö¿¡ »ı¼ºµÈ QR·Î QRÀÌ¹ÌÁö ¹Ş¾Æ¼­ º¸¿©ÁÜ.
+		 * MyQRí˜ì´ì§€ì— ìƒì„±ëœ QRë¡œ QRì´ë¯¸ì§€ ë°›ì•„ì„œ ë³´ì—¬ì¤Œ.
 		 */
 		Log.i("CreateQRPageActivity", "load qrcode to img : "+qrcode);
 		MyQRPageActivity.qrCode = qrcode;
@@ -149,12 +149,12 @@ public class CreateQRPageActivity extends Activity {
 					public void run(){
 						try{
 							Thread.sleep(300);
-							Log.i("CreateQRPageActivity", "qrResult::"+qrResult);		// ÀĞ±â °á°ú ¹ŞÀ½.
-							// ³ªÀÇ QR ÄÚµå º¸±â·Î ÀÌµ¿.
+							Log.i("CreateQRPageActivity", "qrResult::"+qrResult);		// ì½ê¸° ê²°ê³¼ ë°›ìŒ.
+							// ë‚˜ì˜ QR ì½”ë“œ ë³´ê¸°ë¡œ ì´ë™.
 							Log.i("CreateQRPageActivity", "QR registered Success");
 							Intent intent2 = new Intent(CreateQRPageActivity.this, Main_TabsActivity.class);
 							startActivity(intent2);
-							finish();		// ´Ù¸¥ ¾×Æ¼ºñÆ¼¸¦ È£ÃâÇÏ°í ÀÚ½ÅÀº Á¾·á.
+							finish();		// ë‹¤ë¥¸ ì•¡í‹°ë¹„í‹°ë¥¼ í˜¸ì¶œí•˜ê³  ìì‹ ì€ ì¢…ë£Œ.
 						}catch(InterruptedException ie){
 							ie.printStackTrace();
 						}
@@ -165,10 +165,10 @@ public class CreateQRPageActivity extends Activity {
 	
 	
 	
-	// ºñµ¿±â·Î È£Ãâ. ¼³Á¤¿¡ ÀúÀå
+	// ë¹„ë™ê¸°ë¡œ í˜¸ì¶œ. ì„¤ì •ì— ì €ì¥
 	/**
 	 * backgroundSaveQRforPref
-	 *  ºñµ¿±â·Î ¼³Á¤¿¡ qr ÀúÀåÇÏ´Â ÇÔ¼ö È£ÃâÇÑ´Ù
+	 *  ë¹„ë™ê¸°ë¡œ ì„¤ì •ì— qr ì €ì¥í•˜ëŠ” í•¨ìˆ˜ í˜¸ì¶œí•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -181,28 +181,28 @@ public class CreateQRPageActivity extends Activity {
 		} 
 		@Override protected Void doInBackground(Void... params) {  
 			Log.d(TAG,"backgroundSaveQRforPref");
-			saveQRforPref(qrcode);				// ¼³Á¤ ÆÄÀÏ »ç¿ëÇÔ.
+			saveQRforPref(qrcode);				// ì„¤ì • íŒŒì¼ ì‚¬ìš©í•¨.
 			return null; 
 		}
 	}
-	// pref ¿¡ QR ÀúÀå ¹æ½Ä.
+	// pref ì— QR ì €ì¥ ë°©ì‹.
 	/**
 	 * saveQRforPref
-	 *  ¼³Á¤¿¡ qr ÀúÀåÇÑ´Ù
-	 *  --ÆÄÀÏ¿¡µµ ÀúÀåÇÑ´Ù.  20130125
+	 *  ì„¤ì •ì— qr ì €ì¥í•œë‹¤
+	 *  --íŒŒì¼ì—ë„ ì €ì¥í•œë‹¤.  20130125
 	 * @param qrCode
 	 * @param
 	 * @return
 	 */
 	public void saveQRforPref(String qrCode){
-		// ¼³Á¤¿¡ ÀúÀå
+		// ì„¤ì •ì— ì €ì¥
 		sharedPrefCustom = getSharedPreferences("MyCustomePref",
 				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
 		SharedPreferences.Editor saveQR = sharedPrefCustom.edit();
 		saveQR.putString("qrcode", qrCode);
 		saveQR.commit();
 
-		// ÆÄÀÏ¿¡ ÀúÀå
+		// íŒŒì¼ì— ì €ì¥
 		try {
 			File qrFileDirectory = new File(CommonUtils.qrFileSavedPath);
 			qrFileDirectory.mkdirs();
@@ -218,13 +218,13 @@ public class CreateQRPageActivity extends Activity {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		new backgroundSaveQRtoServer().execute();		// ¼³Á¤¿¡ ÀúÀå ³¡³ª¸é .. ºñµ¿±â ½ÇÇà - ¼­¹ö¿¡ ÀúÀå
+		new backgroundSaveQRtoServer().execute();		// ì„¤ì •ì— ì €ì¥ ëë‚˜ë©´ .. ë¹„ë™ê¸° ì‹¤í–‰ - ì„œë²„ì— ì €ì¥
 	}
 
-	// ºñµ¿±â·Î È£Ãâ. ¼­¹ö¿¡ ÀúÀå
+	// ë¹„ë™ê¸°ë¡œ í˜¸ì¶œ. ì„œë²„ì— ì €ì¥
 	/**
 	 * backgroundSaveQRtoServer
-	 * ºñµ¿±â·Î ¼­¹ö¿¡ qr ÀúÀåÇÏ´Â ÇÔ¼ö È£Ãâ
+	 * ë¹„ë™ê¸°ë¡œ ì„œë²„ì— qr ì €ì¥í•˜ëŠ” í•¨ìˆ˜ í˜¸ì¶œ
 	 *
 	 * @param 
 	 * @param
@@ -237,12 +237,12 @@ public class CreateQRPageActivity extends Activity {
 		} 
 		@Override protected Void doInBackground(Void... params) {  
 			Log.d(TAG,"backgroundSaveQRtoServer");
-			saveQRtoServer();					// ¼­¹ö¿¡µµ ÀúÀåÇÔ.			// test1234 ¾ÆÀÌµğ·Î Å×½ºÆ®½Ã¿¡ ÁÖ¼®Ã³¸®ÇÏÁö ¾ÊÀ¸¸é ¿¡·¯°¡ ¹ß»ıÇÑ´Ù.
+			saveQRtoServer();					// ì„œë²„ì—ë„ ì €ì¥í•¨.			// test1234 ì•„ì´ë””ë¡œ í…ŒìŠ¤íŠ¸ì‹œì— ì£¼ì„ì²˜ë¦¬í•˜ì§€ ì•Šìœ¼ë©´ ì—ëŸ¬ê°€ ë°œìƒí•œë‹¤.
 			return null; 
 		}
 	}
 	/*
-	 *  ¼­¹ö¿¡ »ı¼ºÇÑ QR ÀúÀå
+	 *  ì„œë²„ì— ìƒì„±í•œ QR ì €ì¥
 	 *  checkMileageMemberController registerMember 
 	 *  
 	 *  checkMileageId  password  phoneNumber email birthday  gender  latitude  longitude
@@ -252,7 +252,7 @@ public class CreateQRPageActivity extends Activity {
 	 */
 	/**
 	 * saveQRtoServer
-	 *  ¼­¹ö¿¡ »ı¼ºÇÑ qr ÀúÀåÇÑ´Ù
+	 *  ì„œë²„ì— ìƒì„±í•œ qr ì €ì¥í•œë‹¤
 	 *
 	 * @param 
 	 * @param
@@ -269,7 +269,7 @@ public class CreateQRPageActivity extends Activity {
 		strCountry = systemLocale .getCountry();
 		strLanguage = systemLocale .getLanguage();
 
-		// ¼­¹ö Åë½ÅºÎ
+		// ì„œë²„ í†µì‹ ë¶€
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -314,20 +314,20 @@ public class CreateQRPageActivity extends Activity {
 							os2.flush();
 							Thread.sleep(200);	
 							//							System.out.println("postUrl      : " + postUrl2);
-							//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : Á¤»ó
+							//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : ì •ìƒ
 							int responseCode = connection2.getResponseCode();
 							//							os2.close();		// 
 							if(responseCode==200||responseCode==204){
 								Log.e(TAG, "register user S");
 								//								connection2.disconnect();
 								
-								// ÀúÀå³¡³ª°í ³ª¼­ ¾×Æ¼ºñÆ¼ ÀÌµ¿.
+								// ì €ì¥ëë‚˜ê³  ë‚˜ì„œ ì•¡í‹°ë¹„í‹° ì´ë™.
 								goMainTabs();
 								
 							}else{
-								Log.e(TAG, "register user F");		// ¿À·ù ¹ß»ı½Ã ¿¡·¯ Ã¢ ¶ç¿ì°í µ¹¾Æ°£´Ù.. Åë½Å¿¡·¯ ¹ß»ıÇÒ¼ö ÀÖ´Ù.
+								Log.e(TAG, "register user F");		// ì˜¤ë¥˜ ë°œìƒì‹œ ì—ëŸ¬ ì°½ ë„ìš°ê³  ëŒì•„ê°„ë‹¤.. í†µì‹ ì—ëŸ¬ ë°œìƒí• ìˆ˜ ìˆë‹¤.
 								String alrtMsg = getString(R.string.error_message);
-								alertMsg(alrtMsg);		// toast »ç¿ë½Ã ¿¡·¯ ¹ß»ıÇÏ¹Ç·Î ÇÚµé·¯ ÅëÇÑ Åä½ºÆ®
+								alertMsg(alrtMsg);		// toast ì‚¬ìš©ì‹œ ì—ëŸ¬ ë°œìƒí•˜ë¯€ë¡œ í•¸ë“¤ëŸ¬ í†µí•œ í† ìŠ¤íŠ¸
 								//								Toast.makeText(CreateQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 								//								connection2.disconnect();
 								Intent backToNoQRIntent = new Intent(CreateQRPageActivity.this, No_QR_PageActivity.class);
@@ -336,9 +336,9 @@ public class CreateQRPageActivity extends Activity {
 							}
 						}catch(Exception e){ 
 							//							connection2.disconnect();
-							e.printStackTrace();			// ¿À·ù ¹ß»ı½Ã ¿¡·¯ Ã¢ ¶ç¿ì°í µ¹¾Æ°£´Ù.. Åë½Å¿¡·¯ ¹ß»ıÇÒ¼ö ÀÖ´Ù.
+							e.printStackTrace();			// ì˜¤ë¥˜ ë°œìƒì‹œ ì—ëŸ¬ ì°½ ë„ìš°ê³  ëŒì•„ê°„ë‹¤.. í†µì‹ ì—ëŸ¬ ë°œìƒí• ìˆ˜ ìˆë‹¤.
 							String alrtMsg = getString(R.string.error_message);
-							alertMsg(alrtMsg);		// toast »ç¿ë½Ã ¿¡·¯ ¹ß»ıÇÏ¹Ç·Î ÇÚµé·¯ ÅëÇÑ Åä½ºÆ®
+							alertMsg(alrtMsg);		// toast ì‚¬ìš©ì‹œ ì—ëŸ¬ ë°œìƒí•˜ë¯€ë¡œ í•¸ë“¤ëŸ¬ í†µí•œ í† ìŠ¤íŠ¸
 							//							 Toast.makeText(CreateQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 							Intent backToNoQRIntent = new Intent(CreateQRPageActivity.this, No_QR_PageActivity.class);
 							startActivity(backToNoQRIntent);
@@ -349,10 +349,10 @@ public class CreateQRPageActivity extends Activity {
 		).start();
 	}
 
-	// Çö½Ã°¢
+	// í˜„ì‹œê°
 	/**
 	 * getNow
-	 *  Çö½Ã°¢À» ÃßÃâÇÑ´Ù
+	 *  í˜„ì‹œê°ì„ ì¶”ì¶œí•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -361,7 +361,7 @@ public class CreateQRPageActivity extends Activity {
 	public String getNow(){
 		c = Calendar.getInstance();
 		todayYear = c.get(Calendar.YEAR);
-		todayMonth = c.get(Calendar.MONTH)+1;			// ²¨³»¸é 0ºÎÅÍ ½ÃÀÛÀÌ´Ï±î +1 ÇØÁØ´Ù.
+		todayMonth = c.get(Calendar.MONTH)+1;			// êº¼ë‚´ë©´ 0ë¶€í„° ì‹œì‘ì´ë‹ˆê¹Œ +1 í•´ì¤€ë‹¤.
 		todayDay = c.get(Calendar.DATE);
 		todayHour = c.get(Calendar.HOUR_OF_DAY);
 		todayMinute = c.get(Calendar.MINUTE);

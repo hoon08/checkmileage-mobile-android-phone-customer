@@ -75,7 +75,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 	/**
 	 * onRegistered
-	 *  gcm µî·ÏµÇ¸é ºñµ¿±â·Î ¼­¹ö¿¡ ¾÷µ¥ÀÌÆ®ÇÑ´Ù
+	 *  gcm ë“±ë¡ë˜ë©´ ë¹„ë™ê¸°ë¡œ ì„œë²„ì— ì—…ë°ì´íŠ¸í•œë‹¤
 	 *
 	 * @param context
 	 * @param registrationId
@@ -84,11 +84,11 @@ public class GCMIntentService extends GCMBaseIntentService {
 	@Override
 	public void onRegistered(Context context, String registrationId) {
 		Log.i(TAG, "Device registered: regId = " + registrationId);
-		if(dontTwice){			// ÇÑ¹ø ÇÏ°í ¸·´Â´Ù.
+		if(dontTwice){			// í•œë²ˆ í•˜ê³  ë§‰ëŠ”ë‹¤.
 			//        	MainActivity.REGISTRATION_ID = registrationId;
 			regIdGCM = registrationId;
-			new backgroundUpdateMyGCMtoServer().execute();	// ºñµ¿±â·Î ÀüÈ¯ - ¼­¹ö¿¡ GCM ¾ÆÀÌµğ ÀúÀå	
-			//            displayMessage(context, getString(R.string.gcm_registered));			// ºê·Îµå ÄÉ½ºÆ®·Î º¸³»ÁÜ.. ¸®½Ã¹ö°¡ ÀâÀ½. (³ëÆ¼´Â ¾øÀ½)
+			new backgroundUpdateMyGCMtoServer().execute();	// ë¹„ë™ê¸°ë¡œ ì „í™˜ - ì„œë²„ì— GCM ì•„ì´ë”” ì €ì¥	
+			//            displayMessage(context, getString(R.string.gcm_registered));			// ë¸Œë¡œë“œ ì¼€ìŠ¤íŠ¸ë¡œ ë³´ë‚´ì¤Œ.. ë¦¬ì‹œë²„ê°€ ì¡ìŒ. (ë…¸í‹°ëŠ” ì—†ìŒ)
 			localContext = context;
 			localRegistrationId = registrationId;
 			//            new backgroundServerRegister().execute();
@@ -96,7 +96,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		}
 	}
 
-	// ºñµ¿±â·Î gcm ¼­¹ö¿¡ ·¹Áö½ºÅÍ.. µÎ¹ø µî·Ï ÇÒ ÇÊ¿ä ¾øÀ¸¹Ç·Î ½ÇÇà ¾ÈÇÔ
+	// ë¹„ë™ê¸°ë¡œ gcm ì„œë²„ì— ë ˆì§€ìŠ¤í„°.. ë‘ë²ˆ ë“±ë¡ í•  í•„ìš” ì—†ìœ¼ë¯€ë¡œ ì‹¤í–‰ ì•ˆí•¨
 	public class backgroundServerRegister extends  AsyncTask<Void, Void, Void> { 
 		@Override protected void onPostExecute(Void result) {  
 		} 
@@ -109,10 +109,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 		}
 	} 
 
-	// ºñµ¿±â·Î GCM ¾ÆÀÌµğ ¾÷µ« È£Ãâ  -- Ä³·µ ¼­¹ö¿¡ gcm ¾ÆÀÌµğ ¾÷µ«
+	// ë¹„ë™ê¸°ë¡œ GCM ì•„ì´ë”” ì—…ëƒ í˜¸ì¶œ  -- ìºëŸ¿ ì„œë²„ì— gcm ì•„ì´ë”” ì—…ëƒ
 	/**
 	 * backgroundUpdateMyGCMtoServer
-	 * ºñµ¿±â·Î ¼­¹ö¿¡ gcm ¾÷µ¥ÀÌÆ®ÇÑ´Ù
+	 * ë¹„ë™ê¸°ë¡œ ì„œë²„ì— gcm ì—…ë°ì´íŠ¸í•œë‹¤
 	 *
 	 * @param context
 	 * @param registrationId
@@ -131,12 +131,12 @@ public class GCMIntentService extends GCMBaseIntentService {
 				myQR = Main_TabsActivity.myQR;
 			}
 			if(myQR==null || myQR.length()<1){
-				// qr ¾øÀ¸¸é ¾÷µ¥ÀÌÆ® ÇÏÁö ¾ÊÀ½
-			}else{			// qr ÀÖÀ»¶§¿¡¸¸ ¾÷µ¥ÀÌÆ®ÇÔ.
+				// qr ì—†ìœ¼ë©´ ì—…ë°ì´íŠ¸ í•˜ì§€ ì•ŠìŒ
+			}else{			// qr ìˆì„ë•Œì—ë§Œ ì—…ë°ì´íŠ¸í•¨.
 				updateMyGCMtoServer();
 			}
 			
-			//			try {						// gcm È®ÀÎ¿ë
+			//			try {						// gcm í™•ì¸ìš©
 			//				testGCM(regIdGCM);
 			//			} catch (JSONException e) {
 			//				e.printStackTrace();
@@ -169,10 +169,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 	//	}
 
 
-	//¼­¹ö¿¡ GCM ¾ÆÀÌµğ ¾÷µ«ÇÑ´Ù.
+	//ì„œë²„ì— GCM ì•„ì´ë”” ì—…ëƒí•œë‹¤.
 	/**
 	 * updateMyGCMtoServer
-	 *  ¼­¹ö¿¡ GCM ¾ÆÀÌµğ ¾÷µ«ÇÑ´Ù.
+	 *  ì„œë²„ì— GCM ì•„ì´ë”” ì—…ëƒí•œë‹¤.
 	 *
 	 * @param
 	 * @param
@@ -182,7 +182,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		Log.i(TAG, "updateMyGCMtoServer");
 		controllerName = "checkMileageMemberController";
 		methodName = "updateRegistrationId";
-		// ¼­¹ö Åë½ÅºÎ
+		// ì„œë²„ í†µì‹ ë¶€
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -213,7 +213,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
 							//							System.out.println("postUrl      : " + postUrl2);
-							//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : Á¤»ó
+							//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : ì •ìƒ
 							int responseCode = connection2.getResponseCode();
 							//							os2.close();
 							if(responseCode==200||responseCode==204){
@@ -227,14 +227,14 @@ public class GCMIntentService extends GCMBaseIntentService {
 							e.printStackTrace();
 						}
 						//						CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-						//						if(CommonUtils.usingNetwork < 0){	// 0 º¸´Ù ÀÛÁö´Â ¾Ê°Ô
+						//						if(CommonUtils.usingNetwork < 0){	// 0 ë³´ë‹¤ ì‘ì§€ëŠ” ì•Šê²Œ
 						//							CommonUtils.usingNetwork = 0;
 						//						}
 					}
 				}
 		).start();
 	}
-	// GCM Å×½ºÆ® ¿ë
+	// GCM í…ŒìŠ¤íŠ¸ ìš©
 	public void testGCM(String registrationId) throws JSONException, IOException {
 		Log.i(TAG, "testGCM");
 		JSONObject jsonMember = new JSONObject();
@@ -244,7 +244,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		Log.i(TAG, "jsonMember : " + jsonString);
 
 		try {
-			postUrl2 = new URL("http://checkmileage.onemobileservice.com/checkMileageMemberController/testGCM");		 // test ¿ë..
+			postUrl2 = new URL("http://checkmileage.onemobileservice.com/checkMileageMemberController/testGCM");		 // test ìš©..
 			connection2 = (HttpURLConnection) postUrl2.openConnection();
 			connection2.setDoOutput(true);
 			connection2.setInstanceFollowRedirects(false);
@@ -263,10 +263,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 		}
 	}
 
-	// Çö½Ã°¢ ±¸ÇÏ±â
+	// í˜„ì‹œê° êµ¬í•˜ê¸°
 	/**
 	 * getNow
-	 *  Çö½Ã°¢ ±¸ÇÑ´Ù
+	 *  í˜„ì‹œê° êµ¬í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -275,7 +275,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 	public String getNow(){
 		Calendar c = Calendar.getInstance();
 		int todayYear = c.get(Calendar.YEAR);
-		int todayMonth = c.get(Calendar.MONTH)+1;			// ²¨³»¸é 0ºÎÅÍ ½ÃÀÛÀÌ´Ï±î +1 ÇØÁØ´Ù.
+		int todayMonth = c.get(Calendar.MONTH)+1;			// êº¼ë‚´ë©´ 0ë¶€í„° ì‹œì‘ì´ë‹ˆê¹Œ +1 í•´ì¤€ë‹¤.
 		int todayDay = c.get(Calendar.DATE);
 		int todayHour = c.get(Calendar.HOUR_OF_DAY);
 		int todayMinute = c.get(Calendar.MINUTE);
@@ -310,22 +310,22 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 	/**
 	 * onMessage
-	 *  ¼­¹ö¿¡¼­ Çª½Ã°¡ ¿À¸é »ç¿ëÀÚ¿¡°Ô ³ëÆ¼¸¦ ÁØ´Ù
+	 *  ì„œë²„ì—ì„œ í‘¸ì‹œê°€ ì˜¤ë©´ ì‚¬ìš©ìì—ê²Œ ë…¸í‹°ë¥¼ ì¤€ë‹¤
 	 *
 	 * @param context
 	 * @param intent
 	 * @return
 	 */
-	@Override		// GCM ¼­ºñ½º ¿¡¼­ ¿Â ¸Ş½ÃÁö ¹ŞÀº°Å.
+	@Override		// GCM ì„œë¹„ìŠ¤ ì—ì„œ ì˜¨ ë©”ì‹œì§€ ë°›ì€ê±°.
 	protected void onMessage(Context context, Intent intent) {
 		Log.i(TAG, "Received message");
 
 		//        String message = getString(R.string.gcm_message);
 		String message = intent.getStringExtra("MESSAGE");
 		//        displayMessage(context, message);
-		Log.i(TAG, "Received message of onMessage():"+intent.getStringExtra("MESSAGE"));		// µ¿ÀÛÇÔ.
+		Log.i(TAG, "Received message of onMessage():"+intent.getStringExtra("MESSAGE"));		// ë™ì‘í•¨.
 
-		// ¾ÛÀ§Á¬ Å×½ºÆ®¿ë
+		// ì•±ìœ„ì ¯ í…ŒìŠ¤íŠ¸ìš©
 		//        RemoteViews views = new RemoteViews(this.getPackageName(), R.layout.my_widget_layout);
 		//        int count = 50;//Or whatever value you set to it.
 		//        views.setTextViewText(R.id.txtCount,Integer.toString(count));
@@ -333,23 +333,23 @@ public class GCMIntentService extends GCMBaseIntentService {
 		//        appWidgetManager.updateAppWidget(appWidgetId, views);
 
 
-		//        Toast.makeText(GCMIntentService.this, "(Å×½ºÆ®)¸Ş½ÃÁö°¡ µµÂøÇÏ¿´½À´Ï´Ù."+intent.getStringExtra("MESSAGE"), Toast.LENGTH_SHORT).show();
-		//        if(intent.getStringExtra("MESSAGE").equals("Check Mileage ·Î ºÎÅÍ »õ·Î¿î ¸Ş½ÃÁö°¡ µµÂøÇß½À´Ï´Ù.")){
-		//        	// ...Log.i(TAG, "112233");		// µ¿ÀÛÇÔ.
+		//        Toast.makeText(GCMIntentService.this, "(í…ŒìŠ¤íŠ¸)ë©”ì‹œì§€ê°€ ë„ì°©í•˜ì˜€ìŠµë‹ˆë‹¤."+intent.getStringExtra("MESSAGE"), Toast.LENGTH_SHORT).show();
+		//        if(intent.getStringExtra("MESSAGE").equals("Check Mileage ë¡œ ë¶€í„° ìƒˆë¡œìš´ ë©”ì‹œì§€ê°€ ë„ì°©í–ˆìŠµë‹ˆë‹¤.")){
+		//        	// ...Log.i(TAG, "112233");		// ë™ì‘í•¨.
 		//        }
 
 		/*
-		 * MILEAGE : »õ·Î¿î ¸¶ÀÏ¸®Áö°¡ µî·ÏµÇ°Å³ª ±âÁ¸ ¸¶ÀÏ¸®Áö°¡ ¾÷µ¥ÀÌÆ®µÇ¾ú´Ù.
-		 * MARKETING : °¡¸ÍÁ¡ÀÌ³ª ¼­ºñ½º¿¡¼­ ¸¶ÄÉÆÃÁ¤º¸³ª ±âÅ¸ ¾Ë¸²¸Ş½ÃÁö°¡ ¼ö½ÅµÇ¾ú´Ù.
-		 * Check Mileage ·Î ºÎÅÍ »õ·Î¿î ¸Ş½ÃÁö°¡ µµÂøÇß½À´Ï´Ù. : test ¸Ş½ÃÁö..
-		 * ±× ¿Ü : ¸¶ÄÉÆÃ ¸Ş½ÃÁö
+		 * MILEAGE : ìƒˆë¡œìš´ ë§ˆì¼ë¦¬ì§€ê°€ ë“±ë¡ë˜ê±°ë‚˜ ê¸°ì¡´ ë§ˆì¼ë¦¬ì§€ê°€ ì—…ë°ì´íŠ¸ë˜ì—ˆë‹¤.
+		 * MARKETING : ê°€ë§¹ì ì´ë‚˜ ì„œë¹„ìŠ¤ì—ì„œ ë§ˆì¼€íŒ…ì •ë³´ë‚˜ ê¸°íƒ€ ì•Œë¦¼ë©”ì‹œì§€ê°€ ìˆ˜ì‹ ë˜ì—ˆë‹¤.
+		 * Check Mileage ë¡œ ë¶€í„° ìƒˆë¡œìš´ ë©”ì‹œì§€ê°€ ë„ì°©í–ˆìŠµë‹ˆë‹¤. : test ë©”ì‹œì§€..
+		 * ê·¸ ì™¸ : ë§ˆì¼€íŒ… ë©”ì‹œì§€
 		 */
 		//        if(intent.getStringExtra("MESSAGE").contains("MILEAGE")){
-		// noti ´Â ÇÊ¿ä ¾ø°í.. ³» ¸¶ÀÏ¸®Áö ¸ñ·Ï °¬À»¶§ Àç Á¶È¸ µÇµµ·Ï º¯¼ö °ª¸¸ º¯°æÇØÁØ´Ù. -- ¾ÆÁ÷ ¹Ì±¸Çö »óÅÂÀÌ´Ù..
-		// --> noti ÇØÁà¾ß ÇÑ´Ù. ¾îÇÃ Á¾·áÇÑ »óÅÂÀÏ¼öµµ ÀÖ±â ¶§¹®..(¸®½Ã¹ö´Â ¾îÇÃ Á¾·áÇØµµ µ¿ÀÛ)
+		// noti ëŠ” í•„ìš” ì—†ê³ .. ë‚´ ë§ˆì¼ë¦¬ì§€ ëª©ë¡ ê°”ì„ë•Œ ì¬ ì¡°íšŒ ë˜ë„ë¡ ë³€ìˆ˜ ê°’ë§Œ ë³€ê²½í•´ì¤€ë‹¤. -- ì•„ì§ ë¯¸êµ¬í˜„ ìƒíƒœì´ë‹¤..
+		// --> noti í•´ì¤˜ì•¼ í•œë‹¤. ì–´í”Œ ì¢…ë£Œí•œ ìƒíƒœì¼ìˆ˜ë„ ìˆê¸° ë•Œë¬¸..(ë¦¬ì‹œë²„ëŠ” ì–´í”Œ ì¢…ë£Œí•´ë„ ë™ì‘)
 		//        }else{
 		// notifies user
-		generateNotification(context, message);	// »ç¿ëÀÚ¿¡°Ô ³ëÆ¼¸¦ ÁØ´å
+		generateNotification(context, message);	// ì‚¬ìš©ìì—ê²Œ ë…¸í‹°ë¥¼ ì¤€ë‹·
 		//        }
 
 	}
@@ -394,18 +394,18 @@ public class GCMIntentService extends GCMBaseIntentService {
 		String mileageUpdateStr = context.getString(R.string.mileage_noti);
 		Intent notificationIntent;
 		/*
-		 * MILEAGE : »õ·Î¿î ¸¶ÀÏ¸®Áö°¡ µî·ÏµÇ°Å³ª ±âÁ¸ ¸¶ÀÏ¸®Áö°¡ ¾÷µ¥ÀÌÆ®µÇ¾ú´Ù.
-		 * MARKETING : °¡¸ÍÁ¡ÀÌ³ª ¼­ºñ½º¿¡¼­ ¸¶ÄÉÆÃÁ¤º¸³ª ±âÅ¸ ¾Ë¸²¸Ş½ÃÁö°¡ ¼ö½ÅµÇ¾ú´Ù.
-		 * Check Mileage ·Î ºÎÅÍ »õ·Î¿î ¸Ş½ÃÁö°¡ µµÂøÇß½À´Ï´Ù. : test ¸Ş½ÃÁö..
+		 * MILEAGE : ìƒˆë¡œìš´ ë§ˆì¼ë¦¬ì§€ê°€ ë“±ë¡ë˜ê±°ë‚˜ ê¸°ì¡´ ë§ˆì¼ë¦¬ì§€ê°€ ì—…ë°ì´íŠ¸ë˜ì—ˆë‹¤.
+		 * MARKETING : ê°€ë§¹ì ì´ë‚˜ ì„œë¹„ìŠ¤ì—ì„œ ë§ˆì¼€íŒ…ì •ë³´ë‚˜ ê¸°íƒ€ ì•Œë¦¼ë©”ì‹œì§€ê°€ ìˆ˜ì‹ ë˜ì—ˆë‹¤.
+		 * Check Mileage ë¡œ ë¶€í„° ìƒˆë¡œìš´ ë©”ì‹œì§€ê°€ ë„ì°©í–ˆìŠµë‹ˆë‹¤. : test ë©”ì‹œì§€..
 		 * 
-		 * <string name="gcm_new_msgkkk">»õ·Î¿î ¸Ş½ÃÁö</string>
+		 * <string name="gcm_new_msgkkk">ìƒˆë¡œìš´ ë©”ì‹œì§€</string>
 		 */
-		String new_msg = "»õ·Î¿î ¸Ş½ÃÁö";
+		String new_msg = "ìƒˆë¡œìš´ ë©”ì‹œì§€";
 
 		if(message.equals(new_msg)){
 			Log.d(TAG,"new msg - test");
 			notificationIntent = new Intent(context, DummyActivity.class);	
-			//            notificationIntent.putExtra("RunMode", "TEST");						// µ¥ÀÌÅÍ Àü´ŞÀÌ °¡´ÉÇÏ´Ù. ÀÌ°ÍÀ» ÅëÇØ.. ¿øÇÏ´Â ¾×Æ¼ºñÆ¼¸¦ ½ÇÇà½ÃÄÑÁÙ¼ö ÀÖ´Ù..
+			//            notificationIntent.putExtra("RunMode", "TEST");						// ë°ì´í„° ì „ë‹¬ì´ ê°€ëŠ¥í•˜ë‹¤. ì´ê²ƒì„ í†µí•´.. ì›í•˜ëŠ” ì•¡í‹°ë¹„í‹°ë¥¼ ì‹¤í–‰ì‹œì¼œì¤„ìˆ˜ ìˆë‹¤..
 			notificationIntent.putExtra("RunMode", "MILEAGE");						//
 
 			// set intent so it does not start a new activity
@@ -421,11 +421,11 @@ public class GCMIntentService extends GCMBaseIntentService {
 			notificationManager.notify(0, notification);
 
 			//        }else if(message.contains("MILEAGE")){
-			//        }else if(message.contains(mileageUpdateStr)){			// Ä³·µÀÌ º¯°æµÇ¾ú½À´Ï´Ù. (´Ù±¹¾î)
-		}else if(message.equals(mileageUpdateStr)){			// Ä³·µÀÌ º¯°æµÇ¾ú½À´Ï´Ù. (´Ù±¹¾î).
+			//        }else if(message.contains(mileageUpdateStr)){			// ìºëŸ¿ì´ ë³€ê²½ë˜ì—ˆìŠµë‹ˆë‹¤. (ë‹¤êµ­ì–´)
+		}else if(message.equals(mileageUpdateStr)){			// ìºëŸ¿ì´ ë³€ê²½ë˜ì—ˆìŠµë‹ˆë‹¤. (ë‹¤êµ­ì–´).
 			Log.d(TAG,"update mileage");
 			MyMileagePageActivity.searched = false;
-			//        	notificationIntent = new Intent(context, MainActivity.class);		// ÀÌ°É ¶ç¿ö¼­ ¹®Á¦°¡ µÈ´Ù¸é..
+			//        	notificationIntent = new Intent(context, MainActivity.class);		// ì´ê±¸ ë„ì›Œì„œ ë¬¸ì œê°€ ëœë‹¤ë©´..
 			notificationIntent = new Intent(context, DummyActivity.class);	
 			notificationIntent.putExtra("RunMode", "MILEAGE");
 
@@ -442,7 +442,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 			notificationManager.notify(0, notification);
 		}else if(message.equals("MARKETING")){
 			Log.d(TAG,"noti event push");
-			//        	notificationIntent = new Intent(context, MainActivity.class);		// ÀÌ°É ¶ç¿ö¼­ ¹®Á¦°¡ µÈ´Ù¸é ´õ¹Ì ÅëÇÑ È£Ãâ..
+			//        	notificationIntent = new Intent(context, MainActivity.class);		// ì´ê±¸ ë„ì›Œì„œ ë¬¸ì œê°€ ëœë‹¤ë©´ ë”ë¯¸ í†µí•œ í˜¸ì¶œ..
 			notificationIntent = new Intent(context, DummyActivity.class);	
 			notificationIntent.putExtra("RunMode", "MARKETING");
 			notificationIntent.putExtra("MESSAGE", "New Event");
@@ -457,9 +457,9 @@ public class GCMIntentService extends GCMBaseIntentService {
 			notification.setLatestEventInfo(context, title, message, intent);
 			notification.flags |= Notification.FLAG_AUTO_CANCEL;
 			notificationManager.notify(0, notification);
-		}else{							// ¸¶ÄÉÆÃ Á÷±¸.
+		}else{							// ë§ˆì¼€íŒ… ì§êµ¬.
 			Log.d(TAG,"noti event push");
-			//        	notificationIntent = new Intent(context, MainActivity.class);		// ÀÌ°É ¶ç¿ö¼­ ¹®Á¦°¡ µÈ´Ù¸é ´õ¹Ì ÅëÇÑ È£Ãâ..
+			//        	notificationIntent = new Intent(context, MainActivity.class);		// ì´ê±¸ ë„ì›Œì„œ ë¬¸ì œê°€ ëœë‹¤ë©´ ë”ë¯¸ í†µí•œ í˜¸ì¶œ..
 			notificationIntent = new Intent(context, DummyActivity.class);	
 			notificationIntent.putExtra("RunMode", "MARKETING");
 			notificationIntent.putExtra("MESSAGE", message);

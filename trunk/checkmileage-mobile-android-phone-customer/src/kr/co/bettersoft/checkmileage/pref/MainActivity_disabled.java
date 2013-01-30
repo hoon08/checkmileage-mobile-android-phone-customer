@@ -14,7 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 /*
- * º» ÇÁ·ÎÁ§Æ®¿¡¼­ »ç¿ë ¾ÈÇÔ
+ * ë³¸ í”„ë¡œì íŠ¸ì—ì„œ ì‚¬ìš© ì•ˆí•¨
  */
 public class MainActivity_disabled extends Activity {	
 
@@ -24,13 +24,13 @@ public class MainActivity_disabled extends Activity {
 	SharedPreferences defaultSharedPref;
 		
 	String strForLog = "";
-	// º» ÇÁ·ÎÁ§Æ®¿¡¼­ »ç¿ë ¾ÈÇÔ
+	// ë³¸ í”„ë¡œì íŠ¸ì—ì„œ ì‚¬ìš© ì•ˆí•¨
 //	TextView tvGreeting;
 //	TextView tvOptional;
 //	TextView tvRingtone;
 	
 	////////////////////////////////////////////////////////////////////////////////////////
-	// PreferenceActivity¸¦ »ç¿ëÇÏÁö ¾Ê´Â Preference ±¸Çö ½Ã ÇÊ¿ä (onCreate, onPause, onResume Âü°í)
+	// PreferenceActivityë¥¼ ì‚¬ìš©í•˜ì§€ ì•ŠëŠ” Preference êµ¬í˜„ ì‹œ í•„ìš” (onCreate, onPause, onResume ì°¸ê³ )
 	////////////////////////////////////////////////////////////////////////////////////////
 	public static final String KEY_PREF_STRING_TEST01 = "String test 01";
 	public static final String KEY_PREF_STRING_TEST02 = "String test 02";
@@ -45,17 +45,17 @@ public class MainActivity_disabled extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        // º» ÇÁ·ÎÁ§Æ®¿¡¼­ »ç¿ë ¾ÈÇÔ
+        // ë³¸ í”„ë¡œì íŠ¸ì—ì„œ ì‚¬ìš© ì•ˆí•¨
 //        tvGreeting = (TextView)findViewById(R.id.GreetingMsg);
 //        tvOptional = (TextView)findViewById(R.id.OptionalMsg);
 //        tvRingtone = (TextView)findViewById(R.id.Ringtone);
         
-        // /data/data/ÆĞÅ°ÁöÀÌ¸§/shared_prefs/ÆĞÅ°ÁöÀÌ¸§_preferences.xml ÆÄÀÏ°ú
-        // ¿¬°áµÇ´Â SharedPreferences ÀÎÅÍÆäÀÌ½º ¾ò±â. ÇØ´ç ÆÄÀÏÀÌ ¾ø´Ù¸é ¾Èµå·ÎÀÌµå°¡ ÀÚµ¿À¸·Î »ı¼º
+        // /data/data/íŒ¨í‚¤ì§€ì´ë¦„/shared_prefs/íŒ¨í‚¤ì§€ì´ë¦„_preferences.xml íŒŒì¼ê³¼
+        // ì—°ê²°ë˜ëŠ” SharedPreferences ì¸í„°í˜ì´ìŠ¤ ì–»ê¸°. í•´ë‹¹ íŒŒì¼ì´ ì—†ë‹¤ë©´ ì•ˆë“œë¡œì´ë“œê°€ ìë™ìœ¼ë¡œ ìƒì„±
         defaultSharedPref = PreferenceManager.getDefaultSharedPreferences(this); 
           
         ///////////////////////////////////////////////////////////////////////////////
-        // PreferenceActivity¸¦ »ç¿ëÇÏÁö ¾Ê´Â Preference ±¸Çö ½Ã ÇÊ¿ä (onPause, onResume Âü°í)
+        // PreferenceActivityë¥¼ ì‚¬ìš©í•˜ì§€ ì•ŠëŠ” Preference êµ¬í˜„ ì‹œ í•„ìš” (onPause, onResume ì°¸ê³ )
         ///////////////////////////////////////////////////////////////////////////////
         sharedPrefForThis = getPreferences(Context.MODE_PRIVATE);
 //        sharedPrefCustom = getSharedPreferences("MyCustomePref",
@@ -72,17 +72,17 @@ public class MainActivity_disabled extends Activity {
 	protected void onPause() {
 		super.onPause();		
 		///////////////////////////////////////////////////////////////////
-		// PreferenceActivity¸¦ »ç¿ëÇÏÁö ¾Ê´Â Preference ±¸Çö ½Ã Âü°í
+		// PreferenceActivityë¥¼ ì‚¬ìš©í•˜ì§€ ì•ŠëŠ” Preference êµ¬í˜„ ì‹œ ì°¸ê³ 
 		///////////////////////////////////////////////////////////////////
 		SharedPreferences.Editor editor01 = sharedPrefForThis.edit();
 		SharedPreferences.Editor editor02 = sharedPrefCustom.edit();
 		
-		editor01.putString(KEY_PREF_STRING_TEST01, "getPreferences() ¸Ş¼­µå¸¦ »ç¿ëÇØ Activity ÀÌ¸§À» µû¶ó ÀÚµ¿ »ı¼ºµÈ Preference µ¥ÀÌÅÍ ÆÄÀÏ¿¡ ÀúÀåµÈ Text");
-		editor02.putString(KEY_PREF_STRING_TEST02, "getSharedPreferences() ¸Ş¼­µå¸£ »ç¿ëÇØ °³¹ßÀÚ°¡ ÀÓÀÇ·Î »ı¼ºÇÑ Preference µ¥ÀÌÅÍ ÆÄÀÏ(MyCustomePref.xml)¿¡ ÀúÀåµÈ text");
+		editor01.putString(KEY_PREF_STRING_TEST01, "getPreferences() ë©”ì„œë“œë¥¼ ì‚¬ìš©í•´ Activity ì´ë¦„ì„ ë”°ë¼ ìë™ ìƒì„±ëœ Preference ë°ì´í„° íŒŒì¼ì— ì €ì¥ëœ Text");
+		editor02.putString(KEY_PREF_STRING_TEST02, "getSharedPreferences() ë©”ì„œë“œë¥´ ì‚¬ìš©í•´ ê°œë°œìê°€ ì„ì˜ë¡œ ìƒì„±í•œ Preference ë°ì´í„° íŒŒì¼(MyCustomePref.xml)ì— ì €ì¥ëœ text");
 		
-		// **** Áß¿ä ******
-		// commitÀ» ½ÇÇà½ÃÅ°Áö ¾ÊÀ¸¸é º¯°æµÈ ¼³Á¤ÀÌ ÀúÀåµÇÁö ¾ÊÀ» »Ó´õ·¯
-		// Preference µ¥ÀÌÅÍ ÆÄÀÏÀÌ »ı¼ºµÇÁöµµ ¾ÊÀ½
+		// **** ì¤‘ìš” ******
+		// commitì„ ì‹¤í–‰ì‹œí‚¤ì§€ ì•Šìœ¼ë©´ ë³€ê²½ëœ ì„¤ì •ì´ ì €ì¥ë˜ì§€ ì•Šì„ ë¿ë”ëŸ¬
+		// Preference ë°ì´í„° íŒŒì¼ì´ ìƒì„±ë˜ì§€ë„ ì•ŠìŒ
 		editor01.commit();
 		editor02.commit();
 		///////////////////////////////////////////////////////////////////
@@ -94,13 +94,13 @@ public class MainActivity_disabled extends Activity {
 	protected void onResume() {
 		super.onResume();
 		
-		// AppÀÇ DefaultSharedPreference ÆÄÀÏ·Î ºÎÅÍ È¯°æ ¼³Á¤°ª ¾ò±â		//-- º» ÇÁ·ÎÁ§Æ® ¿¡¼­ »ç¿ë ¾ÈÇÔ
+		// Appì˜ DefaultSharedPreference íŒŒì¼ë¡œ ë¶€í„° í™˜ê²½ ì„¤ì •ê°’ ì–»ê¸°		//-- ë³¸ í”„ë¡œì íŠ¸ ì—ì„œ ì‚¬ìš© ì•ˆí•¨
 //		boolean isOptionalMsgShown = defaultSharedPref.getBoolean("GreetingMsg", false);
 //		String strOptionalMsg = defaultSharedPref.getString("AdditionalMsg", "<None>");
 //		String strColor = defaultSharedPref.getString("TextColor", "FFFFFFFF");
 //		String strRingtone = defaultSharedPref.getString("Rington", "<None Selected>");
 		
-		// ActivityÀÇ child viewµéÀÇ È¯°æ ¼³Á¤°ª º¹¿ø			// -- º» ÇÁ·ÎÁ§Æ®¿¡¼­ »ç¿ë ¾ÈÇÔ
+		// Activityì˜ child viewë“¤ì˜ í™˜ê²½ ì„¤ì •ê°’ ë³µì›			// -- ë³¸ í”„ë¡œì íŠ¸ì—ì„œ ì‚¬ìš© ì•ˆí•¨
 //		tvGreeting.setTextColor((int)Long.parseLong(strColor, 16));
 //		tvOptional.setTextColor((int)Long.parseLong(strColor, 16));
 //		tvOptional.setVisibility(isOptionalMsgShown? View.VISIBLE : View.INVISIBLE);
@@ -109,11 +109,11 @@ public class MainActivity_disabled extends Activity {
 //		tvRingtone.setTextColor((int)Long.parseLong(strColor, 16));
 		
 		//////////////////////////////////////////////////////////////////////////
-		// PreferenceActivity¸¦ »ç¿ëÇÏÁö ¾Ê´Â Preference ±¸Çö ½Ã Âü°í 
+		// PreferenceActivityë¥¼ ì‚¬ìš©í•˜ì§€ ì•ŠëŠ” Preference êµ¬í˜„ ì‹œ ì°¸ê³  
 		//////////////////////////////////////////////////////////////////////////
 		sharedPrefForThis.getString(KEY_PREF_STRING_TEST01, "Not configured yet");
 		sharedPrefCustom.getString(KEY_PREF_STRING_TEST02, "Not configured yet");
-    		// test »ï¾Æ ·Î±× È®ÀÎ - Á¤»ó ÀÛµ¿ ÇÔ.
+    		// test ì‚¼ì•„ ë¡œê·¸ í™•ì¸ - ì •ìƒ ì‘ë™ í•¨.
 //		strForLog = sharedPrefForThis.getString(KEY_PREF_STRING_TEST01, "Not configured yet");
 //		Log.e("prefTest","1:"+strForLog);
 //		strForLog = sharedPrefCustom.getString(KEY_PREF_STRING_TEST02, "Not configured yet");
@@ -121,7 +121,7 @@ public class MainActivity_disabled extends Activity {
 		//////////////////////////////////////////////////////////////////////////
 		
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		// °ªÀ» °¡Á®¿Â´Ù. ¿À¸¥ÂÊ ÆÄ¶ó¹ÌÅÍ´Â µğÆúÆ® °ª.
+		// ê°’ì„ ê°€ì ¸ì˜¨ë‹¤. ì˜¤ë¥¸ìª½ íŒŒë¼ë¯¸í„°ëŠ” ë””í´íŠ¸ ê°’.
 		boolean check_value = pref.getBoolean("keycheck", false);
 		String list_value = pref.getString("keylist", "");
 		
@@ -131,8 +131,8 @@ public class MainActivity_disabled extends Activity {
 	
     @Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(Menu.NONE, ID_MENU_PREFERENCES_XML, Menu.NONE, "È¯°æ¼³Á¤(XML ¸®¼Ò½º)");
-		menu.add(Menu.NONE, ID_MENU_PREFERENCES_INTENT, Menu.NONE, "È¯°æ¼³Á¤(Intent)");		// --> ¿¡·¯ ¹ß»ıÇÔ..
+		menu.add(Menu.NONE, ID_MENU_PREFERENCES_XML, Menu.NONE, "í™˜ê²½ì„¤ì •(XML ë¦¬ì†ŒìŠ¤)");
+		menu.add(Menu.NONE, ID_MENU_PREFERENCES_INTENT, Menu.NONE, "í™˜ê²½ì„¤ì •(Intent)");		// --> ì—ëŸ¬ ë°œìƒí•¨..
 		return super.onCreateOptionsMenu(menu);
 	}
     
@@ -142,7 +142,7 @@ public class MainActivity_disabled extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
     	case ID_MENU_PREFERENCES_XML:
-    		// Intent¸¦ »ç¿ëÇØ ´Ù¸¥ Activity¸¦ ½ÇÇà (Intent °ü·Ã Æ÷½ºÆ®¿¡¼­ ÀÚ¼¼È÷ ´Ù·ê ¿¹Á¤
+    		// Intentë¥¼ ì‚¬ìš©í•´ ë‹¤ë¥¸ Activityë¥¼ ì‹¤í–‰ (Intent ê´€ë ¨ í¬ìŠ¤íŠ¸ì—ì„œ ìì„¸íˆ ë‹¤ë£° ì˜ˆì •
     		startActivity(new Intent(this, PrefActivityFromResource.class));
     		return true;
     	case ID_MENU_PREFERENCES_INTENT:
