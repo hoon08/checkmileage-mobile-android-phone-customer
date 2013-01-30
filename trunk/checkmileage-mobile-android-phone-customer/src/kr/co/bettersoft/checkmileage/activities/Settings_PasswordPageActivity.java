@@ -3,9 +3,9 @@ package kr.co.bettersoft.checkmileage.activities;
 /**
  * Settings_PasswordPageActivity
  * 
- * ¼³Á¤ È­¸é. - ÇÏÀ§- ºñ¹ø ¼³Á¤ È­¸é.
- *    ºñ¹ø Àá±İ ±â´É ¼³Á¤ ¹× ºñ¹ø »ı¼º ¹× º¯°æ.
- *      ´Ü ºñ¹ø »ı¼º ¹× º¯°æÀº pref ÀÇ password ÆäÀÌÁö¸¦ È£ÃâÇÏ¿© ÁøÇà.
+ * ì„¤ì • í™”ë©´. - í•˜ìœ„- ë¹„ë²ˆ ì„¤ì • í™”ë©´.
+ *    ë¹„ë²ˆ ì ê¸ˆ ê¸°ëŠ¥ ì„¤ì • ë° ë¹„ë²ˆ ìƒì„± ë° ë³€ê²½.
+ *      ë‹¨ ë¹„ë²ˆ ìƒì„± ë° ë³€ê²½ì€ pref ì˜ password í˜ì´ì§€ë¥¼ í˜¸ì¶œí•˜ì—¬ ì§„í–‰.
  */
 import kr.co.bettersoft.checkmileage.activities.R;
 import kr.co.bettersoft.checkmileage.pref.Password;
@@ -28,21 +28,21 @@ public class Settings_PasswordPageActivity extends PreferenceActivity implements
 
 	public Boolean resumeCalled = false;
 
-	SharedPreferences sharedPrefCustom;	// °ø¿ë ÇÁ¸³½º		 Àá±İ ¹× QR (Àá±İÀº ¸ŞÀÎ°ú °øÀ¯  À§ÀÇ °Í(default,this)Àº ¸ŞÀÎ°ú °øÀ¯µÇÁö ¾Ê¾Æ ÀÌ sharedPref µµ »ç¿ëÇÑ´Ù.)		
-	//	PreferenceCategory category1;			// ¼³Á¤ÀÇ Ä«Å×°í¸®Â°·Î ºñÈ°¼º ½ÃÅ³¼ö ÀÖ´Ù. º» ÇÁ·ÎÁ§Æ®¿¡¼­ »ç¿ë ¾ÈÇÔ
-	SharedPreferences thePrefs;				// ¾îÇÃ ³» ÀÚÃ¼ ÇÁ¸®ÆÛ·±½º.  Resume ¶§ ÀÌ°÷¿¡ ¿¬°áÇÏ¿© »ç¿ë(Å»Åğ¶§ ÃÊ±âÈ­ ¿ëµµ)-- ÀÌ°Ç »ç½Ç À§¿¡°Å¶û °°À½.. »ğÁúÇßÀ½.
+	SharedPreferences sharedPrefCustom;	// ê³µìš© í”„ë¦½ìŠ¤		 ì ê¸ˆ ë° QR (ì ê¸ˆì€ ë©”ì¸ê³¼ ê³µìœ   ìœ„ì˜ ê²ƒ(default,this)ì€ ë©”ì¸ê³¼ ê³µìœ ë˜ì§€ ì•Šì•„ ì´ sharedPref ë„ ì‚¬ìš©í•œë‹¤.)		
+	//	PreferenceCategory category1;			// ì„¤ì •ì˜ ì¹´í…Œê³ ë¦¬ì§¸ë¡œ ë¹„í™œì„± ì‹œí‚¬ìˆ˜ ìˆë‹¤. ë³¸ í”„ë¡œì íŠ¸ì—ì„œ ì‚¬ìš© ì•ˆí•¨
+	SharedPreferences thePrefs;				// ì–´í”Œ ë‚´ ìì²´ í”„ë¦¬í¼ëŸ°ìŠ¤.  Resume ë•Œ ì´ê³³ì— ì—°ê²°í•˜ì—¬ ì‚¬ìš©(íƒˆí‡´ë•Œ ì´ˆê¸°í™” ìš©ë„)-- ì´ê±´ ì‚¬ì‹¤ ìœ„ì—ê±°ë‘ ê°™ìŒ.. ì‚½ì§ˆí–ˆìŒ.
 
-	int sharePrefsFlag = 1;					// ¾îÇÃ³» ÀÚÃ¼ ÇÁ¸³½º¸¦ ¾ò±â À§ÇÑ ¹Ì³¢. 1,-1 °ªÀ» ¹Ù²ã°¡¸ç ÀúÀåÇÏ¸é ¸®½º³Ê°¡ ³¬ÀÎ´Ù.
-	String password = "";					// ºñ¹ø.
+	int sharePrefsFlag = 1;					// ì–´í”Œë‚´ ìì²´ í”„ë¦½ìŠ¤ë¥¼ ì–»ê¸° ìœ„í•œ ë¯¸ë¼. 1,-1 ê°’ì„ ë°”ê¿”ê°€ë©° ì €ì¥í•˜ë©´ ë¦¬ìŠ¤ë„ˆê°€ ë‚šì¸ë‹¤.
+	String password = "";					// ë¹„ë²ˆ.
 
-	static String controllerName = "";		// JSON ¼­¹ö Åë½Å¸í ÄÁÆ®·Ñ·¯ ¸í
-	static String methodName = "";			// JSON ¼­¹ö Åë½Å¿ë ¸Ş¼Òµå ¸í
-	static int responseCode = 0;			// JSON ¼­¹ö Åë½Å °á°ú
+	static String controllerName = "";		// JSON ì„œë²„ í†µì‹ ëª… ì»¨íŠ¸ë¡¤ëŸ¬ ëª…
+	static String methodName = "";			// JSON ì„œë²„ í†µì‹ ìš© ë©”ì†Œë“œ ëª…
+	static int responseCode = 0;			// JSON ì„œë²„ í†µì‹  ê²°ê³¼
 
-	//	static int updateLv=0;							// ¼­¹ö¿¡ ¾÷µ« Ä¥Áö ¿©ºÎ °Ë»ç¿ëµµ. 0ÀÌ¸é ¾ÈÇÏ°í, 1ÀÌ¸é ÇÑ´Ù, 2¸é µÎ¹øÇÑ´Ù(¾÷µ«Áß °ªÀÌ ¹Ù²ï °æ¿ìÀÓ)
-	// -> ºñ¹øÀº ¼­¹ö¿¡ ÀúÀåÇÏÁö ¾ÊÀ¸¹Ç·Î ÁÖ¼®Ã³¸®ÇÔ.
+	//	static int updateLv=0;							// ì„œë²„ì— ì—…ëƒ ì¹ ì§€ ì—¬ë¶€ ê²€ì‚¬ìš©ë„. 0ì´ë©´ ì•ˆí•˜ê³ , 1ì´ë©´ í•œë‹¤, 2ë©´ ë‘ë²ˆí•œë‹¤(ì—…ëƒì¤‘ ê°’ì´ ë°”ë€ ê²½ìš°ì„)
+	// -> ë¹„ë²ˆì€ ì„œë²„ì— ì €ì¥í•˜ì§€ ì•Šìœ¼ë¯€ë¡œ ì£¼ì„ì²˜ë¦¬í•¨.
 
-	public boolean getprefYN = false;				// ÇÁ¸®ÆÛ·±½º Ä³Ä¡ ¿©ºÎ. 
+	public boolean getprefYN = false;				// í”„ë¦¬í¼ëŸ°ìŠ¤ ìºì¹˜ ì—¬ë¶€. 
 
 
 	@Override
@@ -51,41 +51,41 @@ public class Settings_PasswordPageActivity extends PreferenceActivity implements
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.settings_password);
 		/*
-		 *  ¼­¹ö·ÎºÎÅÍ °³ÀÎ Á¤º¸¸¦ °¡Á®¿Í¼­ µµ¸ŞÀÎ °°Àº °÷¿¡ ´ã¾ÆµĞ´Ù. ³ªÁß¿¡ ¾÷µ¥ÀÌÆ® ÇÒ¶§ »ç¿ë. ¾÷µ¥ÀÌÆ®ÇÏ°í ³ª¸é ±× µµ¸ŞÀÎ ±×´ë·Î À¯Áö..
-		 *  ¾ø´Â°Å´Â null pointer ³ª¹Ç·Î ""·Î ¹Ù²ãÁÖ´Â Ã³¸®°¡ ÇÊ¿ä.
+		 *  ì„œë²„ë¡œë¶€í„° ê°œì¸ ì •ë³´ë¥¼ ê°€ì ¸ì™€ì„œ ë„ë©”ì¸ ê°™ì€ ê³³ì— ë‹´ì•„ë‘”ë‹¤. ë‚˜ì¤‘ì— ì—…ë°ì´íŠ¸ í• ë•Œ ì‚¬ìš©. ì—…ë°ì´íŠ¸í•˜ê³  ë‚˜ë©´ ê·¸ ë„ë©”ì¸ ê·¸ëŒ€ë¡œ ìœ ì§€..
+		 *  ì—†ëŠ”ê±°ëŠ” null pointer ë‚˜ë¯€ë¡œ ""ë¡œ ë°”ê¿”ì£¼ëŠ” ì²˜ë¦¬ê°€ í•„ìš”.
 		 */
 
-		if(!resumeCalled){			// ÇÑ¹ø¸¸ È£ÃâÇÏ±â À§ÇÔ
+		if(!resumeCalled){			// í•œë²ˆë§Œ í˜¸ì¶œí•˜ê¸° ìœ„í•¨
 			getPreferenceScreen().getSharedPreferences() 
 			.registerOnSharedPreferenceChangeListener(this); 
 			/*
-			 *  ºñ¹ø Àá±İ ¼³Á¤Àº ºñ¹øÀÌ ÀÖÀ» °æ¿ì¿¡¸¸ ÇØÁØ´Ù.	(ºñ¹øÀÌ ¾ø´Ù¸é Àá±İ Ã¼Å© ¼³Á¤À» »ç¿ëÇÒ ¼ö ¾ø´Ù.)		
-			 *  ºñ¹ø ¼³Á¤ÀÇ °æ¿ì ¸®Áí¿¡ ³ÖÁö ¾ÊÀ¸¸é ÇÑ¹ø¹Û¿¡ ¾ÈÀĞ¾î¼­ º¯°æ½Ã Àû¿ëµÇÁö ¾Ê´Â´Ù. (¾îÇÃ Àç±âµ¿ÇØ¾ß Àû¿ë)
+			 *  ë¹„ë²ˆ ì ê¸ˆ ì„¤ì •ì€ ë¹„ë²ˆì´ ìˆì„ ê²½ìš°ì—ë§Œ í•´ì¤€ë‹¤.	(ë¹„ë²ˆì´ ì—†ë‹¤ë©´ ì ê¸ˆ ì²´í¬ ì„¤ì •ì„ ì‚¬ìš©í•  ìˆ˜ ì—†ë‹¤.)		
+			 *  ë¹„ë²ˆ ì„¤ì •ì˜ ê²½ìš° ë¦¬ì¥¼ì— ë„£ì§€ ì•Šìœ¼ë©´ í•œë²ˆë°–ì— ì•ˆì½ì–´ì„œ ë³€ê²½ì‹œ ì ìš©ë˜ì§€ ì•ŠëŠ”ë‹¤. (ì–´í”Œ ì¬ê¸°ë™í•´ì•¼ ì ìš©)
 			 */
-			// prefs 	// ¾îÇÃ Àá±İ ¼³Á¤ ¿ë ÇÁ¸®ÆÛ·±½º. °ø¿ëÀ¸·Î ¾µ °Íµµ ÇÊ¿ä. 
+			// prefs 	// ì–´í”Œ ì ê¸ˆ ì„¤ì • ìš© í”„ë¦¬í¼ëŸ°ìŠ¤. ê³µìš©ìœ¼ë¡œ ì“¸ ê²ƒë„ í•„ìš”. 
 			sharedPrefCustom = getSharedPreferences("MyCustomePref",
 					Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
-			sharedPrefCustom.registerOnSharedPreferenceChangeListener(this);			// ¿©±â¿¡µµ µî·ÏÇØ³ö¾ß ¸®½Ã¹ö°¡ Á¦´ë·Î ¹İÀÀÇÑ´Ù.
+			sharedPrefCustom.registerOnSharedPreferenceChangeListener(this);			// ì—¬ê¸°ì—ë„ ë“±ë¡í•´ë†”ì•¼ ë¦¬ì‹œë²„ê°€ ì œëŒ€ë¡œ ë°˜ì‘í•œë‹¤.
 
 			//			Log.w(TAG, "onResume2");
 			//			Preference passwordCheck = findPreference("preference_lock_chk");
 			//			password = sharedPrefCustom.getString("password", "");
-			//			if(password.length()<1){				// ºñ¹øÀÌ ¾ø´Ù¸é Àá±İ ±â´ÉÀ» »ç¿ëÇÒ ¼ö ¾ø´Ù.  --> ºñ¹ø ¼³Á¤ ÀÌÈÄ Ç®¸°´Ù.
+			//			if(password.length()<1){				// ë¹„ë²ˆì´ ì—†ë‹¤ë©´ ì ê¸ˆ ê¸°ëŠ¥ì„ ì‚¬ìš©í•  ìˆ˜ ì—†ë‹¤.  --> ë¹„ë²ˆ ì„¤ì • ì´í›„ í’€ë¦°ë‹¤.
 			//				passwordCheck.setEnabled(false);
 			//			}else{
-			//				passwordCheck.setEnabled(true);		// ºñ¹øÀÌ ÀÖ´Ù¸é Àá±İ ±â´ÉÀ» »ç¿ëÇÒ ¼ö ÀÖ´Ù.
+			//				passwordCheck.setEnabled(true);		// ë¹„ë²ˆì´ ìˆë‹¤ë©´ ì ê¸ˆ ê¸°ëŠ¥ì„ ì‚¬ìš©í•  ìˆ˜ ìˆë‹¤.
 			//			}
 
-			SharedPreferences.Editor init2 = sharedPrefCustom.edit();		// °­Á¦ È£Ãâ¿ëµµ  .. ´Ü¾î¸íÀº ÀÇ¹Ì¾ø´Ù.
-			int someNum = sharedPrefCustom.getInt("pref_toggle", sharePrefsFlag);	// ÀÌÀü °ª°ú °°À»¼ö ÀÖÀ¸¹Ç·Î..
-			someNum = someNum * -1;													// ¸Å¹ø ´Ù¸¥ °ªÀÌ µé¾î°¡¾ß Á¦´ë·Î È£ÃâÀÌ µÈ´Ù. °°Àº °ªµé¾î°¡¸é º¯È­ ¾ø´Ù°í È£Ãâ ¾ÈµÊ.			
-			init2.putInt("pref_toggle", someNum); 		// ÇÁ¸®ÆÛ·±½º °ª ³Ö¾î ¾÷µ¥ÀÌÆ® ½ÃÅ°¸é °­Á¦·Î ¸®½º³Ê È£Ãâ.
+			SharedPreferences.Editor init2 = sharedPrefCustom.edit();		// ê°•ì œ í˜¸ì¶œìš©ë„  .. ë‹¨ì–´ëª…ì€ ì˜ë¯¸ì—†ë‹¤.
+			int someNum = sharedPrefCustom.getInt("pref_toggle", sharePrefsFlag);	// ì´ì „ ê°’ê³¼ ê°™ì„ìˆ˜ ìˆìœ¼ë¯€ë¡œ..
+			someNum = someNum * -1;													// ë§¤ë²ˆ ë‹¤ë¥¸ ê°’ì´ ë“¤ì–´ê°€ì•¼ ì œëŒ€ë¡œ í˜¸ì¶œì´ ëœë‹¤. ê°™ì€ ê°’ë“¤ì–´ê°€ë©´ ë³€í™” ì—†ë‹¤ê³  í˜¸ì¶œ ì•ˆë¨.			
+			init2.putInt("pref_toggle", someNum); 		// í”„ë¦¬í¼ëŸ°ìŠ¤ ê°’ ë„£ì–´ ì—…ë°ì´íŠ¸ ì‹œí‚¤ë©´ ê°•ì œë¡œ ë¦¬ìŠ¤ë„ˆ í˜¸ì¶œ.
 			init2.commit();			
-			// ÀÚÃ¼ ÇÁ¸®ÆÛ¸¦ Áö¸ñÇÒ ¼ö ÀÖ°Ô µÊ. Å»Åğ ¸Ş¼Òµå¶§ ÃÊ±â°ª ¼¼ÆÃÇØÁØ´Ù.
+			// ìì²´ í”„ë¦¬í¼ë¥¼ ì§€ëª©í•  ìˆ˜ ìˆê²Œ ë¨. íƒˆí‡´ ë©”ì†Œë“œë•Œ ì´ˆê¸°ê°’ ì„¸íŒ…í•´ì¤€ë‹¤.
 			//			Log.w(TAG, "onResume3");
 
-			// password ¿Ü ¼³Á¤ º¯°æÇÏ°í ¿Â °æ¿ì ¾÷µ« ÇÑ¹ø ÃÄÁÖ±â.?  // -> ºñ¹ø Àº ¼­¹ö¿¡ ÀúÀåÇÏÁö ¾Ê±â·Î..--> ÁÖ¼® Ã³¸®ÇÔ
-			//			if(updateLv>0){		// 2¿´´ø °æ¿ì. (¾÷µ«Áß ¶Ç º¯°æµÈ °æ¿ì ÇÑ¹ø´õ) --> ¿©±â¼­ »ç¿ëÇÒ ÇÊ¿ä ¾øÀ½. 
+			// password ì™¸ ì„¤ì • ë³€ê²½í•˜ê³  ì˜¨ ê²½ìš° ì—…ëƒ í•œë²ˆ ì³ì£¼ê¸°.?  // -> ë¹„ë²ˆ ì€ ì„œë²„ì— ì €ì¥í•˜ì§€ ì•Šê¸°ë¡œ..--> ì£¼ì„ ì²˜ë¦¬í•¨
+			//			if(updateLv>0){		// 2ì˜€ë˜ ê²½ìš°. (ì—…ëƒì¤‘ ë˜ ë³€ê²½ëœ ê²½ìš° í•œë²ˆë”) --> ì—¬ê¸°ì„œ ì‚¬ìš©í•  í•„ìš” ì—†ìŒ. 
 			//				Log.d(TAG,"Need Update one more time");
 			//			}
 			resumeCalled = true;
@@ -94,15 +94,15 @@ public class Settings_PasswordPageActivity extends PreferenceActivity implements
 
 
 	/*
-	 * oncreate ¿¡ ÀÖÀ¸¸é ÇÑ¹ø¹Û¿¡ ¸øÇØ¼­ µÎ¹ø ÀÌ»ó ÇÏ·Á¸é Resume ¿¡ µĞ´Ù..
-	 * È­¸éÀ¸·Î ¿Ã¶§¸¶´Ù ºñ¹øÀ» ²¨³½´Ù. 
-	 * (ºñ¹ø º¯°æ ÀÌÈÄ µ¹¾Æ¿ÔÀ»¶§ º¯°æµÈ ºñ¹ø ²¨³¾¼ö ÀÖµµ·Ï ÇÔ)
+	 * oncreate ì— ìˆìœ¼ë©´ í•œë²ˆë°–ì— ëª»í•´ì„œ ë‘ë²ˆ ì´ìƒ í•˜ë ¤ë©´ Resume ì— ë‘”ë‹¤..
+	 * í™”ë©´ìœ¼ë¡œ ì˜¬ë•Œë§ˆë‹¤ ë¹„ë²ˆì„ êº¼ë‚¸ë‹¤. 
+	 * (ë¹„ë²ˆ ë³€ê²½ ì´í›„ ëŒì•„ì™”ì„ë•Œ ë³€ê²½ëœ ë¹„ë²ˆ êº¼ë‚¼ìˆ˜ ìˆë„ë¡ í•¨)
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onResume()
 	 */
 	/**
 	 * onResume
-	 *  ¸®Áí½Ã ÇÁ¸®ÆÛ·±½ºÀÇ ºñ¹ø °ªÀ» ÅëÇØ ºñ¹ø »ç¿ë Ã¼Å©¹Ú½º¸¦ È°¼ºÈ­/ºñÈ°¼ºÈ­ ½ÃÅ²´Ù. (ºñ¹øÀÌ ¾øÀ¸¸é ºñ¹ø »ç¿ë ¿©ºÎ ¼±ÅÃ ºÒ°¡)
+	 *  ë¦¬ì¥¼ì‹œ í”„ë¦¬í¼ëŸ°ìŠ¤ì˜ ë¹„ë²ˆ ê°’ì„ í†µí•´ ë¹„ë²ˆ ì‚¬ìš© ì²´í¬ë°•ìŠ¤ë¥¼ í™œì„±í™”/ë¹„í™œì„±í™” ì‹œí‚¨ë‹¤. (ë¹„ë²ˆì´ ì—†ìœ¼ë©´ ë¹„ë²ˆ ì‚¬ìš© ì—¬ë¶€ ì„ íƒ ë¶ˆê°€)
 	 *
 	 * @param
 	 * @param
@@ -116,16 +116,16 @@ public class Settings_PasswordPageActivity extends PreferenceActivity implements
 				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
 		Preference passwordCheck = findPreference("preference_lock_chk");
 		password = sharedPrefCustom.getString("password", "");
-		if(password.length()<1){				// ºñ¹øÀÌ ¾ø´Ù¸é Àá±İ ±â´ÉÀ» »ç¿ëÇÒ ¼ö ¾ø´Ù.  --> ºñ¹ø ¼³Á¤ ÀÌÈÄ Ç®¸°´Ù.
+		if(password.length()<1){				// ë¹„ë²ˆì´ ì—†ë‹¤ë©´ ì ê¸ˆ ê¸°ëŠ¥ì„ ì‚¬ìš©í•  ìˆ˜ ì—†ë‹¤.  --> ë¹„ë²ˆ ì„¤ì • ì´í›„ í’€ë¦°ë‹¤.
 			passwordCheck.setEnabled(false);
 		}else{
-			passwordCheck.setEnabled(true);		// ºñ¹øÀÌ ÀÖ´Ù¸é Àá±İ ±â´ÉÀ» »ç¿ëÇÒ ¼ö ÀÖ´Ù.
+			passwordCheck.setEnabled(true);		// ë¹„ë²ˆì´ ìˆë‹¤ë©´ ì ê¸ˆ ê¸°ëŠ¥ì„ ì‚¬ìš©í•  ìˆ˜ ìˆë‹¤.
 		}
 	}
 
 	/**
 	 * onPause
-	 *  ¾×Æ¼ºñÆ¼ pause ¿¡¼­ ÇÁ¸®ÆÛ·±½º ¸®½º³Ê¸¦ ÇØÁ¦ÇÑ´Ù
+	 *  ì•¡í‹°ë¹„í‹° pause ì—ì„œ í”„ë¦¬í¼ëŸ°ìŠ¤ ë¦¬ìŠ¤ë„ˆë¥¼ í•´ì œí•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -134,19 +134,19 @@ public class Settings_PasswordPageActivity extends PreferenceActivity implements
 	@Override 
 	protected void onPause() { 
 		super.onPause(); 
-		// Unregister the listener whenever a key changes 			// ¸®½º³Ê ÇØÁ¦
+		// Unregister the listener whenever a key changes 			// ë¦¬ìŠ¤ë„ˆ í•´ì œ
 		getPreferenceScreen().getSharedPreferences() 
 		.unregisterOnSharedPreferenceChangeListener(this); 
 	} 
 
 
-	// Preference¿¡¼­ Å¬¸¯ ¹ß»ı½Ã È£ÃâµÇ´Â call back
+	// Preferenceì—ì„œ í´ë¦­ ë°œìƒì‹œ í˜¸ì¶œë˜ëŠ” call back
 	// Parameters:
-	//  - PreferenceScreen : ÀÌº¥Æ®°¡ ¹ß»ıÇÑ PreferenceÀÇ root
-	//  - Preference : ÀÌº¥Æ®¸¦ ¹ß»ı½ÃÅ² Preference Ç×¸ñ
+	//  - PreferenceScreen : ì´ë²¤íŠ¸ê°€ ë°œìƒí•œ Preferenceì˜ root
+	//  - Preference : ì´ë²¤íŠ¸ë¥¼ ë°œìƒì‹œí‚¨ Preference í•­ëª©
 	/**
 	 * onPreferenceTreeClick
-	 *  ÇÁ¸®ÆÛ·±½º(¼³Á¤)¿¡¼­ ¼³Á¤ ¸Ş´º Å¬¸¯½Ã ¹ß»ıÇÏ´Â ÀÌº¥Æ®¸¦Ã³¸®ÇÑ´Ù.
+	 *  í”„ë¦¬í¼ëŸ°ìŠ¤(ì„¤ì •)ì—ì„œ ì„¤ì • ë©”ë‰´ í´ë¦­ì‹œ ë°œìƒí•˜ëŠ” ì´ë²¤íŠ¸ë¥¼ì²˜ë¦¬í•œë‹¤.
 	 *
 	 * @param preferenceScreen
 	 * @param preference
@@ -156,38 +156,38 @@ public class Settings_PasswordPageActivity extends PreferenceActivity implements
 	public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
 			Preference preference) {
 		Log.w(TAG, "onPreferenceTreeClick");
-		// Àá±İ Ã¼Å© ¶Ç´Â ÇØÁ¦½Ã ÀÌº¥Æ® ¹ß»ı. °ø¿ë¿¡µµ ÀúÀå½ÃÄÑÁØ´Ù. (ÀÚÃ¼ ÀúÀåÀº ±âº» Á¦°ø)
+		// ì ê¸ˆ ì²´í¬ ë˜ëŠ” í•´ì œì‹œ ì´ë²¤íŠ¸ ë°œìƒ. ê³µìš©ì—ë„ ì €ì¥ì‹œì¼œì¤€ë‹¤. (ìì²´ ì €ì¥ì€ ê¸°ë³¸ ì œê³µ)
 		if(preference.equals((CheckBoxPreference)findPreference("preference_lock_chk"))) {
-			//				 Toast.makeText(Settings_PasswordPageActivity.this, "Àá±İ ¼³Á¤ º¯°æ", Toast.LENGTH_SHORT).show();
-			SharedPreferences.Editor saveLockCustom = sharedPrefCustom.edit();		// °ø¿ëÀ¸·Î ºñ¹øµµ ÀúÀåÇØ ÁØ´Ù.
+			//				 Toast.makeText(Settings_PasswordPageActivity.this, "ì ê¸ˆ ì„¤ì • ë³€ê²½", Toast.LENGTH_SHORT).show();
+			SharedPreferences.Editor saveLockCustom = sharedPrefCustom.edit();		// ê³µìš©ìœ¼ë¡œ ë¹„ë²ˆë„ ì €ì¥í•´ ì¤€ë‹¤.
 			saveLockCustom.putBoolean("appLocked", ((CheckBoxPreference)findPreference("preference_lock_chk")).isChecked());
 			saveLockCustom. commit();
 		}
 
-		// Àá±İ ¼³Á¤ - ºñ¹ø º¯°æ preference_lock_password
+		// ì ê¸ˆ ì„¤ì • - ë¹„ë²ˆ ë³€ê²½ preference_lock_password
 		if(preference.equals(findPreference("preference_lock_password"))){
 			//						Toast.makeText(Settings_PasswordPageActivity.this, "preference_lock_password", Toast.LENGTH_SHORT).show();
 			Intent passwordIntent = new Intent(Settings_PasswordPageActivity.this, kr.co.bettersoft.checkmileage.pref.Password.class);
-			if(password.length()>0){		// ºñ¹øÀÌ ÀÖ´Â °æ¿ì º¯°æÀ» ÇØ¾ß ÇÑ´Ù. 3È¸ ÀÔ·Â. (±âÁ¸, »õ, È®ÀÎ)
-				passwordIntent.putExtra(Password.PASSWORD, password);		// ±âÁ¸ ºñ¹øÀ» º¸³»ÁØ´Ù.È®ÀÎÇØ¾ß ÇÏ´Ï±î
-				passwordIntent.putExtra(Password.MODE, Password.MODE_CHANGE_PASSWORD);	// ºñ¹ø º¯°æ ¸ğµå
-			}else{							// ºñ¹øÀÌ ¾ø´Â °æ¿ì º¯°æ ´ë½Å ½Å±Ô »ı¼ºÀ» ÇØ¾ß ÇÑ´Ù. 2È¸ ÀÔ·Â (»õ, È®ÀÎ)
+			if(password.length()>0){		// ë¹„ë²ˆì´ ìˆëŠ” ê²½ìš° ë³€ê²½ì„ í•´ì•¼ í•œë‹¤. 3íšŒ ì…ë ¥. (ê¸°ì¡´, ìƒˆ, í™•ì¸)
+				passwordIntent.putExtra(Password.PASSWORD, password);		// ê¸°ì¡´ ë¹„ë²ˆì„ ë³´ë‚´ì¤€ë‹¤.í™•ì¸í•´ì•¼ í•˜ë‹ˆê¹Œ
+				passwordIntent.putExtra(Password.MODE, Password.MODE_CHANGE_PASSWORD);	// ë¹„ë²ˆ ë³€ê²½ ëª¨ë“œ
+			}else{							// ë¹„ë²ˆì´ ì—†ëŠ” ê²½ìš° ë³€ê²½ ëŒ€ì‹  ì‹ ê·œ ìƒì„±ì„ í•´ì•¼ í•œë‹¤. 2íšŒ ì…ë ¥ (ìƒˆ, í™•ì¸)
 				passwordIntent.putExtra(Password.PASSWORD, password);
-				passwordIntent.putExtra(Password.MODE, Password.MODE_INIT_PASSWORD);	// ½Å±Ô ºñ¹ø ¸ğµå
+				passwordIntent.putExtra(Password.MODE, Password.MODE_INIT_PASSWORD);	// ì‹ ê·œ ë¹„ë²ˆ ëª¨ë“œ
 			}
-			// Âü°í·Î È®ÀÎ ¸ğµåÀÏ °æ¿ì 
+			// ì°¸ê³ ë¡œ í™•ì¸ ëª¨ë“œì¼ ê²½ìš° 
 			// passwordIntent.putExtra(Password.MODE, Password.MODE_CHECK_PASSWORD);
-			passwordIntent.putExtra(Password.NEXT_ACTIVITY, "com.pref.Profile");		// ´ÙÀ½ È­¸é
+			passwordIntent.putExtra(Password.NEXT_ACTIVITY, "com.pref.Profile");		// ë‹¤ìŒ í™”ë©´
 			startActivity(passwordIntent);
 		}
 		return super.onPreferenceTreeClick(preferenceScreen, preference);
 	}	
 
 
-	// ÁÖ ¿ëµµ´Â resume ¶§ ÀÚÃ¼ ÇÁ¸®ÆÛ·±½º Àü´ŞÇÏ¿© ÄÁÆ®·Ñ ÇÒ ¼ö ÀÖ°Ô ÇÏ´Â °Í.   
+	// ì£¼ ìš©ë„ëŠ” resume ë•Œ ìì²´ í”„ë¦¬í¼ëŸ°ìŠ¤ ì „ë‹¬í•˜ì—¬ ì»¨íŠ¸ë¡¤ í•  ìˆ˜ ìˆê²Œ í•˜ëŠ” ê²ƒ.   
 	/**
 	 * onSharedPreferenceChanged
-	 *  ÇÁ¸®ÆÛ·±½º °ªÀÌ ¹Ù²î¾úÀ»¶§¿¡ µ¿ÀÛÇÑ´Ù. °øÀ¯ ÇÁ¸®ÆÛ·±½º¿Í µğÆúÆ® ÇÁ¸®ÆÛ·±½ºÀÇ µ¿±âÈ­¿¡ »ç¿ëµÈ´Ù.
+	 *  í”„ë¦¬í¼ëŸ°ìŠ¤ ê°’ì´ ë°”ë€Œì—ˆì„ë•Œì— ë™ì‘í•œë‹¤. ê³µìœ  í”„ë¦¬í¼ëŸ°ìŠ¤ì™€ ë””í´íŠ¸ í”„ë¦¬í¼ëŸ°ìŠ¤ì˜ ë™ê¸°í™”ì— ì‚¬ìš©ëœë‹¤.
 	 *
 	 * @param sharedPreferences
 	 * @param key
@@ -198,14 +198,14 @@ public class Settings_PasswordPageActivity extends PreferenceActivity implements
 			String key) {
 		if(!getprefYN){				 
 			Log.w(TAG, "onSharedPreferenceChanged");
-			if(key.equals("pref_toggle")){		// resume ¿¡¼­ ³ÖÀº °Í°ú ÀÌ¸§ ÀÏÄ¡ÇØ¾ß µ¿ÀÛÇÑ´Ù.
+			if(key.equals("pref_toggle")){		// resume ì—ì„œ ë„£ì€ ê²ƒê³¼ ì´ë¦„ ì¼ì¹˜í•´ì•¼ ë™ì‘í•œë‹¤.
 				thePrefs = sharedPreferences;
 			}
-			getprefYN = true;				// ÇÁ¸®ÆÛ·±½º Ä³Ä¡ ¿Ï·á.
+			getprefYN = true;				// í”„ë¦¬í¼ëŸ°ìŠ¤ ìºì¹˜ ì™„ë£Œ.
 		}
 	}
 
-	@Override			// ÀÌ ¾×Æ¼ºñÆ¼°¡ Á¾·áµÉ¶§ ½ÇÇà. 
+	@Override			// ì´ ì•¡í‹°ë¹„í‹°ê°€ ì¢…ë£Œë ë•Œ ì‹¤í–‰. 
 	protected void onDestroy() {
 		//		resumeCalled = false;
 		super.onDestroy();

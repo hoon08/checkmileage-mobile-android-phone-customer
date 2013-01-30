@@ -42,7 +42,7 @@ import kr.co.bettersoft.checkmileage.activities.R;
 /**
  * Helper class used to communicate with the demo server.
  * 
- * GCM Å×½ºÆ®¿ë µ¥¸ğ ¼Ò½º. °³¹ß ÃÊ±â¿¡´Â GCM µî·ÏÈÄ È£ÃâÇÏ¿© ÇÑ¹ø´õ µî·ÏÇß¾ú´Ù (È®½ÇÈ÷ ÇÏ±âÀ§ÇØ)
+ * GCM í…ŒìŠ¤íŠ¸ìš© ë°ëª¨ ì†ŒìŠ¤. ê°œë°œ ì´ˆê¸°ì—ëŠ” GCM ë“±ë¡í›„ í˜¸ì¶œí•˜ì—¬ í•œë²ˆë” ë“±ë¡í–ˆì—ˆë‹¤ (í™•ì‹¤íˆ í•˜ê¸°ìœ„í•´)
  */
 public final class ServerUtilities {
 
