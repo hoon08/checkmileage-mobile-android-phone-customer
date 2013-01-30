@@ -2,10 +2,10 @@ package kr.co.bettersoft.checkmileage.activities;
 /**
  * PushDetail
  * 
- * °¡¸ÍÁ¡¿¡¼­ º¸³»¿Â ÀÌº¥Æ® »ó¼¼ º¸±â È­¸é.
+ * ê°€ë§¹ì ì—ì„œ ë³´ë‚´ì˜¨ ì´ë²¤íŠ¸ ìƒì„¸ ë³´ê¸° í™”ë©´.
  * 
- * È­¸é ±¸¼ºÀº ÃÖ»ó´Ü¿¡ Å¸ÀÌÆ²,  »ó´ÜºÎ¿¡ ÀÌ¹ÌÁö(Ã·ºÎ ÀÌ¹ÌÁö). ÇÏ´ÜºÎ¿¡ ÅØ½ºÆ®. 
- * Å¸ÀÌÆ², ÀÌ¹ÌÁö´Â °íÁ¤»óÅÂ°í ÇÏ´Ü ÅØ½ºÆ®ÀÇ ³»¿ëÀÌ ¸¹À» °æ¿ì ½ºÅ©·Ñ µÇµµ·Ï ÇÑ´Ù. 
+ * í™”ë©´ êµ¬ì„±ì€ ìµœìƒë‹¨ì— íƒ€ì´í‹€,  ìƒë‹¨ë¶€ì— ì´ë¯¸ì§€(ì²¨ë¶€ ì´ë¯¸ì§€). í•˜ë‹¨ë¶€ì— í…ìŠ¤íŠ¸. 
+ * íƒ€ì´í‹€, ì´ë¯¸ì§€ëŠ” ê³ ì •ìƒíƒœê³  í•˜ë‹¨ í…ìŠ¤íŠ¸ì˜ ë‚´ìš©ì´ ë§ì„ ê²½ìš° ìŠ¤í¬ë¡¤ ë˜ë„ë¡ í•œë‹¤. 
  */
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -50,27 +50,27 @@ public class PushDetail extends Activity {
 
 	Button closeBtn;
 	public CheckMileagePushEvent checkMileagePushEvent = new CheckMileagePushEvent();
-	String subject="";				// Á¦¸ñ
-	String content="";				// ³»¿ë
-	String imageFileUrl="";			// ÀÌ¹ÌÁö URL
-	String imageFileStr="";			// ¹®ÀÚ¿­·Î ¹Ù²Û ÀÌ¹ÌÁö
-	String modifyDate="";			// ¼öÁ¤ÀÏ 
-	String companyName="";			// °¡¸ÍÁ¡¸í
-	Bitmap imageFile= null;			// ÀÌ¹ÌÁö ÆÄÀÏ
+	String subject="";				// ì œëª©
+	String content="";				// ë‚´ìš©
+	String imageFileUrl="";			// ì´ë¯¸ì§€ URL
+	String imageFileStr="";			// ë¬¸ìì—´ë¡œ ë°”ê¾¼ ì´ë¯¸ì§€
+	String modifyDate="";			// ìˆ˜ì •ì¼ 
+	String companyName="";			// ê°€ë§¹ì ëª…
+	Bitmap imageFile= null;			// ì´ë¯¸ì§€ íŒŒì¼
 
 	TextView subjectView;
 	ImageView imageFileView ;
 	TextView contentView ;
 	TextView companyNameView ;	
-	int maxPRstr = 200;					// È­¸é¿¡ º¸¿©ÁÙ ¼Ò°³ ±ÛÀÇ ÃÖ´ë ±ÛÀÚ¼ö. ³Ñ¾î°¡¸é ÀÚ¸£°í ... À¸·Î Ç¥½ÃÇØÁÜ.
-	// ÁøÇà¹Ù
-	ProgressBar pb1;		// Áß´Ü ·Îµù ÁøÇà¹Ù
-	// ÇÚµé·¯
+	int maxPRstr = 200;					// í™”ë©´ì— ë³´ì—¬ì¤„ ì†Œê°œ ê¸€ì˜ ìµœëŒ€ ê¸€ììˆ˜. ë„˜ì–´ê°€ë©´ ìë¥´ê³  ... ìœ¼ë¡œ í‘œì‹œí•´ì¤Œ.
+	// ì§„í–‰ë°”
+	ProgressBar pb1;		// ì¤‘ë‹¨ ë¡œë”© ì§„í–‰ë°”
+	// í•¸ë“¤ëŸ¬
 	Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg){
 			try{
-				Bundle b = msg.getData();		// ¹Ş¾Æ¿Â°á°ú¸¦ È­¸é¿¡ »Ñ·ÁÁØ´Ù.
+				Bundle b = msg.getData();		// ë°›ì•„ì˜¨ê²°ê³¼ë¥¼ í™”ë©´ì— ë¿Œë ¤ì¤€ë‹¤.
 				if(b.getInt("showYN")==1){
 					//					String modifyDate="";
 					subjectView.setText(checkMileagePushEvent.getSubject());
@@ -82,13 +82,13 @@ public class PushDetail extends Activity {
 					closeBtn.setVisibility(View.VISIBLE);
 				}
 				if(b.getInt("order")==1){
-					// ÇÁ·Î±×·¡½º¹Ù ½ÇÇà
+					// í”„ë¡œê·¸ë˜ìŠ¤ë°” ì‹¤í–‰
 					if(pb1==null){
 						pb1=(ProgressBar) findViewById(R.id.push_detail_progressbar01);
 					}
 					pb1.setVisibility(View.VISIBLE);
 				}else if(b.getInt("order")==2){
-					// ÇÁ·Î±×·¡½º¹Ù  Á¾·á
+					// í”„ë¡œê·¸ë˜ìŠ¤ë°”  ì¢…ë£Œ
 					if(pb1==null){
 						pb1=(ProgressBar) findViewById(R.id.push_detail_progressbar01);
 					}
@@ -103,10 +103,10 @@ public class PushDetail extends Activity {
 		}
 	};
 
-	// Áß¾Ó ÇÁ·Î±×·¡½º¹Ù º¸ÀÓ, ¼û±è
+	// ì¤‘ì•™ í”„ë¡œê·¸ë˜ìŠ¤ë°” ë³´ì„, ìˆ¨ê¹€
 	/**
 	 * showPb
-	 *  Áß¾Ó ÇÁ·Î±×·¡½º¹Ù °¡½ÃÈ­ÇÑ´Ù
+	 *  ì¤‘ì•™ í”„ë¡œê·¸ë˜ìŠ¤ë°” ê°€ì‹œí™”í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -128,7 +128,7 @@ public class PushDetail extends Activity {
 
 	/**
 	 * hidePb
-	 *  Áß¾Ó ÇÁ·Î±×·¡½º¹Ù ºñ°¡½ÃÈ­ÇÑ´Ù
+	 *  ì¤‘ì•™ í”„ë¡œê·¸ë˜ìŠ¤ë°” ë¹„ê°€ì‹œí™”í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -159,28 +159,28 @@ public class PushDetail extends Activity {
 		contentView = (TextView)findViewById(R.id.push_detail_content);
 		companyNameView = (TextView)findViewById(R.id.push_detail_store_name);	
 
-		// µ¥ÀÌÅÍ ¹ŞÀ½
+		// ë°ì´í„° ë°›ìŒ
 		Intent receiveIntent = getIntent();
-		subject = receiveIntent.getStringExtra("subject");				// ÀÌº¥Æ® Á¦¸ñ
-		content = receiveIntent.getStringExtra("content");				// ÀÌº¥Æ® ±Û±Í
-		imageFileUrl = receiveIntent.getStringExtra("imageFileUrl");	// ÀÌº¥Æ® ±¤°í ÀÌ¹ÌÁö ÁÖ¼Ò	
-		imageFileStr = receiveIntent.getStringExtra("imageFileStr");	// ÀÌº¥Æ® ±¤°í ÀÌ¹ÌÁö ¹®ÀÚÈ­
-		modifyDate = receiveIntent.getStringExtra("modifyDate");		// ÀÌº¥Æ® ¾÷µ« ³¯Â¥
-		companyName = receiveIntent.getStringExtra("companyName");		// ÀÌº¥Æ® ¾÷Ã¼¸í
+		subject = receiveIntent.getStringExtra("subject");				// ì´ë²¤íŠ¸ ì œëª©
+		content = receiveIntent.getStringExtra("content");				// ì´ë²¤íŠ¸ ê¸€ê·€
+		imageFileUrl = receiveIntent.getStringExtra("imageFileUrl");	// ì´ë²¤íŠ¸ ê´‘ê³  ì´ë¯¸ì§€ ì£¼ì†Œ	
+		imageFileStr = receiveIntent.getStringExtra("imageFileStr");	// ì´ë²¤íŠ¸ ê´‘ê³  ì´ë¯¸ì§€ ë¬¸ìí™”
+		modifyDate = receiveIntent.getStringExtra("modifyDate");		// ì´ë²¤íŠ¸ ì—…ëƒ ë‚ ì§œ
+		companyName = receiveIntent.getStringExtra("companyName");		// ì´ë²¤íŠ¸ ì—…ì²´ëª…
 
 		//	    Log.d(TAG,"subject:"+subject+"//content:"+content+"//imageFileUrl:"+imageFileUrl);
 		//	    Log.d(TAG,"imageFileStr:"+imageFileStr+"//modifyDate:"+modifyDate+"//companyName:"+companyName);
 
-		if(imageFileUrl.length()>0){			// ÀÌ¹ÌÁö°¡ ÀÖ¾î¾ß ÇÏ´Â °æ¿ì
-			if(imageFileStr.length()>0){									// ÀÌº¥Æ® ÀÌ¹ÌÁö - °¡ ¹®ÀÚ¿­·Î µ¥ÀÌÅÍ°¡ ³Ñ¾î¿Â °æ¿ì. º¯È¯.
+		if(imageFileUrl.length()>0){			// ì´ë¯¸ì§€ê°€ ìˆì–´ì•¼ í•˜ëŠ” ê²½ìš°
+			if(imageFileStr.length()>0){									// ì´ë²¤íŠ¸ ì´ë¯¸ì§€ - ê°€ ë¬¸ìì—´ë¡œ ë°ì´í„°ê°€ ë„˜ì–´ì˜¨ ê²½ìš°. ë³€í™˜.
 				byte[] decodedString = Base64.decode(imageFileStr, Base64.DEFAULT); 
 				imageFile = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-			}else{													// ÀÌ¹ÌÁö°¡ ¹®ÀÚ¿­·Î ³Ñ¾î¿ÀÁö ¸øÇÑ °æ¿ì. ´Ù½Ã »ı¼º.
+			}else{													// ì´ë¯¸ì§€ê°€ ë¬¸ìì—´ë¡œ ë„˜ì–´ì˜¤ì§€ ëª»í•œ ê²½ìš°. ë‹¤ì‹œ ìƒì„±.
 				new backgroundLoadImage().execute();
 				//				LoadImage(imageFileUrl);
 			}
 		}
-		if(imageFile==null){			// ÀÌ¹ÌÁö°¡ ¾ø¾î¾ß ÇÏ´Â °æ¿ì  ¹× À§¿¡¼­ ½ÇÆĞÇÑ °æ¿ì - ±âº» ÀÌ¹ÌÁö·Î Ã³¸®
+		if(imageFile==null){			// ì´ë¯¸ì§€ê°€ ì—†ì–´ì•¼ í•˜ëŠ” ê²½ìš°  ë° ìœ„ì—ì„œ ì‹¤íŒ¨í•œ ê²½ìš° - ê¸°ë³¸ ì´ë¯¸ì§€ë¡œ ì²˜ë¦¬
 			Log.d(TAG,"imageFile==null");
 			BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.empty_320_240);
 			imageFile = dw.getBitmap();
@@ -201,14 +201,14 @@ public class PushDetail extends Activity {
 			}
 		});	
 		// progress bar
-		pb1 = (ProgressBar) findViewById(R.id.push_detail_progressbar01);		// ·Îµù(Áß¾Ó)
+		pb1 = (ProgressBar) findViewById(R.id.push_detail_progressbar01);		// ë¡œë”©(ì¤‘ì•™)
 		showPb();
 		showInfo();
 	}
 
 	/**
 	 * returnThis
-	 *  ÄÁÅÃ½ºÆ®¸¦ ¸®ÅÏÇÑ´Ù (ÇÚµé·¯¿¡¼­ »ç¿ë)
+	 *  ì»¨íƒìŠ¤íŠ¸ë¥¼ ë¦¬í„´í•œë‹¤ (í•¸ë“¤ëŸ¬ì—ì„œ ì‚¬ìš©)
 	 *
 	 * @param
 	 * @param
@@ -220,13 +220,13 @@ public class PushDetail extends Activity {
 
 	/**
 	 * showMSG
-	 *  È­¸é¿¡ error Åä½ºÆ® ¶ç¿î´Ù
+	 *  í™”ë©´ì— error í† ìŠ¤íŠ¸ ë„ìš´ë‹¤
 	 *
 	 * @param
 	 * @param
 	 * @return
 	 */
-	public void showMSG(){			// È­¸é¿¡ error Åä½ºÆ® ¶ç¿ò..
+	public void showMSG(){			// í™”ë©´ì— error í† ìŠ¤íŠ¸ ë„ì›€..
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -242,10 +242,10 @@ public class PushDetail extends Activity {
 
 
 
-	// È­¸é¿¡ º¸¿©ÁØ´Ù..
+	// í™”ë©´ì— ë³´ì—¬ì¤€ë‹¤..
 	/**
 	 * showInfo
-	 *  ÀÌº¥Æ® Á¤º¸¸¦ È­¸é¿¡ º¸¿©ÁØ´Ù
+	 *  ì´ë²¤íŠ¸ ì •ë³´ë¥¼ í™”ë©´ì— ë³´ì—¬ì¤€ë‹¤
 	 *
 	 * @param
 	 * @param
@@ -267,11 +267,11 @@ public class PushDetail extends Activity {
 
 
 	/*
-	 * Bitmap ÀÌ¹ÌÁö ¸®»çÀÌÁî   // º»ÆäÀÌÁö¿¡¼­ »ç¿ë ¾ÈÇÔ
-	 * Src : ¿øº» Bitmap
-	 * newHeight : »õ·Î¿î ³ôÀÌ
-	 * newWidth : »õ·Î¿î ³ĞÀÌ
-	 * Âü°í ¼Ò½º : http://skyswim42.egloos.com/3477279 ( webview ¿¡¼­ capture È­¸é resizing ÇÏ´Â source µµ ÀÖÀ½ )
+	 * Bitmap ì´ë¯¸ì§€ ë¦¬ì‚¬ì´ì¦ˆ   // ë³¸í˜ì´ì§€ì—ì„œ ì‚¬ìš© ì•ˆí•¨
+	 * Src : ì›ë³¸ Bitmap
+	 * newHeight : ìƒˆë¡œìš´ ë†’ì´
+	 * newWidth : ìƒˆë¡œìš´ ë„“ì´
+	 * ì°¸ê³  ì†ŒìŠ¤ : http://skyswim42.egloos.com/3477279 ( webview ì—ì„œ capture í™”ë©´ resizing í•˜ëŠ” source ë„ ìˆìŒ )
 	 */
 	//	private BitmapDrawable BitmapResizePrc(Bitmap Src, float newHeight, float newWidth)
 	//	{
@@ -289,7 +289,7 @@ public class PushDetail extends Activity {
 	//		// resize the bit map
 	//		matrix.postScale(scaleWidth, scaleHeight);
 	//
-	//		// rotate the Bitmap È¸Àü ½ÃÅ°·Á¸é ÁÖ¼® ÇØÁ¦!
+	//		// rotate the Bitmap íšŒì „ ì‹œí‚¤ë ¤ë©´ ì£¼ì„ í•´ì œ!
 	//		//matrix.postRotate(45);
 	//
 	//		// recreate the new Bitmap
@@ -307,11 +307,11 @@ public class PushDetail extends Activity {
 	//	}
 
 
-	// ÀÌº¥Æ® ÀÌ¹ÌÁö : URL ¿¡¼­ ÀÌ¹ÌÁö ¹Ş¾Æ¿Í¼­ µµ¸ŞÀÎ¿¡ ÀúÀåÇÏ´Â ºÎºĞ.
-	// ºñµ¿±â·Î ÀÌº¥Æ® ¸ñ·Ï °¡Á®¿À´Â ÇÔ¼ö È£Ãâ.
+	// ì´ë²¤íŠ¸ ì´ë¯¸ì§€ : URL ì—ì„œ ì´ë¯¸ì§€ ë°›ì•„ì™€ì„œ ë„ë©”ì¸ì— ì €ì¥í•˜ëŠ” ë¶€ë¶„.
+	// ë¹„ë™ê¸°ë¡œ ì´ë²¤íŠ¸ ëª©ë¡ ê°€ì ¸ì˜¤ëŠ” í•¨ìˆ˜ í˜¸ì¶œ.
 	/**
 	 * backgroundLoadImage
-	 *  ºñµ¿±â·Î À¥ ÀÌ¹ÌÁö¸¦ ·ÎµåÇÑ´Ù
+	 *  ë¹„ë™ê¸°ë¡œ ì›¹ ì´ë¯¸ì§€ë¥¼ ë¡œë“œí•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -331,7 +331,7 @@ public class PushDetail extends Activity {
 
 	/**
 	 * LoadImage
-	 *  °¡¸ÍÁ¡ ÀÌ¹ÌÁö URL ¿¡¼­ ÀÌ¹ÌÁö ¹Ş¾Æ¿Â ½ºÆ®¸²À» ºñÆ®¸ÊÀ¸·Î ÀúÀåÇÑ´Ù
+	 *  ê°€ë§¹ì  ì´ë¯¸ì§€ URL ì—ì„œ ì´ë¯¸ì§€ ë°›ì•„ì˜¨ ìŠ¤íŠ¸ë¦¼ì„ ë¹„íŠ¸ë§µìœ¼ë¡œ ì €ì¥í•œë‹¤
 	 *
 	 * @param $imagePath
 	 * @param
@@ -345,7 +345,7 @@ public class PushDetail extends Activity {
 
 	/**
 	 * OpenHttpConnection
-	 *  °¡¸ÍÁ¡ ÀÌ¹ÌÁö URL ¿¡¼­ ÀÌ¹ÌÁö ¹Ş¾Æ¿Í¼­ ½ºÆ®¸²À¸·Î ÀúÀåÇÑ´Ù
+	 *  ê°€ë§¹ì  ì´ë¯¸ì§€ URL ì—ì„œ ì´ë¯¸ì§€ ë°›ì•„ì™€ì„œ ìŠ¤íŠ¸ë¦¼ìœ¼ë¡œ ì €ì¥í•œë‹¤
 	 *
 	 * @param $imagePath
 	 * @param

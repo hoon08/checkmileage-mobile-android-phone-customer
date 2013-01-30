@@ -2,7 +2,7 @@ package kr.co.bettersoft.checkmileage.activities;
 /**
  * PushList
  * 
- * °¡¸ÍÁ¡¿¡¼­ º¸³»¿Â ÀÌº¥Æ® ¸ñ·Ïº¸±â. Æ¯Á¤ ¹öÆ° ÅÍÄ¡ÇÏ¿© »ó¼¼ È­¸éÀ¸·Î ÀÌµ¿ °¡´É.
+ * ê°€ë§¹ì ì—ì„œ ë³´ë‚´ì˜¨ ì´ë²¤íŠ¸ ëª©ë¡ë³´ê¸°. íŠ¹ì • ë²„íŠ¼ í„°ì¹˜í•˜ì—¬ ìƒì„¸ í™”ë©´ìœ¼ë¡œ ì´ë™ ê°€ëŠ¥.
  * 
  */
 import java.io.BufferedReader;
@@ -57,7 +57,7 @@ public class PushList extends Activity {
 
 	String TAG = "PushList";
 
-	// ¼­¹ö Åë½Å ¿ë
+	// ì„œë²„ í†µì‹  ìš©
 	int responseCode = 0;
 	String myQRcode = "";
 	String controllerName = "";
@@ -67,15 +67,15 @@ public class PushList extends Activity {
 	URL postUrl2;
 	HttpURLConnection connection2;
 
-	//	String imgthumbDomain = CommonUtils.imgthumbDomain; 					// Img °¡Á®¿Ã¶§ ÆÄÀÏ¸í¸¸ ÀÖÀ» °æ¿ì ¾Õ¿¡ ºÙÀÏ µµ¸ŞÀÎ.  
-	//	String imgDomain = CommonUtils.imgDomain; 					// Img °¡Á®¿Ã¶§ ÆÄÀÏ¸í¸¸ ÀÖÀ» °æ¿ì ¾Õ¿¡ ºÙÀÏ µµ¸ŞÀÎ.  
-	String imgPushDomain = CommonUtils.imgPushDomain;			// Çª½Ã ÀÌ¹ÌÁö Àü¿ë µµ¸ŞÀÎ
+	//	String imgthumbDomain = CommonUtils.imgthumbDomain; 					// Img ê°€ì ¸ì˜¬ë•Œ íŒŒì¼ëª…ë§Œ ìˆì„ ê²½ìš° ì•ì— ë¶™ì¼ ë„ë©”ì¸.  
+	//	String imgDomain = CommonUtils.imgDomain; 					// Img ê°€ì ¸ì˜¬ë•Œ íŒŒì¼ëª…ë§Œ ìˆì„ ê²½ìš° ì•ì— ë¶™ì¼ ë„ë©”ì¸.  
+	String imgPushDomain = CommonUtils.imgPushDomain;			// í‘¸ì‹œ ì´ë¯¸ì§€ ì „ìš© ë„ë©”ì¸
 
-	public List<CheckMileagePushEvent> entries;	// 1Â÷ÀûÀ¸·Î Á¶È¸ÇÑ °á°ú. (°¡¸ÍÁ¡ »ó¼¼ Á¤º¸ Á¦¿Ü)
-	public List<CheckMileagePushEvent> dbInEntries;	// db¿¡ ³ÖÀ» °Å
-	public List<CheckMileagePushEvent> dbOutEntries;	// db¿¡¼­ ²¨³½°Å
+	public List<CheckMileagePushEvent> entries;	// 1ì°¨ì ìœ¼ë¡œ ì¡°íšŒí•œ ê²°ê³¼. (ê°€ë§¹ì  ìƒì„¸ ì •ë³´ ì œì™¸)
+	public List<CheckMileagePushEvent> dbInEntries;	// dbì— ë„£ì„ ê±°
+	public List<CheckMileagePushEvent> dbOutEntries;	// dbì—ì„œ êº¼ë‚¸ê±°
 
-	// ¹ŞÀº µ¥ÀÌÅÍ ÀÓ½Ã ÀúÀå¿ë -> º¯¼ö¿¡ ÀÓ½Ã ÀúÀå ÈÄ µµ¸ŞÀÎ¿¡ ÀúÀå
+	// ë°›ì€ ë°ì´í„° ì„ì‹œ ì €ì¥ìš© -> ë³€ìˆ˜ì— ì„ì‹œ ì €ì¥ í›„ ë„ë©”ì¸ì— ì €ì¥
 	String tmp_subject = "";			
 	String tmp_content = "";
 	String tmp_imageFileUrl = "";
@@ -84,66 +84,66 @@ public class PushList extends Activity {
 	String tmp_companyName = "";
 	Bitmap tmp_imageFile = null;
 
-	Boolean dbSaveEnable = true;			// db ÀúÀå °¡´É ¿©ºÎ
-	public static Boolean searched = false;		// Á¶È¸ Çß´Â°¡?
+	Boolean dbSaveEnable = true;			// db ì €ì¥ ê°€ëŠ¥ ì—¬ë¶€
+	public static Boolean searched = false;		// ì¡°íšŒ í–ˆëŠ”ê°€?
 
 	List<CheckMileagePushEvent> entriesFn = null;
-	int isRunning = 0;						// Áßº¹ ½ÇÇà ¹æÁö
+	int isRunning = 0;						// ì¤‘ë³µ ì‹¤í–‰ ë°©ì§€
 
-	public boolean connected = false;  // ÀÎÅÍ³İ ¿¬°á»óÅÂ
+	public boolean connected = false;  // ì¸í„°ë„· ì—°ê²°ìƒíƒœ
 	View emptyView;
 
-	// ÁøÇà¹Ù
+	// ì§„í–‰ë°”
 	ProgressBar pb1;
 
 	int reTry = 3;
 
 	/*
-	 * ¸ğ¹ÙÀÏ sqlite ¸¦ »ç¿ëÇÏ¿© ³» ÀÌº¥Æ® ¸ñ·ÏÀ» ¹Ş¾Æ¿Í¼­ ÀúÀå. 
-	 * ÀÌÈÄ Åë½Å ºÒ°¡ÀÏ¶§ ¸¶Áö¸·À¸·Î ÀúÀåÇÑ µ¥ÀÌÅÍ¸¦ º¸¿©ÁØ´Ù.
+	 * ëª¨ë°”ì¼ sqlite ë¥¼ ì‚¬ìš©í•˜ì—¬ ë‚´ ì´ë²¤íŠ¸ ëª©ë¡ì„ ë°›ì•„ì™€ì„œ ì €ì¥. 
+	 * ì´í›„ í†µì‹  ë¶ˆê°€ì¼ë•Œ ë§ˆì§€ë§‰ìœ¼ë¡œ ì €ì¥í•œ ë°ì´í„°ë¥¼ ë³´ì—¬ì¤€ë‹¤.
 	 * 
-	 * Åë½Å ½ÇÆĞ½Ã ¾Ë¸²Ã¢À» ¶ç¿öÁØ´Ù.
-	 * Åë½Å ¼º°ø½Ã ÀÌÀü db Å×ÀÌºíÀ» Áö¿ì°í »õ·Î Å×ÀÌºíÀ» ¸¸µé¾î¼­ µ¥ÀÌÅÍ¸¦ ³Ö¾îÁØ´Ù.
+	 * í†µì‹  ì‹¤íŒ¨ì‹œ ì•Œë¦¼ì°½ì„ ë„ì›Œì¤€ë‹¤.
+	 * í†µì‹  ì„±ê³µì‹œ ì´ì „ db í…Œì´ë¸”ì„ ì§€ìš°ê³  ìƒˆë¡œ í…Œì´ë¸”ì„ ë§Œë“¤ì–´ì„œ ë°ì´í„°ë¥¼ ë„£ì–´ì¤€ë‹¤.
 	 * 
-	 * Åë½Å ¼º°ø ¿©ºÎ¿Í »ó°ü¾øÀÌ db Å×ÀÌºíÀÌ ÀÖ°í µ¥ÀÌÅÍ°¡ ÀÖÀ¸¸é ÇØ´ç µ¥ÀÌÅÍ¸¦ º¸¿©ÁØ´Ù.
+	 * í†µì‹  ì„±ê³µ ì—¬ë¶€ì™€ ìƒê´€ì—†ì´ db í…Œì´ë¸”ì´ ìˆê³  ë°ì´í„°ê°€ ìˆìœ¼ë©´ í•´ë‹¹ ë°ì´í„°ë¥¼ ë³´ì—¬ì¤€ë‹¤.
 	 */
 	////----------------------- SQLite  Query-----------------------//
 
-	// Å×ÀÌºí »èÁ¦ Äõ¸® ---> Å×ÀÌºíÀº init ¿¡¼­ ÀÌ¹Ì ¸¸µé¾úÀ¸´Ï ¾ÈÀÇ ³»¿ë¸¸ Áö¿ì°í...´Ù½Ã ÇÏÀÚ
+	// í…Œì´ë¸” ì‚­ì œ ì¿¼ë¦¬ ---> í…Œì´ë¸”ì€ init ì—ì„œ ì´ë¯¸ ë§Œë“¤ì—ˆìœ¼ë‹ˆ ì•ˆì˜ ë‚´ìš©ë§Œ ì§€ìš°ê³ ...ë‹¤ì‹œ í•˜ì
 	private static final String Q_INIT_TABLE = "DELETE FROM push_event;" ;
 
-	// Å×ÀÌºí »ı¼º Äõ¸®.
+	// í…Œì´ë¸” ìƒì„± ì¿¼ë¦¬.
 	private static final String Q_CREATE_TABLE = "CREATE TABLE push_event (" +
-	"_id INTEGER PRIMARY KEY AUTOINCREMENT," +					// ¸ğ¹ÙÀÏ db ÀúÀåµÇ´Â ÀÚµ¿Áõ°¡  ÀÎµ¦½º Å°
-	"subject TEXT," +											// ÀÌº¥Æ® Á¦¸ñ
-	"content TEXT," +											// ÀÌº¥Æ® ±Û±Í
-	"imageFileUrl TEXT," +										// ÀÌº¥Æ®ÀÌ¹ÌÁö ÁÖ¼Ò
-	"modifyDate TEXT," +											// ÀÌº¥Æ® µî·ÏÀÏ
-	"companyName TEXT," +										// ¾÷Ã¼¸í
-	"imageFile TEXT" +											// ÀÌ¹ÌÁö ÆÄÀÏ(¹®ÀÚÈ­)
-	//	       "idCheckMileageMileages TEXT," +								// ¼­¹ö db¿¡ ÀúÀåµÈ ÀÎµ¦½º Å°				// ÀúÀåÇÒ µ¥ÀÌÅÍ µé..
-	//	       "mileage TEXT," +											// ¸¶ÀÏ¸®Áö °ª
-	//	       "modifyDate TEXT," +											// ¼öÁ¤ÀÏ½Ã
-	//	       "checkMileageMembersCheckMileageId TEXT," +					// »ç¿ëÀÚ ¾ÆÀÌµğ
-	//	       "checkMileageMerchantsMerchantId TEXT," +					// °¡¸ÍÁ¡ ¾ÆÀÌµğ
-	//	       "companyName TEXT," +										// °¡¸ÍÁ¡ ÀÌ¸§
-	//	       "introduction TEXT," +										// °¡¸ÍÁ¡ ¼Ò°³±Û
-	//	       "workPhoneNumber TEXT," +									// °¡¸ÍÁ¡ Àü¹ø
-	//	       "profileThumbnailImageUrl TEXT," +							// ¼¶³×ÀÏ ÀÌ¹ÌÁö url
-	//	       "bm TEXT" +													// ¼¶³×ÀÏ ÀÌ¹ÌÁö(stringÈ­ ½ÃÅ² °ª)
+	"_id INTEGER PRIMARY KEY AUTOINCREMENT," +					// ëª¨ë°”ì¼ db ì €ì¥ë˜ëŠ” ìë™ì¦ê°€  ì¸ë±ìŠ¤ í‚¤
+	"subject TEXT," +											// ì´ë²¤íŠ¸ ì œëª©
+	"content TEXT," +											// ì´ë²¤íŠ¸ ê¸€ê·€
+	"imageFileUrl TEXT," +										// ì´ë²¤íŠ¸ì´ë¯¸ì§€ ì£¼ì†Œ
+	"modifyDate TEXT," +											// ì´ë²¤íŠ¸ ë“±ë¡ì¼
+	"companyName TEXT," +										// ì—…ì²´ëª…
+	"imageFile TEXT" +											// ì´ë¯¸ì§€ íŒŒì¼(ë¬¸ìí™”)
+	//	       "idCheckMileageMileages TEXT," +								// ì„œë²„ dbì— ì €ì¥ëœ ì¸ë±ìŠ¤ í‚¤				// ì €ì¥í•  ë°ì´í„° ë“¤..
+	//	       "mileage TEXT," +											// ë§ˆì¼ë¦¬ì§€ ê°’
+	//	       "modifyDate TEXT," +											// ìˆ˜ì •ì¼ì‹œ
+	//	       "checkMileageMembersCheckMileageId TEXT," +					// ì‚¬ìš©ì ì•„ì´ë””
+	//	       "checkMileageMerchantsMerchantId TEXT," +					// ê°€ë§¹ì  ì•„ì´ë””
+	//	       "companyName TEXT," +										// ê°€ë§¹ì  ì´ë¦„
+	//	       "introduction TEXT," +										// ê°€ë§¹ì  ì†Œê°œê¸€
+	//	       "workPhoneNumber TEXT," +									// ê°€ë§¹ì  ì „ë²ˆ
+	//	       "profileThumbnailImageUrl TEXT," +							// ì„¬ë„¤ì¼ ì´ë¯¸ì§€ url
+	//	       "bm TEXT" +													// ì„¬ë„¤ì¼ ì´ë¯¸ì§€(stringí™” ì‹œí‚¨ ê°’)
 	");" ;
 
-	// Å×ÀÌºí Á¶È¸ Äõ¸®
+	// í…Œì´ë¸” ì¡°íšŒ ì¿¼ë¦¬
 	private final String Q_GET_LIST = "SELECT * FROM push_event";
 
 
 	//----------------------- SQLite -----------------------//
 
-	// ÃÊ±âÈ­ÀÛ¾÷- db ¹× Å×ÀÌºí °Ë»çÇÏ°í ¾øÀ¸¸é ¸¸µé±â.
+	// ì´ˆê¸°í™”ì‘ì—…- db ë° í…Œì´ë¸” ê²€ì‚¬í•˜ê³  ì—†ìœ¼ë©´ ë§Œë“¤ê¸°.
 	SQLiteDatabase db = null;
 	/**
 	 * initDB
-	 *  db ÃÊ±âÈ­ÇÑ´Ù, ¾øÀ¸¸é »ı¼ºÇÑ´Ù
+	 *  db ì´ˆê¸°í™”í•œë‹¤, ì—†ìœ¼ë©´ ìƒì„±í•œë‹¤
 	 *
 	 * @param 
 	 * @param
@@ -151,36 +151,36 @@ public class PushList extends Activity {
 	 */
 	public void initDB(){
 		Log.i(TAG,"initDB");
-		// db °ü·Ã ÀÛ¾÷ ÃÊ±âÈ­, DB ¿­¾î SQLiteDatabase ÀÎ½ºÅÏ½º »ı¼º          db ¿­°Å³ª ¾øÀ¸¸é »ı¼º
+		// db ê´€ë ¨ ì‘ì—… ì´ˆê¸°í™”, DB ì—´ì–´ SQLiteDatabase ì¸ìŠ¤í„´ìŠ¤ ìƒì„±          db ì—´ê±°ë‚˜ ì—†ìœ¼ë©´ ìƒì„±
 		if(db== null ){
 			db= openOrCreateDatabase( "sqlite_carrotDB.db", SQLiteDatabase.CREATE_IF_NECESSARY ,null );
 		}
-		// Å×ÀÌºí¿¡¼­ µ¥ÀÌÅÍ °¡Á®¿À±â Àü Å×ÀÌºí »ı¼º È®ÀÎ ¾øÀ¸¸é »ı¼º.
+		// í…Œì´ë¸”ì—ì„œ ë°ì´í„° ê°€ì ¸ì˜¤ê¸° ì „ í…Œì´ë¸” ìƒì„± í™•ì¸ ì—†ìœ¼ë©´ ìƒì„±.
 		checkTableIsCreated(db);
 	}
 
 	/**
 	 * checkTableIsCreated
-	 *  db È®ÀÎÇÏ¿© ¾øÀ¸¸é »ı¼ºÇÑ´Ù
+	 *  db í™•ì¸í•˜ì—¬ ì—†ìœ¼ë©´ ìƒì„±í•œë‹¤
 	 *
 	 * @param db
 	 * @param
 	 * @return
 	 */
-	public void checkTableIsCreated(SQLiteDatabase db){		// mileage_info ¶ó´Â ÀÌ¸§ÀÇ Å×ÀÌºíÀ» °Ë»öÇÏ°í ¾øÀ¸¸é »ı¼º.
+	public void checkTableIsCreated(SQLiteDatabase db){		// mileage_info ë¼ëŠ” ì´ë¦„ì˜ í…Œì´ë¸”ì„ ê²€ìƒ‰í•˜ê³  ì—†ìœ¼ë©´ ìƒì„±.
 		Log.i(TAG, "checkTableIsCreated");
 		try{
 			//			Cursor c = db.query(String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy);
 			Cursor c = db.query("sqlite_master" , new String[] {"count(*)"}, "name=?" , new String[] {"push_event"}, null ,null , null);
 			Integer cnt=0;
-			c.moveToFirst();                                 // Ä¿¼­¸¦ Ã¹¶óÀÎÀ¸·Î ¿Å±è
-			while(c.isAfterLast()== false ){                   // ¸¶Áö¸· ¶óÀÎÀÌ µÉ¶§±îÁö 1¾¿ Áõ°¡ÇÏ¸é¼­ º»´Ù
+			c.moveToFirst();                                 // ì»¤ì„œë¥¼ ì²«ë¼ì¸ìœ¼ë¡œ ì˜®ê¹€
+			while(c.isAfterLast()== false ){                   // ë§ˆì§€ë§‰ ë¼ì¸ì´ ë ë•Œê¹Œì§€ 1ì”© ì¦ê°€í•˜ë©´ì„œ ë³¸ë‹¤
 				cnt=c.getInt(0);
 				c.moveToNext();
 			}
-			//Ä¿¼­´Â »ç¿ë Á÷ÈÄ ´İ´Â´Ù
+			//ì»¤ì„œëŠ” ì‚¬ìš© ì§í›„ ë‹«ëŠ”ë‹¤
 			c.close();
-			//Å×ÀÌºí ¾øÀ¸¸é »ı¼º
+			//í…Œì´ë¸” ì—†ìœ¼ë©´ ìƒì„±
 			if(cnt==0){
 				db.execSQL(Q_CREATE_TABLE);
 			}
@@ -189,16 +189,16 @@ public class PushList extends Activity {
 		}
 	}
 
-	// server¿¡¼­ ¹ŞÀº data¸¦ db·Î
+	// serverì—ì„œ ë°›ì€ dataë¥¼ dbë¡œ
 	/**
 	 * saveEventDataToDB
-	 * server¿¡¼­ ¹ŞÀº data¸¦ db·Î ÀúÀåÇÑ´Ù
+	 * serverì—ì„œ ë°›ì€ dataë¥¼ dbë¡œ ì €ì¥í•œë‹¤
 	 *
 	 * @param
 	 * @param
 	 * @return
 	 */
-	public void saveEventDataToDB(){			//	db Å×ÀÌºíÀ» ÃÊ±âÈ­ ÈÄ »õ µ¥ÀÌÅÍ¸¦ ³Ö½À´Ï´Ù.	  // oncreate()¿¡¼­ Å×ÀÌºí °Ë»çÇØ¼­ ¸¸µé¾ú±â ¶§¹®¿¡ ÃÖÃÊ µîÀº °ÆÁ¤ÇÏÁö ¾Ê´Â´Ù.
+	public void saveEventDataToDB(){			//	db í…Œì´ë¸”ì„ ì´ˆê¸°í™” í›„ ìƒˆ ë°ì´í„°ë¥¼ ë„£ìŠµë‹ˆë‹¤.	  // oncreate()ì—ì„œ í…Œì´ë¸” ê²€ì‚¬í•´ì„œ ë§Œë“¤ì—ˆê¸° ë•Œë¬¸ì— ìµœì´ˆ ë“±ì€ ê±±ì •í•˜ì§€ ì•ŠëŠ”ë‹¤.
 		Log.i(TAG, "saveEventDataToDB");
 		try{
 			db.execSQL(Q_INIT_TABLE);
@@ -206,13 +206,13 @@ public class PushList extends Activity {
 			int entrySize = dbInEntries.size();
 			if(entrySize>0){
 				for(int i =0; i<entrySize; i++){
-					initialValues = new ContentValues(); 			//  µ¥ÀÌÅÍ ³ÖÀ»¶§
+					initialValues = new ContentValues(); 			//  ë°ì´í„° ë„£ì„ë•Œ
 					initialValues.put("subject", dbInEntries.get(i).getSubject()); 
 					initialValues.put("content", dbInEntries.get(i).getContent()); 
 					initialValues.put("imageFileUrl", dbInEntries.get(i).getImageFileUrl()); 
 					initialValues.put("modifyDate", dbInEntries.get(i).getModifyDate()); 
 					initialValues.put("companyName", dbInEntries.get(i).getCompanyName()); 
-					// img ´Â ¹®ÀÚ¿­·Î ¹Ù²ã¼­ ³Ö´Â´Ù. ²¨³¾¶© ¿ª¼øÀÓ.			 // BMP -> ¹®ÀÚ¿­ 		
+					// img ëŠ” ë¬¸ìì—´ë¡œ ë°”ê¿”ì„œ ë„£ëŠ”ë‹¤. êº¼ë‚¼ë• ì—­ìˆœì„.			 // BMP -> ë¬¸ìì—´ 		
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();   
 					String bitmapToStr = "";
 					dbInEntries.get(i).getImageFile().compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object    
@@ -227,10 +227,10 @@ public class PushList extends Activity {
 	}
 
 
-	// db ¿¡ ÀúÀåµÈ µ¥ÀÌÅÍ¸¦ È­¸é¿¡
+	// db ì— ì €ì¥ëœ ë°ì´í„°ë¥¼ í™”ë©´ì—
 	/**
 	 * getEventDBData
-	 * db ¿¡ ÀúÀåµÈ µ¥ÀÌÅÍ¸¦ È­¸é¿¡ º¸¿©ÁÖ±â À§ÇØ ²¨³½´Ù
+	 * db ì— ì €ì¥ëœ ë°ì´í„°ë¥¼ í™”ë©´ì— ë³´ì—¬ì£¼ê¸° ìœ„í•´ êº¼ë‚¸ë‹¤
 	 *
 	 * @param
 	 * @param
@@ -250,15 +250,15 @@ public class PushList extends Activity {
 		String tmp_imageFile_str = "";
 		Bitmap tmp_imageFile = null;
 		try{
-			// Á¶È¸
+			// ì¡°íšŒ
 			Cursor c = db.rawQuery( Q_GET_LIST, null );
 			if(c.getCount()==0){
 				Log.i(TAG, "saved event data NotExist");
 			}else{
-				Log.i(TAG, "saved event data Exist");				// µ¥ÀÌÅÍ ÀÖÀ¸¸é ²¨³»¼­ »ç¿ëÇÔ.			// µ¥ÀÌÅÍ ²¨³¾¶§
-				dbOutEntries = new ArrayList<CheckMileagePushEvent>(c.getCount());		// °³¼ö¸¸Å­ »ı¼ºÇÏ±â.
-				c.moveToFirst();                                 // Ä¿¼­¸¦ Ã¹¶óÀÎÀ¸·Î ¿Å±è
-				while(c.isAfterLast()== false ){                   // ¸¶Áö¸· ¶óÀÎÀÌ µÉ¶§±îÁö 1¾¿ Áõ°¡ÇÏ¸é¼­ º»´Ù
+				Log.i(TAG, "saved event data Exist");				// ë°ì´í„° ìˆìœ¼ë©´ êº¼ë‚´ì„œ ì‚¬ìš©í•¨.			// ë°ì´í„° êº¼ë‚¼ë•Œ
+				dbOutEntries = new ArrayList<CheckMileagePushEvent>(c.getCount());		// ê°œìˆ˜ë§Œí¼ ìƒì„±í•˜ê¸°.
+				c.moveToFirst();                                 // ì»¤ì„œë¥¼ ì²«ë¼ì¸ìœ¼ë¡œ ì˜®ê¹€
+				while(c.isAfterLast()== false ){                   // ë§ˆì§€ë§‰ ë¼ì¸ì´ ë ë•Œê¹Œì§€ 1ì”© ì¦ê°€í•˜ë©´ì„œ ë³¸ë‹¤
 					tmp_subject = c.getString(1);	
 					tmp_content = c.getString(2);	
 					tmp_imageFileUrl = c.getString(3);	
@@ -279,22 +279,22 @@ public class PushList extends Activity {
 				}
 			}
 			c.close();
-			//			 db.close();		// db ´Â ¸¶Áö¸·¿¡ ÇÑ¹ø ´İÀ½.
-			entriesFn = dbOutEntries;						//  *** ²¨³½ µ¥ÀÌÅÍ¸¦ °á°ú µ¥ÀÌÅÍ¿¡ ¼¼ÆÃ 
+			//			 db.close();		// db ëŠ” ë§ˆì§€ë§‰ì— í•œë²ˆ ë‹«ìŒ.
+			entriesFn = dbOutEntries;						//  *** êº¼ë‚¸ ë°ì´í„°ë¥¼ ê²°ê³¼ ë°ì´í„°ì— ì„¸íŒ… 
 		}catch(Exception e){e.printStackTrace();}
-		showEventList();									//  *** °á°ú µ¥ÀÌÅÍ¸¦ È­¸é¿¡ º¸¿©ÁØ´Ù.		 µ¥ÀÌÅÍ ÀÖ´ÂÁö ¿©ºÎ´Â °á°ú Ã³¸®¿¡¼­ ÇÔ²²..
+		showEventList();									//  *** ê²°ê³¼ ë°ì´í„°ë¥¼ í™”ë©´ì— ë³´ì—¬ì¤€ë‹¤.		 ë°ì´í„° ìˆëŠ”ì§€ ì—¬ë¶€ëŠ” ê²°ê³¼ ì²˜ë¦¬ì—ì„œ í•¨ê»˜..
 	}
 	////---------------------SQLite ----------------------////
 
 
-	// ÇÚµé·¯
+	// í•¸ë“¤ëŸ¬
 	Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg){
 			Bundle b = msg.getData();
 			try{
-				if(b.getInt("showYN")==1){		// ¹Ş¾Æ¿Â ¸¶ÀÏ¸®Áö °á°ú¸¦ È­¸é¿¡ »Ñ·ÁÁØ´Ù.
-					// ÃÖÁ¾ °á°ú ¹è¿­Àº entriesFn ¿¡ ÀúÀåµÇ¾î ÀÖ´Ù.. 
+				if(b.getInt("showYN")==1){		// ë°›ì•„ì˜¨ ë§ˆì¼ë¦¬ì§€ ê²°ê³¼ë¥¼ í™”ë©´ì— ë¿Œë ¤ì¤€ë‹¤.
+					// ìµœì¢… ê²°ê³¼ ë°°ì—´ì€ entriesFn ì— ì €ì¥ë˜ì–´ ìˆë‹¤.. 
 					if(entriesFn!=null && entriesFn.size()>0){
 						setListing();
 					}else{
@@ -308,22 +308,22 @@ public class PushList extends Activity {
 					isRunning = isRunning -1;
 				}
 				if(b.getInt("order")==1){
-					// ·¯´×¹Ù ½ÇÇà
+					// ëŸ¬ë‹ë°” ì‹¤í–‰
 					if(pb1==null){
 						pb1=(ProgressBar) findViewById(R.id.push_list_ProgressBar01);
 					}
 					pb1.setVisibility(View.VISIBLE);
 				}else if(b.getInt("order")==2){
-					// ·¯´×¹Ù Á¾·á
+					// ëŸ¬ë‹ë°” ì¢…ë£Œ
 					if(pb1==null){
 						pb1=(ProgressBar) findViewById(R.id.push_list_ProgressBar01);
 					}
 					pb1.setVisibility(View.INVISIBLE);
 				}
-				if(b.getInt("showErrToast")==1){		// ÀÏ¹İ ¿¡·¯ Åä½ºÆ®
+				if(b.getInt("showErrToast")==1){		// ì¼ë°˜ ì—ëŸ¬ í† ìŠ¤íŠ¸
 					Toast.makeText(PushList.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 				}
-				if(b.getInt("showNetErrToast")==1){		// ³×Æ®¿öÅ© ¿¡·¯ Åä½ºÆ®
+				if(b.getInt("showNetErrToast")==1){		// ë„¤íŠ¸ì›Œí¬ ì—ëŸ¬ í† ìŠ¤íŠ¸
 					Toast.makeText(PushList.this, R.string.network_error, Toast.LENGTH_SHORT).show();
 				}
 			}catch(Exception e){
@@ -335,7 +335,7 @@ public class PushList extends Activity {
 	ListView listView;
 	/**
 	 * returnThis
-	 *  ÄÁÅÃ½ºÆ®¸¦ ¸®ÅÏÇÑ´Ù.(ÇÚµé·¯¿¡¼­ ÇÊ¿ä)
+	 *  ì»¨íƒìŠ¤íŠ¸ë¥¼ ë¦¬í„´í•œë‹¤.(í•¸ë“¤ëŸ¬ì—ì„œ í•„ìš”)
 	 *
 	 * @param
 	 * @param
@@ -345,10 +345,10 @@ public class PushList extends Activity {
 		return this;
 	}
 
-	// ÁøÇàÃ¢ º¸ÀÌ±â/¼û±â±â
+	// ì§„í–‰ì°½ ë³´ì´ê¸°/ìˆ¨ê¸°ê¸°
 	/**
 	 * showPb
-	 *  Áß¾Ó ÇÁ·Î±×·¡½º¹Ù °¡½ÃÈ­ÇÑ´Ù
+	 *  ì¤‘ì•™ í”„ë¡œê·¸ë˜ìŠ¤ë°” ê°€ì‹œí™”í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -369,7 +369,7 @@ public class PushList extends Activity {
 	}
 	/**
 	 * hidePb
-	 *  Áß¾Ó ÇÁ·Î±×·¡½º¹Ù ºñ°¡½ÃÈ­ÇÑ´Ù
+	 *  ì¤‘ì•™ í”„ë¡œê·¸ë˜ìŠ¤ë°” ë¹„ê°€ì‹œí™”í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -391,13 +391,13 @@ public class PushList extends Activity {
 
 	/**
 	 * showMSG
-	 *  È­¸é¿¡ error Åä½ºÆ® ¶ç¿î´Ù
+	 *  í™”ë©´ì— error í† ìŠ¤íŠ¸ ë„ìš´ë‹¤
 	 *
 	 * @param
 	 * @param
 	 * @return
 	 */
-	public void showMSG(){			// È­¸é¿¡ Åä½ºÆ® ¶ç¿ò..
+	public void showMSG(){			// í™”ë©´ì— í† ìŠ¤íŠ¸ ë„ì›€..
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -411,10 +411,10 @@ public class PushList extends Activity {
 		).start();
 	}
 
-	// Á¶È¸ÇÑ µ¥ÀÌÅÍ¸¦ È­¸é¿¡+ Å¬¸¯½Ã ÀÌº¥Æ®(»ó¼¼È­¸éÀ¸·Î)
+	// ì¡°íšŒí•œ ë°ì´í„°ë¥¼ í™”ë©´ì—+ í´ë¦­ì‹œ ì´ë²¤íŠ¸(ìƒì„¸í™”ë©´ìœ¼ë¡œ)
 	/**
 	 * setListing
-	 *  Á¶È¸ÇÑ µ¥ÀÌÅÍ¸¦ È­¸é¿¡Ãâ·ÂÇÏ°í Å¬¸¯½Ã »ó¼¼È­¸éÀ¸·Î ÀÌµ¿ÇÏµµ·Ï ÀÌº¥Æ®¸¦ µî·ÏÇÑ´Ù
+	 *  ì¡°íšŒí•œ ë°ì´í„°ë¥¼ í™”ë©´ì—ì¶œë ¥í•˜ê³  í´ë¦­ì‹œ ìƒì„¸í™”ë©´ìœ¼ë¡œ ì´ë™í•˜ë„ë¡ ì´ë²¤íŠ¸ë¥¼ ë“±ë¡í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -427,12 +427,12 @@ public class PushList extends Activity {
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
 				Intent intent = new Intent(PushList.this, PushDetail.class);
-				intent.putExtra("subject", entriesFn.get(position).getSubject());		// ÀÌº¥Æ® Á¦¸ñ
-				intent.putExtra("content", entriesFn.get(position).getContent());		// ÀÌº¥Æ® ±Û±Í
-				intent.putExtra("imageFileUrl", entriesFn.get(position).getImageFileUrl());		// ÀÌº¥Æ® ±¤°í ÀÌ¹ÌÁö ÁÖ¼Ò
-				intent.putExtra("imageFileStr", entriesFn.get(position).getImageFileStr());		// ÀÌº¥Æ® ±¤°í ÀÌ¹ÌÁö ¹®ÀÚÈ­
-				intent.putExtra("modifyDate", entriesFn.get(position).getModifyDate());		// ÀÌº¥Æ® ¾÷µ« ³¯Â¥
-				intent.putExtra("companyName", entriesFn.get(position).getCompanyName());		// ÀÌº¥Æ® ¾÷Ã¼¸í
+				intent.putExtra("subject", entriesFn.get(position).getSubject());		// ì´ë²¤íŠ¸ ì œëª©
+				intent.putExtra("content", entriesFn.get(position).getContent());		// ì´ë²¤íŠ¸ ê¸€ê·€
+				intent.putExtra("imageFileUrl", entriesFn.get(position).getImageFileUrl());		// ì´ë²¤íŠ¸ ê´‘ê³  ì´ë¯¸ì§€ ì£¼ì†Œ
+				intent.putExtra("imageFileStr", entriesFn.get(position).getImageFileStr());		// ì´ë²¤íŠ¸ ê´‘ê³  ì´ë¯¸ì§€ ë¬¸ìí™”
+				intent.putExtra("modifyDate", entriesFn.get(position).getModifyDate());		// ì´ë²¤íŠ¸ ì—…ëƒ ë‚ ì§œ
+				intent.putExtra("companyName", entriesFn.get(position).getCompanyName());		// ì´ë²¤íŠ¸ ì—…ì²´ëª…
 				startActivity(intent);
 			}
 		});
@@ -445,10 +445,10 @@ public class PushList extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature( Window.FEATURE_NO_TITLE );		// no title
 		pb1 = (ProgressBar) findViewById(R.id.push_list_ProgressBar01);
-		// DB ¾µ°Å´Ï±î ÃÊ±âÈ­ ÇØÁØ´Ù.
+		// DB ì“¸ê±°ë‹ˆê¹Œ ì´ˆê¸°í™” í•´ì¤€ë‹¤.
 		initDB();
 
-		myQRcode = MyQRPageActivity.qrCode;			// ³» QR ÄÚµå. 
+		myQRcode = MyQRPageActivity.qrCode;			// ë‚´ QR ì½”ë“œ. 
 
 		Log.i(TAG, myQRcode);		
 
@@ -456,20 +456,20 @@ public class PushList extends Activity {
 
 		searched = false;		 
 
-		if(isRunning<1){								// Áßº¹ ½ÇÇà ¹æÁö
+		if(isRunning<1){								// ì¤‘ë³µ ì‹¤í–‰ ë°©ì§€
 			isRunning = isRunning+1;
 			myQRcode = MyQRPageActivity.qrCode;
-			new backgroundGetMyEventList().execute();	// ÀÌº¥Æ® ¸®½ºÆ® Á¶È¸
+			new backgroundGetMyEventList().execute();	// ì´ë²¤íŠ¸ ë¦¬ìŠ¤íŠ¸ ì¡°íšŒ
 		}else{
 			Log.w(TAG, "already running..");
 		}
 	}
 
 
-	// ºñµ¿±â·Î ÀÌº¥Æ® ¸ñ·Ï °¡Á®¿À´Â ÇÔ¼ö È£Ãâ.
+	// ë¹„ë™ê¸°ë¡œ ì´ë²¤íŠ¸ ëª©ë¡ ê°€ì ¸ì˜¤ëŠ” í•¨ìˆ˜ í˜¸ì¶œ.
 	/**
 	 * backgroundGetMyEventList
-	 *  ºñµ¿±â·Î ÀÌº¥Æ® ¸ñ·Ï °¡Á®¿À´Â ÇÔ¼ö È£ÃâÇÑ´Ù
+	 *  ë¹„ë™ê¸°ë¡œ ì´ë²¤íŠ¸ ëª©ë¡ ê°€ì ¸ì˜¤ëŠ” í•¨ìˆ˜ í˜¸ì¶œí•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -494,13 +494,13 @@ public class PushList extends Activity {
 		}
 	}
 	/*
-	 * ³» ÀÌº¥Æ® ¸ñ·Ï À» °¡Á®¿Â´Ù.
+	 * ë‚´ ì´ë²¤íŠ¸ ëª©ë¡ ì„ ê°€ì ¸ì˜¨ë‹¤.
 	 * 
-	 * µµ¸ŞÀÎ : checkMileageMerchantMarketing  
-	 * ÄÁÆ®·Ñ·¯ : checkMileageMerchantMarketingController
-	 * ¸Ş¼­µå : selectMemberMerchantMarketingList
-	 * º¸³»´Â ÆÄ¶ó¹ÌÅÍ : checkMileageId  activateYn
-	 * ¹Ş´Â µ¥ÀÌÅÍ : List<CheckMileageMerchantMarketing>
+	 * ë„ë©”ì¸ : checkMileageMerchantMarketing  
+	 * ì»¨íŠ¸ë¡¤ëŸ¬ : checkMileageMerchantMarketingController
+	 * ë©”ì„œë“œ : selectMemberMerchantMarketingList
+	 * ë³´ë‚´ëŠ” íŒŒë¼ë¯¸í„° : checkMileageId  activateYn
+	 * ë°›ëŠ” ë°ì´í„° : List<CheckMileageMerchantMarketing>
 	 */
 	//	public void getMyEventList_pre(){
 	//		new Thread(
@@ -530,7 +530,7 @@ public class PushList extends Activity {
 	//	}
 	/**
 	 * getMyEventList
-	 *  ³» ÀÌº¥Æ® ¸ñ·Ï À» °¡Á®¿Â´Ù.
+	 *  ë‚´ ì´ë²¤íŠ¸ ëª©ë¡ ì„ ê°€ì ¸ì˜¨ë‹¤.
 	 *
 	 * @param
 	 * @param
@@ -548,7 +548,7 @@ public class PushList extends Activity {
 						public void run(){
 							JSONObject obj = new JSONObject();
 							try{
-								// ÀÚ½ÅÀÇ ¾ÆÀÌµğ¸¦ ³Ö¾î¼­ Á¶È¸
+								// ìì‹ ì˜ ì•„ì´ë””ë¥¼ ë„£ì–´ì„œ ì¡°íšŒ
 								obj.put("activateYn", "Y");
 								obj.put("checkMileageId", myQRcode);
 								Log.i(TAG, "myQRcode::"+myQRcode);
@@ -571,16 +571,16 @@ public class PushList extends Activity {
 								os2.flush();
 								Thread.sleep(200);
 								//								System.out.println("postUrl      : " + postUrl2);
-								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : Á¤»ó
+								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : ì •ìƒ
 								responseCode = connection2.getResponseCode();
 								InputStream in =  connection2.getInputStream();
 								//								os2.close();
-								// Á¶È¸ÇÑ °á°ú¸¦ Ã³¸®.
+								// ì¡°íšŒí•œ ê²°ê³¼ë¥¼ ì²˜ë¦¬.
 								getMyEventListResult(in);
 								//								connection2.disconnect();
 							}catch(Exception e){ 
 								//								connection2.disconnect();
-								// ´Ù½Ã
+								// ë‹¤ì‹œ
 								//								if(reTry>0){
 								//									Log.w(TAG, "fail and retry remain : "+reTry);
 								//									reTry = reTry-1;
@@ -595,26 +595,26 @@ public class PushList extends Activity {
 								//									reTry = 3;
 								//									hidePb();
 								//									isRunning = isRunning-1;
-								//									getEventDBData();						// nÈ¸ Àç½Ãµµ¿¡µµ ½ÇÆĞÇÏ¸é db¿¡¼­ ²¨³»¼­ º¸¿©ÁØ´Ù.
+								//									getEventDBData();						// níšŒ ì¬ì‹œë„ì—ë„ ì‹¤íŒ¨í•˜ë©´ dbì—ì„œ êº¼ë‚´ì„œ ë³´ì—¬ì¤€ë‹¤.
 								//								}
 							}
 							//							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-							//							if(CommonUtils.usingNetwork < 0){	// 0 º¸´Ù ÀÛÁö´Â ¾Ê°Ô
+							//							if(CommonUtils.usingNetwork < 0){	// 0 ë³´ë‹¤ ì‘ì§€ëŠ” ì•Šê²Œ
 							//								CommonUtils.usingNetwork = 0;
 							//							}
 						}
 					}
 			).start();
 		}else{
-			isRunning = isRunning-1;		// ÀÛ¾÷ÁßÀÎ Ä«¿îÆÃ¸¸ ´Ù½Ã µÇµ¹¸² -1
+			isRunning = isRunning-1;		// ì‘ì—…ì¤‘ì¸ ì¹´ìš´íŒ…ë§Œ ë‹¤ì‹œ ë˜ëŒë¦¼ -1
 		}
 	}
 
 
-	// ÀÌº¥Æ® Á¶È¸ °á°ú¸¦ Ã³¸®ÇÏ´Â ºÎºĞ
+	// ì´ë²¤íŠ¸ ì¡°íšŒ ê²°ê³¼ë¥¼ ì²˜ë¦¬í•˜ëŠ” ë¶€ë¶„
 	/**
 	 * getMyEventListResult
-	 *  ÀÌº¥Æ® Á¶È¸ °á°ú¸¦ Ã³¸®ÇÑ´Ù
+	 *  ì´ë²¤íŠ¸ ì¡°íšŒ ê²°ê³¼ë¥¼ ì²˜ë¦¬í•œë‹¤
 	 *
 	 * @param in
 	 * @param
@@ -633,7 +633,7 @@ public class PushList extends Activity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//		Log.d(TAG,"¼ö½Å::"+builder.toString());
+		//		Log.d(TAG,"ìˆ˜ì‹ ::"+builder.toString());
 		String tempstr = builder.toString();		
 		JSONArray jsonArray2 = null;
 		try {
@@ -652,7 +652,7 @@ public class PushList extends Activity {
 						doneCnt++;
 						JSONObject jsonObj = jsonArray2.getJSONObject(i).getJSONObject("checkMileageMerchantMarketing");
 						//  idCheckMileageMileages,  mileage,  modifyDate,  checkMileageMembersCheckMileageID,  checkMileageMerchantsMerchantID
-						// °´Ã¼ ¸¸µé°í °ª ¹ŞÀº°Å ³Ö¾î¼­ ÀúÀå..  ÀúÀå°ª: ÀÎµ¦½º¹øÈ£, ¼öÁ¤³¯Â¥, ¾ÆÀÌµğ, °¡¸ÍÁ¡¾ÆÀÌµğ.
+						// ê°ì²´ ë§Œë“¤ê³  ê°’ ë°›ì€ê±° ë„£ì–´ì„œ ì €ì¥..  ì €ì¥ê°’: ì¸ë±ìŠ¤ë²ˆí˜¸, ìˆ˜ì •ë‚ ì§œ, ì•„ì´ë””, ê°€ë§¹ì ì•„ì´ë””.
 
 						//						tmp_idCheckMileageMileages = jsonObj.getString("idCheckMileageMileages");
 						try{
@@ -684,21 +684,21 @@ public class PushList extends Activity {
 								Log.d(TAG,"tmp_modifyDate:"+tmp_modifyDate);
 								Log.d(TAG,"tmp_modifyDate.substring(0, 4):"+tmp_modifyDate.substring(0, 4)+"//tmp_modifyDate.substring(5, 7):"+tmp_modifyDate.substring(5, 7)+"//tmp_modifyDate.substring(8, 10):"+tmp_modifyDate.substring(8, 10));
 								Log.d(TAG,"tmp_modifyDate.substring(11, 13):"+tmp_modifyDate.substring(11, 13)+"//tmp_modifyDate.substring(14, 16):"+tmp_modifyDate.substring(14, 16));
-								tmpstr2 = tmp_modifyDate.substring(0, 4)+ getString(R.string.year) 		// ³â
-								+ tmp_modifyDate.substring(5, 7)+ getString(R.string.month) 					// ¿ù
-								+ tmp_modifyDate.substring(8, 10)+ getString(R.string.day) 					// ÀÏ
-								+ tmp_modifyDate.substring(11, 13)+ getString(R.string.hour)					// ½Ã
-								+ tmp_modifyDate.substring(14, 16)+ getString(R.string.minute)					// ºĞ
+								tmpstr2 = tmp_modifyDate.substring(0, 4)+ getString(R.string.year) 		// ë…„
+								+ tmp_modifyDate.substring(5, 7)+ getString(R.string.month) 					// ì›”
+								+ tmp_modifyDate.substring(8, 10)+ getString(R.string.day) 					// ì¼
+								+ tmp_modifyDate.substring(11, 13)+ getString(R.string.hour)					// ì‹œ
+								+ tmp_modifyDate.substring(14, 16)+ getString(R.string.minute)					// ë¶„
 								;
 
 							}
 
 
-							tmpstr2 = tmp_modifyDate.substring(0, 4)+ getString(R.string.year) 		// ³â
-							+ tmp_modifyDate.substring(5, 7)+ getString(R.string.month) 					// ¿ù
-							+ tmp_modifyDate.substring(8, 10)+ getString(R.string.day) 					// ÀÏ
-							//							+ tmp_modifyDate.substring(0, 4)+ getString(R.string.year)					// ½Ã
-							//							+ tmp_modifyDate.substring(0, 4)+ getString(R.string.year)					// ºĞ
+							tmpstr2 = tmp_modifyDate.substring(0, 4)+ getString(R.string.year) 		// ë…„
+							+ tmp_modifyDate.substring(5, 7)+ getString(R.string.month) 					// ì›”
+							+ tmp_modifyDate.substring(8, 10)+ getString(R.string.day) 					// ì¼
+							//							+ tmp_modifyDate.substring(0, 4)+ getString(R.string.year)					// ì‹œ
+							//							+ tmp_modifyDate.substring(0, 4)+ getString(R.string.year)					// ë¶„
 							;
 							tmp_modifyDate = tmpstr2;
 						}catch(Exception e){
@@ -711,7 +711,7 @@ public class PushList extends Activity {
 							Log.d(TAG,"companyName F");
 							tmp_companyName = "";
 						}
-						// tmp_imageFileUrl ÀÖÀ»¶§.
+						// tmp_imageFileUrl ìˆì„ë•Œ.
 						if(tmp_imageFileUrl.length()>0){
 							try{
 								tmp_imageFile = LoadImage(tmp_imageFileUrl);
@@ -723,7 +723,7 @@ public class PushList extends Activity {
 							BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.empty_320_240);
 							tmp_imageFile = dw.getBitmap();
 						}
-						if(tmp_imageFile==null){		//  ¾øÀ»¶§.. 
+						if(tmp_imageFile==null){		//  ì—†ì„ë•Œ.. 
 							Log.d(TAG,"last tmp_imageFileUrl null");
 							BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.empty_320_240);
 							tmp_imageFile = dw.getBitmap();
@@ -733,7 +733,7 @@ public class PushList extends Activity {
 								tmp_imageFileUrl,  tmp_modifyDate,
 								tmp_companyName,  "",
 								tmp_imageFile
-								// ±× ¿Ü ¼¶³×ÀÏ ÀÌ¹ÌÁö, °¡¸ÍÁ¡ ÀÌ¸§
+								// ê·¸ ì™¸ ì„¬ë„¤ì¼ ì´ë¯¸ì§€, ê°€ë§¹ì  ì´ë¦„
 						));
 
 					}
@@ -744,37 +744,37 @@ public class PushList extends Activity {
 				e.printStackTrace();
 			}finally{
 				dbInEntries = entries; 
-				reTry = 3;				// Àç½Ãµµ È½¼ö º¹±¸
+				reTry = 3;				// ì¬ì‹œë„ íšŸìˆ˜ ë³µêµ¬
 				searched = true;
-				// db ¿¡ µ¥ÀÌÅÍ¸¦ ³Ö´Â´Ù.
+				// db ì— ë°ì´í„°ë¥¼ ë„£ëŠ”ë‹¤.
 				try{
-					if(dbSaveEnable){		// ÀÌ¹ÌÁö±îÁö ¼º°øÀûÀ¸·Î °¡Á®¿Â °æ¿ì.
+					if(dbSaveEnable){		// ì´ë¯¸ì§€ê¹Œì§€ ì„±ê³µì ìœ¼ë¡œ ê°€ì ¸ì˜¨ ê²½ìš°.
 						saveEventDataToDB();
 					}else{
-						alertToUser();		// ÀÌ¹ÌÁö °¡Á®¿À´Âµ¥ ½ÇÆĞÇÑ °æ¿ì.
-						// ¾î¤eµç Ã³¸®°¡ ³¡³ª¸é (°øÅë) -  db¸¦ °Ë»çÇÏ¿© µ¥ÀÌÅÍ°¡ ÀÖÀ¸¸é º¸¿©ÁÖ°í  entriesFn = dbOutEntries
-					}	// Ã³¸®°¡ ³¡³ª¸é °øÅëÀ¸·Î ÇØ¾ßÇÒ showInfo(); (±×Àü¿¡ entriesFn ¼³Á¤ ÇÑ´Ù)
+						alertToUser();		// ì´ë¯¸ì§€ ê°€ì ¸ì˜¤ëŠ”ë° ì‹¤íŒ¨í•œ ê²½ìš°.
+						// ì–´ì¨ë“  ì²˜ë¦¬ê°€ ëë‚˜ë©´ (ê³µí†µ) -  dbë¥¼ ê²€ì‚¬í•˜ì—¬ ë°ì´í„°ê°€ ìˆìœ¼ë©´ ë³´ì—¬ì£¼ê³   entriesFn = dbOutEntries
+					}	// ì²˜ë¦¬ê°€ ëë‚˜ë©´ ê³µí†µìœ¼ë¡œ í•´ì•¼í•  showInfo(); (ê·¸ì „ì— entriesFn ì„¤ì • í•œë‹¤)
 				}catch(Exception e){}
 				finally{
-					getEventDBData();			//db ¿¡ ÀÕÀ¸¸é ±×°Å ¾²°í ¾øÀ¸¸é ¾ø´Ù°í ¾Ë¸². * ¿¡·¯³ª¸é ÀÌÀü µ¥ÀÌÅÍ¸¦ º¸¿©ÁÖ±â ¶§¹®¿¡ db¿¡ ÀÖ´Â Á¤º¸°¡ Á¤È®ÇÏ´Ù°í º¼¼ö´Â ¾øÀ½.. 
+					getEventDBData();			//db ì— ì‡ìœ¼ë©´ ê·¸ê±° ì“°ê³  ì—†ìœ¼ë©´ ì—†ë‹¤ê³  ì•Œë¦¼. * ì—ëŸ¬ë‚˜ë©´ ì´ì „ ë°ì´í„°ë¥¼ ë³´ì—¬ì£¼ê¸° ë•Œë¬¸ì— dbì— ìˆëŠ” ì •ë³´ê°€ ì •í™•í•˜ë‹¤ê³  ë³¼ìˆ˜ëŠ” ì—†ìŒ.. 
 				}
 			}
-		}else{			// ¿äÃ» ½ÇÆĞ½Ã	 Åä½ºÆ®´Â ¿¡·¯³² - 
-			showMSG();    // ÇÚµé·¯ ÅëÇÑ Åä½ºÆ®
+		}else{			// ìš”ì²­ ì‹¤íŒ¨ì‹œ	 í† ìŠ¤íŠ¸ëŠ” ì—ëŸ¬ë‚¨ - 
+			showMSG();    // í•¸ë“¤ëŸ¬ í†µí•œ í† ìŠ¤íŠ¸
 		}
 	}
 
-	public void alertToUser(){				// 	data Á¶È¸°¡ Àß ¾ÈµÆ¾î¿ä. -- ·Î±×³²±è
+	public void alertToUser(){				// 	data ì¡°íšŒê°€ ì˜ ì•ˆëì–´ìš”. -- ë¡œê·¸ë‚¨ê¹€
 		Log.d(TAG,"Get Data from Server -> Error Occured..");
 
 	}
 
 
 
-	// entries3 ¸¦ Àü¿ª¿¡ ÀúÀåÈÄ ½º·¹µå ÀÌ¿ëÇÏ¿© µ¹¸°´Ù. È­¸é¿¡ º¸¿©ÁØ´Ù.		-- 2Â÷ Ã³¸®.
+	// entries3 ë¥¼ ì „ì—­ì— ì €ì¥í›„ ìŠ¤ë ˆë“œ ì´ìš©í•˜ì—¬ ëŒë¦°ë‹¤. í™”ë©´ì— ë³´ì—¬ì¤€ë‹¤.		-- 2ì°¨ ì²˜ë¦¬.
 	/**
 	 * showEventList
-	 *  °á°ú µµ¸ŞÀÎÀ» ÇÚµé·¯¸¦ ÅëÇØ È­¸é¿¡ º¸¿©ÁØ´Ù
+	 *  ê²°ê³¼ ë„ë©”ì¸ì„ í•¸ë“¤ëŸ¬ë¥¼ í†µí•´ í™”ë©´ì— ë³´ì—¬ì¤€ë‹¤
 	 *
 	 * @param
 	 * @param
@@ -782,7 +782,7 @@ public class PushList extends Activity {
 	 */
 	public void showEventList(){
 		hidePb();
-		//  °¡Á®¿Â µ¥ÀÌÅÍ È­¸é¿¡ º¸¿©ÁÖ±â.
+		//  ê°€ì ¸ì˜¨ ë°ì´í„° í™”ë©´ì— ë³´ì—¬ì£¼ê¸°.
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -796,10 +796,10 @@ public class PushList extends Activity {
 		).start();
 	}
 
-	// ÀÌº¥Æ® ÀÌ¹ÌÁö : URL ¿¡¼­ ÀÌ¹ÌÁö ¹Ş¾Æ¿Í¼­ µµ¸ŞÀÎ¿¡ ÀúÀåÇÏ´Â ºÎºĞ.
+	// ì´ë²¤íŠ¸ ì´ë¯¸ì§€ : URL ì—ì„œ ì´ë¯¸ì§€ ë°›ì•„ì™€ì„œ ë„ë©”ì¸ì— ì €ì¥í•˜ëŠ” ë¶€ë¶„.
 	/**
 	 * LoadImage
-	 *  °¡¸ÍÁ¡ ÀÌ¹ÌÁö URL ¿¡¼­ ÀÌ¹ÌÁö ¹Ş¾Æ¿Â ½ºÆ®¸²À» ºñÆ®¸ÊÀ¸·Î ÀúÀåÇÑ´Ù
+	 *  ê°€ë§¹ì  ì´ë¯¸ì§€ URL ì—ì„œ ì´ë¯¸ì§€ ë°›ì•„ì˜¨ ìŠ¤íŠ¸ë¦¼ì„ ë¹„íŠ¸ë§µìœ¼ë¡œ ì €ì¥í•œë‹¤
 	 *
 	 * @param $imagePath
 	 * @param
@@ -813,7 +813,7 @@ public class PushList extends Activity {
 
 	/**
 	 * OpenHttpConnection
-	 *  °¡¸ÍÁ¡ ÀÌ¹ÌÁö URL ¿¡¼­ ÀÌ¹ÌÁö ¹Ş¾Æ¿Í¼­ ½ºÆ®¸²À¸·Î ÀúÀåÇÑ´Ù
+	 *  ê°€ë§¹ì  ì´ë¯¸ì§€ URL ì—ì„œ ì´ë¯¸ì§€ ë°›ì•„ì™€ì„œ ìŠ¤íŠ¸ë¦¼ìœ¼ë¡œ ì €ì¥í•œë‹¤
 	 *
 	 * @param $imagePath
 	 * @param
@@ -838,28 +838,28 @@ public class PushList extends Activity {
 	}
 
 
-	////////////////////////   ÇÏµå¿ş¾î ¸Ş´º ¹öÆ°.  ////////////////
+	////////////////////////   í•˜ë“œì›¨ì–´ ë©”ë‰´ ë²„íŠ¼.  ////////////////
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		String tmpstr = getString(R.string.refresh);
-		menu.add(Menu. NONE, Menu.FIRST+1, Menu.NONE, tmpstr );             // ½Å±Ôµî·Ï ¸Ş´º Ãß°¡. -- »õ·Î°íÄ§
+		menu.add(Menu. NONE, Menu.FIRST+1, Menu.NONE, tmpstr );             // ì‹ ê·œë“±ë¡ ë©”ë‰´ ì¶”ê°€. -- ìƒˆë¡œê³ ì¹¨
 		//	          getMenuInflater().inflate(R.menu.activity_main, menu);
 		return (super .onCreateOptionsMenu(menu));
 	}
-	// ¿É¼Ç ¸Ş´º Æ¯Á¤ ¾ÆÀÌÅÛ Å¬¸¯½Ã ÇÊ¿äÇÑ ÀÏ Ã³¸®
+	// ì˜µì…˜ ë©”ë‰´ íŠ¹ì • ì•„ì´í…œ í´ë¦­ì‹œ í•„ìš”í•œ ì¼ ì²˜ë¦¬
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item){
 		return (itemCallback(item)|| super.onOptionsItemSelected(item));
 	}
-	// ¾ÆÀÌÅÛ ¾ÆÀÌµğ °ª ±âÁØ ÇÊ¿äÇÑ ÀÏ Ã³¸®
+	// ì•„ì´í…œ ì•„ì´ë”” ê°’ ê¸°ì¤€ í•„ìš”í•œ ì¼ ì²˜ë¦¬
 	public boolean itemCallback(MenuItem item){
 		switch(item.getItemId()){
 		case Menu. FIRST+1:
-			if(isRunning<1){					// Á¶È¸Áß
+			if(isRunning<1){					// ì¡°íšŒì¤‘
 				isRunning = isRunning+1;
-				myQRcode = MyQRPageActivity.qrCode;		// ³» qr ·Î
-				new backgroundGetMyEventList().execute();		// Á¶È¸ ÇÑ´Ù--> »õ·Î°íÄ§ ±â´É ÀÌ µÈ´Ù
+				myQRcode = MyQRPageActivity.qrCode;		// ë‚´ qr ë¡œ
+				new backgroundGetMyEventList().execute();		// ì¡°íšŒ í•œë‹¤--> ìƒˆë¡œê³ ì¹¨ ê¸°ëŠ¥ ì´ ëœë‹¤
 			}else{
 				Log.w(TAG, "already running..");
 			}
@@ -870,7 +870,7 @@ public class PushList extends Activity {
 	////////////////////////////////////////////////////////////
 
 	/*
-	 * ³×Æ®¿öÅ© »óÅÂ °¨Áö
+	 * ë„¤íŠ¸ì›Œí¬ ìƒíƒœ ê°ì§€
 	 * 
 	 */
 	//		public Boolean CheckNetwork(){
@@ -900,7 +900,7 @@ public class PushList extends Activity {
 	//						}
 	//				).start();
 	//				hidePb();
-	//				getEventDBData();		// Åë½Å ¾ÈµÇ¸é db°Å º¸¿©ÁÖ±â·Î..
+	//				getEventDBData();		// í†µì‹  ì•ˆë˜ë©´ dbê±° ë³´ì—¬ì£¼ê¸°ë¡œ..
 	//				isRunning = 0;
 	//				connected = false;
 	//			}else{
@@ -911,7 +911,7 @@ public class PushList extends Activity {
 
 	@Override
 	public void onDestroy(){
-		db.close();			//»ç¿ëÀÌ ³¡³µÀ¸´Ï db ´Â ´İ¾ÆÁØ´Ù
+		db.close();			//ì‚¬ìš©ì´ ëë‚¬ìœ¼ë‹ˆ db ëŠ” ë‹«ì•„ì¤€ë‹¤
 		super.onDestroy();
 		//			try{
 		//				connection2.disconnect();

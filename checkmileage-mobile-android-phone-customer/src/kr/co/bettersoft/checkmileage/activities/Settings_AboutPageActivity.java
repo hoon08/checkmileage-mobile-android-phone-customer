@@ -1,13 +1,13 @@
 package kr.co.bettersoft.checkmileage.activities;
 /**
  * Settings_AboutPageActivity
- *  ¾îÇÃ Á¤º¸ º¸±â - »ç¿ëÇÔ
+ *  ì–´í”Œ ì •ë³´ ë³´ê¸° - ì‚¬ìš©í•¨
  */
 /*
  *  What is this App.
  *  
  *  
- *  µğÀÚÀÎ µµÂøÇÏ¸é ÀÔÇô¼­ »ç¿ëÇÒ °Í.
+ *  ë””ìì¸ ë„ì°©í•˜ë©´ ì…í˜€ì„œ ì‚¬ìš©í•  ê²ƒ.
  */
 import kr.co.bettersoft.checkmileage.activities.R;
 import android.app.Activity;
@@ -22,7 +22,7 @@ import android.widget.TextView;
 
 public class Settings_AboutPageActivity extends Activity {
 	String TAG = "Settings_AboutPageActivity";
-	View parentLayout;		// ¾Æ¹«´ë³ª ÅÍÄ¡½Ã Á¾·á
+	View parentLayout;		// ì•„ë¬´ëŒ€ë‚˜ í„°ì¹˜ì‹œ ì¢…ë£Œ
 
 	//	TextView tv1 ;
 	//	String contents;
@@ -34,14 +34,14 @@ public class Settings_AboutPageActivity extends Activity {
 		setContentView(R.layout.settings_about);
 		// TODO Auto-generated method stub
 
-		parentLayout = findViewById(R.id.settings_about_parent);		// ºÎ¸ğ ·¹ÀÌ¾Æ¿ô- ¸®½º³Ê¸¦ ´Ş¾Æ¼­ Å°º¸µå ÀÚµ¿ ¼û±è¿¡ »ç¿ë
+		parentLayout = findViewById(R.id.settings_about_parent);		// ë¶€ëª¨ ë ˆì´ì•„ì›ƒ- ë¦¬ìŠ¤ë„ˆë¥¼ ë‹¬ì•„ì„œ í‚¤ë³´ë“œ ìë™ ìˆ¨ê¹€ì— ì‚¬ìš©
 
 		//	    tv1 = (TextView) findViewById(R.id.settings_about_text1);
 
-		//	    contents = "ÀÌ ¾ÛÀº ¸¶ÀÏ¸®Áö¸¦ ½×´Â ¾îÇÃÀÔ´Ï´Ù. \n\nÅëÇÕ ¾ÆÀÌµğ ÇÑ°³·Î µî·ÏµÈ ¿©·¯ \n°¡¸ÍÁ¡¿¡¼­ »ç¿ëÇÏ½Ç ¼ö ÀÖ½À´Ï´Ù.\n\nÁö°©¿¡ Æ÷ÀÎÆ® Ä«µå¸¦ ¿©·¯Àå \nµé°í ´Ù´Ò ÇÊ¿ä°¡ ¾ø½À´Ï´Ù. \n\n¸ğ¹ÙÀÏ ¾ÛÀ» ÅëÇØ ¾ÆÀÌµğ¸¦ ÀúÀåÇÏ¿© \nºĞ½Ç À§Çè ¾øÀÌ °£ÆíÇÏ°Ô »ç¿ëÇÏ°í, \n\n¾îÇÃ »èÁ¦ ÈÄ Àç¼³Ä¡ ÇßÀ» °æ¿ì \nÀÎÁõÀ» ÅëÇØ  °è¼ÓÇØ¼­ »ç¿ëÇÒ ¼ö ÀÖ½À´Ï´Ù.";
+		//	    contents = "ì´ ì•±ì€ ë§ˆì¼ë¦¬ì§€ë¥¼ ìŒ“ëŠ” ì–´í”Œì…ë‹ˆë‹¤. \n\ní†µí•© ì•„ì´ë”” í•œê°œë¡œ ë“±ë¡ëœ ì—¬ëŸ¬ \nê°€ë§¹ì ì—ì„œ ì‚¬ìš©í•˜ì‹¤ ìˆ˜ ìˆìŠµë‹ˆë‹¤.\n\nì§€ê°‘ì— í¬ì¸íŠ¸ ì¹´ë“œë¥¼ ì—¬ëŸ¬ì¥ \në“¤ê³  ë‹¤ë‹ í•„ìš”ê°€ ì—†ìŠµë‹ˆë‹¤. \n\nëª¨ë°”ì¼ ì•±ì„ í†µí•´ ì•„ì´ë””ë¥¼ ì €ì¥í•˜ì—¬ \në¶„ì‹¤ ìœ„í—˜ ì—†ì´ ê°„í¸í•˜ê²Œ ì‚¬ìš©í•˜ê³ , \n\nì–´í”Œ ì‚­ì œ í›„ ì¬ì„¤ì¹˜ í–ˆì„ ê²½ìš° \nì¸ì¦ì„ í†µí•´  ê³„ì†í•´ì„œ ì‚¬ìš©í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.";
 		//	    tv1.setText(R.string.settings_about_content);
 
-		// ºÎ¸ğ ·¹ÀÌ¾Æ¿ô ¸®½º³Ê - ¿ÜºÎ ÅÍÄ¡ ½Ã Å°º¸µå ¼û±è ¿ëµµ
+		// ë¶€ëª¨ ë ˆì´ì•„ì›ƒ ë¦¬ìŠ¤ë„ˆ - ì™¸ë¶€ í„°ì¹˜ ì‹œ í‚¤ë³´ë“œ ìˆ¨ê¹€ ìš©ë„
 		parentLayout.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

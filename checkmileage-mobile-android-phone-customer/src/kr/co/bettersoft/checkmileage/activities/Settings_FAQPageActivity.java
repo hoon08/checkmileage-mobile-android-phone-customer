@@ -1,5 +1,5 @@
 package kr.co.bettersoft.checkmileage.activities;
-// ÀÚÁÖ¹¯´Â Áú¹® - »ç¿ë ¾ÈÇÔ
+// ìì£¼ë¬»ëŠ” ì§ˆë¬¸ - ì‚¬ìš© ì•ˆí•¨
 import android.app.Activity;
 import android.os.Bundle;
 

@@ -2,7 +2,7 @@ package kr.co.bettersoft.checkmileage.activities;
 /**
  * ScanQRPageActivity
  * 
- *  QR ½ºÄË ÆäÀÌÁö
+ *  QR ìŠ¤ì¼„ í˜ì´ì§€
  */
 import java.io.BufferedReader;
 import java.io.File;
@@ -39,9 +39,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class ScanQRPageActivity extends Activity {
-	SharedPreferences sharedPrefCustom;					// ÇÁ¸®ÆÛ·±½º
+	SharedPreferences sharedPrefCustom;					// í”„ë¦¬í¼ëŸ°ìŠ¤
 
-	// ¼­¹ö Åë½Å ¿ë
+	// ì„œë²„ í†µì‹  ìš©
 	String serverName = CommonUtils.serverNames;		
 	String controllerName = "";
 	String methodName = "";
@@ -52,9 +52,9 @@ public class ScanQRPageActivity extends Activity {
 
 	String phoneNumber = "";
 
-	// ½Ã°£ °ü·Ã
+	// ì‹œê°„ ê´€ë ¨
 	Calendar c = Calendar.getInstance();
-	int todayYear = 0;						// Áö±İ -  ³â ¿ù ÀÏ ½Ã ºĞ
+	int todayYear = 0;						// ì§€ê¸ˆ -  ë…„ ì›” ì¼ ì‹œ ë¶„
 	int todayMonth = 0;
 	int todayDay = 0;
 	int todayHour = 0;
@@ -67,27 +67,27 @@ public class ScanQRPageActivity extends Activity {
 	String strCountry = "";
 	String strLanguage = "";
 
-	// ¼³Á¤ Á¤º¸ ÀúÀåÇÒ µµ¸ŞÀÎ.
+	// ì„¤ì • ì •ë³´ ì €ì¥í•  ë„ë©”ì¸.
 	CheckMileageMemberSettings settings;
 
 	String idExist = "";
 	static int qrResult = 0;
 	public static final String TAG = ScanQRPageActivity.class.getSimpleName();
 
-	// ÇÚµé·¯ µî·Ï
+	// í•¸ë“¤ëŸ¬ ë“±ë¡
 	Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg){
 			Bundle b = msg.getData();
-			int showQR =  b.getInt("showQR");		// °ªÀ» ³ÖÁö ¾ÊÀ¸¸é 0 À» ²¨³»¾ú´Ù.
+			int showQR =  b.getInt("showQR");		// ê°’ì„ ë„£ì§€ ì•Šìœ¼ë©´ 0 ì„ êº¼ë‚´ì—ˆë‹¤.
 
 			if(b.getInt("showErrToast")==1){
 				Toast.makeText(ScanQRPageActivity.this, R.string.fail_scan_qr, Toast.LENGTH_SHORT).show();
 			}
-			if(b.getInt("getUserSetting")==1){		// ¼­¹ö¿¡¼­ ¼³Á¤ Á¤º¸ °¡Á®¿Í¼­ ÀúÀå
+			if(b.getInt("getUserSetting")==1){		// ì„œë²„ì—ì„œ ì„¤ì • ì •ë³´ ê°€ì ¸ì™€ì„œ ì €ì¥
 				new backgroundGetUserSettingsFromServer().execute();     
 			}
-			if(b.getInt("showIntroView")==1){		// ¼­¹ö¿¡¼­ ¼³Á¤ Á¤º¸ °¡Á®¿Í¼­ ÀúÀå
+			if(b.getInt("showIntroView")==1){		// ì„œë²„ì—ì„œ ì„¤ì • ì •ë³´ ê°€ì ¸ì™€ì„œ ì €ì¥
 				setContentView(R.layout.intro);
 			}
 			if(b.getInt("showErrToast")==1){
@@ -98,13 +98,13 @@ public class ScanQRPageActivity extends Activity {
 
 	/**
 	 * showErrMsg
-	 *  È­¸é¿¡ error Åä½ºÆ® ¶ç¿î´Ù
+	 *  í™”ë©´ì— error í† ìŠ¤íŠ¸ ë„ìš´ë‹¤
 	 *
 	 * @param
 	 * @param
 	 * @return
 	 */
-	public void showErrMSG(){			// È­¸é¿¡ ¿¡·¯ Åä½ºÆ® ¶ç¿ò..
+	public void showErrMSG(){			// í™”ë©´ì— ì—ëŸ¬ í† ìŠ¤íŠ¸ ë„ì›€..
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -132,15 +132,15 @@ public class ScanQRPageActivity extends Activity {
 			phoneNumber="";
 		}
 		/* 
-		 * QR ½ºÄË¸ğµå°¡ µÇ¾î QR Ä«µå¸¦ ½ºÄËÇÑ´Ù.
-		 * QR Ä«µå ½ºÄËÀÌ ¼º°øÇÏ¿© QR Á¤º¸¸¦ ¾ò¾î¿À¸é, ÇØ´ç Á¤º¸¸¦ ¾Û¿¡ ÀúÀåÇÏ°í, ¼­¹ö¿¡ µî·ÏÇÑ´Ù.
-		 * ÀÌÈÄ ³ªÀÇ QR ÄÚµå º¸±â È­¸éÀ¸·Î ÀÌµ¿ÇÑ´Ù.
+		 * QR ìŠ¤ì¼„ëª¨ë“œê°€ ë˜ì–´ QR ì¹´ë“œë¥¼ ìŠ¤ì¼„í•œë‹¤.
+		 * QR ì¹´ë“œ ìŠ¤ì¼„ì´ ì„±ê³µí•˜ì—¬ QR ì •ë³´ë¥¼ ì–»ì–´ì˜¤ë©´, í•´ë‹¹ ì •ë³´ë¥¼ ì•±ì— ì €ì¥í•˜ê³ , ì„œë²„ì— ë“±ë¡í•œë‹¤.
+		 * ì´í›„ ë‚˜ì˜ QR ì½”ë“œ ë³´ê¸° í™”ë©´ìœ¼ë¡œ ì´ë™í•œë‹¤.
 		 */
 
-		// QR Ä«µå ½ºÄËÇÏ´Â ºÎºĞ..
-		// ... QR Ä«µå¸¦ ½ºÄËÇÏ¿© Á¤º¸¸¦ ÀúÀåÇÏ°í, ¼­¹ö¿¡ µî·ÏÇÑ´Ù.
+		// QR ì¹´ë“œ ìŠ¤ì¼„í•˜ëŠ” ë¶€ë¶„..
+		// ... QR ì¹´ë“œë¥¼ ìŠ¤ì¼„í•˜ì—¬ ì •ë³´ë¥¼ ì €ì¥í•˜ê³ , ì„œë²„ì— ë“±ë¡í•œë‹¤.
 
-		// ³ªÀÇ QR ÄÚµå º¸±â·Î ÀÌµ¿.
+		// ë‚˜ì˜ QR ì½”ë“œ ë³´ê¸°ë¡œ ì´ë™.
 		Log.i("ScanQRPageActivity", "QR registered Success");
 		//		 Intent intent2 = new Intent(ScanQRPageActivity.this, Main_TabsActivity.class);
 		//	        startActivity(intent2);
@@ -162,10 +162,10 @@ public class ScanQRPageActivity extends Activity {
 		}
 	}
 
-	// pref ¿¡ QR ÀúÀå .
+	// pref ì— QR ì €ì¥ .
 	/**
 	 * saveQRforPref
-	 *  ÇÁ¸®ÆÛ·±½º(¼³Á¤)¿¡ QRÀ» ÀúÀåÇÑ´Ù
+	 *  í”„ë¦¬í¼ëŸ°ìŠ¤(ì„¤ì •)ì— QRì„ ì €ì¥í•œë‹¤
 	 *
 	 * @param qrCode
 	 * @param
@@ -178,7 +178,7 @@ public class ScanQRPageActivity extends Activity {
 		saveQR.putString("qrcode", qrCode);
 		saveQR.commit();
 		
-		// ÆÄÀÏ¿¡µµ ÀúÀå
+		// íŒŒì¼ì—ë„ ì €ì¥
 		try {
 			File qrFileDirectory = new File(CommonUtils.qrFileSavedPath);
 			qrFileDirectory.mkdirs();
@@ -198,7 +198,7 @@ public class ScanQRPageActivity extends Activity {
 
 	/**
 	 * onActivityResult
-	 *  qr ½ºÄË Á¤º¸¸¦ ¹Ş¾Æ Ã³¸®ÇÑ´Ù
+	 *  qr ìŠ¤ì¼„ ì •ë³´ë¥¼ ë°›ì•„ ì²˜ë¦¬í•œë‹¤
 	 *
 	 * @param requestCode
 	 * @param resultCode
@@ -210,16 +210,16 @@ public class ScanQRPageActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, intent);
 		if(requestCode == 0) {
-			if(resultCode == RESULT_OK) {  // ¼º°ø½Ã
+			if(resultCode == RESULT_OK) {  // ì„±ê³µì‹œ
 				qrcode = intent.getStringExtra("SCAN_RESULT");
-				if(qrcode.contains("http")){			// URL·Î ÀĞ¾úÀ» °æ¿ì.
-					qrcode = qrcode.substring(7);			// ¾ÕÀÇ http:// À» ÀÚ¸¥´Ù. (7±ÛÀÚ)
+				if(qrcode.contains("http")){			// URLë¡œ ì½ì—ˆì„ ê²½ìš°.
+					qrcode = qrcode.substring(7);			// ì•ì˜ http:// ì„ ìë¥¸ë‹¤. (7ê¸€ì)
 				}
-				// 1. ·ÎÄÃ¿¡ QR ÄÚµå¸¦ ÀúÀåÇÔ
+				// 1. ë¡œì»¬ì— QR ì½”ë“œë¥¼ ì €ì¥í•¨
 				Log.i("ScanQRPageActivity", "save qrcode to file : "+qrcode);
-				saveQRforPref(qrcode);		// ¼³Á¤¿¡ qr ÀúÀå
+				saveQRforPref(qrcode);		// ì„¤ì •ì— qr ì €ì¥
 
-				// È­¸é ÀüÈ¯- ½ºÄËÈ­¸é ´ë½Å ÀÎÆ®·Î È­¸éÀ» º¸¿©ÁÜ.
+				// í™”ë©´ ì „í™˜- ìŠ¤ì¼„í™”ë©´ ëŒ€ì‹  ì¸íŠ¸ë¡œ í™”ë©´ì„ ë³´ì—¬ì¤Œ.
 				new Thread(
 						new Runnable(){
 							public void run(){
@@ -232,10 +232,10 @@ public class ScanQRPageActivity extends Activity {
 						}
 				).start();
 
-				//				checkAlreadyExistID_pre();		// ¼­¹ö¿¡ ¾ÆÀÌµğ ÀÖ´ÂÁö È®ÀÎÇØ¼­ ¾øÀ¸¸é µî·ÏÇÏ°í,  ÀÖÀ¸¸é ¼³Á¤ Á¤º¸¸¦ °¡Á®¿Í¼­ ·ÎÄÃ¿¡ ÀúÀåÇÑ´Ù.
-				checkAlreadyExistID();		// ¼­¹ö¿¡ ¾ÆÀÌµğ ÀÖ´ÂÁö È®ÀÎÇØ¼­ ¾øÀ¸¸é µî·ÏÇÏ°í,  ÀÖÀ¸¸é ¼³Á¤ Á¤º¸¸¦ °¡Á®¿Í¼­ ·ÎÄÃ¿¡ ÀúÀåÇÑ´Ù.
+				//				checkAlreadyExistID_pre();		// ì„œë²„ì— ì•„ì´ë”” ìˆëŠ”ì§€ í™•ì¸í•´ì„œ ì—†ìœ¼ë©´ ë“±ë¡í•˜ê³ ,  ìˆìœ¼ë©´ ì„¤ì • ì •ë³´ë¥¼ ê°€ì ¸ì™€ì„œ ë¡œì»¬ì— ì €ì¥í•œë‹¤.
+				checkAlreadyExistID();		// ì„œë²„ì— ì•„ì´ë”” ìˆëŠ”ì§€ í™•ì¸í•´ì„œ ì—†ìœ¼ë©´ ë“±ë¡í•˜ê³ ,  ìˆìœ¼ë©´ ì„¤ì • ì •ë³´ë¥¼ ê°€ì ¸ì™€ì„œ ë¡œì»¬ì— ì €ì¥í•œë‹¤.
 			} else if(resultCode == RESULT_CANCELED) {
-				// Ãë¼Ò ¶Ç´Â ½ÇÆĞ½Ã ÀÌÀüÈ­¸éÀ¸·Î.
+				// ì·¨ì†Œ ë˜ëŠ” ì‹¤íŒ¨ì‹œ ì´ì „í™”ë©´ìœ¼ë¡œ.
 				showErrMSG();
 				Intent intent2 = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
 				startActivity(intent2);
@@ -246,9 +246,9 @@ public class ScanQRPageActivity extends Activity {
 
 
 	/*
-	 * ±âÁ¸ »ç¿ëÀÚÀÎÁö È®ÀÎ.
-	 *  ¾ÆÀÌµğ·Î ¼­¹ö¿¡ Á¶È¸ÇØ¼­ ÀÌ¹Ì µî·ÏµÈ ¾ÆÀÌµğÀÎÁö È®ÀÎÇÑ´Ù.
-	 *    ÀÌ¹Ì µî·ÏµÈ ¾ÆÀÌµğÀÎ °æ¿ì Ãß°¡ µî·ÏÇÒ ÇÊ¿ä°¡ ¾ø´Ù. ´ë½Å ¼³Á¤ Á¤º¸¸¦ °¡Á®¿Í¼­ ·ÎÄÃ¿¡ ÀúÀåÇÑ´Ù.
+	 * ê¸°ì¡´ ì‚¬ìš©ìì¸ì§€ í™•ì¸.
+	 *  ì•„ì´ë””ë¡œ ì„œë²„ì— ì¡°íšŒí•´ì„œ ì´ë¯¸ ë“±ë¡ëœ ì•„ì´ë””ì¸ì§€ í™•ì¸í•œë‹¤.
+	 *    ì´ë¯¸ ë“±ë¡ëœ ì•„ì´ë””ì¸ ê²½ìš° ì¶”ê°€ ë“±ë¡í•  í•„ìš”ê°€ ì—†ë‹¤. ëŒ€ì‹  ì„¤ì • ì •ë³´ë¥¼ ê°€ì ¸ì™€ì„œ ë¡œì»¬ì— ì €ì¥í•œë‹¤.
 	 */
 	//	public void checkAlreadyExistID_pre(){
 	//		new Thread(
@@ -273,7 +273,7 @@ public class ScanQRPageActivity extends Activity {
 
 	/**
 	 * checkAlreadyExistID
-	 *  ±âÁ¸ »ç¿ëÀÚÀÎÁö È®ÀÎÇÑ´Ù
+	 *  ê¸°ì¡´ ì‚¬ìš©ìì¸ì§€ í™•ì¸í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -283,7 +283,7 @@ public class ScanQRPageActivity extends Activity {
 		Log.i(TAG, "checkAlreadyExistID");
 		controllerName = "checkMileageMemberController";
 		methodName = "selectMemberExist";
-		// ¼­¹ö Åë½ÅºÎ
+		// ì„œë²„ í†µì‹ ë¶€
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -308,20 +308,20 @@ public class ScanQRPageActivity extends Activity {
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
 							System.out.println("postUrl      : " + postUrl2);
-							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : Á¤»ó
+							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : ì •ìƒ
 							int responseCode = connection2.getResponseCode();
 							if(responseCode==200||responseCode==204){
 								InputStream in =  connection2.getInputStream();
-								// Á¶È¸ÇÑ °á°ú¸¦ Ã³¸®.
+								// ì¡°íšŒí•œ ê²°ê³¼ë¥¼ ì²˜ë¦¬.
 								checkUserID(in);
 								//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-								//								if(CommonUtils.usingNetwork < 0){	// 0 º¸´Ù ÀÛÁö´Â ¾Ê°Ô
+								//								if(CommonUtils.usingNetwork < 0){	// 0 ë³´ë‹¤ ì‘ì§€ëŠ” ì•Šê²Œ
 								//									CommonUtils.usingNetwork = 0;
 								//								}
 							}else{
 								showErrMSG();
 								//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-								//								if(CommonUtils.usingNetwork < 0){	// 0 º¸´Ù ÀÛÁö´Â ¾Ê°Ô
+								//								if(CommonUtils.usingNetwork < 0){	// 0 ë³´ë‹¤ ì‘ì§€ëŠ” ì•Šê²Œ
 								//									CommonUtils.usingNetwork = 0;
 								//								}
 								Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
@@ -332,7 +332,7 @@ public class ScanQRPageActivity extends Activity {
 						}catch(Exception e){ 
 							//							connection2.disconnect();
 							//							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-							//							if(CommonUtils.usingNetwork < 0){	// 0 º¸´Ù ÀÛÁö´Â ¾Ê°Ô
+							//							if(CommonUtils.usingNetwork < 0){	// 0 ë³´ë‹¤ ì‘ì§€ëŠ” ì•Šê²Œ
 							//								CommonUtils.usingNetwork = 0;
 							//							}
 							e.printStackTrace();
@@ -345,10 +345,10 @@ public class ScanQRPageActivity extends Activity {
 				}
 		).start();
 	}
-	// »ç¿ëÀÚ°¡ ÀÖ´ÂÁö È®ÀÎÇÑ °á°ú¸¦ Ã³¸®
+	// ì‚¬ìš©ìê°€ ìˆëŠ”ì§€ í™•ì¸í•œ ê²°ê³¼ë¥¼ ì²˜ë¦¬
 	/**
 	 * checkUserID
-	 *  »ç¿ëÀÚ°¡ ÀÖ´ÂÁö È®ÀÎÇÑ °á°ú¸¦ Ã³¸®ÇÑ´Ù
+	 *  ì‚¬ìš©ìê°€ ìˆëŠ”ì§€ í™•ì¸í•œ ê²°ê³¼ë¥¼ ì²˜ë¦¬í•œë‹¤
 	 *
 	 * @param in
 	 * @param
@@ -373,17 +373,17 @@ public class ScanQRPageActivity extends Activity {
 			jsonObject = new JSONObject(tempstr);
 			JSONObject jsonobj2 = jsonObject.getJSONObject("checkMileageMember");
 			try{
-				idExist = jsonobj2.getString("totalCount");				// ¾ÆÀÌµğ°¡ ÀÖÀ¸¸é1 ¾øÀ¸¸é 0
+				idExist = jsonobj2.getString("totalCount");				// ì•„ì´ë””ê°€ ìˆìœ¼ë©´1 ì—†ìœ¼ë©´ 0
 			}catch(Exception e){
 				e.printStackTrace();
 				idExist = "0";
 			}
-			if(idExist.equals("0")){		// ¼­¹ö¿¡ ¾ÆÀÌµğ°¡ ¾øÀ¸¸é ¾÷µ¥ÀÌÆ® ÇØÁØ´Ù. 
+			if(idExist.equals("0")){		// ì„œë²„ì— ì•„ì´ë””ê°€ ì—†ìœ¼ë©´ ì—…ë°ì´íŠ¸ í•´ì¤€ë‹¤. 
 				//					saveQRtoServer_pre();		
 				saveQRtoServer();		
-			}else{							// ¼­¹ö¿¡ ¾ÆÀÌµğ°¡ ÀÖÀ¸¸é ¼³Á¤À» ¹Ş¾Æ¿Í¼­ ÀúÀåÇØ¾ß ÇÑ´Ù.
+			}else{							// ì„œë²„ì— ì•„ì´ë””ê°€ ìˆìœ¼ë©´ ì„¤ì •ì„ ë°›ì•„ì™€ì„œ ì €ì¥í•´ì•¼ í•œë‹¤.
 				Log.d(TAG,"idExist, getSettingsFromServer = T");
-				//¼³Á¤ Á¤º¸¸¦ °¡Á®¿Í¼­ ÀúÀå ÇÔ.  ÇÚµé·¯¸¦ ÀÌ¿ëÇÑ´Ù.
+				//ì„¤ì • ì •ë³´ë¥¼ ê°€ì ¸ì™€ì„œ ì €ì¥ í•¨.  í•¸ë“¤ëŸ¬ë¥¼ ì´ìš©í•œë‹¤.
 				new Thread(
 						new Runnable(){
 							public void run(){
@@ -401,7 +401,7 @@ public class ScanQRPageActivity extends Activity {
 		} 
 	}
 
-	// ´ÙÀ½ÆäÀÌÁö·Î ÀÌµ¿ÇÑ´Ù. qrCode °ªÀ» Àü´ŞÇÑ´Ù.
+	// ë‹¤ìŒí˜ì´ì§€ë¡œ ì´ë™í•œë‹¤. qrCode ê°’ì„ ì „ë‹¬í•œë‹¤.
 	public void goNextPage(){
 		Log.i("ScanQRPageActivity", "load qrcode to img : "+qrcode);
 		MyQRPageActivity.qrCode = qrcode;
@@ -409,21 +409,21 @@ public class ScanQRPageActivity extends Activity {
 		new Thread(
 				new Runnable(){
 					public void run(){
-						Log.i("ScanQRPageActivity", "qrResult::"+qrResult);		// ÀĞ±â °á°ú ¹ŞÀ½.
-						// ³ªÀÇ QR ÄÚµå º¸±â·Î ÀÌµ¿ÇÑ´Ù.
+						Log.i("ScanQRPageActivity", "qrResult::"+qrResult);		// ì½ê¸° ê²°ê³¼ ë°›ìŒ.
+						// ë‚˜ì˜ QR ì½”ë“œ ë³´ê¸°ë¡œ ì´ë™í•œë‹¤.
 						Log.i("ScanQRPageActivity", "QR registered Success");
 						Intent intent2 = new Intent(ScanQRPageActivity.this, Main_TabsActivity.class);
 						startActivity(intent2);
-						finish();		// ´Ù¸¥ ¾×Æ¼ºñÆ¼¸¦ È£ÃâÇÏ°í ÀÚ½ÅÀº Á¾·áÇÑ´Ù.
+						finish();		// ë‹¤ë¥¸ ì•¡í‹°ë¹„í‹°ë¥¼ í˜¸ì¶œí•˜ê³  ìì‹ ì€ ì¢…ë£Œí•œë‹¤.
 					}
 				}
 		).start();
 	}
 
-	// ¹é´Ü¿¡¼­ ¼­¹ö¿¡¼­ ¼³Á¤ Á¤º¸ °¡Á®¿À´Â ¸Ş¼­µå È£Ãâ.
+	// ë°±ë‹¨ì—ì„œ ì„œë²„ì—ì„œ ì„¤ì • ì •ë³´ ê°€ì ¸ì˜¤ëŠ” ë©”ì„œë“œ í˜¸ì¶œ.
 	/**
 	 * backgroundGetUserSettingsFromServer
-	 *  ºñµ¿±â·Î ¼­¹ö¿¡¼­ ¼³Á¤ Á¤º¸ °¡Á®¿À´Â ¸Ş¼­µå È£ÃâÇÑ´Ù
+	 *  ë¹„ë™ê¸°ë¡œ ì„œë²„ì—ì„œ ì„¤ì • ì •ë³´ ê°€ì ¸ì˜¤ëŠ” ë©”ì„œë“œ í˜¸ì¶œí•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -440,9 +440,9 @@ public class ScanQRPageActivity extends Activity {
 		}
 	}
 	/*
-	 *     ÀÎÁõ ¼º°ø(ÇöÀç ±â´É º¸·ù) ÀÌÈÄ  
-	 *     ÀÌÀü »ç¿ëÀÚÀÏ °æ¿ì ¼­¹ö·ÎºÎÅÍ »ç¿ëÀÚ ¼³Á¤ Á¤º¸¸¦ °¡Á®¿Í¼­ ¸ğ¹ÙÀÏÀÇ ¼³Á¤ Á¤º¸¿¡ ´ëÀÔ½ÃÅ²´Ù..
-	 *     ºñ¹øÀÇ °æ¿ì ºĞ½Ç½Ã ¾îÇÃ »èÁ¦ÈÄ Àç¼³Ä¡.. Àç ÀÎÁõ ¹Ş´Â´Ù. ±×·³ ºñ¹ø ÃÊ±âÈ­.
+	 *     ì¸ì¦ ì„±ê³µ(í˜„ì¬ ê¸°ëŠ¥ ë³´ë¥˜) ì´í›„  
+	 *     ì´ì „ ì‚¬ìš©ìì¼ ê²½ìš° ì„œë²„ë¡œë¶€í„° ì‚¬ìš©ì ì„¤ì • ì •ë³´ë¥¼ ê°€ì ¸ì™€ì„œ ëª¨ë°”ì¼ì˜ ì„¤ì • ì •ë³´ì— ëŒ€ì…ì‹œí‚¨ë‹¤..
+	 *     ë¹„ë²ˆì˜ ê²½ìš° ë¶„ì‹¤ì‹œ ì–´í”Œ ì‚­ì œí›„ ì¬ì„¤ì¹˜.. ì¬ ì¸ì¦ ë°›ëŠ”ë‹¤. ê·¸ëŸ¼ ë¹„ë²ˆ ì´ˆê¸°í™”.
 	 */
 	//	public void getUserSettingsFromServer_pre(){
 	//		new Thread(
@@ -467,13 +467,13 @@ public class ScanQRPageActivity extends Activity {
 
 	/**
 	 * getUserSettingsFromServer
-	 *  ¼­¹ö·ÎºÎÅÍ ¼³Á¤ Á¤º¸¸¦ ¹Ş´Â´Ù
+	 *  ì„œë²„ë¡œë¶€í„° ì„¤ì • ì •ë³´ë¥¼ ë°›ëŠ”ë‹¤
 	 *
 	 * @param
 	 * @param
 	 * @return
 	 */
-	public void getUserSettingsFromServer(){		// ¼­¹ö·ÎºÎÅÍ ¼³Á¤ Á¤º¸¸¦ ¹Ş´Â´Ù.  ¾ÆÀÌµğ¸¦ »ç¿ë.¸ğµçµ¥ÀÌÅÍ.  CheckMileageMember
+	public void getUserSettingsFromServer(){		// ì„œë²„ë¡œë¶€í„° ì„¤ì • ì •ë³´ë¥¼ ë°›ëŠ”ë‹¤.  ì•„ì´ë””ë¥¼ ì‚¬ìš©.ëª¨ë“ ë°ì´í„°.  CheckMileageMember
 		Log.d(TAG, "getUserSettingsFromServer");
 		controllerName = "checkMileageMemberController";
 		methodName = "selectMemberInformation";
@@ -482,9 +482,9 @@ public class ScanQRPageActivity extends Activity {
 					public void run(){
 						JSONObject obj = new JSONObject();
 						try{
-							// ÀÚ½ÅÀÇ ¾ÆÀÌµğ¸¦ ³Ö¾î¼­ Á¶È¸
+							// ìì‹ ì˜ ì•„ì´ë””ë¥¼ ë„£ì–´ì„œ ì¡°íšŒ
 							Log.d(TAG,"getUserSettingsFromServer,QR code:"+qrcode);
-							obj.put("checkMileageId", qrcode);		// ÀÚ½ÅÀÇ ¾ÆÀÌµğ »ç¿ëÇÒ °Í.. ÀÌÀü »ç¿ëÀÚÀÌ´Ù
+							obj.put("checkMileageId", qrcode);		// ìì‹ ì˜ ì•„ì´ë”” ì‚¬ìš©í•  ê²ƒ.. ì´ì „ ì‚¬ìš©ìì´ë‹¤
 							obj.put("activateYn", "Y");
 						}catch(Exception e){
 							e.printStackTrace();
@@ -502,11 +502,11 @@ public class ScanQRPageActivity extends Activity {
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
-							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : Á¤»ó
+							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : ì •ìƒ
 							responseCode = connection2.getResponseCode();
 							InputStream in =  connection2.getInputStream();
 							if(responseCode==200 || responseCode==204){
-								// Á¶È¸ÇÑ °á°ú¸¦ Ã³¸®.
+								// ì¡°íšŒí•œ ê²°ê³¼ë¥¼ ì²˜ë¦¬.
 								theMySettingData1(in);
 								//									Log.d(TAG,"S");
 							}else{
@@ -518,7 +518,7 @@ public class ScanQRPageActivity extends Activity {
 							e.printStackTrace();
 						}
 						//						CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-						//						if(CommonUtils.usingNetwork < 0){	// 0 º¸´Ù ÀÛÁö´Â ¾Ê°Ô
+						//						if(CommonUtils.usingNetwork < 0){	// 0 ë³´ë‹¤ ì‘ì§€ëŠ” ì•Šê²Œ
 						//							CommonUtils.usingNetwork = 0;
 						//						}
 					}
@@ -526,10 +526,10 @@ public class ScanQRPageActivity extends Activity {
 		).start();
 	} 
 
-	// ¼³Á¤ Á¤º¸¸¦ ·ÎÄÃ¿¡ ÀúÀå
+	// ì„¤ì • ì •ë³´ë¥¼ ë¡œì»¬ì— ì €ì¥
 	/**
 	 * theMySettingData1
-	 *  ¼³Á¤ Á¤º¸¸¦ ·ÎÄÃ¿¡ ÀúÀåÇÑ´Ù
+	 *  ì„¤ì • ì •ë³´ë¥¼ ë¡œì»¬ì— ì €ì¥í•œë‹¤
 	 *
 	 * @param in
 	 * @param 
@@ -541,7 +541,7 @@ public class ScanQRPageActivity extends Activity {
 		StringBuilder builder = new StringBuilder();
 		String line =null;
 		JSONObject jsonObject;
-		settings = new CheckMileageMemberSettings(); // °´Ã¼ »ı¼º
+		settings = new CheckMileageMemberSettings(); // ê°ì²´ ìƒì„±
 		try {
 			while((line=reader.readLine())!=null){
 				builder.append(line).append("\n");
@@ -549,12 +549,12 @@ public class ScanQRPageActivity extends Activity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//		Log.d(TAG,"³» ¼³Á¤ »ó¼¼Á¤º¸::"+builder.toString());
+		//		Log.d(TAG,"ë‚´ ì„¤ì • ìƒì„¸ì •ë³´::"+builder.toString());
 		String tempstr = builder.toString();		
 		try {
 			jsonObject = new JSONObject(tempstr);
 			JSONObject jsonobj2 = jsonObject.getJSONObject("checkMileageMember");
-			// µ¥ÀÌÅÍ¸¦ Àü¿ª º¯¼ö µµ¸ŞÀÎ¿¡ ÀúÀåÇÏ°í  ¼³Á¤¿¡ ÀúÀå..
+			// ë°ì´í„°ë¥¼ ì „ì—­ ë³€ìˆ˜ ë„ë©”ì¸ì— ì €ì¥í•˜ê³   ì„¤ì •ì— ì €ì¥..
 			try{
 				settings.setEmail(jsonobj2.getString("email"));				
 			}catch(Exception e){
@@ -575,19 +575,19 @@ public class ScanQRPageActivity extends Activity {
 			}catch(Exception e){
 				settings.setReceive_notification_yn("");
 			}
-			setUserSettingsToPrefs();		// ¼³Á¤¿¡ Àü´Ş ¹× ÀúÀå
+			setUserSettingsToPrefs();		// ì„¤ì •ì— ì „ë‹¬ ë° ì €ì¥
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} 
 	}
 	/*
-	 * ¼­¹ö¿¡¼­ ¹ŞÀº ¼³Á¤ Á¤º¸¸¦ ¸ğ¹ÙÀÏ ³» ¼³Á¤ Á¤º¸¿¡ ÀúÀåÇÑ´Ù.
+	 * ì„œë²„ì—ì„œ ë°›ì€ ì„¤ì • ì •ë³´ë¥¼ ëª¨ë°”ì¼ ë‚´ ì„¤ì • ì •ë³´ì— ì €ì¥í•œë‹¤.
 	 *   EMAIL  // BIRTHDAY //  GENDER // RECEIVE_NOTIFICATION_YN
-	 *   4°¡Áö. -> ¸¦ ¼³Á¤ µµ¸ŞÀÎ¿¡ ÀúÀåÇÑ ÈÄ ¼³Á¤¿¡¼­ ¼¼ÆÃÇØÁØ´Ù..
+	 *   4ê°€ì§€. -> ë¥¼ ì„¤ì • ë„ë©”ì¸ì— ì €ì¥í•œ í›„ ì„¤ì •ì—ì„œ ì„¸íŒ…í•´ì¤€ë‹¤..
 	 */
 	/**
 	 * setUserSettingsToPrefs
-	 *  ¼­¹ö¿¡¼­ ¹ŞÀº ¼³Á¤ Á¤º¸¸¦ ¸ğ¹ÙÀÏ ³» ¼³Á¤ Á¤º¸¿¡ ÀúÀåÇÑ´Ù.
+	 *  ì„œë²„ì—ì„œ ë°›ì€ ì„¤ì • ì •ë³´ë¥¼ ëª¨ë°”ì¼ ë‚´ ì„¤ì • ì •ë³´ì— ì €ì¥í•œë‹¤.
 	 *
 	 * @param
 	 * @param
@@ -596,24 +596,24 @@ public class ScanQRPageActivity extends Activity {
 	public void setUserSettingsToPrefs(){
 		sharedPrefCustom = getSharedPreferences("MyCustomePref",
 				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
-		SharedPreferences.Editor saveUpdateYn = sharedPrefCustom.edit();		// °ø¿ëÀ¸·Î ºñ¹øµµ ÀúÀåÇØ ÁØ´Ù.
+		SharedPreferences.Editor saveUpdateYn = sharedPrefCustom.edit();		// ê³µìš©ìœ¼ë¡œ ë¹„ë²ˆë„ ì €ì¥í•´ ì¤€ë‹¤.
 		saveUpdateYn.putString("updateYN", "Y");
 		saveUpdateYn.putString("server_birthday", settings.getBirthday());
 		saveUpdateYn.putString("server_email", settings.getEmail());
 		saveUpdateYn.putString("server_gender", settings.getGender());
-		if(settings.getReceive_notification_yn().equals("N")){		// ÀÖ°í N
+		if(settings.getReceive_notification_yn().equals("N")){		// ìˆê³  N
 			saveUpdateYn.putBoolean("server_receive_notification_yn", false);
-		}else{		// ¾ø°Å³ª Y
+		}else{		// ì—†ê±°ë‚˜ Y
 			saveUpdateYn.putBoolean("server_receive_notification_yn", true);
 		}
 		saveUpdateYn.commit();
 
-		goNextPage();		// ´ÙÀ½ ÆäÀÌÁö·Î ÀÌµ¿.
+		goNextPage();		// ë‹¤ìŒ í˜ì´ì§€ë¡œ ì´ë™.
 	}
 
 
 	/*
-	 *   ¼­¹ö¿¡ »ı¼ºÇÑ QR ¾ÆÀÌµğ¸¦ µî·Ï.(¼­¹ö¿¡ µî·ÏµÇ¾îÀÖÁö ¾ÊÀº°æ¿ì È£Ãâ)
+	 *   ì„œë²„ì— ìƒì„±í•œ QR ì•„ì´ë””ë¥¼ ë“±ë¡.(ì„œë²„ì— ë“±ë¡ë˜ì–´ìˆì§€ ì•Šì€ê²½ìš° í˜¸ì¶œ)
 	 *   
 	 */
 	//	public void saveQRtoServer_pre(){
@@ -639,7 +639,7 @@ public class ScanQRPageActivity extends Activity {
 
 	/**
 	 * saveQRtoServer
-	 *  qr À» ¼­¹ö¿¡ ÀúÀåÇÑ´Ù
+	 *  qr ì„ ì„œë²„ì— ì €ì¥í•œë‹¤
 	 *
 	 * @param
 	 * @param
@@ -653,7 +653,7 @@ public class ScanQRPageActivity extends Activity {
 		//		strDisplayCountry = systemLocale.getDisplayCountry();
 		strCountry = systemLocale.getCountry();
 		strLanguage = systemLocale.getLanguage();
-		// ¼­¹ö Åë½ÅºÎ
+		// ì„œë²„ í†µì‹ ë¶€
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -661,7 +661,7 @@ public class ScanQRPageActivity extends Activity {
 						try{
 							obj.put("checkMileageId", qrcode);			  
 							obj.put("password", "");				
-							obj.put("phoneNumber", phoneNumber);					// µû·Î ³Ö¾î¾ßÇÔ
+							obj.put("phoneNumber", phoneNumber);					// ë”°ë¡œ ë„£ì–´ì•¼í•¨
 							obj.put("email", "");			
 							obj.put("birthday", "");			
 							obj.put("gender", "");			
@@ -693,23 +693,23 @@ public class ScanQRPageActivity extends Activity {
 							os2.write(jsonString.getBytes("UTF-8"));
 							os2.flush();
 							System.out.println("postUrl      : " + postUrl2);
-							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : Á¤»ó
+							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : ì •ìƒ
 							int responseCode = connection2.getResponseCode();
 							if(responseCode==200||responseCode==204){
 								InputStream in =  connection2.getInputStream();
 								Log.d(TAG, "register user S");
 								//								connection2.disconnect();
 								//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-								//								if(CommonUtils.usingNetwork < 0){	// 0 º¸´Ù ÀÛÁö´Â ¾Ê°Ô
+								//								if(CommonUtils.usingNetwork < 0){	// 0 ë³´ë‹¤ ì‘ì§€ëŠ” ì•Šê²Œ
 								//									CommonUtils.usingNetwork = 0;
 								//								}
-								goNextPage();				// ´ÙÀ½ ÆäÀÌÁö·Î ÀÌµ¿ 
+								goNextPage();				// ë‹¤ìŒ í˜ì´ì§€ë¡œ ì´ë™ 
 							}else{
 								Log.e(TAG, "register user F");
 								//								connection2.disconnect();
 								showErrMSG();
 								//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-								//								if(CommonUtils.usingNetwork < 0){	// 0 º¸´Ù ÀÛÁö´Â ¾Ê°Ô
+								//								if(CommonUtils.usingNetwork < 0){	// 0 ë³´ë‹¤ ì‘ì§€ëŠ” ì•Šê²Œ
 								//									CommonUtils.usingNetwork = 0;
 								//								}
 								Intent backToNoQRIntent = new Intent(ScanQRPageActivity.this, No_QR_PageActivity.class);
@@ -718,7 +718,7 @@ public class ScanQRPageActivity extends Activity {
 							}
 						}catch(Exception e){ 
 							//							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-							//							if(CommonUtils.usingNetwork < 0){	// 0 º¸´Ù ÀÛÁö´Â ¾Ê°Ô
+							//							if(CommonUtils.usingNetwork < 0){	// 0 ë³´ë‹¤ ì‘ì§€ëŠ” ì•Šê²Œ
 							//								CommonUtils.usingNetwork = 0;
 							//							}
 							//							connection2.disconnect();
@@ -733,20 +733,20 @@ public class ScanQRPageActivity extends Activity {
 		).start();
 	}
 
-	// Çö½Ã°¢
+	// í˜„ì‹œê°
 	/**
 	 * getNow
-	 *  Çö½Ã°¢À» ±¸ÇÑ´Ù
+	 *  í˜„ì‹œê°ì„ êµ¬í•œë‹¤
 	 *
 	 * @param
 	 * @param
 	 * @return nowTime
 	 */
 	public String getNow(){
-		// ÀÏ´Ü ¿À´Ã.
+		// ì¼ë‹¨ ì˜¤ëŠ˜.
 		c = Calendar.getInstance();
 		todayYear = c.get(Calendar.YEAR);
-		todayMonth = c.get(Calendar.MONTH)+1;			// ²¨³»¸é 0ºÎÅÍ ½ÃÀÛÀÌ´Ï±î +1 ÇØÁØ´Ù.
+		todayMonth = c.get(Calendar.MONTH)+1;			// êº¼ë‚´ë©´ 0ë¶€í„° ì‹œì‘ì´ë‹ˆê¹Œ +1 í•´ì¤€ë‹¤.
 		todayDay = c.get(Calendar.DATE);
 		todayHour = c.get(Calendar.HOUR_OF_DAY);
 		todayMinute = c.get(Calendar.MINUTE);

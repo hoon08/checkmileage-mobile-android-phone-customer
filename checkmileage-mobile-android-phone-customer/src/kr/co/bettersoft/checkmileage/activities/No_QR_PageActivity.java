@@ -2,7 +2,7 @@ package kr.co.bettersoft.checkmileage.activities;
 /**
  * No_QR_PageActivity
  * 
- *  QR ¾øÀ» °æ¿ì QR Ãß°¡ ÆäÀÌÁö. -> QR È¹µæ ¹æ¹ı ¼±ÅÃ. 1.QR»ı¼º. 2.QR½ºÄË
+ *  QR ì—†ì„ ê²½ìš° QR ì¶”ê°€ í˜ì´ì§€. -> QR íšë“ ë°©ë²• ì„ íƒ. 1.QRìƒì„±. 2.QRìŠ¤ì¼„
  */
 import kr.co.bettersoft.checkmileage.activities.R;
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
@@ -35,16 +35,16 @@ public class No_QR_PageActivity extends Activity {
 		Intent rIntent = getIntent();
 		phoneNumber = rIntent.getStringExtra("phoneNumber");
 
-		//        button1.setText("»õ·Î¿î QR ÄÚµå¸¦ »ı¼ºÇÏ½Ã·Á¸é ¿©±â¸¦ Å¬¸¯ÇÏ½Ê½Ã¿À.");
-		//        button2.setText("°¡¸ÍÁ¡¿¡¼­ ¹ŞÀº QR Ä«µå¸¦ µî·ÏÇÏ½Ã·Á¸é ¿©±â¸¦ Å¬¸¯ÇÏ½Ê½Ã¿À.");
+		//        button1.setText("ìƒˆë¡œìš´ QR ì½”ë“œë¥¼ ìƒì„±í•˜ì‹œë ¤ë©´ ì—¬ê¸°ë¥¼ í´ë¦­í•˜ì‹­ì‹œì˜¤.");
+		//        button2.setText("ê°€ë§¹ì ì—ì„œ ë°›ì€ QR ì¹´ë“œë¥¼ ë“±ë¡í•˜ì‹œë ¤ë©´ ì—¬ê¸°ë¥¼ í´ë¦­í•˜ì‹­ì‹œì˜¤.");
 		//        button1.setText(R.string.no_qr_create);
 		//        button2.setText(R.string.no_qr_scan);
 		// TODO Auto-generated method stub
 
-		// QR »ı¼º ¹öÆ° Å¬¸¯½Ã.
+		// QR ìƒì„± ë²„íŠ¼ í´ë¦­ì‹œ.
 		button1.setOnClickListener(new OnClickListener() {
 			public void onClick(View V){
-				/* ¹öÆ°ÀÌ ´­·ÈÀ» ¶§ ½ÇÇàµÉ ÄÚµåÀÔ´Ï´Ù. */
+				/* ë²„íŠ¼ì´ ëˆŒë ¸ì„ ë•Œ ì‹¤í–‰ë  ì½”ë“œì…ë‹ˆë‹¤. */
 				Log.i("No_QR_PageActivity", "go Create QR");
 				Intent intent = new Intent(No_QR_PageActivity.this, CreateQRPageActivity.class);
 				intent.putExtra("phoneNumber", phoneNumber);
@@ -55,10 +55,10 @@ public class No_QR_PageActivity extends Activity {
 			}
 		});
 
-		// QR ½ºÄË ¹öÆ° Å¬¸¯½Ã.
+		// QR ìŠ¤ì¼„ ë²„íŠ¼ í´ë¦­ì‹œ.
 		button2.setOnClickListener(new OnClickListener() {
 			public void onClick(View V){
-				/* ¹öÆ°ÀÌ ´­·ÈÀ» ¶§ ½ÇÇàµÉ ÄÚµåÀÔ´Ï´Ù. */
+				/* ë²„íŠ¼ì´ ëˆŒë ¸ì„ ë•Œ ì‹¤í–‰ë  ì½”ë“œì…ë‹ˆë‹¤. */
 				Log.i("No_QR_PageActivity", "go Scan QR");
 				Intent intent = new Intent(No_QR_PageActivity.this, ScanQRPageActivity.class);
 				intent.putExtra("phoneNumber", phoneNumber);
@@ -72,7 +72,7 @@ public class No_QR_PageActivity extends Activity {
 
 	/**
 	 * onActivityResult
-	 *  QR ½ºÄË °á°ú¸¦ ¹Ş¾Æ Ã³¸®ÇÑ´Ù
+	 *  QR ìŠ¤ì¼„ ê²°ê³¼ë¥¼ ë°›ì•„ ì²˜ë¦¬í•œë‹¤
 	 *
 	 * @param requestCode
 	 * @param resultCode
@@ -84,13 +84,13 @@ public class No_QR_PageActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 		Log.i("No_QR_PageActivity", "recieve sign kill");
-		// ÀÚ½Ä ÀÎÅÙÆ®. createQR, ScanQR ·ÎºÎÅÍ Á¾·á »çÀÎÀ» ¹ŞÀ½.
+		// ìì‹ ì¸í…íŠ¸. createQR, ScanQR ë¡œë¶€í„° ì¢…ë£Œ ì‚¬ì¸ì„ ë°›ìŒ.
 		if(requestCode == 111){
 			if(resultCode == RESULT_OK){
 				Log.i("No_QR_PageActivity", "No_QR_PageActivity activity off");
 				button1.setEnabled(false);
 				button2.setEnabled(false);
-				finish();		// Á¾·áÇÔ.
+				finish();		// ì¢…ë£Œí•¨.
 			}
 		}
 	}
@@ -98,13 +98,13 @@ public class No_QR_PageActivity extends Activity {
 
 	@Override
 	public void onBackPressed() {
-		// ¿©±â¼­ Á¾·á½ÃÅ³¶§´Â ´ÙÀ½¿¡ Àß µ¿ÀÛÇÏµµ·Ï Ä«¿îÆÃÀ» Á¶ÀıÇØ¾ßÇÑ´Ù.
+		// ì—¬ê¸°ì„œ ì¢…ë£Œì‹œí‚¬ë•ŒëŠ” ë‹¤ìŒì— ì˜ ë™ì‘í•˜ë„ë¡ ì¹´ìš´íŒ…ì„ ì¡°ì ˆí•´ì•¼í•œë‹¤.
 		DummyActivity.count = 0;
 		finish();
 	}
 	
 	@Override
-	protected void onResume() {		// Ä«¸Ş¶ó ½ºÄËÇÏ´Ù ¸»°í ¿Ô°Å³ª µîÀÇ ÀÌÀ¯·Î µ¹¾Æ¿ÔÀ»¶§ ±â´É »ç¿ë °¡´ÉÇÏµµ·Ï ÇÔ
+	protected void onResume() {		// ì¹´ë©”ë¼ ìŠ¤ì¼„í•˜ë‹¤ ë§ê³  ì™”ê±°ë‚˜ ë“±ì˜ ì´ìœ ë¡œ ëŒì•„ì™”ì„ë•Œ ê¸°ëŠ¥ ì‚¬ìš© ê°€ëŠ¥í•˜ë„ë¡ í•¨
 		super.onResume();
 		button1.setEnabled(true);
 		button2.setEnabled(true);
