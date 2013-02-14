@@ -185,7 +185,7 @@ public class MemberStoreInfoPage extends Activity {
 						callBtn.setVisibility(View.VISIBLE);  // 	VISIBLE = 0;  INVISIBLE = 4;  GONE = 8;
 					}
 					if(latatude.length()>3&&longitude.length()>3){
-						mapBtn.setVisibility(View.VISIBLE);  // 	VISIBLE = 0;  INVISIBLE = 4;  GONE = 8;
+//						mapBtn.setVisibility(View.VISIBLE);  // 	VISIBLE = 0;  INVISIBLE = 4;  GONE = 8;
 					}
 
 					//					logListBtn.setVisibility(View.VISIBLE);			// 사용하려면 이줄 주석 풀어서 사용

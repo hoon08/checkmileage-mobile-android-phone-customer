@@ -119,7 +119,9 @@
                         android:background="@drawable/design_btn_map"
                         android:gravity="center"
                         android:text=""
-                        android:textSize="10dp" />
+                        android:textSize="10dp" 
+                        android:visibility="gone"
+                        />
 
                 </LinearLayout>
 

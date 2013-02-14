@@ -45,8 +45,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationManager;
+//import android.location.Location;
+//import android.location.LocationManager;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -73,8 +73,8 @@ public class MyQRPageActivity extends Activity {
 	MainActivity mainActivity = (MainActivity)MainActivity.mainActivity;
 
 	// 내 좌표 업뎃용
-	int myLat = 0;
-	int myLon = 0;
+//	int myLat = 0;
+//	int myLon = 0;
 
 	// QR 관련
 	static Bitmap savedBMP = null;				// db 저장된 이미지 (전달받음)
@@ -343,43 +343,43 @@ public class MyQRPageActivity extends Activity {
 	 * @param
 	 * @return
 	 */
-	public void myLocationIs(){
-		try{
-			LocationManager  lm;
-			Location location;
-			String provider;
-			String bestProvider;
-			lm=(LocationManager)getSystemService(Context.LOCATION_SERVICE);
-			provider = LocationManager.GPS_PROVIDER;
-			Criteria criteria = new Criteria();
-			criteria.setAccuracy(Criteria.ACCURACY_COARSE); // 정확도
-			criteria.setPowerRequirement(Criteria.POWER_LOW); // 전원 소비량
-			criteria.setAltitudeRequired(false); // 고도
-			criteria.setBearingRequired(false); // ..
-			criteria.setSpeedRequired(false); // 속도
-			criteria.setCostAllowed(true); // 금전적 비용
-			bestProvider = lm.getBestProvider(criteria, true);
-			location =  lm.getLastKnownLocation(bestProvider);
-			if(location!=null){
-				myLat = (int) (location.getLatitude()*1000000);				// 현위치의 좌표 획득
-				myLon = (int) (location.getLongitude()*1000000);	
-				Log.d(TAG, "runOnFirstFix// location1:"+myLat+", "+myLon);			// 37529466 126921069
-				new backgroundUpdateLocationToServer().execute();	// 비동기로 서버에 위치 업뎃		
-			}else{
-				location =  lm.getLastKnownLocation(provider);
-				if(location==null){
-					Log.d(TAG,"location = null");	
-				}else{
-					myLat = (int) (location.getLatitude()*1000000);				// 현위치의 좌표 획득
-					myLon = (int) (location.getLongitude()*1000000);	
-					Log.d("runOnFirstFix", "location2:"+myLat+", "+myLon);			
-					new backgroundUpdateLocationToServer().execute();	// 비동기로 전환	
-				}
-			}
-		}catch(Exception e){
-			Log.w(TAG,"fail to update my location to server");
-		}
-	}
+//	public void myLocationIs(){
+//		try{
+//			LocationManager  lm;
+//			Location location;
+//			String provider;
+//			String bestProvider;
+//			lm=(LocationManager)getSystemService(Context.LOCATION_SERVICE);
+//			provider = LocationManager.GPS_PROVIDER;
+//			Criteria criteria = new Criteria();
+//			criteria.setAccuracy(Criteria.ACCURACY_COARSE); // 정확도
+//			criteria.setPowerRequirement(Criteria.POWER_LOW); // 전원 소비량
+//			criteria.setAltitudeRequired(false); // 고도
+//			criteria.setBearingRequired(false); // ..
+//			criteria.setSpeedRequired(false); // 속도
+//			criteria.setCostAllowed(true); // 금전적 비용
+//			bestProvider = lm.getBestProvider(criteria, true);
+//			location =  lm.getLastKnownLocation(bestProvider);
+//			if(location!=null){
+//				myLat = (int) (location.getLatitude()*1000000);				// 현위치의 좌표 획득
+//				myLon = (int) (location.getLongitude()*1000000);	
+//				Log.d(TAG, "runOnFirstFix// location1:"+myLat+", "+myLon);			// 37529466 126921069
+//				new backgroundUpdateLocationToServer().execute();	// 비동기로 서버에 위치 업뎃		
+//			}else{
+//				location =  lm.getLastKnownLocation(provider);
+//				if(location==null){
+//					Log.d(TAG,"location = null");	
+//				}else{
+//					myLat = (int) (location.getLatitude()*1000000);				// 현위치의 좌표 획득
+//					myLon = (int) (location.getLongitude()*1000000);	
+//					Log.d("runOnFirstFix", "location2:"+myLat+", "+myLon);			
+//					new backgroundUpdateLocationToServer().execute();	// 비동기로 전환	
+//				}
+//			}
+//		}catch(Exception e){
+//			Log.w(TAG,"fail to update my location to server");
+//		}
+//	}
 
 
 
@@ -393,18 +393,18 @@ public class MyQRPageActivity extends Activity {
 	 * @param
 	 * @return
 	 */
-	public class backgroundUpdateLocationToServer extends  AsyncTask<Void, Void, Void> { 
-		@Override protected void onPostExecute(Void result) {  
-		} 
-		@Override protected void onPreExecute() {  
-		} 
-		@Override protected Void doInBackground(Void... params) {  
-			Log.d(TAG,"backgroundUpdateMyLocationtoServer");
-			//        		updateLocationToServer_pre();
-			updateLocationToServer();
-			return null; 
-		}
-	}
+//	public class backgroundUpdateLocationToServer extends  AsyncTask<Void, Void, Void> { 
+//		@Override protected void onPostExecute(Void result) {  
+//		} 
+//		@Override protected void onPreExecute() {  
+//		} 
+//		@Override protected Void doInBackground(Void... params) {  
+//			Log.d(TAG,"backgroundUpdateMyLocationtoServer");
+//			//        		updateLocationToServer_pre();
+//			updateLocationToServer();
+//			return null; 
+//		}
+//	}
 
 	/*
 	 * 사용자의 위치 정보를 수정 한다.
@@ -440,79 +440,79 @@ public class MyQRPageActivity extends Activity {
 	 * @param
 	 * @return
 	 */
-	public void updateLocationToServer(){
-		if(isUpdating==0){
-			isUpdating = 1;
-			Log.i(TAG, "updateLocationToServer");
-			controllerName = "checkMileageMemberController";
-			methodName = "updateMemberLocation";
-			final String myLat2 = Integer.toString(myLat);
-			final String myLon2 = Integer.toString(myLon);
-			//			Log.e(TAG,todays+"//"+myLat+"//"+myLon);
-			new Thread(
-					new Runnable(){
-						public void run(){
-							JSONObject obj = new JSONObject();
-							try{
-								// 자신의 아이디를 넣어서 조회
-								//								Log.d(TAG,"checkMileageId::"+qrCode);
-								//								Log.d(TAG,"latitude::"+myLat);
-								//								Log.d(TAG,"longitude::"+myLon);
-								//								Log.d(TAG,"activateYn::"+"Y");
-								//								Log.d(TAG,"modifyDate::"+todays);
-								obj.put("checkMileageId", qrCode);
-								obj.put("latitude", myLat2);
-								obj.put("longitude", myLon2);
-								obj.put("activateYn", "Y");
-
-								String nowTime = getNow();
-
-								obj.put("modifyDate", nowTime);
-							}catch(Exception e){
-								e.printStackTrace();
-							}
-							String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
-							try{
-								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
-								connection2 = (HttpURLConnection) postUrl2.openConnection();
-								connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
-								connection2.setDoOutput(true);
-								connection2.setInstanceFollowRedirects(false);
-								connection2.setRequestMethod("POST");
-								connection2.setRequestProperty("Content-Type", "application/json");
-								//								connection2.connect();
-								Thread.sleep(200);
-								OutputStream os2 = connection2.getOutputStream();
-								os2.write(jsonString.getBytes("UTF-8"));
-								os2.flush();
-								Thread.sleep(200);
-								//								System.out.println("postUrl      : " + postUrl2);
-								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
-								responseCode = connection2.getResponseCode();
-								//								InputStream in =  connection2.getInputStream();
-								//								os2.close();
-								// 조회한 결과를 처리.
-								if(responseCode==200 || responseCode==204){
-									//									Log.d(TAG,"S");
-								}
-								//								connection2.disconnect();
-							}catch(Exception e){ 
-								//								connection2.disconnect();
-								Log.d(TAG,"updateLocationToServer->fail");
-							}finally{
-								isUpdating = 0;
-								//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-								//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-								//									CommonUtils.usingNetwork = 0;
-								//								}
-							}
-						}
-					}
-			).start();
-		}else{
-			Log.w(TAG,"already updating..");
-		}
-	}
+//	public void updateLocationToServer(){
+//		if(isUpdating==0){
+//			isUpdating = 1;
+//			Log.i(TAG, "updateLocationToServer");
+//			controllerName = "checkMileageMemberController";
+//			methodName = "updateMemberLocation";
+//			final String myLat2 = Integer.toString(myLat);
+//			final String myLon2 = Integer.toString(myLon);
+//			//			Log.e(TAG,todays+"//"+myLat+"//"+myLon);
+//			new Thread(
+//					new Runnable(){
+//						public void run(){
+//							JSONObject obj = new JSONObject();
+//							try{
+//								// 자신의 아이디를 넣어서 조회
+//								//								Log.d(TAG,"checkMileageId::"+qrCode);
+//								//								Log.d(TAG,"latitude::"+myLat);
+//								//								Log.d(TAG,"longitude::"+myLon);
+//								//								Log.d(TAG,"activateYn::"+"Y");
+//								//								Log.d(TAG,"modifyDate::"+todays);
+//								obj.put("checkMileageId", qrCode);
+//								obj.put("latitude", myLat2);
+//								obj.put("longitude", myLon2);
+//								obj.put("activateYn", "Y");
+//
+//								String nowTime = getNow();
+//
+//								obj.put("modifyDate", nowTime);
+//							}catch(Exception e){
+//								e.printStackTrace();
+//							}
+//							String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
+//							try{
+//								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+//								connection2 = (HttpURLConnection) postUrl2.openConnection();
+//								connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
+//								connection2.setDoOutput(true);
+//								connection2.setInstanceFollowRedirects(false);
+//								connection2.setRequestMethod("POST");
+//								connection2.setRequestProperty("Content-Type", "application/json");
+//								//								connection2.connect();
+//								Thread.sleep(200);
+//								OutputStream os2 = connection2.getOutputStream();
+//								os2.write(jsonString.getBytes("UTF-8"));
+//								os2.flush();
+//								Thread.sleep(200);
+//								//								System.out.println("postUrl      : " + postUrl2);
+//								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+//								responseCode = connection2.getResponseCode();
+//								//								InputStream in =  connection2.getInputStream();
+//								//								os2.close();
+//								// 조회한 결과를 처리.
+//								if(responseCode==200 || responseCode==204){
+//									//									Log.d(TAG,"S");
+//								}
+//								//								connection2.disconnect();
+//							}catch(Exception e){ 
+//								//								connection2.disconnect();
+//								Log.d(TAG,"updateLocationToServer->fail");
+//							}finally{
+//								isUpdating = 0;
+//								//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+//								//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+//								//									CommonUtils.usingNetwork = 0;
+//								//								}
+//							}
+//						}
+//					}
+//			).start();
+//		}else{
+//			Log.w(TAG,"already updating..");
+//		}
+//	}
 
 	// 업뎃 시각
 	/**
