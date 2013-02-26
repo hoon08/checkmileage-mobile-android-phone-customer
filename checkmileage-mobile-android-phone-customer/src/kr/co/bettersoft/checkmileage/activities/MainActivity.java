@@ -292,15 +292,11 @@ public class MainActivity extends Activity {
 		agreeBtn.setOnClickListener(new Button.OnClickListener()  {
 			public void onClick(View v)  {
 				// 테스트를 위해 주석 처리/ 나중에 주석 해제 *** 
-//				SharedPreferences.Editor updateDone =   sharedPrefCustom.edit();
-//				updateDone.putString("agreedYN", "Y");
-//				updateDone.commit();
+				SharedPreferences.Editor updateDone =   sharedPrefCustom.edit();
+				updateDone.putString("agreedYN", "Y");
+				updateDone.commit();
 				Log.i(TAG,"user agree terms");
-				
-				// 레이아웃 채로 숨긴다.
-//				agreeBtn.setVisibility(View.VISIBLE);
-//				disagreeBtn.setVisibility(View.VISIBLE);
-				
+				mainLayout2.setVisibility(View.GONE); 
 				// 다음 단계 진행
 				checkUserAgreeProcess2();
 			}
@@ -338,8 +334,6 @@ public class MainActivity extends Activity {
 	// 2차 단계(추가 진행 시 호출)
 	public void checkUserAgreeProcess2(){
 		// prefs 를 읽어서 비번 입력 창을 띄울지 여부를 결정한다.. 여기가 첫 페이지니까 여기서 한다.. 
-		//        Toast.makeText(MainActivity.this, "::"+sharedPrefCustom.getBoolean("appLocked", false), Toast.LENGTH_SHORT).show();	
-		//        Toast.makeText(MainActivity.this, "::"+sharedPrefCustom.getString("password", ""), Toast.LENGTH_SHORT).show();	
 		Boolean locked = sharedPrefCustom.getBoolean("appLocked", false);
 		// 잠금 설정 상태
 		if(locked&&(!loginYN)){
@@ -376,7 +370,6 @@ public class MainActivity extends Activity {
 		Log.d(TAG,"getUserAgree");
 		
 		// ***  레이아웃 채로 보여줘야한다.. 레이아웃 보여주도록 처리할 것. *** 
-		// mainLayout2.setVisibility(View.GONE); 
 		mainLayout2.setVisibility(View.VISIBLE);
 //		agreeBtn.setVisibility(View.VISIBLE);
 //		disagreeBtn.setVisibility(View.VISIBLE);
