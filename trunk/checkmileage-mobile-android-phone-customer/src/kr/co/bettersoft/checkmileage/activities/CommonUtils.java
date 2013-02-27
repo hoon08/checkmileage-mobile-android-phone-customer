@@ -35,7 +35,7 @@ public class CommonUtils extends Activity {
 	static String imgthumbDomain = "http://www.mcarrot.net/upload/thumb/"; 	
 	static String imgPushDomain = "http://www.mcarrot.net/upload/pushThumb/"; 	
 
-	static String userAgreeURL = "http://www.mcarrot.net/mTerms.do";		// 시작시 동의 받는 페이지.
+	static String userAgreeURL = "http://mcarrot.net/mPrivacy.do";		// 시작시 동의 받는 페이지
 
 	public static String serverNames = "checkmileage.mcarrot.net";
 
