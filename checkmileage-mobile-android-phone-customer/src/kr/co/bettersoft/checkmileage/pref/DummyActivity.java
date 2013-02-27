@@ -54,7 +54,7 @@ public class DummyActivity extends Activity {
 			Log.d(TAG, "NORMAL");		// 없으면 기본
 			RunMode = "NORMAL";
 		}
-
+		count = 0;		// 버그 수정용 초기화
 		// 결과는 true 가 나온다.
 		isRunningProcess(this, CommonUtils.packageNames);		// 실행중인지 확인.
 		if(count==1){		// 최초 실행.(나밖에없음)	

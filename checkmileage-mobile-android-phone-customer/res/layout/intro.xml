@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/design_intro" >
 
-    <!-- home 2. save mileage -->
+    <!-- main. agree the terms -->
 
     <LinearLayout
         android:id="@+id/main_layout2"
@@ -65,8 +65,8 @@
             android:layout_weight="50"
             android:layout_margin="5dp"
             android:gravity="center"
-            android:text="Agree"
-            android:textSize="20dp" />
+            android:text="@string/agree"
+            android:textSize="15dp" />
 
         <Button
             android:id="@+id/disagreeBtn"
@@ -75,8 +75,8 @@
             android:layout_weight="50"
             android:layout_margin="5dp"
             android:gravity="center"
-            android:text="Disagree"
-            android:textSize="20dp" />
+            android:text="@string/disagree"
+            android:textSize="15dp" />
     </LinearLayout>
 
     </LinearLayout>

@@ -124,4 +124,7 @@
     <string name="pm">午後</string>
     <string name="hour">市</string>
     <string name="minute">分</string>
+    
+    <string name="agree">同意します</string>
+    <string name="disagree">同意しません</string>
 </resources>

@@ -125,4 +125,7 @@
     <string name="pm">PM</string>
     <string name="hour">hour</string>
     <string name="minute">minute</string>
+    
+    <string name="agree">I agree</string>
+    <string name="disagree">I do not agree</string>
 </resources>

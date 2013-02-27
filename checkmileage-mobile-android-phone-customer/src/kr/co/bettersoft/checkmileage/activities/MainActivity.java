@@ -392,14 +392,24 @@ public class MainActivity extends Activity {
 	}
 
 	/** 웹뷰 관련 기능 **/
-		@Override 
-		public boolean onKeyDown(int keyCode, KeyEvent event) { 			// 취소버튼 누르면 웹뷰의 백버튼 -->  사용 안함. 그냥 종료
-//			if ((keyCode == KeyEvent.KEYCODE_BACK) && mWeb.canGoBack()) { 
-//				mWeb.goBack(); 
-//				return true; 
-//			} 
-			return super.onKeyDown(keyCode, event); 
-		}
+    @Override
+    public boolean onKeyDown( int keyCode, KeyEvent event) {                    // 취소버튼 누르면 웹뷰의 백버튼 -->  사용 안함. 그냥 종료
+          if ((keyCode == KeyEvent. KEYCODE_BACK)){
+                if ( mWeb .canGoBack()) {
+                      mWeb .goBack();
+                      return true ;
+               } else {
+            	   if(DummyActivity.count>1){
+            		   DummyActivity.count = DummyActivity.count-1;
+            		   dummyActivity.finish();	// 더미도 종료
+            	   }
+                  finish();
+                  return super .onKeyDown(keyCode, event);
+               }
+         }
+          return super .onKeyDown(keyCode, event);
+   }
+
 		/**
 		 * MyWebViewClient
 		 * 페이지 로드, 완료 이벤트발생 가능한 웹뷰 클라이언트
