@@ -28,7 +28,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import kr.co.bettersoft.checkmileage.activities.R;
-import kr.co.bettersoft.checkmileage.pref.ApplicationClass;
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
 import kr.co.bettersoft.checkmileage.utils.AES256Cipher;
 
@@ -96,12 +95,6 @@ public class MyQRPageActivity extends Activity {
 	// 설정 파일 저장소  - 사용자 전번 읽기 / 쓰기 용도	
 	SharedPreferences sharedPrefCustom;
 	/////////////////////////////////////////////////////////////////////////////
-
-	
-
-	// 외부 클래스 메서드 호출 테스트 용 *** --> 실패함.
-	private ApplicationClass applicationClass;
-
 
 	
 	// QR 관련					////////////////////////////////////////////////
