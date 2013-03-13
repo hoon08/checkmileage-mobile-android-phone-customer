@@ -67,19 +67,18 @@ public class MainActivity extends Activity {
 
 ///////////////////////   user agree   ////////////////////////	
 	
-	View mainLayout2;			// *** 
+//	View mainLayout2;			// *** 
 	
-	WebView mWeb;
-	String loadingURL = "";
-	//SharedPreferences sharedPrefCustom;		// 공용 프립스		
+//	WebView mWeb;				 // *** 기능 뺌
+//	String loadingURL = "";		//  *** 기능 뺌
 	
 	String controllerName = "";
 	String methodName = "";
 	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
 	
-	// 버튼 2개 대신. --> 체크박스로 동의 여부 선택하고, 확인버튼 1개로 가는것이 나을 것 같다.
-	Button agreeBtn;
-	Button disagreeBtn;
+//	// 버튼 2개 대신. --> 체크박스로 동의 여부 선택하고, 확인버튼 1개로 가는것이 나을 것 같다. *** 
+//	Button agreeBtn;
+//	Button disagreeBtn;
 	
 	// 로케일
 	Locale systemLocale = null;
@@ -98,19 +97,19 @@ public class MainActivity extends Activity {
 		public void handleMessage(Message msg){
 			try{
 				Bundle b = msg.getData();		
-				if(b.getInt("order")==1){
-					// 프로그래스바 실행
-					if(pb1==null){
-						pb1=(ProgressBar) findViewById(R.id.user_agree_progressbar1);
-					}
-					pb1.setVisibility(View.VISIBLE);
-				}else if(b.getInt("order")==2){
-					// 프로그래스바  종료
-					if(pb1==null){
-						pb1=(ProgressBar) findViewById(R.id.user_agree_progressbar1);
-					}
-					pb1.setVisibility(View.INVISIBLE);
-				}
+//				if(b.getInt("order")==1){
+//					// 프로그래스바 실행
+//					if(pb1==null){
+//						pb1=(ProgressBar) findViewById(R.id.user_agree_progressbar1);
+//					}
+//					pb1.setVisibility(View.VISIBLE);
+//				}else if(b.getInt("order")==2){
+//					// 프로그래스바  종료
+//					if(pb1==null){
+//						pb1=(ProgressBar) findViewById(R.id.user_agree_progressbar1);
+//					}
+//					pb1.setVisibility(View.INVISIBLE);
+//				}
 				if(b.getInt("showErrToast")==1){
 					Toast.makeText(MainActivity.this, getString(R.string.error_message), Toast.LENGTH_SHORT).show();
 					// 페이지를 불러오는데 실패했습니다.\n잠시후 다시 시도해주시기 바랍니다.	
@@ -246,9 +245,9 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.intro);
 		
-		agreeBtn = (Button)findViewById(R.id.agreeBtn);
-		disagreeBtn = (Button)findViewById(R.id.disagreeBtn);
-		mainLayout2 = findViewById(R.id.main_layout2); 
+//		agreeBtn = (Button)findViewById(R.id.agreeBtn);
+//		disagreeBtn = (Button)findViewById(R.id.disagreeBtn);
+//		mainLayout2 = findViewById(R.id.main_layout2); 
 		
 		Intent receiveIntent = getIntent();						// 푸쉬 로 인한 실행에 대한 조치.
 		RunMode = receiveIntent.getStringExtra("RunMode");		
@@ -269,69 +268,70 @@ public class MainActivity extends Activity {
 		// prefs 	 
 		//sharedPrefCustom.registerOnSharedPreferenceChangeListener(this);			// 여기에도 등록해놔야 리시버가 제대로 반응한다.
 		
-		loadingURL = CommonUtils.userAgreeURL;			// URL 정보
-		mWeb = (WebView)findViewById(R.id.user_agree_web);
+//		loadingURL = CommonUtils.userAgreeURL;			// URL 정보 *** 기능 뺌
+//		mWeb = (WebView)findViewById(R.id.user_agree_web);	//  *** 기능 뺌
 
 		//사용자 지역, 언어 - 웹뷰 호출시 전달해야 함
 		systemLocale = getResources().getConfiguration().locale;
 		strCountry = systemLocale.getCountry();
 		strLanguage = systemLocale.getLanguage();
 
-		// 이미지 확대/축소/스크롤 금지.
-		//		mWeb.getSettings().setUseWideViewPort(true);		
-		mWeb.setWebViewClient(new MyWebViewClient());  // WebViewClient 지정          
-		mWeb.setWebChromeClient(new MyWebChromeClient());
-		WebSettings webSet = mWeb.getSettings();
-		// JavaScript 허용.
-		webSet.setJavaScriptEnabled(true);
-		// 확대/축소 금지. -> 허용으로 수정.  --> 금지
-		//		webSet.setSupportZoom(true);
-		//		webSet.setBuiltInZoomControls(true);
+//		// 이미지 확대/축소/스크롤 금지.		 *** 기능 뺌
+//		//		mWeb.getSettings().setUseWideViewPort(true);		
+//		mWeb.setWebViewClient(new MyWebViewClient());  // WebViewClient 지정          
+//		mWeb.setWebChromeClient(new MyWebChromeClient());
+//		WebSettings webSet = mWeb.getSettings();
+//		// JavaScript 허용.
+//		webSet.setJavaScriptEnabled(true);
+//		// 확대/축소 금지. -> 허용으로 수정.  --> 금지
+//		//		webSet.setSupportZoom(true);
+//		//		webSet.setBuiltInZoomControls(true);
 		
-		// 동의합니다.
-		agreeBtn.setOnClickListener(new Button.OnClickListener()  {
-			public void onClick(View v)  {
-				// 테스트를 위해 주석 처리/ 나중에 주석 해제 *** 
-				SharedPreferences.Editor updateDone =   sharedPrefCustom.edit();
-				updateDone.putString("agreedYN", "Y");
-				updateDone.commit();
-				Log.i(TAG,"user agree terms");
-				mainLayout2.setVisibility(View.GONE); 
-				// 다음 단계 진행
-				checkUserAgreeProcess2();
-			}
-		});
-		// 동의하지 않습니다.
-		disagreeBtn.setOnClickListener(new Button.OnClickListener()  {
-			public void onClick(View v)  {
-				// 앱을 종료한다.
-				finish();
-			}
-		});
+//		// 동의합니다.
+//		agreeBtn.setOnClickListener(new Button.OnClickListener()  {
+//			public void onClick(View v)  {
+//				// 테스트를 위해 주석 처리/ 나중에 주석 해제 *** 
+//				SharedPreferences.Editor updateDone =   sharedPrefCustom.edit();
+//				updateDone.putString("agreedYN", "Y");
+//				updateDone.commit();
+//				Log.i(TAG,"user agree terms");
+//				mainLayout2.setVisibility(View.GONE); 
+//				// 다음 단계 진행
+//				checkUserAgreeProcess2();
+//			}
+//		});
+//		// 동의하지 않습니다.
+//		disagreeBtn.setOnClickListener(new Button.OnClickListener()  {
+//			public void onClick(View v)  {
+//				// 앱을 종료한다.
+//				finish();
+//			}
+//		});
 		
-		//프리퍼런스를 뒤져서 동의 여부를 판별한다. 
-		checkUserAgreeProcess1();
+//		//프리퍼런스를 뒤져서 동의 여부를 판별한다.  --> 기능 뺌.
+//		checkUserAgreeProcess1();
+		checkUserAgreeProcess2();
 	}
 	
-	/* 	
-	 *  사전 단계
-	 *  프리퍼런스를 뒤져서 동의 여부를 판별한다. 
-	 *  동의했다면 다음 액티비티를 띄우고 자신은 종료한다.
-	 *  
-	 *  동의하지 않았다면 현재 페이지에서 동의를 받는다.
-	 *  
-	 *  현재 페이지에서 동의할 경우 프리퍼런스에 동의정보를 저장한다. 
-	 *  그 후에 다음 액티비티를 띄우고 자신은 종료한다.
-	 */
-	public void checkUserAgreeProcess1(){
-		if(checkUserAgreed()){	// 이전에 동의한 경우 : 다음 프로세스 진행.
-			Log.d(TAG,"next process");
-			checkUserAgreeProcess2();
-		}else{			// 이전에 동의 하지 않은 경우 : 동의를 받는다.
-			getUserAgree();
-		}
-	}
-	// 2차 단계(추가 진행 시 호출)
+//	/* 	
+//	 *  사전 단계	--> 기능 뺌.
+//	 *  프리퍼런스를 뒤져서 동의 여부를 판별한다. 
+//	 *  동의했다면 다음 액티비티를 띄우고 자신은 종료한다.
+//	 *  
+//	 *  동의하지 않았다면 현재 페이지에서 동의를 받는다.
+//	 *  
+//	 *  현재 페이지에서 동의할 경우 프리퍼런스에 동의정보를 저장한다. 
+//	 *  그 후에 다음 액티비티를 띄우고 자신은 종료한다.
+//	 */
+//	public void checkUserAgreeProcess1(){
+//		if(checkUserAgreed()){	// 이전에 동의한 경우 : 다음 프로세스 진행.
+//			Log.d(TAG,"next process");
+//			checkUserAgreeProcess2();
+//		}else{			// 이전에 동의 하지 않은 경우 : 동의를 받는다.
+//			getUserAgree();
+//		}
+//	}
+	// 2차 단계(추가 진행 시 호출) - -> 1단계 동의 기능 뺌. 바로 호출
 	public void checkUserAgreeProcess2(){
 		// prefs 를 읽어서 비번 입력 창을 띄울지 여부를 결정한다.. 여기가 첫 페이지니까 여기서 한다.. 
 		Boolean locked = sharedPrefCustom.getBoolean("appLocked", false);
@@ -354,213 +354,213 @@ public class MainActivity extends Activity {
 			nextProcessing();		// 다음 단계
 		}
 	}
-	// 이전에 동의한 적이 있는지 여부를 확인한다.
-	public Boolean checkUserAgreed(){
-		String agreedYN = sharedPrefCustom.getString("agreedYN", "N");		// 동의 했는지 여부
-		if(agreedYN.equals("Y")){		// 이전에 동의한 경우
-			Log.d(TAG,"already agree");
-			return true;
-		}else{							// 이전에 동의 안한 경우
-			Log.d(TAG,"need agree");
-			return false;
-		}
-	}
-	// 사용자 동의를 받는다.
-	public void getUserAgree(){
-		Log.d(TAG,"getUserAgree");
-		
-		// ***  레이아웃 채로 보여줘야한다.. 레이아웃 보여주도록 처리할 것. *** 
-		mainLayout2.setVisibility(View.VISIBLE);
-//		agreeBtn.setVisibility(View.VISIBLE);
-//		disagreeBtn.setVisibility(View.VISIBLE);
-		
-		// 약관 불러오기.
-		if(loadingURL.length()>0){
-			////			postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// 파라미터 : Merchant-Language / Merchant-Country
-			////			mWeb.postUrl(loadingURL, EncodingUtils.getBytes(postData, "BASE64"));
-			//			mWeb.getSettings().setJavaScriptEnabled(true);
+//	// 이전에 동의한 적이 있는지 여부를 확인한다.
+//	public Boolean checkUserAgreed(){
+//		String agreedYN = sharedPrefCustom.getString("agreedYN", "N");		// 동의 했는지 여부
+//		if(agreedYN.equals("Y")){		// 이전에 동의한 경우
+//			Log.d(TAG,"already agree");
+//			return true;
+//		}else{							// 이전에 동의 안한 경우
+//			Log.d(TAG,"need agree");
+//			return false;
+//		}
+//	}
+//	// 사용자 동의를 받는다.
+//	public void getUserAgree(){
+//		Log.d(TAG,"getUserAgree");
+//		
+//		// ***  레이아웃 채로 보여줘야한다.. 레이아웃 보여주도록 처리할 것. *** 
+//		mainLayout2.setVisibility(View.VISIBLE);
+////		agreeBtn.setVisibility(View.VISIBLE);
+////		disagreeBtn.setVisibility(View.VISIBLE);
+//		
+//		// 약관 불러오기.
+//		if(loadingURL.length()>0){
+//			////			postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// 파라미터 : Merchant-Language / Merchant-Country
+//			////			mWeb.postUrl(loadingURL, EncodingUtils.getBytes(postData, "BASE64"));
+//			//			mWeb.getSettings().setJavaScriptEnabled(true);
+//
+//			//			new backgroundWebView().execute();		// 비동기로 URL 오픈 실행
+//			// 비동기 -> 바로 열도록 수정
+//			postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// 파라미터 : Merchant-Language / Merchant-Country
+//			mWeb.postUrl(loadingURL, EncodingUtils.getBytes(postData, "BASE64"));
+//			mWeb.getSettings().setJavaScriptEnabled(true);
+//			//			mWeb.loadUrl(loadingURL);		// url
+//		}else{
+//			Toast.makeText(MainActivity.this, R.string.cant_find_url, Toast.LENGTH_SHORT).show();
+//		}
+//	}
 
-			//			new backgroundWebView().execute();		// 비동기로 URL 오픈 실행
-			// 비동기 -> 바로 열도록 수정
-			postData = "Merchant-Language="+strLanguage+"&Merchant-Country="+strCountry;				// 파라미터 : Merchant-Language / Merchant-Country
-			mWeb.postUrl(loadingURL, EncodingUtils.getBytes(postData, "BASE64"));
-			mWeb.getSettings().setJavaScriptEnabled(true);
-			//			mWeb.loadUrl(loadingURL);		// url
-		}else{
-			Toast.makeText(MainActivity.this, R.string.cant_find_url, Toast.LENGTH_SHORT).show();
-		}
-	}
-
-	/** 웹뷰 관련 기능 **/
-    @Override
-    public boolean onKeyDown( int keyCode, KeyEvent event) {                    // 취소버튼 누르면 웹뷰의 백버튼 -->  사용 안함. 그냥 종료
-          if ((keyCode == KeyEvent. KEYCODE_BACK)){
-                if ( mWeb .canGoBack()) {
-                      mWeb .goBack();
-                      return true ;
-               } else {
-            	   if(DummyActivity.count>1){
-            		   DummyActivity.count = DummyActivity.count-1;
-            		   dummyActivity.finish();	// 더미도 종료
-            	   }
-                  finish();
-                  return super .onKeyDown(keyCode, event);
-               }
-         }
-          return super .onKeyDown(keyCode, event);
-   }
-
-		/**
-		 * MyWebViewClient
-		 * 페이지 로드, 완료 이벤트발생 가능한 웹뷰 클라이언트
-		 *
-		 */
-		private class MyWebViewClient extends WebViewClient {
-			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				view.loadUrl(url);
-				return true;
-			}
-			/**
-			 * onPageFinished
-			 * 로딩 끝나면 프로그래스바 숨기고 재로딩 가능하도록한다
-			 *
-			 * @param view
-			 * @param url
-			 * @return
-			 */
-			@Override
-			public void onPageFinished(WebView view, String url) {
-				super.onPageFinished(view, url);
-				hidePb();
-			}
-			/**
-			 * onPageStarted
-			 * 웹뷰 로딩 시작하면 시간 재서 로딩 안되면 멈추고 알린다.
-			 *
-			 * @param view
-			 * @param url
-			 * @param favicon
-			 * @return
-			 */
-			@Override
-			public void onPageStarted(WebView view, String url, Bitmap favicon) {
-				super.onPageStarted(view, url, favicon);
-				showPb();
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
-						try {		// 기다렸다가 체크해서 안끝났으면 중지
-							Thread.sleep(CommonUtils.serverConnectTimeOut);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						checkMyWebViewLoaded();
-					}
-				}).start();
-			}
-		}
-		public void checkMyWebViewLoaded(){
-			runOnUiThread(new Runnable(){
-				public void run(){
-					if(mWeb.getProgress()<100) {
-						// do what you want
-						mWeb.stopLoading();
-						hidePb();
-						showErrMsg();
-						finish();
-					}
-				}
-			});
-		}
-		/**
-		 * WebChromeClient 를 상속하는 클래스이다.
-		 * alert 이나 윈도우 닫기 등의 web 브라우저 이벤트를 구하기 위한 클래스이다.
-		 * @author johnkim
-		 */
-		private class MyWebChromeClient extends WebChromeClient {
-			//Javascript alert 호출 시 실행
-			@Override
-			public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
-				final JsResult finalRes = result;
-				//AlertDialog 생성
-				new AlertDialog.Builder(view.getContext())
-				.setMessage(message)
-				.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						finalRes.confirm(); 
-					}
-				})
-				.setCancelable(false)
-				.create()
-				.show();
-				return true;
-			}
-		}
-		// 중앙 프로그래스바 보임, 숨김
-		/**
-		 * showPb
-		 *  중앙 프로그래스바 가시화한다
-		 *
-		 * @param
-		 * @param
-		 * @return
-		 */
-		public void showPb(){
-			new Thread( 
-					new Runnable(){
-						public void run(){
-							Message message = handler .obtainMessage();
-							Bundle b = new Bundle();
-							b.putInt( "order" , 1);
-							message.setData(b);
-							handler .sendMessage(message);
-						}
-					}
-			).start();
-		}
-		/**
-		 * hidePb
-		 *  중앙 프로그래스바 비가시화한다
-		 *
-		 * @param
-		 * @param
-		 * @return
-		 */
-		public void hidePb(){
-			new Thread(
-					new Runnable(){
-						public void run(){
-							Message message = handler .obtainMessage();
-							Bundle b = new Bundle();
-							b.putInt( "order" , 2);
-							message.setData(b);
-							handler .sendMessage(message);
-						}
-					}
-			).start();
-		}
-
-		/**
-		 * showErrMsg
-		 *  화면에 error 토스트 띄운다
-		 *
-		 * @param
-		 * @param
-		 * @return
-		 */
-		public void showErrMsg(){			
-			new Thread(
-					new Runnable(){
-						public void run(){
-							Message message = handler.obtainMessage();				
-							Bundle b = new Bundle();
-							b.putInt("showErrToast", 1);
-							message.setData(b);
-							handler.sendMessage(message);
-						}
-					}
-			).start();
-		} 
+//	/** 웹뷰 관련 기능 **/
+//    @Override
+//    public boolean onKeyDown( int keyCode, KeyEvent event) {                    // 취소버튼 누르면 웹뷰의 백버튼 -->  사용 안함. 그냥 종료
+//          if ((keyCode == KeyEvent. KEYCODE_BACK)){
+//                if ( mWeb .canGoBack()) {
+//                      mWeb .goBack();
+//                      return true ;
+//               } else {
+//            	   if(DummyActivity.count>1){
+//            		   DummyActivity.count = DummyActivity.count-1;
+//            		   dummyActivity.finish();	// 더미도 종료
+//            	   }
+//                  finish();
+//                  return super .onKeyDown(keyCode, event);
+//               }
+//         }
+//          return super .onKeyDown(keyCode, event);
+//   }
+//
+//		/**
+//		 * MyWebViewClient
+//		 * 페이지 로드, 완료 이벤트발생 가능한 웹뷰 클라이언트
+//		 *
+//		 */
+//		private class MyWebViewClient extends WebViewClient {
+//			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+//				view.loadUrl(url);
+//				return true;
+//			}
+//			/**
+//			 * onPageFinished
+//			 * 로딩 끝나면 프로그래스바 숨기고 재로딩 가능하도록한다
+//			 *
+//			 * @param view
+//			 * @param url
+//			 * @return
+//			 */
+//			@Override
+//			public void onPageFinished(WebView view, String url) {
+//				super.onPageFinished(view, url);
+//				hidePb();
+//			}
+//			/**
+//			 * onPageStarted
+//			 * 웹뷰 로딩 시작하면 시간 재서 로딩 안되면 멈추고 알린다.
+//			 *
+//			 * @param view
+//			 * @param url
+//			 * @param favicon
+//			 * @return
+//			 */
+//			@Override
+//			public void onPageStarted(WebView view, String url, Bitmap favicon) {
+//				super.onPageStarted(view, url, favicon);
+//				showPb();
+//				new Thread(new Runnable() {
+//					@Override
+//					public void run() {
+//						try {		// 기다렸다가 체크해서 안끝났으면 중지
+//							Thread.sleep(CommonUtils.serverConnectTimeOut);
+//						} catch (InterruptedException e) {
+//							e.printStackTrace();
+//						}
+//						checkMyWebViewLoaded();
+//					}
+//				}).start();
+//			}
+//		}
+//		public void checkMyWebViewLoaded(){
+//			runOnUiThread(new Runnable(){
+//				public void run(){
+//					if(mWeb.getProgress()<100) {
+//						// do what you want
+//						mWeb.stopLoading();
+//						hidePb();
+//						showErrMsg();
+//						finish();
+//					}
+//				}
+//			});
+//		}
+//		/**
+//		 * WebChromeClient 를 상속하는 클래스이다.
+//		 * alert 이나 윈도우 닫기 등의 web 브라우저 이벤트를 구하기 위한 클래스이다.
+//		 * @author johnkim
+//		 */
+//		private class MyWebChromeClient extends WebChromeClient {
+//			//Javascript alert 호출 시 실행
+//			@Override
+//			public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+//				final JsResult finalRes = result;
+//				//AlertDialog 생성
+//				new AlertDialog.Builder(view.getContext())
+//				.setMessage(message)
+//				.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+//					public void onClick(DialogInterface dialog, int which) {
+//						finalRes.confirm(); 
+//					}
+//				})
+//				.setCancelable(false)
+//				.create()
+//				.show();
+//				return true;
+//			}
+//		}
+//		// 중앙 프로그래스바 보임, 숨김
+//		/**
+//		 * showPb
+//		 *  중앙 프로그래스바 가시화한다
+//		 *
+//		 * @param
+//		 * @param
+//		 * @return
+//		 */
+//		public void showPb(){
+//			new Thread( 
+//					new Runnable(){
+//						public void run(){
+//							Message message = handler .obtainMessage();
+//							Bundle b = new Bundle();
+//							b.putInt( "order" , 1);
+//							message.setData(b);
+//							handler .sendMessage(message);
+//						}
+//					}
+//			).start();
+//		}
+//		/**
+//		 * hidePb
+//		 *  중앙 프로그래스바 비가시화한다
+//		 *
+//		 * @param
+//		 * @param
+//		 * @return
+//		 */
+//		public void hidePb(){
+//			new Thread(
+//					new Runnable(){
+//						public void run(){
+//							Message message = handler .obtainMessage();
+//							Bundle b = new Bundle();
+//							b.putInt( "order" , 2);
+//							message.setData(b);
+//							handler .sendMessage(message);
+//						}
+//					}
+//			).start();
+//		}
+//
+//		/**
+//		 * showErrMsg
+//		 *  화면에 error 토스트 띄운다
+//		 *
+//		 * @param
+//		 * @param
+//		 * @return
+//		 */
+//		public void showErrMsg(){			
+//			new Thread(
+//					new Runnable(){
+//						public void run(){
+//							Message message = handler.obtainMessage();				
+//							Bundle b = new Bundle();
+//							b.putInt("showErrToast", 1);
+//							message.setData(b);
+//							handler.sendMessage(message);
+//						}
+//					}
+//			).start();
+//		} 
 	
 	
 	/**

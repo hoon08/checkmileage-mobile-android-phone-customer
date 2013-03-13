@@ -60,6 +60,7 @@
     <string name="pref_app_qna">常用提问</string>
     <string name="pref_app_notify">公示信息</string>
     <string name="pref_app_terms">使用条款</string>
+    <string name="pref_app_privacy">隐私权政策</string>
     <string name="pref_app_leave_summary">要退出吗?</string>
     <string name="pref_app_leave_title">退出</string>
     <string name="pref_push_list_summary">查看活动通知列表</string>

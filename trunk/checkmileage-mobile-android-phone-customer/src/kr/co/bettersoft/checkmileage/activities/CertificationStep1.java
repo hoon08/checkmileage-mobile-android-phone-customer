@@ -1,21 +1,28 @@
 package kr.co.bettersoft.checkmileage.activities;
 
 /*
- * 인증 1단계. - 폰번 인증 화면.    -- 사용 안함
- * 어플 실행하여 QR 저장소에 QR이 없을 경우에 실행 된다.
+ *    --> 사용자 동의 받는 화면. 체크 후 하단 확인 버튼 누르면 다음 화면으로 이동한다.
+ *    
+ * x인증 1단계. - 폰번 인증 화면.    -- 사용 안함
+ * x어플 실행하여 QR 저장소에 QR이 없을 경우에 실행 된다.
  * 
- * 서버와 통신하여 폰번이 있는지 여부를 체크한다.
- * 폰번이 있고 QR코드가 있으면 서버에서 받아온 QR 코드를 그대로 사용한다.
+ * x서버와 통신하여 폰번이 있는지 여부를 체크한다.
+ * x폰번이 있고 QR코드가 있으면 서버에서 받아온 QR 코드를 그대로 사용한다.
  * 
- * 서버에  정보가 없다면 신규 유저이기 때문에 2차 인증 화면으로 이동한다. 
- *  (동시에 서버에서 인증번호를 SMS로 발송하여 인증받도록 한다)
+ * x서버에  정보가 없다면 신규 유저이기 때문에 2차 인증 화면으로 이동한다. 
+ * x (동시에 서버에서 인증번호를 SMS로 발송하여 인증받도록 한다)
  *  
- *  
- *  <화면 구성>
- *   모바일에서 폰번호를 가져와서 기본값으로 채움.(수정가능)
- *   중단 버튼을 눌러 [인증번호 요청] 을 하여 서버와 통신을 한다. 
- *   서버에서 가져온 결과를 분석하여 2차 인증으로 갈지, QR 생성화면으로 갈지 여부를 판단한다.
+ * x <화면 구성>
+ * x  모바일에서 폰번호를 가져와서 기본값으로 채움.(수정가능)
+ * x  중단 버튼을 눌러 [인증번호 요청] 을 하여 서버와 통신을 한다. 
+ * x  서버에서 가져온 결과를 분석하여 2차 인증으로 갈지, QR 생성화면으로 갈지 여부를 판단한다.
+ *   
+ *
+ *    
+ *    
  */
+
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,6 +37,8 @@ import kr.co.bettersoft.checkmileage.activities.CertificationStep2;
 import kr.co.bettersoft.checkmileage.activities.CommonUtils;
 import kr.co.bettersoft.checkmileage.activities.Main_TabsActivity;
 import kr.co.bettersoft.checkmileage.activities.MyQRPageActivity;
+import kr.co.bettersoft.checkmileage.pref.Password;
+import kr.co.bettersoft.checkmileage.pref.PrefActivityFromResource;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -42,7 +51,9 @@ import org.w3c.dom.Text;
 //import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -52,25 +63,27 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class CertificationStep1 extends Activity {
-	Button button1 ;
-	TextView txt1;
-	String TAG = "CertificationStep1";
-	String phoneNum = "";
-	String qrcode ="";
 	
-	int responseCode = 0;
-	String serverName = CommonUtils.serverNames;
-	String controllerName = "";
-	String methodName = "";
+	CheckBox checkBoxPrivacyTerms, checkBoxGPSTerms; // 개인정보 체크, 위치정보 체크
+	Button seePrivacyTermsBtn, seeGPSTermsBtn, userConfirmBtn; 	// 개인정보방침 보기 버튼 , 위치정보 방침보기 버튼, 다음(인증)화면으로 이동하기 버튼
+//	TextView txt2;
+//	static String phoneNum = "";
+//	String certificationNumber = "";
+	String TAG = "CertificationStep0";
+//	String registerDate = "";
+//	int responseCode = 0;
 	
-	URL postUrl2;
-	HttpURLConnection connection2 ;
+//	String controllerName = "";		// 서버 조회시 컨트롤러 이름
+//	String methodName = "";			// 서버 조회시 메서드 이름
+//	String serverName = CommonUtils.serverNames;
 	
 	// 핸들러
 	Handler handler = new Handler(){
@@ -81,12 +94,51 @@ public class CertificationStep1 extends Activity {
 				if(b.getInt("showErrToast")==1){
 					Toast.makeText(CertificationStep1.this,b.getString("msg"), Toast.LENGTH_SHORT).show();
 				}
+				if(b.getInt("showAlert")==1){					 // 경고창 . 
+					//
+					new AlertDialog.Builder(returnThis())
+					.setTitle(CommonUtils.alertTitle)							// *** 하드코딩 얼럿 창 타이틀. --> Carrot
+					.setMessage(b.getString("msg"))
+					//					.setIcon(android.R.drawable.ic_dialog_alert)		// 경고창. 삼각형 느낌표..?
+					.setIcon(R.drawable.ic_dialog_img)		// 경고창. 삼각형 느낌표 --> 어플 아이콘으로바꿈.
+					.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							// 그냥 사용자 확인 용이기 때문에 추가 조작 없음.
+						}})
+						.setNegativeButton("", null).show();
+				}
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 		}
 	};
-	public void alertMsg(){			// 인증 실패 메시지
+	
+	public Context returnThis(){
+		return this;
+	}
+	/**
+	 * showResultDialog
+	 * 토스트를 얼럿으로 바꾼다.
+	 *
+	 * @param msg
+	 * @param 
+	 * @return 
+	 */
+	public void showResultDialog(final String msg){
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Message message = handler.obtainMessage();				
+						Bundle b = new Bundle();
+						b.putInt("showAlert", 1);
+						b.putString("msg", msg);			// 화면에 보여줄 메시지
+						message.setData(b);
+						handler.sendMessage(message);
+					}
+				}
+		).start();
+	}
+	public void alertMsg(){
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -102,151 +154,67 @@ public class CertificationStep1 extends Activity {
 		).start();
 	}
 	
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.certification_step1);
-		
-		button1 = (Button) findViewById(R.id.certi_btn1);
-		txt1 = (TextView)findViewById(R.id.certi_text1);
-		//자신의 전화번호 가져오기
-		TelephonyManager telManager = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE); 
-		// TODO Auto-generated method stub
-		phoneNum = telManager.getLine1Number();
-		txt1.setText(phoneNum);
-		
-//		button1.setText("인증번호 요청하기);				// 하드코딩
-		button1.setText(R.string.certi_step1_btn1);			// 다국어 지원.
+	    super.onCreate(savedInstanceState);
+	    setContentView(R.layout.certification_step1);
 
-			// 안내문.: 임시 인증 번호가 SMS로 발송 됩니다. 새로운 인증 번호를 요청하실 경우 이전 인증 번호는 사용할 수 없습니다.
-		button1.setOnClickListener(new OnClickListener() {
+	    seePrivacyTermsBtn = (Button) findViewById(R.id.seePrivacyTermsBtn);	// 개인정보 방침 보기 버튼
+	    seeGPSTermsBtn = (Button) findViewById(R.id.seeGPSTermsBtn);			// 위치정보 방침 보기 버튼
+	    userConfirmBtn = (Button) findViewById(R.id.userConfirmBtn);			// 하단 확인 버튼
+
+	    checkBoxPrivacyTerms = (CheckBox) findViewById(R.id.checkBoxPrivacyTerms);	// 개인정보 수집 동의 체크
+	    checkBoxGPSTerms = (CheckBox) findViewById(R.id.checkBoxGPSTerms);			// 위치정보 수집 동의 체크
+	    
+//	    button2 = (Button) findViewById(R.id.certi_btn2);
+//	    txt2 = (TextView)findViewById(R.id.certi_text2);
+//	    
+////		button2.setText("인증확인");
+//		button2.setText(R.string.certi_step2_btn1);
+//		
+	    seePrivacyTermsBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				try {
-					CertificationStep2.phoneNum = phoneNum;
-					certificationStep1();
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				// 인텐트 - 웹뷰로 이용약관 창 띄움.
+				Intent webIntent = new Intent(CertificationStep1.this, myWebView.class);
+				webIntent.putExtra("loadingURL", CommonUtils.termsPolicyURL);		
+				startActivity(webIntent);
 			}
 		});
-	    
+	    seeGPSTermsBtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// 인텐트 - 웹뷰로 개인정보 방침 보기 창 띄움
+				Intent webIntent = new Intent(CertificationStep1.this, myWebView.class);
+				webIntent.putExtra("loadingURL", CommonUtils.privacyPolicyURL);		 
+				startActivity(webIntent);
+			}
+		});
+	    userConfirmBtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// 체크박스 체크하고 체크되있으면 다음화면으로, 안되있으면 알림창 . 현재 체크되있는지 확인하는 부분은 미구현
+				if(checkTheCheckBox()){
+					Intent intent = new Intent(CertificationStep1.this, CertificationStep2.class);
+					startActivity(intent);   
+					finish();
+				}else{
+					showResultDialog("약관에 동의하지 않으셨습니다.");
+				}
+				
+			}
+		});
 	}
 	
-	/*
-	 * 서버와 통신하여 인증 1단계 수행.
-	 */
-	public void certificationStep1() throws JSONException, IOException {
-    	Log.i("certificationStep1", "certificationStep1");
-    	controllerName = "checkMileageMemberController";
-		methodName = "selectMemberInformationByPhoneNumber";
-    	new Thread(
-    			new Runnable(){
-    				public void run(){
-						JSONObject obj = new JSONObject();
-						try{
-							obj.put("phoneNumber", phoneNum);
-							obj.put("activateYn", "Y");
-						}catch(Exception e){
-							e.printStackTrace();
-						}
-						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
-						try{
-							  postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
-							  connection2 = (HttpURLConnection) postUrl2.openConnection();
-					  		  connection2.setDoOutput(true);
-					  		  connection2.setInstanceFollowRedirects(false);
-					  		  connection2.setRequestMethod("POST");
-					  		  connection2.setRequestProperty("Content-Type", "application/json");
-					  		  OutputStream os2 = connection2.getOutputStream();
-					  		  os2.write(jsonString.getBytes("UTF-8"));
-					  		  os2.flush();
-					  		  System.out.println("postUrl      : " + postUrl2);
-					  		  System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
-					  		  responseCode = connection2.getResponseCode();
-					  		  InputStream in =  connection2.getInputStream();
-					  		  theData(in);
-						}catch(Exception e){ 
-						 e.printStackTrace();
-						}  
-    				}
-    			}
-    	).start();
-	}
-	/*
-	 * 인증 1단계의 결과를 받음.
-	 */
-	public void theData(InputStream in){
-		Log.d(TAG,"theData");
-    	BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-    	StringBuilder builder = new StringBuilder();
-    	String line =null;
-    	try {
-			while((line=reader.readLine())!=null){
-				builder.append(line).append("\n");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+	// 두개의 체크박스가 체크되어있는지 확인 한다.
+	public Boolean checkTheCheckBox(){
+		if(checkBoxPrivacyTerms.isChecked()&&checkBoxGPSTerms.isChecked()){
+			return true;
+		}else{
+			return false;
 		}
-    	Log.d(TAG,"수신::"+builder.toString());
-    	String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다... 용도에 맞게 구현할 것.
-    	JSONObject jsonObject;
-		try {
-			jsonObject = new JSONObject(tempstr);
-			String jstring2 = jsonObject.getString("checkMileageMember").toString(); 
-	    	JSONObject jsonObject2 = new JSONObject(jstring2);
-	    	qrcode = jsonObject2.getString("checkMileageId").toString(); 
-	    	Log.d(TAG,"qrcode:"+qrcode);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-    	if(responseCode==200 || responseCode==204){		// 인증 성공시
-    		// QR데이터를 꺼내어 저장..
-    		// 기타 정보들을 설정 파일에 저장....
-    		if(qrcode.length()>0){		// 데이터 있는 경우 - 해당 QR 데이터 가지고 내 QR 보기 페이지로 이동.
-    			Log.i(TAG, "Welcome Your ComeBack. Go to Main Page");
-    			MyQRPageActivity.qrCode = qrcode;
-    			new Thread(
-    		    		new Runnable(){
-    		    			public void run(){
-    		    				try{
-    		    					Thread.sleep(1000);
-    		    					// 받은 정보로 나의 QR 코드 보기로 이동..  전번으로 인증했으니 별도 업뎃은 없음
-    		    					Intent intent2 = new Intent(CertificationStep1.this, Main_TabsActivity.class);
-    		    					startActivity(intent2);
-    		    					finish();		// 다른 액티비티를 호출하고 자신은 종료.
-    		    				}catch(InterruptedException ie){
-    		    					ie.printStackTrace();
-    		    				}
-    		    			}
-    		    		}
-    		    ).start();
-    		}else{			// 데이터 없는 경우 - 신규 유저 이므로 등록 필요. 2차 인증 페이지로 이동
-    			Log.i(TAG, "Welcome New User, Go to Certification2 for Register");
-    			new Thread(
-    		    		new Runnable(){
-    		    			public void run(){
-    		    				try{
-    		    					Thread.sleep(1000);
-    		    					Intent intent2 = new Intent(CertificationStep1.this, CertificationStep2.class);
-    		    					startActivity(intent2);
-    		    					finish();		// 다른 액티비티를 호출하고 자신은 종료.
-    		    				}catch(InterruptedException ie){
-    		    					ie.printStackTrace();
-    		    				}
-    		    			}
-    		    		}
-    		    ).start();
-    		}
-    	}else{			// 인증 실패시	 토스트 띄우고 화면 유지.
-    		alertMsg();
-//    		Toast.makeText(CertificationStep1.this, R.string.certi_fail_msg, Toast.LENGTH_SHORT).show();
-    	}
-    }
+	}
+	
 }

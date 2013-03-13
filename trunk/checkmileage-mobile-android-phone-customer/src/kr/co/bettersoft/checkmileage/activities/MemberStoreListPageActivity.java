@@ -13,11 +13,14 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import kr.co.bettersoft.checkmileage.activities.R;
+import kr.co.bettersoft.checkmileage.activities.MemberStoreInfoPage.backgroundUpdateLogToServer;
 import kr.co.bettersoft.checkmileage.adapters.MemberStoreSearchListAdapter;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMerchants;
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
@@ -42,6 +45,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -83,6 +87,20 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
 	MainActivity mainActivity = (MainActivity)MainActivity.mainActivity;
 
+	// 내 좌표 업뎃용				///////////////////////////////////////////////
+	String myLat2;
+	String myLon2;
+	// 전번(업뎃용)
+	String phoneNum = "";
+	// qr
+	String qrCode = "";
+	// 설정 파일 저장소  - 사용자 전번 읽기 / 쓰기 용도	
+	SharedPreferences sharedPrefCustom;
+	// 중복 실행 방지용
+	int isUpdating = 0;
+	/////////////////////////////////////////////////////////////////////////////
+	
+	
 	String serverName = CommonUtils.serverNames;
 
 	// Locale
@@ -249,6 +267,10 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		super.onCreate(icicle);
 		setContentView(R.layout.member_store_list);
 
+		// prefs
+		sharedPrefCustom = getSharedPreferences("MyCustomePref",
+				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
+		
 		// 내 QR 코드. 
 		myQRcode = MyQRPageActivity.qrCode;		
 		entriesFn = new ArrayList<CheckMileageMerchants>();
@@ -1215,13 +1237,9 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	public void onResume(){
 		super.onResume();
 		app_end = 0;
-		// 가맹점 업종 목록 가져오기.
-		if((!jobKindSearched) && (isRunning==0)){				// 업종 검색이 완료되지 않았고, 실행중인 작업이 없을 경우.
-			isRunning = 1;		// 연속 실행 방지 (다른 실행 거부)
-			showPb();
-			//			getBusinessKindList();
-			new backgroundGetBusinessKindList().execute();			// 비동기로 변환
-		}
+			if(isUpdating==0){
+				loggingToServer();
+			}
 	}
 
 	/*
@@ -1516,6 +1534,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	//		alert_internet_status.show();
 	//	}
 
+
+	
 	@Override
 	public void onDestroy(){
 		super.onDestroy();
@@ -1524,5 +1544,114 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		//						connection2.disconnect();
 		//					}
 		//				}catch(Exception e){}
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 서버에 로깅하기.
+	/**
+	 * 서버에 위치 및 로그 남김
+	 * loggingToServer
+	 */
+	public void loggingToServer(){
+					new backgroundUpdateLogToServer().execute();	// 비동기로 전환	
+	}
+	/**
+	 * 비동기로 사용자의 위치 정보 및 정보 로깅
+	 * backgroundUpdateLogToServer
+	 */
+	public class backgroundUpdateLogToServer extends  AsyncTask<Void, Void, Void> { 
+		@Override protected void onPostExecute(Void result) {  
+		} 
+		@Override protected void onPreExecute() {  
+		} 
+		@Override protected Void doInBackground(Void... params) {  
+			Log.d(TAG,"backgroundUpdateMyLocationtoServer");
+			updateLogToServer();
+			return null; 
+		}
+	}
+	/**
+	 * 사용자 위치 정보 및 정보 로깅
+	 * 
+	 */
+	public void updateLogToServer(){
+		if(isUpdating==0){
+			isUpdating = 1;
+			Log.i(TAG, "updateLocationToServer");
+			controllerName = "checkMileageLogController";
+			methodName = "registerLog";
+					
+			phoneNum = sharedPrefCustom.getString("phoneNum", "");	
+			myLat2 = sharedPrefCustom.getString("myLat2", "");	
+			myLon2 = sharedPrefCustom.getString("myLon2", "");	
+			qrCode = sharedPrefCustom.getString("qrCode", "");	
+			
+			new Thread(
+					new Runnable(){
+						public void run(){
+							JSONObject obj = new JSONObject();
+							try{
+								// 자신의 아이디를 넣어서 조회
+								Date today = new Date();
+								SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+								String nowDate = sf.format(today);
+								obj.put("checkMileageId", qrCode);	// checkMileageId 	사용자 아이디
+								obj.put("merchantId", "");		// merchantId		가맹점 아이디.
+								obj.put("viewName", "CheckMileageCustomerSearchMerchantView");		// viewName			출력된 화면.
+								obj.put("parameter01", phoneNum);		// parameter01		사용자 전화번호.
+								obj.put("parameter02", myLat2);		// parameter02		위도.
+								obj.put("parameter03", myLon2);		// parameter03		경도.
+								obj.put("parameter04", "");		// parameter04		검색일 경우 검색어.
+								obj.put("parameter05", "");		// parameter05		예비용도.
+								obj.put("parameter06", "");		// parameter06		예비용도.
+								obj.put("parameter07", "");		// parameter07		예비용도.
+								obj.put("parameter08", "");		// parameter08		예비용도.
+								obj.put("parameter09", "");		// parameter09		예비용도.
+								obj.put("parameter10", "");		// parameter10		예비용도.
+								obj.put("registerDate", nowDate);		// registerDate		등록 일자.
+							}catch(Exception e){
+								e.printStackTrace();
+							}
+							String jsonString = "{\"checkMileageLog\":" + obj.toString() + "}";
+							try{
+								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+								connection2 = (HttpURLConnection) postUrl2.openConnection();
+								connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
+								connection2.setDoOutput(true);
+								connection2.setInstanceFollowRedirects(false);
+								connection2.setRequestMethod("POST");
+								connection2.setRequestProperty("Content-Type", "application/json");
+								//								connection2.connect();
+								Thread.sleep(200);
+								OutputStream os2 = connection2.getOutputStream();
+								os2.write(jsonString.getBytes("UTF-8"));
+								os2.flush();
+								Thread.sleep(200);
+								responseCode = connection2.getResponseCode();
+								// 조회한 결과를 처리.
+								if(responseCode==200 || responseCode==204){
+									Log.d(TAG,"updateLogToServer S");
+								}else{
+									Log.d(TAG,"updateLogToServer F / "+responseCode);
+								}
+							}catch(Exception e){ 
+								Log.d(TAG,"updateLocationToServer->fail");
+							}finally{
+								isUpdating = 0;
+								// 가맹점 업종 목록 가져오기.
+								if((!jobKindSearched) && (isRunning==0)){				// 업종 검색이 완료되지 않았고, 실행중인 작업이 없을 경우.
+									isRunning = 1;		// 연속 실행 방지 (다른 실행 거부)
+									showPb();
+									//			getBusinessKindList();
+									new backgroundGetBusinessKindList().execute();			// 비동기로 변환
+								}
+							}
+						}
+					}
+			).start();
+		}else{
+			Log.w(TAG,"already updating..");
+		}
 	}
 }

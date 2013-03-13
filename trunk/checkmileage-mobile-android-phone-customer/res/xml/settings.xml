@@ -47,7 +47,9 @@
         <Preference
             android:key="pref_app_terms"
             android:title="@string/pref_app_terms" />
-        
+        <Preference
+            android:key="pref_app_privacy"
+            android:title="@string/pref_app_privacy" />
         <Preference
             android:key="pref_push_list"
             android:summary="@string/pref_push_list_summary"

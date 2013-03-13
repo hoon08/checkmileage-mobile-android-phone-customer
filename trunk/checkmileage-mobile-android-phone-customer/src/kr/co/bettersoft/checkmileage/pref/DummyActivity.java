@@ -2,6 +2,7 @@ package kr.co.bettersoft.checkmileage.pref;
 
 import java.util.List;
 
+import kr.co.bettersoft.checkmileage.activities.CertificationStep1;
 import kr.co.bettersoft.checkmileage.activities.R;
 import kr.co.bettersoft.checkmileage.activities.CommonUtils;
 import kr.co.bettersoft.checkmileage.activities.GCMIntentService;
@@ -15,6 +16,7 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
@@ -34,6 +36,9 @@ public class DummyActivity extends Activity {
 	public static int count = 0;
 	public static Activity dummyActivity;
 
+	// 설정 파일 저장소  
+	SharedPreferences sharedPrefCustom;
+	
 	String TAG = "DummyActivity";
 	String RunMode = "";			// 전달받은 실행모드. 기본/마일리지/이벤트 등
 	String message;
@@ -45,6 +50,11 @@ public class DummyActivity extends Activity {
 		dummyActivity = DummyActivity.this;
 		// TODO Auto-generated method stub
 
+		// prefs
+		sharedPrefCustom = getSharedPreferences("MyCustomePref",
+				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
+		
+		// receive intent
 		Intent receiveIntent = getIntent();
 		RunMode = receiveIntent.getStringExtra("RunMode");					// TEST  MILEAGE  MARKETING  NORMAL
 
@@ -59,7 +69,15 @@ public class DummyActivity extends Activity {
 		isRunningProcess(this, CommonUtils.packageNames);		// 실행중인지 확인.
 		if(count==1){		// 최초 실행.(나밖에없음)	
 			// 테스트 및 노멀은 같다. 그냥 실행한다. 마일리지 변경사항, 이벤트는 알려줘야 한다.
-			Intent intent = new Intent(DummyActivity.this, MainActivity.class);
+			
+			Intent intent;
+			// 동의 여부 체크하여 진행한다.
+			if(checkUserAgreed()){	// 이전에 동의한 경우 : 다음 프로세스 진행.
+				Log.d(TAG,"checkUserAgreed");
+				intent = new Intent(DummyActivity.this, MainActivity.class);	
+			}else{			// 이전에 동의 하지 않은 경우 : 동의를 받는다. 사용자 동의 -> 전번인증 -> 다음 단계.. 는 인트로. MainActivity
+				intent = new Intent(DummyActivity.this, CertificationStep1.class);
+			}
 			if(RunMode.equals("MILEAGE")){
 				intent.putExtra("RunMode", "MILEAGE");		// 마일리지 변경일때는 알려준다.
 			}else if(RunMode.equals("MARKETING")){		// 이벤트 푸쉬일 경우 해당 이벤트 화면을 보여줘야 한다. 새 인텐트로 액티비티를 실행해주면 된다. 문제는 순서. 위에거 하고나서 해준다.
@@ -119,4 +137,24 @@ public class DummyActivity extends Activity {
 		return isRunning;
 	}
 	// mainActivity.finish();		// 메인 종료 -> 리시버 종료  --> 여기서 처리하지 않는다.
+	
+	
+	
+	
+	// 이전에 동의한 적이 있는지 여부를 확인한다.
+	public Boolean checkUserAgreed(){
+		String agreedYN = sharedPrefCustom.getString("agreedYN", "N");		// 동의 했는지 여부
+		if(agreedYN.equals("Y")){		// 이전에 동의한 경우
+			Log.d(TAG,"already agree");
+//			return false; // test용. test *** 
+			return true;	// real
+		}else{							// 이전에 동의 안한 경우
+			Log.d(TAG,"need agree");
+			return false;
+		}
+	}
+	
+	
+	
+	
 }

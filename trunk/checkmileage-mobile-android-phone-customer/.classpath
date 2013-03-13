@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="libs/httpmime-4.1-beta1.jar"/>
 	<classpathentry kind="lib" path="libs/gcm.jar"/>
 	<classpathentry kind="lib" path="libs/core.jar"/>
+	<classpathentry kind="lib" path="libs/commons-codec-1.7.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

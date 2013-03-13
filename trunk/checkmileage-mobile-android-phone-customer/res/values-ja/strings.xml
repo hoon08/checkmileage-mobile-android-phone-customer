@@ -59,6 +59,7 @@
     <string name="pref_app_qna">よく問う質問</string>
     <string name="pref_app_notify">お知らせ事項</string>
     <string name="pref_app_terms">利用約款</string>
+    <string name="pref_app_privacy">個人情報保護方針</string>
     <string name="pref_app_leave_summary">脱退しますか?</string>
     <string name="pref_app_leave_title">脱退する</string>
     <string name="pref_push_list_summary">イベントお知らせリスト表示</string>

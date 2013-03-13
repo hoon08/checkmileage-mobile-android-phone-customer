@@ -36,6 +36,7 @@ import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -63,6 +64,9 @@ public class GCMIntentService extends GCMBaseIntentService {
 	URL postUrl2 ;
 	HttpURLConnection connection2;
 
+	// 설정 파일 저장소   -- 설정에 GCM ID 를 저장하여 GCM ID 가 변경된 경우에만 서버로 업데이트 한다.
+	SharedPreferences sharedPrefCustom;
+	String savedGCMId = "";
 	private static final String TAG = "GCMIntentService";
 
 	static String myQR = "";
@@ -84,15 +88,24 @@ public class GCMIntentService extends GCMBaseIntentService {
 	@Override
 	public void onRegistered(Context context, String registrationId) {
 		Log.i(TAG, "Device registered: regId = " + registrationId);
+		// prefs
+		sharedPrefCustom = getSharedPreferences("MyCustomePref",
+				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
+		savedGCMId = sharedPrefCustom.getString("savedGCMId", "");	
 		if(dontTwice){			// 한번 하고 막는다.
 			//        	MainActivity.REGISTRATION_ID = registrationId;
 			regIdGCM = registrationId;
-			new backgroundUpdateMyGCMtoServer().execute();	// 비동기로 전환 - 서버에 GCM 아이디 저장	
-			//            displayMessage(context, getString(R.string.gcm_registered));			// 브로드 케스트로 보내줌.. 리시버가 잡음. (노티는 없음)
-			localContext = context;
-			localRegistrationId = registrationId;
-			//            new backgroundServerRegister().execute();
-			dontTwice = false;
+			if(!(savedGCMId.equals(regIdGCM))){
+				SharedPreferences.Editor updatesavedGCMId =   sharedPrefCustom.edit();
+				updatesavedGCMId.putString("savedGCMId", regIdGCM);		// GCM ID저장
+				updatesavedGCMId.commit();
+				new backgroundUpdateMyGCMtoServer().execute();	// 비동기로 전환 - 서버에 GCM 아이디 저장	
+				//            displayMessage(context, getString(R.string.gcm_registered));			// 브로드 케스트로 보내줌.. 리시버가 잡음. (노티는 없음)
+				localContext = context;
+				localRegistrationId = registrationId;
+				//            new backgroundServerRegister().execute();
+				dontTwice = false;
+			}
 		}
 	}
 
