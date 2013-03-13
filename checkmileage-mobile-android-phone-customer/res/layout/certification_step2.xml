@@ -1,28 +1,92 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/certi_step2_parent_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-	
+        <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:scrollbars="none" >
+       <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+            
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:orientation="vertical" >
-
-        <EditText
-            android:id="@+id/certi_text2"
+        
+		     <EditText
+                android:id="@+id/userPhoneNumber"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                 android:numeric="integer"
+                android:hint="사용자 전화번호 입력"
+                android:ems="10" >
+            </EditText>
+        
+       		<Button
+                android:id="@+id/requestCertiNumBtn"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="인증번호 요청"
+                android:ems="15" />
+       		
+       		<LinearLayout 
+       		    android:layout_width="match_parent"
+        		android:layout_height="wrap_content"
+        		android:orientation="horizontal"
+        		android:gravity="center" 
+        	>
+       		    <EditText
+                android:id="@+id/userCertiNumber"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:layout_weight="10"
+                android:gravity="center"
+                 android:numeric="integer"
+                 android:maxLength="4"
+                android:hint="인증번호"
+                android:ems="10" >
+            </EditText>
+       		    <Button
+                android:id="@+id/certiNumConfirmBtn"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:text="승인 요청"
+                android:ems="15" />
+       		</LinearLayout>
+       		
+       <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:ems="10"
-            >
-        </EditText>
+            android:layout_height="match_parent"
+            android:gravity="bottom|center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/certi_btn2"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:ems="10"
-             />
-
+            
+        </LinearLayout>
     </LinearLayout>
+    
+    <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="vertical" >
 
+                <ProgressBar
+                    android:id="@+id/certi_progressbar1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible" />
+            </LinearLayout>
+    
+    </FrameLayout>
+    </LinearLayout>
+    
 </RelativeLayout>

@@ -14,7 +14,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
@@ -73,6 +75,7 @@ import kr.co.bettersoft.checkmileage.activities.MyQRPageActivity;
 import kr.co.bettersoft.checkmileage.activities.Settings_AboutPageActivity;
 import kr.co.bettersoft.checkmileage.activities.myWebView;
 import kr.co.bettersoft.checkmileage.activities.GCMIntentService.backgroundUpdateMyGCMtoServer;
+import kr.co.bettersoft.checkmileage.activities.MemberStoreInfoPage.backgroundUpdateLogToServer;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMembers;
 
 
@@ -84,6 +87,18 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 
 	static String TAG = "PrefActivityFromResource";
 
+	// 내 좌표 업뎃용				///////////////////////////////////////////////
+	String myLat2;
+	String myLon2;
+	// 전번(업뎃용)
+	String phoneNum = "";
+	// qr
+	String qrCode = "";
+	// 중복 실행 방지용
+	int isUpdating = 0;
+	/////////////////////////////////////////////////////////////////////////////
+	
+	
 	public Boolean resumeCalled = false;  // 처음 열렸는지, 다른 화면 갔다온건지. -- 처음열렸을때만 프리퍼런스 지정하기 위함.
 
 	SharedPreferences sharedPrefCustom;	// 공용 프립스		 잠금 및 QR (잠금은 메인과 공유  위의 것(default,this)은 메인과 공유되지 않아 이 sharedPref 도 사용한다.)		
@@ -235,6 +250,10 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		// Set up a listener whenever a key changes 
 		getPreferenceScreen().getSharedPreferences() 
 		.registerOnSharedPreferenceChangeListener(this); 		// 리스너 등록
+		
+		if(isUpdating==0){
+			loggingToServer();
+		}
 	}
 
 	@Override 
@@ -333,10 +352,16 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		if(preference.equals(findPreference("pref_app_terms"))){
 			//			Toast.makeText(PrefActivityFromResource.this, "웹뷰 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
 			Intent webIntent = new Intent(PrefActivityFromResource.this, myWebView.class);
-			webIntent.putExtra("loadingURL", "http://www.mcarrot.net/mTerms.do");
+			webIntent.putExtra("loadingURL", CommonUtils.termsPolicyURL);
 			startActivity(webIntent);
 		}
-
+		// 개인정보 보호정책..  pref_app_privacy
+		if(preference.equals(findPreference("pref_app_privacy"))){
+			//			Toast.makeText(PrefActivityFromResource.this, "웹뷰 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
+			Intent webIntent = new Intent(PrefActivityFromResource.this, myWebView.class);
+			webIntent.putExtra("loadingURL", CommonUtils.privacyPolicyURL);
+			startActivity(webIntent);
+		}
 		//		// 탈퇴.  pref_app_leave
 		//		if(preference.equals(findPreference("pref_app_leave"))){
 		//		//	//		//	Toast.makeText(PrefActivityFromResource.this, R.string.leave_toast_message, Toast.LENGTH_SHORT).show();
@@ -1147,4 +1172,106 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		//			}catch(Exception e){}
 	}
 
+	
+	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 서버에 로깅하기.
+	/**
+	 * 서버에 위치 및 로그 남김
+	 * loggingToServer
+	 */
+	public void loggingToServer(){
+					new backgroundUpdateLogToServer().execute();	// 비동기로 전환	
+	}
+	/**
+	 * 비동기로 사용자의 위치 정보 및 정보 로깅
+	 * backgroundUpdateLogToServer
+	 */
+	public class backgroundUpdateLogToServer extends  AsyncTask<Void, Void, Void> { 
+		@Override protected void onPostExecute(Void result) {  
+		} 
+		@Override protected void onPreExecute() {  
+		} 
+		@Override protected Void doInBackground(Void... params) {  
+			Log.d(TAG,"backgroundUpdateMyLocationtoServer");
+			updateLogToServer();
+			return null; 
+		}
+	}
+	/**
+	 * 사용자 위치 정보 및 정보 로깅
+	 * 
+	 */
+	public void updateLogToServer(){
+		if(isUpdating==0){
+			isUpdating = 1;
+			Log.i(TAG, "updateLocationToServer");
+			controllerName = "checkMileageLogController";
+			methodName = "registerLog";
+					
+			phoneNum = sharedPrefCustom.getString("phoneNum", "");	
+			myLat2 = sharedPrefCustom.getString("myLat2", "");	
+			myLon2 = sharedPrefCustom.getString("myLon2", "");	
+			qrCode = sharedPrefCustom.getString("qrCode", "");	
+			
+			new Thread(
+					new Runnable(){
+						public void run(){
+							JSONObject obj = new JSONObject();
+							try{
+								// 자신의 아이디를 넣어서 조회
+								Date today = new Date();
+								SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+								String nowDate = sf.format(today);
+								obj.put("checkMileageId", qrCode);	// checkMileageId 	사용자 아이디
+								obj.put("merchantId", "");		// merchantId		가맹점 아이디.
+								obj.put("viewName", "CheckMileageCustomerPreferenceView");		// viewName			출력된 화면.
+								obj.put("parameter01", phoneNum);		// parameter01		사용자 전화번호.
+								obj.put("parameter02", myLat2);		// parameter02		위도.
+								obj.put("parameter03", myLon2);		// parameter03		경도.
+								obj.put("parameter04", "");		// parameter04		검색일 경우 검색어.
+								obj.put("parameter05", "");		// parameter05		예비용도.
+								obj.put("parameter06", "");		// parameter06		예비용도.
+								obj.put("parameter07", "");		// parameter07		예비용도.
+								obj.put("parameter08", "");		// parameter08		예비용도.
+								obj.put("parameter09", "");		// parameter09		예비용도.
+								obj.put("parameter10", "");		// parameter10		예비용도.
+								obj.put("registerDate", nowDate);		// registerDate		등록 일자.
+							}catch(Exception e){
+								e.printStackTrace();
+							}
+							String jsonString = "{\"checkMileageLog\":" + obj.toString() + "}";
+							try{
+								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+								connection2 = (HttpURLConnection) postUrl2.openConnection();
+								connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
+								connection2.setDoOutput(true);
+								connection2.setInstanceFollowRedirects(false);
+								connection2.setRequestMethod("POST");
+								connection2.setRequestProperty("Content-Type", "application/json");
+								//								connection2.connect();
+								Thread.sleep(200);
+								OutputStream os2 = connection2.getOutputStream();
+								os2.write(jsonString.getBytes("UTF-8"));
+								os2.flush();
+								Thread.sleep(200);
+								responseCode = connection2.getResponseCode();
+								// 조회한 결과를 처리.
+								if(responseCode==200 || responseCode==204){
+									Log.d(TAG,"updateLogToServer S");
+								}else{
+									Log.d(TAG,"updateLogToServer F / "+responseCode);
+								}
+							}catch(Exception e){ 
+								Log.d(TAG,"updateLocationToServer->fail");
+							}finally{
+								isUpdating = 0;
+							}
+						}
+					}
+			).start();
+		}else{
+			Log.w(TAG,"already updating..");
+		}
+	}
 }

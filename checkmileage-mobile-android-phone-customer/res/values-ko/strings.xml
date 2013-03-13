@@ -60,6 +60,7 @@
     <string name="pref_app_qna">자주 묻는 질문</string>
     <string name="pref_app_notify">공지 사항</string>
     <string name="pref_app_terms">이용 약관</string>
+    <string name="pref_app_privacy">개인정보 보호정책</string>
     <string name="pref_app_leave_summary">탈퇴하시게요?</string>
     <string name="pref_app_leave_title">탈퇴 하기</string>
     <string name="pref_push_list_summary">이벤트 알림 목록 보기</string>

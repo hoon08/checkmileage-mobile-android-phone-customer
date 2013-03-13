@@ -61,6 +61,7 @@
     <string name="pref_app_qna">FAQ</string>
     <string name="pref_app_notify">Important announcement</string>
     <string name="pref_app_terms">Terms and Condition</string>
+    <string name="pref_app_privacy">Privacy Policy</string>
     <string name="pref_app_leave_summary">Leave permanently?</string>
     <string name="pref_app_leave_title">Leave permanently</string>
     <string name="pref_push_list_summary">View event notification list</string>

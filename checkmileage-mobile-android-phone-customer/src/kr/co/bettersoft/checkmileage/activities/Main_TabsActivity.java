@@ -343,13 +343,13 @@ public class Main_TabsActivity extends TabActivity implements OnTabChangeListene
 			//		}
 		}
 	};
-	@Override
-	protected void onResume() {
-		//		Log.i(TAG, "onResume");
-		//		registerReceiver(mMyBroadcastReceiver, new IntentFilter("receive받을 이름"));
-		//		registerReceiver(mMyBroadcastReceiver, new IntentFilter(DISPLAY_MESSAGE_ACTION));			// oncreate 로 옮김
-		super.onResume();
-	};
+//	@Override
+//	protected void onResume() {
+//		//		Log.i(TAG, "onResume");
+//		//		registerReceiver(mMyBroadcastReceiver, new IntentFilter("receive받을 이름"));
+//		//		registerReceiver(mMyBroadcastReceiver, new IntentFilter(DISPLAY_MESSAGE_ACTION));			// oncreate 로 옮김
+//		super.onResume();
+//	};
 	/**
 	 * onPause
 	 *  홈버튼 누르면 종료시킨다

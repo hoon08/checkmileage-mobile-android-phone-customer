@@ -1,42 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 사용자 동의를 받는 화면. 개인정보 보호방침/위치정보수집방침  : 각각에 대해 체크박스, 안내 문구. 그리고 상세보기 버튼. 하단에 확인 버튼. 상세버튼은 웹뷰 액티비티 호출 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-     <LinearLayout
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:orientation="vertical" >
-    
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/certi_step1_help1"
-         />
-    
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:orientation="vertical" >
 
-        <EditText
-            android:id="@+id/certi_text1"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:ems="10"
-            >
-        </EditText
->
+        <CheckBox
+            android:id="@+id/checkBoxPrivacyTerms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이용약관에 동의합니다." />
 
         <Button
-            android:id="@+id/certi_btn1"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:ems="10"
-             />
+            android:id="@+id/seePrivacyTermsBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:ems="15"
+            android:text="이용 약관 보기" />
 
+        <TextView
+            android:layout_width="20dp"
+            android:layout_height="20dp" />
+
+        <CheckBox
+            android:id="@+id/checkBoxGPSTerms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="개인정보 보호정책에 동의합니다." />
+
+        <Button
+            android:id="@+id/seeGPSTermsBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:ems="15"
+            android:text="개인정보 보호정책 보기" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:gravity="bottom|center_horizontal"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/userConfirmBtn"
+                android:layout_width="150dp"
+                android:layout_height="70dp"
+                android:text="확 인"
+                 android:layout_marginBottom="20dp"
+                android:ems="30" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+
 </RelativeLayout>
