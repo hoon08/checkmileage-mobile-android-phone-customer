@@ -850,10 +850,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 										).start();
 										isRunning = 0;
 									}
-									//									connection2.disconnect();
 								}catch(Exception e){ 
 									e.printStackTrace();
-									//									connection2.disconnect();
 									// 실행중 에러나면 로딩바 없애고 다시 할수 있도록
 									new Thread(
 											new Runnable(){
@@ -867,20 +865,6 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 											}
 									).start();
 									isRunning = 0;
-									//									if(reTry>0){
-									//										try{
-									//											Log.w(TAG,"failed, retry all again. remain retry : "+reTry);
-									//											reTry = reTry -1;
-									//											Thread.sleep(200);		// 재시도?
-									//											getMemberStoreList();
-									//										}catch(Exception e2){}
-									//									}else{
-									//										Log.w(TAG,"reTry failed. -- init reTry");
-									//										try{
-									//											reTry = 2;	
-									//										}catch(Exception e1){
-									//											e1.printStackTrace();
-									//										}
 									new Thread(	
 											new Runnable(){
 												public void run(){
@@ -1129,6 +1113,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 					}
 				}
 		).start();
+//		loggingToServer();		// *** 서버에 로깅.. 검색시에 로깅하기.. 테스트 필요함.
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -1237,9 +1222,20 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	public void onResume(){
 		super.onResume();
 		app_end = 0;
-			if(isUpdating==0){
-				loggingToServer();
-			}
+		
+		
+		// *** 가맹점 업종 목록 가져오기. 서버로깅 안함에 따라 작성. 서버 로깅 사용시 이부분 주석 처리할 것
+		if((!jobKindSearched) && (isRunning==0)){				// 업종 검색이 완료되지 않았고, 실행중인 작업이 없을 경우.
+			isRunning = 1;		// 연속 실행 방지 (다른 실행 거부)
+			showPb();
+			//			getBusinessKindList();
+			new backgroundGetBusinessKindList().execute();			// 비동기로 변환
+		}
+			// *** 서버 로깅 임시 중단. 나중에 주석 해제
+//			if(isUpdating==0){
+//				loggingToServer();
+//			}
+			
 	}
 
 	/*
@@ -1600,9 +1596,19 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 								obj.put("merchantId", "");		// merchantId		가맹점 아이디.
 								obj.put("viewName", "CheckMileageCustomerSearchMerchantView");		// viewName			출력된 화면.
 								obj.put("parameter01", phoneNum);		// parameter01		사용자 전화번호.
-								obj.put("parameter02", myLat2);		// parameter02		위도.
-								obj.put("parameter03", myLon2);		// parameter03		경도.
-								obj.put("parameter04", "");		// parameter04		검색일 경우 검색어.
+								
+								// *** 일단 좌표는 업뎃 안함. 나중에 좌표 업뎃시 바꿔서 사용할 것.
+//								obj.put("parameter02", myLat2);		// parameter02		위도.
+//								obj.put("parameter03", myLon2);		// parameter03		경도.
+								obj.put("parameter02", "");		// parameter02		위도.
+								obj.put("parameter03", "");		// parameter03		경도.
+								
+								if((searchText.getText()+"").length()>0){
+									obj.put("parameter04", searchText.getText()+"");		// parameter04		검색일 경우 검색어.
+								}else{
+									obj.put("parameter04", "");		// parameter04		검색일 경우 검색어.
+								}
+								
 								obj.put("parameter05", "");		// parameter05		예비용도.
 								obj.put("parameter06", "");		// parameter06		예비용도.
 								obj.put("parameter07", "");		// parameter07		예비용도.
