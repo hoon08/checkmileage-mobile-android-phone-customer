@@ -957,9 +957,25 @@ public class MyMileagePageActivity extends Activity {
 //		}
 		
 		
-		if(isUpdating==0){
-			loggingToServer();
+		// *** 서버 로깅 주석처리했기 때문에 작성함. 서버 로깅 주석 해제시 로깅 이후 수행될 부분이므로 이 부분을 주석처리할 것.
+		if(!searched){
+			Log.w(TAG,"onResume, search");
+			if(dontTwice==0){
+				if(isRunning<1){
+					isRunning = 1;
+					myQRcode = MyQRPageActivity.qrCode;
+					new backgroundGetMyMileageList().execute();
+				}else{
+					Log.w(TAG, "already running..");
+				}
+			}else{
+				dontTwice = 0;
+			}
 		}
+		
+//		if(isUpdating==0){			
+//			loggingToServer();		// ***  서버로깅. 나중에 주석 풀것.
+//		}
 		
 	}
 
@@ -1155,8 +1171,13 @@ public class MyMileagePageActivity extends Activity {
 								obj.put("merchantId", "");		// merchantId		가맹점 아이디.
 								obj.put("viewName", "CheckMileageCustomerMerchantListView");		// viewName			출력된 화면.
 								obj.put("parameter01", phoneNum);		// parameter01		사용자 전화번호.
-								obj.put("parameter02", myLat2);		// parameter02		위도.
-								obj.put("parameter03", myLon2);		// parameter03		경도.
+								
+								// *** 일단 공백 보냄. 나중에 좌표 보내게 되면 그때 바꿔서 사용
+//								obj.put("parameter02", myLat2);		// parameter02		위도.
+//								obj.put("parameter03", myLon2);		// parameter03		경도.
+								obj.put("parameter02", "");		// parameter02		위도.
+								obj.put("parameter03", "");		// parameter03		경도.
+								
 								obj.put("parameter04", "");		// parameter04		검색일 경우 검색어.
 								obj.put("parameter05", "");		// parameter05		예비용도.
 								obj.put("parameter06", "");		// parameter06		예비용도.
