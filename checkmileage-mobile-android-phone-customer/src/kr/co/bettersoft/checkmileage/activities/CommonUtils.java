@@ -56,8 +56,8 @@ public class CommonUtils extends Activity {
 	public static String termsPolicyURL = "http://www.mcarrot.net/mTerms.do";	// 이용 약관, +시작시 동의 받는 페이지
 	public static String privacyPolicyURL = "http://mcarrot.net/mPrivacy.do";	// 개인정보 보호 정책, 시작시 동의 받는 페이지
 
-//	public static String serverNames = "checkmileage.mcarrot.net";		//real *** 
-	public static String serverNames = "checkmileage.onemobileservice.com";	// test  *** 
+	public static String serverNames = "checkmileage.mcarrot.net";		//real *** 
+//	public static String serverNames = "checkmileage.onemobileservice.com";	// test  *** 
 
 
 	public static String packageNames = "kr.co.bettersoft.checkmileage.activities";

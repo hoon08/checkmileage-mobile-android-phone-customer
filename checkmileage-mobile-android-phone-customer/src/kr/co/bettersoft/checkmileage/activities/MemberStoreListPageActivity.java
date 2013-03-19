@@ -98,6 +98,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	SharedPreferences sharedPrefCustom;
 	// 중복 실행 방지용
 	int isUpdating = 0;
+	
 	/////////////////////////////////////////////////////////////////////////////
 	
 	
@@ -276,6 +277,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		entriesFn = new ArrayList<CheckMileageMerchants>();
 
 		parentLayout = findViewById(R.id.member_store_list_parent_layout);		// 부모 레이아웃- 리스너를 달아서 키보드 자동 숨김에 사용
+		
 		//		parentLayout2 = findViewById(R.id.member_store_list_parent_layout2);		// 부모 레이아웃- 리스너를 달아서 키보드 자동 숨김에 사용
 		imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE); 	// 가상키보드 닫기위함
 
@@ -1111,7 +1113,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 					}
 				}
 		).start();
-		loggingToServer();		// *** 서버에 로깅.. 검색시에 로깅하기.. 테스트 필요함.
+			loggingToServer();		// *** 서버에 로깅.. 검색시에 로깅하기..  페이지 열릴때 호출 + 검색시 호출. 해서 두번 호출됨.. 위치 변경하려고 했으나 그러면 스레드 충돌로 행걸리기 때문에 최초에만 두번 찍도록..
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -1231,7 +1233,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 //		}
 			// *** 서버 로깅 임시 중단. 나중에 주석 해제
 			if(isUpdating==0){
-				loggingToServer();
+				loggingToServer();		
 			}
 			
 	}
