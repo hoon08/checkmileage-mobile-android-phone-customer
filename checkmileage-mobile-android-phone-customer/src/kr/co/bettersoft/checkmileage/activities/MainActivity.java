@@ -342,7 +342,7 @@ public class MainActivity extends Activity {
 			// 비번 이후 액티비티 설정(나)
 			intent.putExtra(Password.NEXT_ACTIVITY, CommonUtils.packageNames+".MainActivity");
 			// 현재 화면 비번 전달
-			intent.putExtra(Password.PASSWORD, sharedPrefCustom.getString("password", "1234"));
+			intent.putExtra(Password.PASSWORD, sharedPrefCustom.getString("password", "0000"));
 			// 비번 입력 모드
 			intent.putExtra(Password.MODE, Password.MODE_CHECK_PASSWORD);
 			startActivity(intent);   
@@ -757,6 +757,11 @@ public class MainActivity extends Activity {
 			MyQRPageActivity.qrCode = myQR;
 		}
 		*/
+		
+		// *** 파일 사용 안하면서 추가 된 코드. 
+		myQR = qrFromPref;				// 다음 액티비티로 전달 (설정값사용)
+		qrResult = 1;
+		MyQRPageActivity.qrCode = myQR;
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////   

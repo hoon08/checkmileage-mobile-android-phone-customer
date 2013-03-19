@@ -841,7 +841,7 @@ public class MyMileagePageActivity extends Activity {
 			}finally{
 				dbInEntries = entries; 
 				//				reTry = 1;				// 재시도 횟수 복구
-				searched = true;
+//				searched = true;					// ??? 연속시 연속
 				// db 에 데이터를 넣는다.
 				try{
 					if(dbSaveEnable){		// 이미지까지 성공적으로 가져온 경우.
@@ -1218,7 +1218,7 @@ public class MyMileagePageActivity extends Activity {
 								// 페이지별 업무. 마일리지 조회.
 								if(!searched){
 									Log.w(TAG,"onResume, search");
-									if(dontTwice==0){
+//									if(dontTwice==0){
 										if(isRunning<1){
 											isRunning = 1;
 											myQRcode = MyQRPageActivity.qrCode;
@@ -1226,9 +1226,9 @@ public class MyMileagePageActivity extends Activity {
 										}else{
 											Log.w(TAG, "already running..");
 										}
-									}else{
-										dontTwice = 0;
-									}
+//									}else{
+//										dontTwice = 0;
+//									}
 								}
 							}
 						}

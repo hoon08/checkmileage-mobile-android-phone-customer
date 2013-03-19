@@ -163,7 +163,10 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		 */
 		memberInfo = new CheckMileageMembers();
 
-		new backgroundGetUserInfo().execute();	
+		
+		isUpdating=1;		// onresume 의 것과 충돌하지 않고 하나만 실행되도록..
+		new backgroundGetUserInfo().execute();				// 사용자 정보를 받아온다.
+		
 		if(!resumeCalled){			// 한번만 .. 느리니까
 			getPreferenceScreen().getSharedPreferences() 
 			.registerOnSharedPreferenceChangeListener(this);		// 리스너 등록 
@@ -191,14 +194,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			init2.putInt("pref_app_hi", someNum); 		// 프리퍼런스 값 넣어 업데이트 시키면 강제로 리스너 호출.
 			init2.commit();			
 			// 자체 프리퍼를 지목할 수 있게 됨. 탈퇴 메소드때 초기값 세팅해준다.
-
-			// 설정 변경하고 온 경우 업뎃 한번 쳐주기.
-			if(updateLv>0){		// 2였던 경우= (업뎃중 또 변경된 경우 ->한번더)
-				Log.d(TAG,"Need Update one more time");
-				//				updateToServer_pre();
-				updateToServer();
-			}
-			updateServerSettingsToPrefs();				// 서버에서 가져온 정보를 프리퍼런스에 저장 
 			resumeCalled = true;
 		}
 	}
@@ -458,7 +453,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		@Override protected void onPreExecute() {  
 		} 
 		@Override protected Void doInBackground(Void... params) {  
-			Log.d(TAG,"backgroundUpdateMyGCMtoServer");
+			Log.d(TAG,"backgroundGetUserInfo");
 			//        		getUserInfo_pre();
 			getUserInfo();
 			//			try {						// gcm 확인용
@@ -975,12 +970,16 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 				}catch(Exception e){ memberInfo.setLanguageCode(strLanguage); }
 
 				// 그 외 activateYn 는 수동 조작. 이시점에 저장 완료.
+				
+				updateServerSettingsToPrefs();				// 서버에서 가져온 정보를 프리퍼런스에 저장 
+				
 			} catch (JSONException e) {		
 				e.printStackTrace();
 				Log.w(TAG,tempstr.length()+"");		// 0 이면 서버에 정보 없음.
 
 			} 
 		}else{			// 요청 실패시	 토스트 띄우고 화면 유지.
+			Log.d(TAG, "Err.. responseCode:"+responseCode);
 			//			Toast.makeText(PrefActivityFromResource.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 		}
 	}
@@ -1061,6 +1060,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	 * @return
 	 */
 	public void updateServerSettingsToPrefs(){
+		Log.d(TAG,"updateServerSettingsToPrefs");
 		String updateYN = sharedPrefCustom.getString("updateYN", "N");
 		if(updateYN.equals("Y")){		
 			Log.w(TAG,"need update o");
@@ -1123,6 +1123,8 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		}else{
 			//			Log.e(TAG,"업뎃 필요 x");
 		}
+		isUpdating=0;		// oncreate 흐름도의 끝자락에서 서버 로깅 호출을 위해.. (onresume 의 것은 이후 두번째 onresume 부터 호출되도록..) 
+		loggingToServer();
 	}
 
 
@@ -1194,7 +1196,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		@Override protected void onPreExecute() {  
 		} 
 		@Override protected Void doInBackground(Void... params) {  
-			Log.d(TAG,"backgroundUpdateMyLocationtoServer");
+			Log.d(TAG,"backgroundUpdateLogToServer");
 			updateLogToServer();
 			return null; 
 		}
@@ -1206,7 +1208,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	public void updateLogToServer(){
 		if(isUpdating==0){
 			isUpdating = 1;
-			Log.i(TAG, "updateLocationToServer");
+			Log.i(TAG, "updateLogToServer");
 			controllerName = "checkMileageLogController";
 			methodName = "registerLog";
 					
@@ -1214,6 +1216,11 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			myLat2 = sharedPrefCustom.getString("myLat2", "");	
 			myLon2 = sharedPrefCustom.getString("myLon2", "");	
 			qrCode = sharedPrefCustom.getString("qrCode", "");	
+			
+//			Log.d(TAG,"phoneNum:"+phoneNum);
+//			Log.d(TAG,"myLat2:"+myLat2);
+//			Log.d(TAG,"myLon2:"+myLon2);
+//			Log.d(TAG,"qrCode:"+qrCode);
 			
 			new Thread(
 					new Runnable(){
@@ -1272,6 +1279,13 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								Log.d(TAG,"updateLocationToServer->fail");
 							}finally{
 								isUpdating = 0;
+								
+								// 설정 변경하고 온 경우 업뎃 한번 쳐주기.
+								if(updateLv>0){		// 2였던 경우= (업뎃중 또 변경된 경우 ->한번더)
+									Log.d(TAG,"Need Update one more time");
+									//				updateToServer_pre();
+									updateToServer();
+								}
 							}
 						}
 					}

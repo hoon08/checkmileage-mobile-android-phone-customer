@@ -13,7 +13,8 @@
         <Button
             android:id="@+id/button1"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="120dp"
+            android:gravity="center"
             android:background="@drawable/design_btn_register_qr"
             android:ems="10"
             android:padding="10dp"
@@ -25,11 +26,24 @@
         <Button
             android:id="@+id/button2"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="120dp"
+            android:gravity="center"
             android:background="@drawable/design_btn_register_qr"
             android:ems="10"
             android:padding="10dp"
             android:text="@string/no_qr_scan"
+            android:textColor="@android:color/white"
+            android:textSize="20dp" />
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:gravity="center"
+            android:background="@drawable/design_btn_register_qr"
+            android:ems="10"
+            android:padding="10dp"
+            android:text="전화번호로 가져오기"
+            android:visibility="gone"
             android:textColor="@android:color/white"
             android:textSize="20dp" />
     </LinearLayout>

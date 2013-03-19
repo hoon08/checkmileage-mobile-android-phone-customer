@@ -1111,7 +1111,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 					}
 				}
 		).start();
-//		loggingToServer();		// *** 서버에 로깅.. 검색시에 로깅하기.. 테스트 필요함.
+		loggingToServer();		// *** 서버에 로깅.. 검색시에 로깅하기.. 테스트 필요함.
 		new Thread(
 				new Runnable(){
 					public void run(){
@@ -1600,7 +1600,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 //								obj.put("parameter03", myLon2);		// parameter03		경도.
 								obj.put("parameter02", "");		// parameter02		위도.
 								obj.put("parameter03", "");		// parameter03		경도.
-								
+								Log.d(TAG,"parameter04:"+ searchText.getText());
 								if((searchText.getText()+"").length()>0){
 									obj.put("parameter04", searchText.getText()+"");		// parameter04		검색일 경우 검색어.
 								}else{
