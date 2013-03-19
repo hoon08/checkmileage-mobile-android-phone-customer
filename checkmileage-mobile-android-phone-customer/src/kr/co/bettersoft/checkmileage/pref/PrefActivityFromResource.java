@@ -252,9 +252,9 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		.registerOnSharedPreferenceChangeListener(this); 		// 리스너 등록
 		
 		// *** 서버 로깅 임시 중단. 나중에 주석 풀어서 사용
-//		if(isUpdating==0){
-//			loggingToServer();
-//		}
+		if(isUpdating==0){
+			loggingToServer();
+		}
 	}
 
 	@Override 
@@ -531,7 +531,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
-							//							connection2.connect();		// *** 
+							//							connection2.connect();		// ** 
 							Thread.sleep(200);	
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
@@ -640,7 +640,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
-								//								connection2.connect();		// *** 
+								//								connection2.connect();		// ** 
 								Thread.sleep(200);
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
@@ -764,7 +764,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
-								//								connection2.connect();		// *** 
+								//								connection2.connect();		// ** 
 								Thread.sleep(200);
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
@@ -845,7 +845,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
 							connection2.setRequestProperty("Content-Type", "application/json");
-							//							connection2.connect();		// *** 
+							//							connection2.connect();		// ** 
 							Thread.sleep(200);
 							OutputStream os2 = connection2.getOutputStream();
 							os2.write(jsonString.getBytes("UTF-8"));
@@ -1229,7 +1229,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 								obj.put("viewName", "CheckMileageCustomerPreferenceView");		// viewName			출력된 화면.
 								obj.put("parameter01", phoneNum);		// parameter01		사용자 전화번호.
 								
-								// *** 좌표 업뎃 안함. 나중에 업뎃시 바꿔서 사용 할 것
+								// **** 좌표 업뎃 안함. 나중에 업뎃시 바꿔서 사용 할 것
 //								obj.put("parameter02", myLat2);		// parameter02		위도.
 //								obj.put("parameter03", myLon2);		// parameter03		경도.
 								obj.put("parameter02", "");		// parameter02		위도.

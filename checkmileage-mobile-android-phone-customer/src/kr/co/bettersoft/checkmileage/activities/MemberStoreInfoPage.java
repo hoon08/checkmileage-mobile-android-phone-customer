@@ -783,11 +783,11 @@ public class MemberStoreInfoPage extends Activity {
 		super.onResume();
 		
 		
-		getMerchantInfoForOnCreate();		//  *** 페이지별 업무 - 가맹점 상세 정보 가져오기..  로깅 구현 이후 주석 처리 할것.
+//		getMerchantInfoForOnCreate();		//  *** 페이지별 업무 - 가맹점 상세 정보 가져오기..  로깅 구현 이후 주석 처리 할것.
 		
-//		if(isUpdating==0){
-//			loggingToServer();		// *** 일단 보류. 나중에 주석 풀것.. 원래 있던 getMerchantInfoForOnCreate 을 대신 수행..
-//		}
+		if(isUpdating==0){
+			loggingToServer();		// *** 일단 보류. 나중에 주석 풀것.. 원래 있던 getMerchantInfoForOnCreate 을 대신 수행..
+		}
 		
 	}
 	
@@ -856,7 +856,7 @@ public class MemberStoreInfoPage extends Activity {
 								obj.put("viewName", "CheckMileageCustomerMerchantInformationView");		// viewName			출력된 화면.
 								obj.put("parameter01", phoneNum);		// parameter01		사용자 전화번호.
 								
-								// *** 일단 좌표 대신 공백 보냄. 나중에 구현.
+								// **** 일단 좌표 대신 공백 보냄. 나중에 구현.
 //								obj.put("parameter02", myLat2);		// parameter02		위도.		// 나중에 구현 - 현재 좌표 업뎃 계획 없음
 //								obj.put("parameter03", myLon2);		// parameter03		경도.		// 나중에 구현 - 현재 좌표 업뎃 계획 없음
 								obj.put("parameter02", "");		// parameter02		위도.

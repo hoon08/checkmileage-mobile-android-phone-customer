@@ -295,7 +295,7 @@ public class MyQRPageActivity extends Activity {
 									}else{
 										saveBMPtoDB(bmp);
 									}
-									// QR 이미지 생성 실패. 처리 필요 *** no qr img 로 가야 할듯.? 재실행?;
+									// QR 이미지 생성 실패. 처리 필요 ** no qr img 로 가야 할듯.? 재실행?;
 								}else{	// 자체 성공 성공한 경우
 									saveBMPtoDB(bmp);
 								}
@@ -332,17 +332,17 @@ public class MyQRPageActivity extends Activity {
 
 		
 		
-//		// 서버에 로그를 남긴다.			// *** 서버 로깅 일단 주석 처리함. 나중에 구현 이후 주석 풀것.
-//		if(!(phoneNum==null || phoneNum.length()<1)){	
-//			if(qrCode!=null && qrCode.length()>0){
-//				//				applicationClass = (ApplicationClass)getApplicationContext();
-//				//				applicationClass.loggingToServer(qrCode);		// 실패
-//				if(isUpdating==0){
-//					//					getNowStart();		// *** 테스트용. 얼마나 걸리는지 확인하기 위함.
-//					loggingToServer();
-//				}
-//			}
-//		}
+		// 서버에 로그를 남긴다.			// *** 서버 로깅 일단 주석 처리함. 나중에 구현 이후 주석 풀것.
+		if(!(phoneNum==null || phoneNum.length()<1)){	
+			if(qrCode!=null && qrCode.length()>0){
+				//				applicationClass = (ApplicationClass)getApplicationContext();
+				//				applicationClass.loggingToServer(qrCode);		// 실패
+				if(isUpdating==0){
+					//					getNowStart();		// **** 테스트용. 얼마나 걸리는지 확인하기 위함.
+					loggingToServer();
+				}
+			}
+		}
 	}
 	
 
@@ -564,11 +564,11 @@ public class MyQRPageActivity extends Activity {
 //			myLon2 = String.format("%.3f", tempFloat);
 //			//		myLon2 = format.format(tempFloat);					// 소수점 세번째 자리까지만
 //
-////			decodeAES(encodeAES(myLat2));		// 암복호화 통합 test ***	// 나중에 주석 처리
-////			decodeAES(encodeAES(myLon2));		// 암복호화 통합 test ***	// 나중에 주석 처리 
+////			decodeAES(encodeAES(myLat2));		// 암복호화 통합 test ****	// 나중에 주석 처리
+////			decodeAES(encodeAES(myLon2));		// 암복호화 통합 test ****	// 나중에 주석 처리 
 //
-//			myLat2 = encodeAES(myLat2);		// 암호화		// *** 나중에 주석 풀어서 사용
-//			myLon2 = encodeAES(myLon2);		// 암호화		// *** 나중에 주석 풀어서 사용
+//			myLat2 = encodeAES(myLat2);		// 암호화		// **** 나중에 주석 풀어서 사용
+//			myLon2 = encodeAES(myLon2);		// 암호화		// **** 나중에 주석 풀어서 사용
 
 			
 			
@@ -600,10 +600,10 @@ public class MyQRPageActivity extends Activity {
 								obj.put("viewName", "CheckMileageCustomerQRView");		// viewName			출력된 화면.
 								obj.put("parameter01", phoneNum);		// parameter01		사용자 전화번호.
 								
-//								obj.put("parameter02", myLat2);		// parameter02		위도.	// *** 일단 공백 보냄. 나중에 교체
-//								obj.put("parameter03", myLon2);		// parameter03		경도.	// *** 일단 공백 보냄. 나중에 교체
-								obj.put("parameter02", "");		// parameter02		위도.		// *** 일단 공백 보냄. 나중에 교체
-								obj.put("parameter03", "");		// parameter03		경도.		// *** 일단 공백 보냄. 나중에 교체
+//								obj.put("parameter02", myLat2);		// parameter02		위도.	// **** 일단 공백 보냄. 나중에 교체
+//								obj.put("parameter03", myLon2);		// parameter03		경도.	// **** 일단 공백 보냄. 나중에 교체
+								obj.put("parameter02", "");		// parameter02		위도.		// **** 일단 공백 보냄. 나중에 교체
+								obj.put("parameter03", "");		// parameter03		경도.		// **** 일단 공백 보냄. 나중에 교체
 								
 								obj.put("parameter04", "");		// parameter04		검색일 경우 검색어.
 								obj.put("parameter05", "");		// parameter05		예비용도.
@@ -652,7 +652,7 @@ public class MyQRPageActivity extends Activity {
 								//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
 								//									CommonUtils.usingNetwork = 0;
 								//								}
-								//							getNowEnd();	// *** 테스트용. 얼마나 걸리는지 확인하기 위함.
+								//							getNowEnd();	// **** 테스트용. 얼마나 걸리는지 확인하기 위함.
 							}
 						}
 					}
@@ -690,7 +690,7 @@ public class MyQRPageActivity extends Activity {
 				myLat = (int) (location.getLatitude()*1000000);				// 현위치의 좌표 획득
 				myLon = (int) (location.getLongitude()*1000000);	
 				Log.d(TAG, "runOnFirstFix// location1:"+myLat+", "+myLon);			// 37529466 126921069
-//				new backgroundUpdateLogToServer().execute();	// 비동기로 서버에 위치 업뎃	// *** 		
+//				new backgroundUpdateLogToServer().execute();	// 비동기로 서버에 위치 업뎃	// **** 		
 			}else{
 				location =  lm.getLastKnownLocation(provider);
 				if(location==null){
@@ -699,7 +699,7 @@ public class MyQRPageActivity extends Activity {
 					myLat = (int) (location.getLatitude()*1000000);				// 현위치의 좌표 획득
 					myLon = (int) (location.getLongitude()*1000000);	
 					Log.d("runOnFirstFix", "location2:"+myLat+", "+myLon);		
-//					new backgroundUpdateLogToServer().execute();	// 비동기로 전환	// *** 
+//					new backgroundUpdateLogToServer().execute();	// 비동기로 전환	// **** 
 				}
 			}
 			myLat2 = Integer.toString(myLat);		//  int -> str
@@ -709,10 +709,10 @@ public class MyQRPageActivity extends Activity {
 			myLat2 = String.format("%.3f", tempFloat);
 			tempFloat = Float.parseFloat(myLon2)/1000000;		// str - float -> 나누기 백만 (소수점 처리)
 			myLon2 = String.format("%.3f", tempFloat);
-//			decodeAES(encodeAES(myLat2));		// 암복호화 통합 test ***	// 나중에 주석 처리
-//			decodeAES(encodeAES(myLon2));		// 암복호화 통합 test ***	// 나중에 주석 처리 
-			myLat2 = encodeAES(myLat2);		// 암호화		// *** 나중에 주석 풀어서 사용
-			myLon2 = encodeAES(myLon2);		// 암호화		// *** 나중에 주석 풀어서 사용
+//			decodeAES(encodeAES(myLat2));		// 암복호화 통합 test ****	// 나중에 주석 처리
+//			decodeAES(encodeAES(myLon2));		// 암복호화 통합 test ****	// 나중에 주석 처리 
+			myLat2 = encodeAES(myLat2);		// 암호화		// **** 나중에 주석 풀어서 사용
+			myLon2 = encodeAES(myLon2);		// 암호화		// **** 나중에 주석 풀어서 사용
 		}catch(Exception e){
 			e.printStackTrace();
 //			Log.w(TAG,"fail to update my location to server");

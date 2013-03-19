@@ -202,22 +202,22 @@ public class CreateQRPageActivity extends Activity {
 		saveQR.putString("qrcode", qrCode);
 		saveQR.commit();
 
-		// 파일에 저장
-		try {
-			File qrFileDirectory = new File(CommonUtils.qrFileSavedPath);
-			qrFileDirectory.mkdirs();
-
-			File myFile = new File(CommonUtils.qrFileSavedPathFile);
-			myFile.createNewFile();
-			FileOutputStream fOut = new FileOutputStream(myFile);
-			OutputStreamWriter myOutWriter = 
-									new OutputStreamWriter(fOut);
-			myOutWriter.append(qrCode);
-			myOutWriter.close();
-			fOut.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		// 파일에 저장 // *** 파일 사용 안함
+//		try {
+//			File qrFileDirectory = new File(CommonUtils.qrFileSavedPath);
+//			qrFileDirectory.mkdirs();
+//
+//			File myFile = new File(CommonUtils.qrFileSavedPathFile);
+//			myFile.createNewFile();
+//			FileOutputStream fOut = new FileOutputStream(myFile);
+//			OutputStreamWriter myOutWriter = 
+//									new OutputStreamWriter(fOut);
+//			myOutWriter.append(qrCode);
+//			myOutWriter.close();
+//			fOut.close();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 		new backgroundSaveQRtoServer().execute();		// 설정에 저장 끝나면 .. 비동기 실행 - 서버에 저장
 	}
 
