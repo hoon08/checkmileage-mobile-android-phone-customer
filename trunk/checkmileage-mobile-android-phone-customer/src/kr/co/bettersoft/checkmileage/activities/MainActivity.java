@@ -658,28 +658,28 @@ public class MainActivity extends Activity {
 		qrFromPref = strForLog;
 	}
 	
-	/**
-	 * 파일로부터 qr을 읽는다.
-	 */
-	public void readQRFromFile(){
-		Log.d(TAG,"try get qr from file");
-		try{
-			File myFile = new File(CommonUtils.qrFileSavedPathFile);	
-			FileInputStream fIn = new FileInputStream(myFile);
-			BufferedReader myReader = new BufferedReader(
-					new InputStreamReader(fIn));
-			String aDataRow = "";
-			String aBuffer = "";
-			while ((aDataRow = myReader.readLine()) != null) {
-//				aBuffer += aDataRow + "\n";
-				aBuffer += aDataRow;
-			}
-			qrFromFile = aBuffer;
-		}catch(Exception e){
-//			e.printStackTrace();
-			qrFromFile = "";
-		}
-	}
+//	/**
+//	 * 파일로부터 qr을 읽는다.		// --> 전번 인증통해 복원 가능하므로 사용하지 않음.
+//	 */
+//	public void readQRFromFile(){
+//		Log.d(TAG,"try get qr from file");
+//		try{
+//			File myFile = new File(CommonUtils.qrFileSavedPathFile);	
+//			FileInputStream fIn = new FileInputStream(myFile);
+//			BufferedReader myReader = new BufferedReader(
+//					new InputStreamReader(fIn));
+//			String aDataRow = "";
+//			String aBuffer = "";
+//			while ((aDataRow = myReader.readLine()) != null) {
+////				aBuffer += aDataRow + "\n";
+//				aBuffer += aDataRow;
+//			}
+//			qrFromFile = aBuffer;
+//		}catch(Exception e){
+////			e.printStackTrace();
+//			qrFromFile = "";
+//		}
+//	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////    
 
 
@@ -687,12 +687,15 @@ public class MainActivity extends Activity {
 	// QR 코드 저장소에서 QR 코드를 읽어온다. --> 설정파일에서 읽는다
 	public void readQR(){
 		readQRFromPref();
-		readQRFromFile();
+//		readQRFromFile();		// 어플 재설치 이후 파일에서 읽지 않는다.... 데이터 날린 이후 복원 어떻게 할지 여부=전번 인증 하고 그거로 받는다(버튼을 구현하여 받는다)로 대체 가능하므로 파일 사용하지 않도록 함.  **** 
 		
-		if(qrFromPref==null || qrFromPref.length()<1){		// 설정에 없는 경우
+		
+		/* **** 설정,파일의 QR 동기화 관련.. -> 파일 사용안하면서 죽은 코드. **** */
+/*		if(qrFromPref==null || qrFromPref.length()<1){		// 설정에 없는 경우
 			Log.d(TAG,"pref no qr");
+			
 			if(qrFromFile==null || qrFromFile.length()<1){	
-				//(파일에도 없는 경우 -> 양쪽에 모두 없으면 패스 --> 생성화면으로 이동됨.)	
+				//(파일에도 없는 경우 -> 양쪽에 모두 없으면 패스 --> 생성화면으로 이동됨.) // --> 파일 사용 안함.	
 			}else{		// 파일에는 있는 경우 
 				myQR = qrFromFile;	// 파일것을 사용
 				// 파일 데이터를 설정에 저장  -- 파일에 있는걸로 쓰기로 했기 때문에 설정에 저장해둔다.
@@ -753,6 +756,7 @@ public class MainActivity extends Activity {
 			qrResult = 1;
 			MyQRPageActivity.qrCode = myQR;
 		}
+		*/
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////   

@@ -178,22 +178,22 @@ public class ScanQRPageActivity extends Activity {
 		saveQR.putString("qrcode", qrCode);
 		saveQR.commit();
 		
-		// 파일에도 저장
-		try {
-			File qrFileDirectory = new File(CommonUtils.qrFileSavedPath);
-			qrFileDirectory.mkdirs();
-
-			File myFile = new File(CommonUtils.qrFileSavedPathFile);
-			myFile.createNewFile();
-			FileOutputStream fOut = new FileOutputStream(myFile);
-			OutputStreamWriter myOutWriter = 
-									new OutputStreamWriter(fOut);
-			myOutWriter.append(qrCode);
-			myOutWriter.close();
-			fOut.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		// 파일에도 저장  // - 파일 사용 안함.
+//		try {
+//			File qrFileDirectory = new File(CommonUtils.qrFileSavedPath);
+//			qrFileDirectory.mkdirs();
+//
+//			File myFile = new File(CommonUtils.qrFileSavedPathFile);
+//			myFile.createNewFile();
+//			FileOutputStream fOut = new FileOutputStream(myFile);
+//			OutputStreamWriter myOutWriter = 
+//									new OutputStreamWriter(fOut);
+//			myOutWriter.append(qrCode);
+//			myOutWriter.close();
+//			fOut.close();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	/**

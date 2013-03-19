@@ -621,7 +621,6 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
-								//								connection2.connect();		// *** 
 								Thread.sleep(200);
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
@@ -702,7 +701,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		Log.d(TAG,"max:"+max);				// 0 번째 모든 업종 제거.
 		try {
 			tmpJobs = new String[max];		// 0번째 제거로 max+1 --> max
-			//			tmpJobs[0] = "모든 업종";			// 나중에 바꿔야 하는데.. 다국어로. *** 		--> 0번째 모든 업종 항목 제거
+			//			tmpJobs[0] = "모든 업종";			// 나중에 바꿔야 하는데.. 다국어로.		--> 0번째 모든 업종 항목 제거
 			if(max>0){
 				for ( int i = 0; i < max; i++ ){
 					JSONObject jsonObj = jsonArray2.getJSONObject(i).getJSONObject("checkMileageBusinessKind");		// 대소문자 주의
@@ -823,7 +822,6 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 									connection2.setInstanceFollowRedirects(false);
 									connection2.setRequestMethod("POST");
 									connection2.setRequestProperty("Content-Type", "application/json");
-									//									connection2.connect();		// *** 
 									Thread.sleep(200);
 									OutputStream os2 = connection2.getOutputStream();
 									os2.write(jsonString.getBytes("UTF-8"));
@@ -1224,17 +1222,17 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		app_end = 0;
 		
 		
-		// *** 가맹점 업종 목록 가져오기. 서버로깅 안함에 따라 작성. 서버 로깅 사용시 이부분 주석 처리할 것
-		if((!jobKindSearched) && (isRunning==0)){				// 업종 검색이 완료되지 않았고, 실행중인 작업이 없을 경우.
-			isRunning = 1;		// 연속 실행 방지 (다른 실행 거부)
-			showPb();
-			//			getBusinessKindList();
-			new backgroundGetBusinessKindList().execute();			// 비동기로 변환
-		}
+//		// *** 가맹점 업종 목록 가져오기. 서버로깅 안함에 따라 작성. 서버 로깅 사용시 이부분 주석 처리할 것
+//		if((!jobKindSearched) && (isRunning==0)){				// 업종 검색이 완료되지 않았고, 실행중인 작업이 없을 경우.
+//			isRunning = 1;		// 연속 실행 방지 (다른 실행 거부)
+//			showPb();
+//			//			getBusinessKindList();
+//			new backgroundGetBusinessKindList().execute();			// 비동기로 변환
+//		}
 			// *** 서버 로깅 임시 중단. 나중에 주석 해제
-//			if(isUpdating==0){
-//				loggingToServer();
-//			}
+			if(isUpdating==0){
+				loggingToServer();
+			}
 			
 	}
 

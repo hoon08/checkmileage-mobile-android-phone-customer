@@ -330,9 +330,9 @@ public class MyMileagePageActivity extends Activity {
 			}
 			c.close();
 			db.close();
-			entriesFn = dbOutEntries;						//  *** 꺼낸 데이터를 결과 데이터에 세팅 
+			entriesFn = dbOutEntries;						//  꺼낸 데이터를 결과 데이터에 세팅 
 		}catch(Exception e){e.printStackTrace();}
-		showInfo();									//  *** 결과 데이터를 화면에 보여준다.		 데이터 있는지 여부는 결과 처리에서 함께..
+		showInfo();									//   결과 데이터를 화면에 보여준다.		 데이터 있는지 여부는 결과 처리에서 함께..
 	}
 	////---------------------SQLite ----------------------////
 
@@ -638,7 +638,7 @@ public class MyMileagePageActivity extends Activity {
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
 								connection2.setRequestProperty("Content-Type", "application/json");
-								//								connection2.connect();		// *** 
+								//								connection2.connect();		// **
 								Thread.sleep(200);
 								OutputStream os2 = connection2.getOutputStream();
 								os2.write(jsonString.getBytes("UTF-8"));
@@ -958,24 +958,24 @@ public class MyMileagePageActivity extends Activity {
 		
 		
 		// *** 서버 로깅 주석처리했기 때문에 작성함. 서버 로깅 주석 해제시 로깅 이후 수행될 부분이므로 이 부분을 주석처리할 것.
-		if(!searched){
-			Log.w(TAG,"onResume, search");
-			if(dontTwice==0){
-				if(isRunning<1){
-					isRunning = 1;
-					myQRcode = MyQRPageActivity.qrCode;
-					new backgroundGetMyMileageList().execute();
-				}else{
-					Log.w(TAG, "already running..");
-				}
-			}else{
-				dontTwice = 0;
-			}
-		}
-		
-//		if(isUpdating==0){			
-//			loggingToServer();		// ***  서버로깅. 나중에 주석 풀것.
+//		if(!searched){
+//			Log.w(TAG,"onResume, search");
+//			if(dontTwice==0){
+//				if(isRunning<1){
+//					isRunning = 1;
+//					myQRcode = MyQRPageActivity.qrCode;
+//					new backgroundGetMyMileageList().execute();
+//				}else{
+//					Log.w(TAG, "already running..");
+//				}
+//			}else{
+//				dontTwice = 0;
+//			}
 //		}
+		
+		if(isUpdating==0){			
+			loggingToServer();		// ***  서버로깅. 나중에 주석 풀것.
+		}
 		
 	}
 
@@ -1172,7 +1172,7 @@ public class MyMileagePageActivity extends Activity {
 								obj.put("viewName", "CheckMileageCustomerMerchantListView");		// viewName			출력된 화면.
 								obj.put("parameter01", phoneNum);		// parameter01		사용자 전화번호.
 								
-								// *** 일단 공백 보냄. 나중에 좌표 보내게 되면 그때 바꿔서 사용
+								// **** 일단 공백 보냄. 나중에 좌표 보내게 되면 그때 바꿔서 사용
 //								obj.put("parameter02", myLat2);		// parameter02		위도.
 //								obj.put("parameter03", myLon2);		// parameter03		경도.
 								obj.put("parameter02", "");		// parameter02		위도.
