@@ -2,6 +2,7 @@
 <!-- ListView의 행(Row)마다 적용될 layout -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/member_store_list_parent_layout2"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
