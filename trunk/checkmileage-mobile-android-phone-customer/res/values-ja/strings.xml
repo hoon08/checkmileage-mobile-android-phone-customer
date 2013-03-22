@@ -128,4 +128,24 @@
     
     <string name="agree">同意します</string>
     <string name="disagree">同意しません</string>
+    
+        <string name="you_did_not_agree">あなたは利用規約に同意していない.</string>
+    <string name="input_certi_4nums">認証番号4桁を入力してください.</string>
+    <string name="certi_num_req_success">認証番号要求しました。受信した認証番号を入力してください。</string>
+    <string name="certi_num_req_fail">認証番号要求に失敗しました.</string>
+    <string name="certi_success">認証に成功しました.</string>
+    <string name="certi_fail">認証に失敗しました.</string>
+    <string name="no_phone_num_info">電話番号情報がありません.</string>
+    <string name="request_failed">要求が失敗しました。再試行してください。</string>
+    
+    <string name="agree_to_terms">利用規約に同意します.</string>
+    <string name="see_terms">利用規約を見る</string>
+    <string name="agree_to_privacy_terms">個人情報保護方針に同意します.</string>
+    <string name="see_privacy_terms">個人情報保護ポリシーの表示</string>
+    <string name="ok">確 認</string>
+    <string name="input_customer_phone_num">ユーザーの電話番号を入力</string>
+    <string name="request_certi_num">認証番号要求</string>
+    <string name="certi_num">認証番号</string>
+    <string name="request_certify">認証要求</string>
+    <string name="get_qr_by_phone_num">電話番号を使用してQR code得る</string>
 </resources>

@@ -128,4 +128,24 @@
     
     <string name="agree">我同意</string>
     <string name="disagree">我不同意</string>
+    
+    <string name="you_did_not_agree">你不同意的条款和条件.</string>
+    <string name="input_certi_4nums">请输入四位数的认证编号.</string>
+    <string name="certi_num_req_success">要求认证编号. 请输入证书编号.</string>
+    <string name="certi_num_req_fail">无法要求认证编号.</string>
+    <string name="certi_success">认证成功的.</string>
+    <string name="certi_fail">身份验证失败.</string>
+    <string name="no_phone_num_info">无电话号码信息.</string>
+    <string name="request_failed">请求已失败. 请再试一次.</string>
+    
+    <string name="agree_to_terms">我接受条款和条件.</string>
+    <string name="see_terms">请参阅使用条款</string>
+    <string name="agree_to_privacy_terms">同意的隐私政策.</string>
+    <string name="see_privacy_terms">隐私权政策</string>
+    <string name="ok">行</string>
+    <string name="input_customer_phone_num">输入您的电话号码</string>
+    <string name="request_certi_num">申请证书编号</string>
+    <string name="certi_num">证书编号</string>
+    <string name="request_certify">身份验证请求</string>
+    <string name="get_qr_by_phone_num">使用手机的QR码</string>
 </resources>

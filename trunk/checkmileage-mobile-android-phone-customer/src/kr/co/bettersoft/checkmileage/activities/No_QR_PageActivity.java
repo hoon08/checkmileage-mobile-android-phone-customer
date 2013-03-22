@@ -138,7 +138,7 @@ public class No_QR_PageActivity extends Activity {
 //				Log.i(TAG, "getQRFromServerByPhoneNumber");
 				
 				if(phoneNumber.length()<1){	// 전번이 없다.
-					alert("전화번호 정보가 없습니다.");
+					alert(getString(R.string.no_phone_num_info));
 				}else{	// 전번으로 qr 정보 받아온다.
 //					alert("전화번호 정보가 있습니다."+phoneNumber);					
 					new backgroundGetQRNumFromServerByPhoneNumber().execute();	// *** 		phoneNum 
@@ -268,7 +268,7 @@ public class No_QR_PageActivity extends Activity {
 						}catch(Exception e){ 
 //							hidePb();
 							e.printStackTrace();
-							alert("요청이 실패하였습니다. 다시 시도하여 주십시오.");
+							alert(getString(R.string.request_failed));
 						}
 					}
 				}).start();

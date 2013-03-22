@@ -128,4 +128,25 @@
     
     <string name="agree">동의합니다</string>
     <string name="disagree">동의하지 않습니다</string>
+    
+        <string name="you_did_not_agree">약관에 동의하지 않으셨습니다.</string>
+    <string name="input_certi_4nums">인증번호 4자리를 입력하여 주십시오.</string>
+    <string name="certi_num_req_success">인증번호를 요청하였습니다. 전송받은 인증번호를 입력하여 주십시오.</string>
+    <string name="certi_num_req_fail">인증번호 요청에 실패하였습니다.</string>
+    <string name="certi_success">인증에 성공하였습니다.</string>
+    <string name="certi_fail">인증에 실패하였습니다.</string>
+    <string name="no_phone_num_info">전화번호 정보가 없습니다.</string>
+    <string name="request_failed">요청이 실패하였습니다. 다시 시도하여 주십시오.</string>
+    
+    <string name="agree_to_terms">이용약관에 동의합니다.</string>
+    <string name="see_terms">이용 약관 보기</string>
+    <string name="agree_to_privacy_terms">개인정보 보호정책에 동의합니다.</string>
+    <string name="see_privacy_terms">개인정보 보호정책 보기</string>
+    <string name="ok">확 인</string>
+    <string name="input_customer_phone_num">사용자 전화번호 입력</string>
+    <string name="request_certi_num">인증번호 요청</string>
+    <string name="certi_num">인증번호</string>
+    <string name="request_certify">인증 요청</string>
+    <string name="get_qr_by_phone_num">전화번호로 가져오기</string>
+    
 </resources>

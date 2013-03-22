@@ -1,6 +1,7 @@
 package kr.co.bettersoft.checkmileage.pref;
 
 import java.util.List;
+import java.util.Locale;
 
 import kr.co.bettersoft.checkmileage.activities.CertificationStep1;
 import kr.co.bettersoft.checkmileage.activities.R;
@@ -36,6 +37,12 @@ public class DummyActivity extends Activity {
 	public static int count = 0;
 	public static Activity dummyActivity;
 
+	// Locale
+	Locale systemLocale = null ;
+	String strCountry = "" ;				// 국가 코드
+
+	
+	
 	// 설정 파일 저장소  
 	SharedPreferences sharedPrefCustom;
 	
@@ -50,6 +57,15 @@ public class DummyActivity extends Activity {
 		dummyActivity = DummyActivity.this;
 		// TODO Auto-generated method stub
 
+		
+		//사용자 지역
+		systemLocale = getResources().getConfiguration().locale;
+		strCountry = systemLocale.getCountry();
+		Log.d(TAG,"strCountry:"+strCountry);
+//		if(strCountry.equals("kr")){
+//			strCountry = "KR";
+//		}
+		
 		// prefs
 		sharedPrefCustom = getSharedPreferences("MyCustomePref",
 				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
@@ -71,11 +87,15 @@ public class DummyActivity extends Activity {
 			// 테스트 및 노멀은 같다. 그냥 실행한다. 마일리지 변경사항, 이벤트는 알려줘야 한다.
 			
 			Intent intent;
+			
+			
+			
 			// 동의 여부 체크하여 진행한다.
-			if(checkUserAgreed()){	// 이전에 동의한 경우 : 다음 프로세스 진행.
-				Log.d(TAG,"checkUserAgreed");
+			if(checkUserAgreed()||(!(strCountry.equalsIgnoreCase("KR")))){	// 국적이 한국이 아니거나, 이전에 동의한 경우 : 다음 프로세스 진행. -- 국가코드는 사용자 단말기의 언어 설정을 따름.
+				Log.d(TAG,"go main");
 				intent = new Intent(DummyActivity.this, MainActivity.class);	
 			}else{			// 이전에 동의 하지 않은 경우 : 동의를 받는다. 사용자 동의 -> 전번인증 -> 다음 단계.. 는 인트로. MainActivity
+				Log.d(TAG,"go for certi step1");
 				intent = new Intent(DummyActivity.this, CertificationStep1.class);
 			}
 			if(RunMode.equals("MILEAGE")){
@@ -149,7 +169,7 @@ public class DummyActivity extends Activity {
 //			return false; // test용. test *** 
 			return true;	// real
 		}else{							// 이전에 동의 안한 경우
-			Log.d(TAG,"need agree");
+			Log.d(TAG,"did not agree");
 			return false;
 		}
 	}
