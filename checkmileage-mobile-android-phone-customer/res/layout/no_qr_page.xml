@@ -42,7 +42,7 @@
             android:background="@drawable/design_btn_register_qr"
             android:ems="10"
             android:padding="10dp"
-            android:text="전화번호로 가져오기"
+            android:text="@string/get_qr_by_phone_num"
             android:visibility="gone"
             android:textColor="@android:color/white"
             android:textSize="20dp" />

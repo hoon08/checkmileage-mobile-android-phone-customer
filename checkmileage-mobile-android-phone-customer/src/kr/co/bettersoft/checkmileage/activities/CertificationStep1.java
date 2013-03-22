@@ -201,7 +201,7 @@ public class CertificationStep1 extends Activity {
 					startActivity(intent);   
 					finish();
 				}else{
-					showResultDialog("약관에 동의하지 않으셨습니다.");
+					showResultDialog(getString(R.string.you_did_not_agree));
 				}
 				
 			}

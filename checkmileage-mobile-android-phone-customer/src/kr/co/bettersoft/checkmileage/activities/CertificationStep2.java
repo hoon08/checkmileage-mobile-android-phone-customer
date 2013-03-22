@@ -286,12 +286,17 @@ public class CertificationStep2 extends Activity {
 		requestCertiNumBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				try {
-					certificationStep1();
-				} catch (JSONException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
+				if((userPhoneNumber.getText()+"").length()>0){
+					try {
+						showPb();
+						certificationStep1();
+					} catch (JSONException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}else{		// 전번없음
+					showResultDialog(getString(R.string.no_phone_num));
 				}
 			}
 		});
@@ -301,7 +306,7 @@ public class CertificationStep2 extends Activity {
 			public void onClick(View v) {
 				if((userCertiNumber.getText()+"").length()!=4){
 //					userCertifiedComplete();		// 패스 시켜줌		// test 용 *** 
-					showResultDialog("인증번호 4자리를 입력하여 주십시오.");		// 원본. 나중에 주석 제거하여 사용. *** 
+					showResultDialog(getString(R.string.input_certi_4nums));		// 원본. 나중에 주석 제거하여 사용. *** 
 				}else{
 					// 서버로 인증번호를 보내서 인증번호를 확인한다.
 					try {
@@ -382,6 +387,7 @@ public class CertificationStep2 extends Activity {
 					  		  theData1(in);
 						}catch(Exception e){ 
 						 e.printStackTrace();
+						 hidePb();
 						}  
     				}
     			}
@@ -392,6 +398,7 @@ public class CertificationStep2 extends Activity {
 	 */
 	public void theData1(InputStream in){
 		Log.d(TAG,"theData");
+		hidePb();
     	BufferedReader reader = new BufferedReader(new InputStreamReader(in));
     	StringBuilder builder = new StringBuilder();
     	String line =null;
@@ -420,10 +427,10 @@ public class CertificationStep2 extends Activity {
     		// 기타 정보들을 설정 파일에 저장....
     		if(certiResult.equals("SUCCESS")){				// 인증 성공
     			Log.i(TAG, "SUCCESS");
-    			showResultDialog("인증번호를 요청하였습니다. 전송받은 인증번호를 입력하여 주십시오.");	
+    			showResultDialog(getString(R.string.certi_num_req_success));	
     		}else{														// 인증 실패
     			Log.i(TAG, "FAIL_ADMISSION");
-    			showResultDialog("인증번호 요청에 실패하였습니다.");
+    			showResultDialog(getString(R.string.certi_num_req_fail));
     		}
     	}else{			// 인증 실패시	 토스트 띄우고 화면 유지.
     		alertMsg();
@@ -519,7 +526,7 @@ public class CertificationStep2 extends Activity {
     	    	userCertifiedComplete();		// 패스 시켜줌
     		}else{														// 인증 실패
     			Log.i(TAG, "FAIL_ADMISSION");
-    			showResultDialog("인증에 실패하였습니다.");
+    			showResultDialog(getString(R.string.certi_fail));
     		}
     	}else{			// 인증 실패시	 토스트 띄우고 화면 유지.
     		alertMsg();
@@ -533,7 +540,7 @@ public class CertificationStep2 extends Activity {
 		updateDone.putString("agreedYN", "Y");			// 인증 여부 저장
 		updateDone.putString("phoneNum", phoneNum);		// 전번도 저장
 		updateDone.commit();
-		showResultDialog2("인증에 성공하였습니다.");	
+		showResultDialog2(getString(R.string.certi_success));	
 		certified = true;		
 	}
 	

@@ -16,14 +16,14 @@
             android:id="@+id/checkBoxPrivacyTerms"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="이용약관에 동의합니다." />
+            android:text="@string/agree_to_terms" />
 
         <Button
             android:id="@+id/seePrivacyTermsBtn"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:ems="15"
-            android:text="이용 약관 보기" />
+            android:text="@string/see_terms" />
 
         <TextView
             android:layout_width="20dp"
@@ -33,14 +33,14 @@
             android:id="@+id/checkBoxGPSTerms"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="개인정보 보호정책에 동의합니다." />
+            android:text="@string/agree_to_privacy_terms" />
 
         <Button
             android:id="@+id/seeGPSTermsBtn"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:ems="15"
-            android:text="개인정보 보호정책 보기" />
+            android:text="@string/see_privacy_terms" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -52,7 +52,7 @@
                 android:id="@+id/userConfirmBtn"
                 android:layout_width="150dp"
                 android:layout_height="70dp"
-                android:text="확 인"
+                android:text="@string/ok"
                  android:layout_marginBottom="20dp"
                 android:ems="30" />
         </LinearLayout>

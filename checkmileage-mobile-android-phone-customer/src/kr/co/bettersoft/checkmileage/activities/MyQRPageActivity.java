@@ -728,14 +728,16 @@ public class MyQRPageActivity extends Activity {
 				SharedPreferences.Editor updatePhoneNum =   sharedPrefCustom.edit();
 				updatePhoneNum.putString("phoneNum", phoneNum);		// 전번 저장
 				updatePhoneNum.commit();
-			}catch(Exception e){}
+			}catch(Exception e){
+				phoneNum = "";
+			}
 		}
 		// 좌표 저장함
 		SharedPreferences.Editor updateDataForLog =   sharedPrefCustom.edit();
 		updateDataForLog.putString("phoneNum", phoneNum);		// 전번 저장 --> 위에서 저장
 		updateDataForLog.putString("myLat2", myLat2);		// 위도
 		updateDataForLog.putString("myLon2", myLon2);		// 경도
-		updateDataForLog.putString("qrCode", qrCode);		// 경도
+		updateDataForLog.putString("qrCode", qrCode);		// qr
 		updateDataForLog.commit();
 	}
 	

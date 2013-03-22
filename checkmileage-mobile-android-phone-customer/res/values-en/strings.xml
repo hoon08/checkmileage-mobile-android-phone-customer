@@ -128,4 +128,24 @@
     
     <string name="agree">I agree</string>
     <string name="disagree">I do not agree</string>
+    
+    <string name="you_did_not_agree">You did not agree to the Terms and Conditions.</string>
+    <string name="input_certi_4nums">Please enter the four-digit certification number.</string>
+    <string name="certi_num_req_success">Requested certification number.Please enter the certification number.</string>
+    <string name="certi_num_req_fail">Failed to request certification number.</string>
+    <string name="certi_success">Authentication has been successful.</string>
+    <string name="certi_fail">Authentication failed.</string>
+    <string name="no_phone_num_info">No phone number information.</string>
+    <string name="request_failed">Request has failed. Please try again.</string>
+    
+    <string name="agree_to_terms">I accept the Terms and Conditions.</string>
+    <string name="see_terms">See Terms of use</string>
+    <string name="agree_to_privacy_terms">Agree to the Privacy Policy.</string>
+    <string name="see_privacy_terms">Privacy Policy</string>
+    <string name="ok">O K</string>
+    <string name="input_customer_phone_num">Enter your phone number</string>
+    <string name="request_certi_num">Request Certificate No.</string>
+    <string name="certi_num">Certificate No.</string>
+    <string name="request_certify">Authentication requests</string>
+    <string name="get_qr_by_phone_num">Get the QR code using your phone</string>
 </resources>
