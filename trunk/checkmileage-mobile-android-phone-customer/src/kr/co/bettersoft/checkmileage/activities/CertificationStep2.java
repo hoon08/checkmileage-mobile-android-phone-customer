@@ -269,6 +269,13 @@ public class CertificationStep2 extends Activity {
 		try{		// 읽다가 에러 터질때에 대비하기
 			TelephonyManager telManager = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE); 
 			phoneNum = telManager.getLine1Number();
+			
+			String pnTemp = phoneNum;
+			if(pnTemp.contains("+82")){
+				pnTemp = pnTemp.replace("+82", "0");							
+				Log.d(TAG,"pnTemp"+pnTemp);
+				phoneNum = pnTemp;
+			}
 		}catch(Exception e){}
 		// 못읽거나 문제 생겼을때는 그냥 공백 (직접 입력 하도록 한다)
 		if(phoneNum==null || phoneNum.length()<1){
@@ -362,7 +369,8 @@ public class CertificationStep2 extends Activity {
     				    String nowDate = sf.format(today);
 //						String nowTime = getNow();
 						try{
-							obj.put("phoneNumber", phoneNum);
+							obj.put("phoneNumber", userPhoneNumber.getText()+"");	
+//							Log.d(TAG,"phoneNumber::"+ userPhoneNumber.getText()+"");
 							obj.put("activateYn", "Y");
 							obj.put("modifyDate", nowDate);
 							obj.put("registerDate", nowDate);
@@ -443,7 +451,7 @@ public class CertificationStep2 extends Activity {
 	 * 파라메터 : phoneNumber, certificationNumber, activateYn
 	 * 예 ) phoneNumber : 01085858025
 	 * certificationNumber : 4792
-	 * activateYn : y
+	 * activateYn : Y
 	 * 
 	 * 
 	 */
@@ -461,7 +469,7 @@ public class CertificationStep2 extends Activity {
 						try{
 							obj.put("phoneNumber", phoneNum);			// 전번
 							obj.put("certificationNumber", userCertiNumber.getText()+"");	// 승인번호		
-							obj.put("activateYn", "y");
+							obj.put("activateYn", "Y");
 						}catch(Exception e){
 							e.printStackTrace();
 						}

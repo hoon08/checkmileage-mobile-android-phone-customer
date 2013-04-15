@@ -175,10 +175,20 @@ public class MemberStoreInfoPage extends Activity {
 					});
 					mapBtn.setOnClickListener(new Button.OnClickListener()  {
 						public void onClick(View v)  {
-							Intent mapIntent = new Intent(MemberStoreInfoPage.this, MemberStoreMapPageActivity.class);
-							mapIntent.putExtra("latatude", latatude);
-							mapIntent.putExtra("longitude", longitude);
-							startActivity(mapIntent);
+							
+							Log.d(TAG,"latatude:"+latatude+"//longitude:"+longitude);	// *** 
+							
+							if(latatude.contains(".") && longitude.contains(".")){
+								latatude = (Float.parseFloat(latatude) * 10000)+"";
+								longitude = (Float.parseFloat(longitude) * 10000)+"";
+							}
+							if(latatude.length()>0 && latatude.length()<10){
+								Intent mapIntent = new Intent(MemberStoreInfoPage.this, MemberStoreMapPageActivity.class);	// *** 
+								mapIntent.putExtra("latatude", latatude);
+								mapIntent.putExtra("longitude", longitude);
+								mapIntent.putExtra("companyName", merchantData.getCompanyName());
+								startActivity(mapIntent);
+							}
 						}
 					});
 					logListBtn.setOnClickListener(new Button.OnClickListener()  {
@@ -204,7 +214,7 @@ public class MemberStoreInfoPage extends Activity {
 						callBtn.setVisibility(View.VISIBLE);  // 	VISIBLE = 0;  INVISIBLE = 4;  GONE = 8;
 					}
 					if(latatude.length()>3&&longitude.length()>3){
-//						mapBtn.setVisibility(View.VISIBLE);  // 	VISIBLE = 0;  INVISIBLE = 4;  GONE = 8;
+						mapBtn.setVisibility(View.VISIBLE);  // 	VISIBLE = 0;  INVISIBLE = 4;  GONE = 8;
 					}
 
 					//					logListBtn.setVisibility(View.VISIBLE);			// 사용하려면 이줄 주석 풀어서 사용
@@ -477,7 +487,7 @@ public class MemberStoreInfoPage extends Activity {
 							// 가맹점 아이디를 넣어서 조회
 							obj.put("activateYn", "Y");
 							obj.put("merchantId", merchantId);
-							Log.w(TAG,"merchantId:"+merchantId);
+//							Log.w(TAG,"merchantId:"+merchantId);
 						}catch(Exception e){
 							e.printStackTrace();
 						}
@@ -597,12 +607,24 @@ public class MemberStoreInfoPage extends Activity {
 					merchantData.setPrSentence("");
 				}
 				try{
-					merchantData.setLatitude(jsonobj2.getString("latitude"));					// 좌표1,2
+					tempstr = jsonobj2.getString("latitude");
+					if(tempstr.contains(".")){
+						tempstr = (int)(Float.parseFloat(tempstr)*1000000)+"";
+						Log.d(TAG,"tempstr:"+tempstr);
+					}
+					merchantData.setLatitude(tempstr);					// 좌표1,2
+//					merchantData.setLatitude(jsonobj2.getString("latitude"));					// 좌표1,2
 				}catch(Exception e){			
 					merchantData.setLatitude("");		
 				}
 				try{
-					merchantData.setLongtitude(jsonobj2.getString("longitude"));				// 
+					tempstr = jsonobj2.getString("longitude");
+					if(tempstr.contains(".")){
+						tempstr = (int)(Float.parseFloat(tempstr)*1000000)+"";
+						Log.d(TAG,"tempstr:"+tempstr);
+					}
+					merchantData.setLongtitude(tempstr);					// 좌표1,2
+//					merchantData.setLongtitude(jsonobj2.getString("longitude"));				// 
 				}catch(Exception e){
 					merchantData.setLongtitude("");
 				}
@@ -611,7 +633,7 @@ public class MemberStoreInfoPage extends Activity {
 					//						bm = imageFile;
 					//					}else{
 					try{
-						Log.w(TAG,"LoadImage with URL :"+merchantData.getProfileImageURL());
+//						Log.w(TAG,"LoadImage with URL :"+merchantData.getProfileImageURL());
 						bm = LoadImage(imgDomain+merchantData.getProfileImageURL());				 
 					}catch(Exception e3){
 						Log.w(TAG, imgDomain+merchantData.getProfileImageURL()+" -- fail");
@@ -905,7 +927,7 @@ public class MemberStoreInfoPage extends Activity {
 					}
 			).start();
 		}else{
-			Log.w(TAG,"already updating..");
+			Log.d(TAG,"already updating..");
 		}
 	}
 }

@@ -150,4 +150,7 @@
     <string name="request_certify">Authentication requests</string>
     <string name="get_qr_by_phone_num">Get the QR code using your phone</string>
     
+    <string name="my_location">My Location</string>
+    <string name="shop_location">Merchant location</string>
+     <string name="phone_number_ex">ex)010-1234-5678</string>
 </resources>

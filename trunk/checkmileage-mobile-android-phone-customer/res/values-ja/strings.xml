@@ -148,4 +148,8 @@
     <string name="certi_num">認証番号</string>
     <string name="request_certify">認証要求</string>
     <string name="get_qr_by_phone_num">電話番号を使用してQR code得る</string>
+    
+    <string name="my_location">私の位置</string>
+    <string name="shop_location">加盟店の場所</string>
+     <string name="phone_number_ex">ex)010-1234-5678</string>
 </resources>

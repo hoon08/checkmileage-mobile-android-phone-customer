@@ -506,9 +506,9 @@ public class MyMileagePageActivity extends Activity {
 
 		// 크기 측정
 		float screenWidth = this.getResources().getDisplayMetrics().widthPixels;
-		Log.i(TAG, "screenWidth : " + screenWidth);
 		float screenHeight = this.getResources().getDisplayMetrics().heightPixels;
-		Log.i(TAG, "screenHeight : " + screenHeight);
+//		Log.i(TAG, "screenWidth : " + screenWidth);
+//		Log.i(TAG, "screenHeight : " + screenHeight);
 		if(screenWidth < screenHeight ){
 			fImgSize = screenWidth;
 		}else{
@@ -1043,7 +1043,7 @@ public class MyMileagePageActivity extends Activity {
 	// 아이템 아이디 값 기준 필요한 일 처리
 	public boolean itemCallback(MenuItem item){
 		switch(item.getItemId()){
-		case Menu. FIRST+1:
+		case Menu.FIRST+1:
 			if(isRunning<1){
 				isRunning = 1;
 				myQRcode = MyQRPageActivity.qrCode;
