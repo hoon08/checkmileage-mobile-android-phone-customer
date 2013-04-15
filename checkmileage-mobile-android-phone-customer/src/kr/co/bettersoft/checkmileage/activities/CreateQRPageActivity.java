@@ -108,7 +108,7 @@ public class CreateQRPageActivity extends Activity {
 		// 시간 -> 생성할 아이디
 		Calendar c = Calendar. getInstance();
 		String timeID = Long.toString( c.getTimeInMillis());
-		Log.e(TAG, "Now to millis : "+ timeID);
+//		Log.e(TAG, "Now to millis : "+ timeID);
 
 		Intent rIntent = getIntent();
 
@@ -130,7 +130,8 @@ public class CreateQRPageActivity extends Activity {
 		 */
 		Log.i("CreateQRPageActivity", "save qrcode to file : "+qrcode);
 
-		new backgroundSaveQRforPref().execute();		// 비동기 실행 - 설정에 저장 -- 끝나면 서버에 저장 -- 이후 이동하는 걸로..
+		new backgroundSaveQRtoServer().execute();		//  비동기 실행 - 서버에 먼저 저장  
+
 	}
 
 	
@@ -218,7 +219,12 @@ public class CreateQRPageActivity extends Activity {
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		}
-		new backgroundSaveQRtoServer().execute();		// 설정에 저장 끝나면 .. 비동기 실행 - 서버에 저장
+		
+		
+//		new backgroundSaveQRtoServer().execute();		// 설정에 저장 끝나면 .. 비동기 실행 - 서버에 저장 --> 서버에 먼저 저장후 설정에 저장 - 이후 이동으로 변경.
+		
+		// 저장끝나고 나서 액티비티 이동.
+		goMainTabs();
 	}
 
 	// 비동기로 호출. 서버에 저장
@@ -295,7 +301,7 @@ public class CreateQRPageActivity extends Activity {
 							Log.i(TAG, "nowTime::"+nowTime);
 							obj.put("modifyDate", nowTime);			
 							obj.put("registerDate", nowTime);		
-							Log.e(TAG,"myQRcode::"+qrcode);
+							Log.d(TAG,"myQRcode::"+qrcode);
 						}catch(Exception e){
 							e.printStackTrace();
 						}
@@ -318,11 +324,11 @@ public class CreateQRPageActivity extends Activity {
 							int responseCode = connection2.getResponseCode();
 							//							os2.close();		// 
 							if(responseCode==200||responseCode==204){
-								Log.e(TAG, "register user S");
+								Log.d(TAG, "register user S");
 								//								connection2.disconnect();
 								
-								// 저장끝나고 나서 액티비티 이동.
-								goMainTabs();
+								new backgroundSaveQRforPref().execute();		// 비동기 실행 - 설정에 저장 -- 끝나면 서버에 저장 -- 이후 이동하는 걸로..
+								
 								
 							}else{
 								Log.e(TAG, "register user F");		// 오류 발생시 에러 창 띄우고 돌아간다.. 통신에러 발생할수 있다.

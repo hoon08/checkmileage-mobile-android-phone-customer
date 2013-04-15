@@ -148,4 +148,8 @@
     <string name="certi_num">证书编号</string>
     <string name="request_certify">身份验证请求</string>
     <string name="get_qr_by_phone_num">使用手机的QR码</string>
+    
+    <string name="my_location">我的位置</string>
+    <string name="shop_location">商户位置</string>
+     <string name="phone_number_ex">ex)010-1234-5678</string>
 </resources>

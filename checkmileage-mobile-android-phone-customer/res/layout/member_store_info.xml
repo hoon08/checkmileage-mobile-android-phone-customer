@@ -22,12 +22,12 @@
         <FrameLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" >
-
+
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:orientation="vertical" >
-
+
                 <ImageView
                     android:id="@+id/prImage"
                     android:layout_width="fill_parent"
@@ -35,25 +35,24 @@
                     android:layout_weight="0.17"
                     android:contentDescription="@string/app_name"
                     android:scaleType="fitXY" />
-                
+
                 <TextView
                     android:id="@+id/name"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.01"
-                    android:layout_marginTop="10dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="0.01"
                     android:textSize="17dp" />
 
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.01"
-                    android:layout_marginTop="-10dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    
+                    android:layout_marginTop="-10dp"
+                    android:layout_weight="0.01"
                     android:gravity="center"
                     android:orientation="horizontal" >
 
@@ -96,10 +95,10 @@
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.01"
-                    android:layout_marginTop="-3dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
+                    android:layout_marginTop="-3dp"
+                    android:layout_weight="0.01"
                     android:gravity="fill_horizontal"
                     android:orientation="horizontal" >
 
@@ -110,7 +109,7 @@
                         android:layout_weight="21"
                         android:gravity="left"
                         android:textSize="17dp" />
-
+
                     <Button
                         android:id="@+id/mapBtn"
                         android:layout_width="wrap_content"
@@ -119,87 +118,84 @@
                         android:background="@drawable/design_btn_map"
                         android:gravity="center"
                         android:text=""
-                        android:textSize="10dp" 
-                        android:visibility="gone"
-                        />
-
+                        android:textSize="10dp"
+                        android:visibility="gone" />
                 </LinearLayout>
-
+
                 <TextView
                     android:id="@+id/pr"
                     android:layout_width="wrap_content"
                     android:layout_height="85dp"
-                    android:layout_weight="0.03"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
+                    android:layout_weight="0.03"
                     android:textColor="#666565"
                     android:textSize="12dp" />
-
             </LinearLayout>
 
-			<LinearLayout
-                    android:layout_marginBottom="3dp"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_gravity="bottom"
-                    android:gravity="bottom"
-                    android:orientation="horizontal" >
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="3dp"
+                android:gravity="bottom"
+                android:orientation="horizontal" >
 
-                    <Button
-                        android:id="@+id/logListBtn"
-                        android:layout_width="80dp"
-                        android:layout_height="30dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/design_btn_call_map"
-                        android:gravity="center"
-                        android:text="@string/showlog"
-                        android:textSize="15dp" />
+                <Button
+                    android:id="@+id/logListBtn"
+                    android:layout_width="80dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/design_btn_call_map"
+                    android:gravity="center"
+                    android:text="@string/showlog"
+                    android:textSize="15dp" />
 
-                    <Button
-                        android:id="@+id/serviceListBtn"
-                        android:layout_width="160dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="20"
-                        android:text="@string/showservicemenu" />
+                <Button
+                    android:id="@+id/serviceListBtn"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="20"
+                    android:text="@string/showservicemenu" />
 
-                    <Button
-                        android:id="@+id/closeBtn"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_width="80dp"
-                        android:layout_height="40dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/design_btn_close"
-                        android:gravity="center"
-                        android:text="@string/closebtn"
-                        android:textSize="15dp" 
-                        android:textColor="@android:color/white"
-                        />
-                </LinearLayout>
+                <Button
+                    android:id="@+id/closeBtn"
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/design_btn_close"
+                    android:gravity="center"
+                    android:text="@string/closebtn"
+                    android:textColor="@android:color/white"
+                    android:textSize="15dp" />
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="top|left"
                 android:orientation="vertical" >
-				
-				<LinearLayout
-			    android:layout_marginTop="5dp"
-			    android:layout_marginLeft="5dp"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
 
-					<TextView
-					    android:id="@+id/mileage"
-					    android:layout_width="wrap_content"
-					    android:layout_height="wrap_content"
-					    android:background="@drawable/design_mileage_box02"
-					    android:gravity="center"
-					    android:textColor="#ff4800"
-					    android:textSize="23dp"
-					    android:visibility="invisible" />
-					
-				</LinearLayout>
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/mileage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/design_mileage_box02"
+                        android:gravity="center"
+                        android:textColor="#ff4800"
+                        android:textSize="23dp"
+                        android:visibility="invisible" />
+                </LinearLayout>
+
                 <TextView
                     android:id="@+id/type"
                     android:layout_width="wrap_content"
