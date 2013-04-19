@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="preference_root" >
+
     <PreferenceCategory
         android:key="category1"
         android:summary="Category 1에 대한 자세한 설명: 표시 안됨"
         android:title="@string/settings_user_info" >
         <PreferenceScreen
             android:key="preference_setting_pwd2"
-            android:title="@string/settings_lock_settings" > 
+            android:title="@string/settings_lock_settings" >
             <intent
                 android:action="android.intent.action.VIEW"
                 android:targetClass="kr.co.bettersoft.checkmileage.activities.Settings_PasswordPageActivity"
@@ -21,8 +21,7 @@
             android:summary="@string/settings_get_gcm_summary"
             android:summaryOff="@string/settings_get_gcm_n"
             android:summaryOn="@string/settings_get_gcm_y"
-            android:title="@string/settings_get_gcm_title" 
-            />
+            android:title="@string/settings_get_gcm_title" />
 
         <PreferenceScreen
             android:key="preference_sub_userinfo2"
@@ -37,10 +36,9 @@
     <PreferenceCategory
         android:key="category2"
         android:title="@string/settings_basic_info" >
-        >
         <Preference
             android:key="pref_app_qna"
-            android:title="@string/pref_app_qna" />		
+            android:title="@string/pref_app_qna" />
         <Preference
             android:key="pref_app_notify"
             android:title="@string/pref_app_notify" />
@@ -53,7 +51,7 @@
         <Preference
             android:key="pref_push_list"
             android:summary="@string/pref_push_list_summary"
-            android:title="@string/pref_push_list_title" />		    
+            android:title="@string/pref_push_list_title" />
         <Preference
             android:key="pref_app_what"
             android:summary="@string/pref_app_what_summary"

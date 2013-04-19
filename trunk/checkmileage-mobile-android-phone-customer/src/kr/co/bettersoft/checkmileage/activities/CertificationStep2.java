@@ -265,19 +265,20 @@ public class CertificationStep2 extends Activity {
 				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
 		
 		
-		//자신의 전화번호 가져오기
-		try{		// 읽다가 에러 터질때에 대비하기
-			TelephonyManager telManager = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE); 
-			phoneNum = telManager.getLine1Number();
-			
-			String pnTemp = phoneNum;
-			if(pnTemp.contains("+82")){
-				pnTemp = pnTemp.replace("+82", "0");							
-				Log.d(TAG,"pnTemp"+pnTemp);
-				phoneNum = pnTemp;
-			}
-		}catch(Exception e){}
-		// 못읽거나 문제 생겼을때는 그냥 공백 (직접 입력 하도록 한다)
+//		//자신의 전화번호 가져오기  --> 기능 제거 . 모든 사용자가 직접 입력하도록 한다.
+//		try{		// 읽다가 에러 터질때에 대비하기
+//			TelephonyManager telManager = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE); 
+//			phoneNum = telManager.getLine1Number();
+//			
+//			String pnTemp = phoneNum;
+//			if(pnTemp.contains("+82")){
+//				pnTemp = pnTemp.replace("+82", "0");							
+//				Log.d(TAG,"pnTemp"+pnTemp);
+//				phoneNum = pnTemp;
+//			}
+//		}catch(Exception e){}
+//		// 못읽거나 문제 생겼을때는 그냥 공백 (직접 입력 하도록 한다)
+		
 		if(phoneNum==null || phoneNum.length()<1){
 			phoneNum = "";
 		}
@@ -466,6 +467,7 @@ public class CertificationStep2 extends Activity {
     				public void run(){
     					 // 전달 데이터
 						JSONObject obj = new JSONObject();
+						phoneNum = userPhoneNumber.getText()+"";
 						try{
 							obj.put("phoneNumber", phoneNum);			// 전번
 							obj.put("certificationNumber", userCertiNumber.getText()+"");	// 승인번호		
