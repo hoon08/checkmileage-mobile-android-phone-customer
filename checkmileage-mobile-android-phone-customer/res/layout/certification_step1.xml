@@ -10,37 +10,45 @@
         android:layout_height="fill_parent"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
+        android:gravity="center_horizontal"
         android:orientation="vertical" >
 
-        <CheckBox
-            android:id="@+id/checkBoxPrivacyTerms"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/agree_to_terms" />
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/seePrivacyTermsBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:ems="15"
-            android:text="@string/see_terms" />
+            <CheckBox
+                android:id="@+id/checkBoxPrivacyTerms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/agree_to_terms" />
 
-        <TextView
-            android:layout_width="20dp"
-            android:layout_height="20dp" />
+            <Button
+                android:id="@+id/seePrivacyTermsBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:ems="15"
+                android:text="@string/see_terms" />
 
-        <CheckBox
-            android:id="@+id/checkBoxGPSTerms"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/agree_to_privacy_terms" />
+            <TextView
+                android:layout_width="20dp"
+                android:layout_height="20dp" />
 
-        <Button
-            android:id="@+id/seeGPSTermsBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:ems="15"
-            android:text="@string/see_privacy_terms" />
+            <CheckBox
+                android:id="@+id/checkBoxGPSTerms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/agree_to_privacy_terms" />
+
+            <Button
+                android:id="@+id/seeGPSTermsBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:ems="15"
+                android:text="@string/see_privacy_terms" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -52,9 +60,9 @@
                 android:id="@+id/userConfirmBtn"
                 android:layout_width="150dp"
                 android:layout_height="70dp"
-                android:text="@string/ok"
-                 android:layout_marginBottom="20dp"
-                android:ems="30" />
+                android:layout_marginBottom="20dp"
+                android:ems="30"
+                android:text="@string/ok" />
         </LinearLayout>
     </LinearLayout>
 
