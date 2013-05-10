@@ -28,7 +28,8 @@
                     android:layout_height="50dp"
                     android:ems="10"
                     android:hint="@string/input_customer_phone_num"
-                    android:numeric="integer" >
+                    android:numeric="integer" 
+                    android:imeOptions="actionDone">
                 </EditText>
 
                 <TextView
@@ -64,7 +65,8 @@
                         android:gravity="center"
                         android:hint="@string/certi_num"
                         android:maxLength="4"
-                        android:numeric="integer" >
+                        android:numeric="integer" 
+                        android:imeOptions="actionDone">
                     </EditText>
 
                     <Button
