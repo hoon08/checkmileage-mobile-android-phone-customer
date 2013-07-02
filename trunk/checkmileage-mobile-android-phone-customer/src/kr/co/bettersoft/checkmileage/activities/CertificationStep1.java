@@ -34,9 +34,9 @@ import java.net.URL;
 
 import kr.co.bettersoft.checkmileage.activities.R;
 import kr.co.bettersoft.checkmileage.activities.CertificationStep2;
-import kr.co.bettersoft.checkmileage.activities.CommonUtils;
 import kr.co.bettersoft.checkmileage.activities.Main_TabsActivity;
 import kr.co.bettersoft.checkmileage.activities.MyQRPageActivity;
+import kr.co.bettersoft.checkmileage.common.CommonUtils;
 import kr.co.bettersoft.checkmileage.pref.Password;
 import kr.co.bettersoft.checkmileage.pref.PrefActivityFromResource;
 

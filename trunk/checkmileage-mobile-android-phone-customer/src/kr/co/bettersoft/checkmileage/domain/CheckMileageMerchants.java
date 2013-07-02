@@ -40,6 +40,10 @@ public class CheckMileageMerchants {
 	private String modifyDate;									// 수정일
 	private String registerDate;								// 등록일
 	
+	private String checkMileageId;		// 검색을 위한 사용자 아이디
+	private String businessKind03;		// 검색을 위한 업종
+	
+	
 	// 가맹점 상세보기로 갈때 내 마일리지, 내 마일리지에 대한 고유 아이디가 필요하다.(내아디-가맹점아디-마일리지 매핑 정보의 인덱스값)  mileage  idCheckMileageMileages
 	private String idCheckMileageMileages;				// 고유 식별 번호
 	
@@ -65,12 +69,6 @@ public class CheckMileageMerchants {
 	
 	public CheckMileageMerchants() {
 		// TODO Auto-generated constructor stub
-	}
-	public String getMerchantID() {
-		return merchantId;
-	}
-	public void setMerchantID(String merchantID) {
-		this.merchantId = merchantID;
 	}
 	public String getName() {
 		return name;
@@ -174,6 +172,22 @@ public class CheckMileageMerchants {
 	}
 	public void setIdCheckMileageMileages(String idCheckMileageMileages) {
 		this.idCheckMileageMileages = idCheckMileageMileages;
+	}
+
+	public String getCheckMileageId() {
+		return checkMileageId;
+	}
+
+	public void setCheckMileageId(String checkMileageId) {
+		this.checkMileageId = checkMileageId;
+	}
+
+	public String getBusinessKind03() {
+		return businessKind03;
+	}
+
+	public void setBusinessKind03(String businessKind03) {
+		this.businessKind03 = businessKind03;
 	}
 	
 	

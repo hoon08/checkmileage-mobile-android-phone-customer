@@ -5,11 +5,11 @@ import java.util.Locale;
 
 import kr.co.bettersoft.checkmileage.activities.CertificationStep1;
 import kr.co.bettersoft.checkmileage.activities.R;
-import kr.co.bettersoft.checkmileage.activities.CommonUtils;
 import kr.co.bettersoft.checkmileage.activities.GCMIntentService;
 import kr.co.bettersoft.checkmileage.activities.MainActivity;
 import kr.co.bettersoft.checkmileage.activities.Main_TabsActivity;
 import kr.co.bettersoft.checkmileage.activities.MyMileagePageActivity;
+import kr.co.bettersoft.checkmileage.common.CommonUtils;
 
 
 import android.app.Activity;

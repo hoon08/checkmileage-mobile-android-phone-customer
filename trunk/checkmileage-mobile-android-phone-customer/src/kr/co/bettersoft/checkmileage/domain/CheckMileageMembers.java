@@ -31,6 +31,15 @@ public class CheckMileageMembers {
 	private String countryCode;			// 국가코드
 	private String languageCode;		// 언어코드
 	
+	private String certiNum;			// 인증번호 4자리. 인증용도
+	
+	
+	public String getCertiNum() {
+		return certiNum;
+	}
+	public void setCertiNum(String certiNum) {
+		this.certiNum = certiNum;
+	}
 	public String getCheckMileage() {
 		return checkMileage;
 	}

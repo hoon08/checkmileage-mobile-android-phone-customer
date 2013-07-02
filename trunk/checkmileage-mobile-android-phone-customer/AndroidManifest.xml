@@ -85,7 +85,7 @@
 		<activity android:name="SettingsPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
 		<activity android:name="Settings_PasswordPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
 		<activity android:name="UnlockPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-		<activity android:name="CommonUtils"></activity>
+		<activity android:name="kr.co.bettersoft.checkmileage.common.CommonUtils"></activity>
 		
 		
 		<activity android:name="kr.co.bettersoft.checkmileage.pref.MainActivity_disabled" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>

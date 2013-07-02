@@ -3,14 +3,15 @@ package kr.co.bettersoft.checkmileage.activities;
  * Main_TabsActivity
  *  메인 메뉴들. 탭1:내QR보기 , 탭2:내마일리지, 탭3:가맹점목록, 탭4:설정
  */
-import static kr.co.bettersoft.checkmileage.activities.CommonUtilities.DISPLAY_MESSAGE_ACTION;
-import static kr.co.bettersoft.checkmileage.activities.CommonUtilities.SENDER_ID;
+import static kr.co.bettersoft.checkmileage.common.CommonUtilities.DISPLAY_MESSAGE_ACTION;
+import static kr.co.bettersoft.checkmileage.common.CommonUtilities.SENDER_ID;
 
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
 import kr.co.bettersoft.checkmileage.activities.R;
+import kr.co.bettersoft.checkmileage.common.CommonUtils;
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
 import kr.co.bettersoft.checkmileage.pref.PrefActivityFromResource;
 
@@ -52,10 +53,6 @@ import android.widget.TabHost.OnTabChangeListener;
 public class Main_TabsActivity extends TabActivity implements OnTabChangeListener {
 	String TAG ="Main_TabsActivity";
 	public static Activity main_TabsActivity;
-
-	String controllerName = "";
-	String methodName = "";
-	String serverName = CommonUtils.serverNames;
 
 	static String myQR = "";
 

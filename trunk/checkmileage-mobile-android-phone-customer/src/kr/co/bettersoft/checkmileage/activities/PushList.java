@@ -19,6 +19,7 @@ import java.util.List;
 
 import kr.co.bettersoft.checkmileage.activities.R;
 import kr.co.bettersoft.checkmileage.adapters.PushEventListAdapter;
+import kr.co.bettersoft.checkmileage.common.CommonUtils;
 import kr.co.bettersoft.checkmileage.domain.CheckMileagePushEvent;
 
 import org.json.JSONArray;
@@ -557,7 +558,7 @@ public class PushList extends Activity {
 							}
 							String jsonString = "{\"checkMileageMerchantMarketing\":" + obj.toString() + "}";
 							try{
-								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+								postUrl2 = new URL(serverName+"/"+controllerName+"/"+methodName);
 								connection2 = (HttpURLConnection) postUrl2.openConnection();
 								connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
 								connection2.setDoOutput(true);

@@ -13,6 +13,7 @@ import java.util.List;
 import kr.co.bettersoft.checkmileage.activities.R;
 import kr.co.bettersoft.checkmileage.activities.MemberStoreListPageActivity.backgroundGetMerchantInfo;
 import kr.co.bettersoft.checkmileage.adapters.MileageLogAdapter;
+import kr.co.bettersoft.checkmileage.common.CommonUtils;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMemberMileageLogs;
 
 import org.json.JSONArray;
@@ -187,7 +188,7 @@ public class MemberStoreLogPageActivity extends Activity {
 						}
 						String jsonString = "{\"checkMileageMemberMileageLog\":" + obj.toString() + "}";
 						try{
-							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+							postUrl2 = new URL(serverName+"/"+controllerName+"/"+methodName);
 							connection2 = (HttpURLConnection) postUrl2.openConnection();
 							connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
 							connection2.setDoOutput(true);

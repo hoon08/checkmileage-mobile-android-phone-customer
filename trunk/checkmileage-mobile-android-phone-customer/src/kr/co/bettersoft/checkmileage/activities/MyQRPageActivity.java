@@ -28,6 +28,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import kr.co.bettersoft.checkmileage.activities.R;
+import kr.co.bettersoft.checkmileage.common.CommonUtils;
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
 import kr.co.bettersoft.checkmileage.utils.AES256Cipher;
 
@@ -588,7 +589,7 @@ public class MyQRPageActivity extends Activity {
 							try{
 								// 자신의 아이디를 넣어서 조회
 								Date today = new Date();
-								SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+								SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 								String nowDate = sf.format(today);
 								//	    				    Log.d(TAG,"checkMileageId :: "+qrCode);
 								//	    				    Log.d(TAG,"parameter01 :: "+phoneNum);
@@ -618,7 +619,7 @@ public class MyQRPageActivity extends Activity {
 							}
 							String jsonString = "{\"checkMileageLog\":" + obj.toString() + "}";
 							try{
-								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+								postUrl2 = new URL(serverName+"/"+controllerName+"/"+methodName);
 								connection2 = (HttpURLConnection) postUrl2.openConnection();
 								connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
 								connection2.setDoOutput(true);
@@ -925,7 +926,7 @@ public class MyQRPageActivity extends Activity {
 	//							}
 	//							String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 	//							try{
-	//								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+	//								postUrl2 = new URL(serverName+"/"+controllerName+"/"+methodName);
 	//								connection2 = (HttpURLConnection) postUrl2.openConnection();
 	//								connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
 	//								connection2.setDoOutput(true);
@@ -1014,7 +1015,7 @@ public class MyQRPageActivity extends Activity {
 //							try{
 //								// 자신의 아이디를 넣어서 조회
 //								Date today = new Date();
-//								SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+//								SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //								String nowDate = sf.format(today);
 //								obj.put("checkMileageId", qrCode);	// checkMileageId 	사용자 아이디
 //								obj.put("merchantId", "");		// merchantId		가맹점 아이디.
@@ -1035,7 +1036,7 @@ public class MyQRPageActivity extends Activity {
 //							}
 //							String jsonString = "{\"checkMileageLog\":" + obj.toString() + "}";
 //							try{
-//								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+//								postUrl2 = new URL(serverName+"/"+controllerName+"/"+methodName);
 //								connection2 = (HttpURLConnection) postUrl2.openConnection();
 //								connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
 //								connection2.setDoOutput(true);

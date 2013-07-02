@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Locale;
 
 import kr.co.bettersoft.checkmileage.activities.R;
+import kr.co.bettersoft.checkmileage.common.CommonUtils;
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
 import kr.co.bettersoft.checkmileage.pref.Password;
 

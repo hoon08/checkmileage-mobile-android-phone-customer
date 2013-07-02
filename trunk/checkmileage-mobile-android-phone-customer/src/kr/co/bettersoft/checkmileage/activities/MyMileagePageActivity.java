@@ -28,6 +28,7 @@ import java.util.List;
 import kr.co.bettersoft.checkmileage.activities.R;
 import kr.co.bettersoft.checkmileage.activities.MemberStoreInfoPage.backgroundUpdateLogToServer;
 import kr.co.bettersoft.checkmileage.adapters.MyMileageListAdapter;
+import kr.co.bettersoft.checkmileage.common.CommonUtils;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMileage;
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
 
@@ -87,7 +88,6 @@ public class MyMileagePageActivity extends Activity {
 	int isUpdating = 0;
 	/////////////////////////////////////////////////////////////////////////////
 	
-	
 	int dontTwice = 1;
 
 	int responseCode = 0;
@@ -96,7 +96,10 @@ public class MyMileagePageActivity extends Activity {
 	String controllerName = "";
 	String methodName = "";
 	String serverName = CommonUtils.serverNames;
-
+	URL postUrl2;
+	HttpURLConnection connection2;
+	//	int reTry = 1;		// 재시도 횟수
+	
 	String imgthumbDomain = CommonUtils.imgthumbDomain; 					// Img 가져올때 파일명만 있을 경우 앞에 붙일 도메인.   
 	public List<CheckMileageMileage> entries;	// 1차적으로 조회한 결과. (가맹점 상세 정보 제외)
 	public List<CheckMileageMileage> dbInEntries;	// db에 넣을 거
@@ -104,10 +107,6 @@ public class MyMileagePageActivity extends Activity {
 	Boolean dbSaveEnable = true;
 
 	public static Boolean searched = false;		// 조회 했는가?
-
-	URL postUrl2;
-	HttpURLConnection connection2;
-	//	int reTry = 1;		// 재시도 횟수
 
 	int merchantNameMaxLength = 9;			// 가맹점명 표시될 최대 글자수.
 	String newMerchantName="";
@@ -122,8 +121,6 @@ public class MyMileagePageActivity extends Activity {
 
 	// 진행바
 	ProgressBar pb1;
-
-
 
 	/*
 	 * 모바일 sqlite 를 사용하여 내 마일리지 목록을 받아와서 저장. 
@@ -630,7 +627,7 @@ public class MyMileagePageActivity extends Activity {
 							}
 							String jsonString = "{\"checkMileageMileage\":" + obj.toString() + "}";
 							try{
-								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+								postUrl2 = new URL(serverName+"/"+controllerName+"/"+methodName);
 								connection2 = (HttpURLConnection) postUrl2.openConnection();
 								Thread.sleep(200);
 								connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
@@ -1165,7 +1162,7 @@ public class MyMileagePageActivity extends Activity {
 							try{
 								// 자신의 아이디를 넣어서 조회
 								Date today = new Date();
-								SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+								SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 								String nowDate = sf.format(today);
 								obj.put("checkMileageId", qrCode);	// checkMileageId 	사용자 아이디
 								obj.put("merchantId", "");		// merchantId		가맹점 아이디.
@@ -1191,7 +1188,7 @@ public class MyMileagePageActivity extends Activity {
 							}
 							String jsonString = "{\"checkMileageLog\":" + obj.toString() + "}";
 							try{
-								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+								postUrl2 = new URL(serverName+"/"+controllerName+"/"+methodName);
 								connection2 = (HttpURLConnection) postUrl2.openConnection();
 								connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
 								connection2.setDoOutput(true);

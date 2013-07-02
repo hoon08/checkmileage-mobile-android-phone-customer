@@ -15,7 +15,7 @@
  */
 package kr.co.bettersoft.checkmileage.activities;
 
-import static kr.co.bettersoft.checkmileage.activities.CommonUtilities.SENDER_ID;
+import static kr.co.bettersoft.checkmileage.common.CommonUtilities.SENDER_ID;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -25,6 +25,9 @@ import java.net.URL;
 import java.util.Calendar;
 
 import kr.co.bettersoft.checkmileage.activities.R;
+import kr.co.bettersoft.checkmileage.common.CheckMileageCustomerRest;
+import kr.co.bettersoft.checkmileage.common.CommonUtils;
+import kr.co.bettersoft.checkmileage.domain.CheckMileageMembers;
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
 
 import org.json.JSONException;
@@ -51,19 +54,25 @@ import com.google.android.gcm.GCMRegistrar;
 public class GCMIntentService extends GCMBaseIntentService {
 	static String tmpStr = "";
 
-	String controllerName="";
-	String methodName="";
-	String serverName = CommonUtils.serverNames;
+//	String controllerName="";
+//	String methodName="";
+//	String serverName = CommonUtils.serverNames;
+//	URL postUrl2 ;
+//	HttpURLConnection connection2;
 
+	CheckMileageCustomerRest checkMileageCustomerRest = new CheckMileageCustomerRest();
+	String callResult = "";
+	String tempstr = "";
+	JSONObject jsonObject;
+	// checkMileageCustomerRest = new CheckMileageCustomerRest();	// oncreate
+	
 	String regIdGCM = "";
 	Boolean dontTwice = true;
 
 	Context localContext;
 	String localRegistrationId;
 
-	URL postUrl2 ;
-	HttpURLConnection connection2;
-
+	
 	// 설정 파일 저장소   -- 설정에 GCM ID 를 저장하여 GCM ID 가 변경된 경우에만 서버로 업데이트 한다.
 	SharedPreferences sharedPrefCustom;
 	String savedGCMId = "";
@@ -146,168 +155,157 @@ public class GCMIntentService extends GCMBaseIntentService {
 			if(myQR==null || myQR.length()<1){
 				// qr 없으면 업데이트 하지 않음
 			}else{			// qr 있을때에만 업데이트함.
-				updateMyGCMtoServer();
+				// 파리미터 세팅
+				CheckMileageMembers checkMileageMembersParam = new CheckMileageMembers(); 	
+				checkMileageMembersParam.setCheckMileageId(myQR);
+				checkMileageMembersParam.setRegistrationId(regIdGCM);
+				// 호출
+	//			if(!pullDownRefreshIng){
+//					showPb();
+	//			}
+				callResult = checkMileageCustomerRest.RestUpdateMyGCMtoServer(checkMileageMembersParam);
+//				hidePb();
+				// 결과 처리
+//				if(callResult.equals("SUCCESS")){				// 인증 성공
+//					Log.i(TAG, "SUCCESS");
+//					showResultDialog(getString(R.string.certi_num_req_success));	
+//				}else{														// 인증 실패
+//					Log.i(TAG, "FAIL_ADMISSION");
+//					showResultDialog(getString(R.string.certi_num_req_fail));
+//				}
+//				updateMyGCMtoServer();
 			}
-			
-			//			try {						// gcm 확인용
-			//				testGCM(regIdGCM);
-			//			} catch (JSONException e) {
-			//				e.printStackTrace();
-			//			} catch (IOException e) {
-			//				e.printStackTrace();
-			//			}
 			return null; 
 		}
 	}
 
-	//	public void updateMyGCMtoServer_pre(){
-	//		new Thread(
-	//			new Runnable(){
-	//				public void run(){
-	//					Log.d(TAG,"updateMyGCMtoServer_pre");
-	//					try{
-	//						Thread.sleep(CommonUtils.threadWaitngTime);
-	//					}catch(Exception e){
-	//					}finally{
-	//						if(CommonUtils.usingNetwork<1){
-	//							CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-	//							updateMyGCMtoServer();
-	//						}else{
-	//							updateMyGCMtoServer_pre();
-	//						}
-	//					}
-	//				}
-	//			}
-	//		).start();
-	//	}
-
-
-	//서버에 GCM 아이디 업뎃한다.
-	/**
-	 * updateMyGCMtoServer
-	 *  서버에 GCM 아이디 업뎃한다.
-	 *
-	 * @param
-	 * @param
-	 * @return
-	 */
-	public void updateMyGCMtoServer(){
-		Log.i(TAG, "updateMyGCMtoServer");
-		controllerName = "checkMileageMemberController";
-		methodName = "updateRegistrationId";
-		// 서버 통신부
-		new Thread(
-				new Runnable(){
-					public void run(){
-						JSONObject obj = new JSONObject();
-						try{
-							obj.put("activateYn", "Y");
-							obj.put("checkMileageId", myQR);			  
-							obj.put("registrationId", regIdGCM);							
-							obj.put("modifyDate", getNow());			
-							Log.d(TAG, "checkMileageId:"+myQR);
-							Log.d(TAG, "registrationId:"+regIdGCM);
-							Log.d(TAG, "modifyDate:"+getNow());
-						}catch(Exception e){
-							e.printStackTrace();
-						}
-						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
-						try{
-							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
-							connection2 = (HttpURLConnection) postUrl2.openConnection();
-							connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
-							connection2.setDoOutput(true);
-							connection2.setInstanceFollowRedirects(false);
-							connection2.setRequestMethod("POST");
-							connection2.setRequestProperty("Content-Type", "application/json");
-							//							connection2.connect();		// *** 
-							Thread.sleep(200);
-							OutputStream os2 = connection2.getOutputStream();
-							os2.write(jsonString.getBytes("UTF-8"));
-							os2.flush();
-							//							System.out.println("postUrl      : " + postUrl2);
-							//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
-							int responseCode = connection2.getResponseCode();
-							//							os2.close();
-							if(responseCode==200||responseCode==204){
-								Log.i(TAG, "S to update GCM ID to server");
-							}else{
-								Log.i(TAG, "F to update GCM ID to server");
-							}
-							//							connection2.disconnect();
-						}catch(Exception e){ 
-							//							connection2.disconnect();
-							e.printStackTrace();
-						}
-						//						CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-						//						if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-						//							CommonUtils.usingNetwork = 0;
-						//						}
-					}
-				}
-		).start();
-	}
-	// GCM 테스트 용
-	public void testGCM(String registrationId) throws JSONException, IOException {
-		Log.i(TAG, "testGCM");
-		JSONObject jsonMember = new JSONObject();
-		jsonMember.put("registrationId", registrationId);
-		String jsonString = "{\"checkMileageMember\":" + jsonMember.toString() + "}";
-
-		Log.i(TAG, "jsonMember : " + jsonString);
-
-		try {
-			postUrl2 = new URL("http://checkmileage.onemobileservice.com/checkMileageMemberController/testGCM");		 // test 용..
-			connection2 = (HttpURLConnection) postUrl2.openConnection();
-			connection2.setDoOutput(true);
-			connection2.setInstanceFollowRedirects(false);
-			connection2.setRequestMethod("POST");
-			connection2.setRequestProperty("Content-Type", "application/json");
-			//		         connection2.connect();		// *** 
-			OutputStream os2 = connection2.getOutputStream();
-			os2.write(jsonString.getBytes("UTF-8"));
-			os2.flush();
-			System.out.println("postUrl      : " + postUrl2);
-			System.out.println("responseCode : " + connection2.getResponseCode());
-			//		         connection2.disconnect();
-		} catch (Exception e) {
-			//			  connection2.disconnect();
-			Log.e(TAG, "Fail to register category.");
-		}
-	}
-
-	// 현시각 구하기
-	/**
-	 * getNow
-	 *  현시각 구한다
-	 *
-	 * @param
-	 * @param
-	 * @return nowTime
-	 */
-	public String getNow(){
-		Calendar c = Calendar.getInstance();
-		int todayYear = c.get(Calendar.YEAR);
-		int todayMonth = c.get(Calendar.MONTH)+1;			// 꺼내면 0부터 시작이니까 +1 해준다.
-		int todayDay = c.get(Calendar.DATE);
-		int todayHour = c.get(Calendar.HOUR_OF_DAY);
-		int todayMinute = c.get(Calendar.MINUTE);
-		int todaySecond = c.get(Calendar.SECOND);
-
-		String tempMonth = Integer.toString(todayMonth);
-		String tempDay = Integer.toString(todayDay);
-		String tempHour = Integer.toString(todayHour);
-		String tempMinute = Integer.toString(todayMinute);
-		String tempSecond = Integer.toString(todaySecond);
-		if(tempMonth.length()==1) tempMonth = "0"+tempMonth;
-		if(tempDay.length()==1) tempDay = "0"+tempDay;
-		if(tempHour.length()==1) tempHour = "0"+tempHour;
-		if(tempMinute.length()==1) tempMinute = "0"+tempMinute;
-
-		String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute+":"+tempSecond;
-		return nowTime;
-		//Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
-	}
+//	//서버에 GCM 아이디 업뎃한다.
+//	/**
+//	 * updateMyGCMtoServer
+//	 *  서버에 GCM 아이디 업뎃한다.
+//	 *
+//	 * @param
+//	 * @param
+//	 * @return
+//	 */
+//	public void updateMyGCMtoServer(){
+//		Log.i(TAG, "updateMyGCMtoServer");
+//		controllerName = "checkMileageMemberController";
+//		methodName = "updateRegistrationId";
+//		// 서버 통신부
+//		new Thread(
+//				new Runnable(){
+//					public void run(){
+//						JSONObject obj = new JSONObject();
+//						try{
+//							obj.put("activateYn", "Y");
+//							obj.put("checkMileageId", myQR);			  
+//							obj.put("registrationId", regIdGCM);							
+//							obj.put("modifyDate", getNow());			
+//							Log.d(TAG, "checkMileageId:"+myQR);
+//							Log.d(TAG, "registrationId:"+regIdGCM);
+//							Log.d(TAG, "modifyDate:"+getNow());
+//						}catch(Exception e){
+//							e.printStackTrace();
+//						}
+//						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
+//						try{
+//							postUrl2 = new URL(serverName+"/"+controllerName+"/"+methodName);
+//							connection2 = (HttpURLConnection) postUrl2.openConnection();
+//							connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
+//							connection2.setDoOutput(true);
+//							connection2.setInstanceFollowRedirects(false);
+//							connection2.setRequestMethod("POST");
+//							connection2.setRequestProperty("Content-Type", "application/json");
+//							//							connection2.connect();		// *** 
+//							Thread.sleep(200);
+//							OutputStream os2 = connection2.getOutputStream();
+//							os2.write(jsonString.getBytes("UTF-8"));
+//							os2.flush();
+//							//							System.out.println("postUrl      : " + postUrl2);
+//							//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
+//							int responseCode = connection2.getResponseCode();
+//							//							os2.close();
+//							if(responseCode==200||responseCode==204){
+//								Log.i(TAG, "S to update GCM ID to server");
+//							}else{
+//								Log.i(TAG, "F to update GCM ID to server");
+//							}
+//							//							connection2.disconnect();
+//						}catch(Exception e){ 
+//							//							connection2.disconnect();
+//							e.printStackTrace();
+//						}
+//						//						CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
+//						//						if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
+//						//							CommonUtils.usingNetwork = 0;
+//						//						}
+//					}
+//				}
+//		).start();
+//	}
+//	// GCM 테스트 용
+//	public void testGCM(String registrationId) throws JSONException, IOException {
+//		Log.i(TAG, "testGCM");
+//		JSONObject jsonMember = new JSONObject();
+//		jsonMember.put("registrationId", registrationId);
+//		String jsonString = "{\"checkMileageMember\":" + jsonMember.toString() + "}";
+//
+//		Log.i(TAG, "jsonMember : " + jsonString);
+//
+//		try {
+//			postUrl2 = new URL("http://checkmileage.onemobileservice.com/checkMileageMemberController/testGCM");		 // test 용..
+//			connection2 = (HttpURLConnection) postUrl2.openConnection();
+//			connection2.setDoOutput(true);
+//			connection2.setInstanceFollowRedirects(false);
+//			connection2.setRequestMethod("POST");
+//			connection2.setRequestProperty("Content-Type", "application/json");
+//			//		         connection2.connect();		// *** 
+//			OutputStream os2 = connection2.getOutputStream();
+//			os2.write(jsonString.getBytes("UTF-8"));
+//			os2.flush();
+//			System.out.println("postUrl      : " + postUrl2);
+//			System.out.println("responseCode : " + connection2.getResponseCode());
+//			//		         connection2.disconnect();
+//		} catch (Exception e) {
+//			//			  connection2.disconnect();
+//			Log.e(TAG, "Fail to register category.");
+//		}
+//	}
+//
+//	// 현시각 구하기
+//	/**
+//	 * getNow
+//	 *  현시각 구한다
+//	 *
+//	 * @param
+//	 * @param
+//	 * @return nowTime
+//	 */
+//	public String getNow(){
+//		Calendar c = Calendar.getInstance();
+//		int todayYear = c.get(Calendar.YEAR);
+//		int todayMonth = c.get(Calendar.MONTH)+1;			// 꺼내면 0부터 시작이니까 +1 해준다.
+//		int todayDay = c.get(Calendar.DATE);
+//		int todayHour = c.get(Calendar.HOUR_OF_DAY);
+//		int todayMinute = c.get(Calendar.MINUTE);
+//		int todaySecond = c.get(Calendar.SECOND);
+//
+//		String tempMonth = Integer.toString(todayMonth);
+//		String tempDay = Integer.toString(todayDay);
+//		String tempHour = Integer.toString(todayHour);
+//		String tempMinute = Integer.toString(todayMinute);
+//		String tempSecond = Integer.toString(todaySecond);
+//		if(tempMonth.length()==1) tempMonth = "0"+tempMonth;
+//		if(tempDay.length()==1) tempDay = "0"+tempDay;
+//		if(tempHour.length()==1) tempHour = "0"+tempHour;
+//		if(tempMinute.length()==1) tempMinute = "0"+tempMinute;
+//
+//		String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute+":"+tempSecond;
+//		return nowTime;
+//		//Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
+//	}
+	
 	@Override
 	protected void onUnregistered(Context context, String registrationId) {
 		Log.i(TAG, "Device unregistered");
@@ -402,7 +400,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		long when = System.currentTimeMillis();
 		NotificationManager notificationManager = (NotificationManager)
 		context.getSystemService(Context.NOTIFICATION_SERVICE);
-		Notification notification = new Notification(icon, message, when);
+		Notification notification = new Notification(icon, message, when);			// sdf
 		String title = context.getString(R.string.app_name);
 		String mileageUpdateStr = context.getString(R.string.mileage_noti);
 		Intent notificationIntent;
@@ -489,15 +487,5 @@ public class GCMIntentService extends GCMBaseIntentService {
 			notification.flags |= Notification.FLAG_AUTO_CANCEL;
 			notificationManager.notify(0, notification);
 		}
-	}
-
-	@Override
-	public void onDestroy(){
-		super.onDestroy();
-		//		try{
-		//			if(connection2!=null){
-		//				connection2.disconnect();
-		//			}
-		//		}catch(Exception e){}
 	}
 }
