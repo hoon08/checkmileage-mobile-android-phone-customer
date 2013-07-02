@@ -36,7 +36,7 @@ import kr.co.bettersoft.checkmileage.activities.R;
 import kr.co.bettersoft.checkmileage.activities.CertificationStep2;
 import kr.co.bettersoft.checkmileage.activities.Main_TabsActivity;
 import kr.co.bettersoft.checkmileage.activities.MyQRPageActivity;
-import kr.co.bettersoft.checkmileage.common.CommonUtils;
+import kr.co.bettersoft.checkmileage.common.CommonConstant;
 import kr.co.bettersoft.checkmileage.pref.Password;
 import kr.co.bettersoft.checkmileage.pref.PrefActivityFromResource;
 
@@ -97,7 +97,7 @@ public class CertificationStep1 extends Activity {
 				if(b.getInt("showAlert")==1){					 // 경고창 . 
 					//
 					new AlertDialog.Builder(returnThis())
-					.setTitle(CommonUtils.alertTitle)							// *** 하드코딩 얼럿 창 타이틀. --> Carrot
+					.setTitle(CommonConstant.alertTitle)							// *** 하드코딩 얼럿 창 타이틀. --> Carrot
 					.setMessage(b.getString("msg"))
 					//					.setIcon(android.R.drawable.ic_dialog_alert)		// 경고창. 삼각형 느낌표..?
 					.setIcon(R.drawable.ic_dialog_img)		// 경고창. 삼각형 느낌표 --> 어플 아이콘으로바꿈.
@@ -179,7 +179,7 @@ public class CertificationStep1 extends Activity {
 			public void onClick(View v) {
 				// 인텐트 - 웹뷰로 이용약관 창 띄움.
 				Intent webIntent = new Intent(CertificationStep1.this, myWebView.class);
-				webIntent.putExtra("loadingURL", CommonUtils.termsPolicyURL);		
+				webIntent.putExtra("loadingURL", CommonConstant.termsPolicyURL);		
 				startActivity(webIntent);
 			}
 		});
@@ -188,7 +188,7 @@ public class CertificationStep1 extends Activity {
 			public void onClick(View v) {
 				// 인텐트 - 웹뷰로 개인정보 방침 보기 창 띄움
 				Intent webIntent = new Intent(CertificationStep1.this, myWebView.class);
-				webIntent.putExtra("loadingURL", CommonUtils.privacyPolicyURL);		 
+				webIntent.putExtra("loadingURL", CommonConstant.privacyPolicyURL);		 
 				startActivity(webIntent);
 			}
 		});

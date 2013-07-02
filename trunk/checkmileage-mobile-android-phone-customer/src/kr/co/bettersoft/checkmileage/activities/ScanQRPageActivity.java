@@ -18,7 +18,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import kr.co.bettersoft.checkmileage.activities.R;
-import kr.co.bettersoft.checkmileage.common.CommonUtils;
+import kr.co.bettersoft.checkmileage.common.CommonConstant;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMemberSettings;
 
 import org.json.JSONException;
@@ -43,7 +43,7 @@ public class ScanQRPageActivity extends Activity {
 	SharedPreferences sharedPrefCustom;					// 프리퍼런스
 
 	// 서버 통신 용
-	String serverName = CommonUtils.serverNames;		
+	String serverName = CommonConstant.serverNames;		
 	String controllerName = "";
 	String methodName = "";
 	String qrcode = "";

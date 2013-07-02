@@ -23,7 +23,7 @@ import java.util.Locale;
 import kr.co.bettersoft.checkmileage.activities.R;
 import kr.co.bettersoft.checkmileage.activities.MemberStoreListPageActivity.backgroundGetMerchantInfo;
 import kr.co.bettersoft.checkmileage.common.CheckMileageCustomerRest;
-import kr.co.bettersoft.checkmileage.common.CommonUtils;
+import kr.co.bettersoft.checkmileage.common.CommonConstant;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMembers;
 
 import org.json.JSONObject;

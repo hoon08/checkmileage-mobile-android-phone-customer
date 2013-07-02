@@ -10,7 +10,7 @@ package kr.co.bettersoft.checkmileage.activities;
 import java.util.Locale;
 
 import kr.co.bettersoft.checkmileage.activities.R;
-import kr.co.bettersoft.checkmileage.common.CommonUtils;
+import kr.co.bettersoft.checkmileage.common.CommonConstant;
 
 import org.apache.http.util.EncodingUtils;
 
@@ -186,7 +186,7 @@ public class myWebView extends Activity {
 				@Override
 				public void run() {
 					try {		// 기다렸다가 체크해서 안끝났으면 중지
-						Thread.sleep(CommonUtils.serverConnectTimeOut);
+						Thread.sleep(CommonConstant.serverConnectTimeOut);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}

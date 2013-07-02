@@ -47,7 +47,7 @@ import java.util.Date;
 import kr.co.bettersoft.checkmileage.activities.R;
 import kr.co.bettersoft.checkmileage.activities.CertificationStep1;
 import kr.co.bettersoft.checkmileage.common.CheckMileageCustomerRest;
-import kr.co.bettersoft.checkmileage.common.CommonUtils;
+import kr.co.bettersoft.checkmileage.common.CommonConstant;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMembers;
 
 import org.json.JSONArray;
@@ -140,7 +140,7 @@ public class CertificationStep2 extends Activity {
 				}
 				if(b.getInt("showAlert")==1){					 // 알림 및 경고창 . 
 					new AlertDialog.Builder(returnThis())
-					.setTitle(CommonUtils.alertTitle)							
+					.setTitle(CommonConstant.alertTitle)							
 					.setMessage(b.getString("msg"))
 					//					.setIcon(android.R.drawable.ic_dialog_alert)		// 경고창. 삼각형 느낌표..?
 					.setIcon(R.drawable.ic_dialog_img)		// 경고창. 삼각형 느낌표 --> 어플 아이콘으로바꿈.

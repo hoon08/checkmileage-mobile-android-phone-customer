@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Locale;
 
 import kr.co.bettersoft.checkmileage.activities.R;
-import kr.co.bettersoft.checkmileage.common.CommonUtils;
+import kr.co.bettersoft.checkmileage.common.CommonConstant;
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
 import kr.co.bettersoft.checkmileage.pref.Password;
 
@@ -341,7 +341,7 @@ public class MainActivity extends Activity {
 			//			Toast.makeText(MainActivity.this, "locked", Toast.LENGTH_SHORT).show();	
 			Intent intent = new Intent(MainActivity.this, Password.class);
 			// 비번 이후 액티비티 설정(나)
-			intent.putExtra(Password.NEXT_ACTIVITY, CommonUtils.packageNames+".MainActivity");
+			intent.putExtra(Password.NEXT_ACTIVITY, CommonConstant.packageNames+".MainActivity");
 			// 현재 화면 비번 전달
 			intent.putExtra(Password.PASSWORD, sharedPrefCustom.getString("password", "0000"));
 			// 비번 입력 모드

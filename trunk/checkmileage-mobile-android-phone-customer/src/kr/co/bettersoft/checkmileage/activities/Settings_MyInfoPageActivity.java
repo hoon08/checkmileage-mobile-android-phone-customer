@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
 
 import kr.co.bettersoft.checkmileage.activities.R;
 import kr.co.bettersoft.checkmileage.activities.MyQRPageActivity;
-import kr.co.bettersoft.checkmileage.common.CommonUtils;
+import kr.co.bettersoft.checkmileage.common.CommonConstant;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMembers;
 
 //개인정보 변경
@@ -69,7 +69,7 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 	int sharePrefsFlag = 1;					// 어플내 자체 프립스를 얻기 위한 미끼. 1,-1 값을 바꿔가며 저장하면 리스너가 낚인다.
 
 	// 서버 통신 용
-	String serverName = CommonUtils.serverNames;
+	String serverName = CommonConstant.serverNames;
 	static String controllerName = "";		// JSON 서버 통신명 컨트롤러 명
 	static String methodName = "";			// JSON 서버 통신용 메소드 명
 	static int responseCode = 0;			// JSON 서버 통신 결과
@@ -412,7 +412,7 @@ public class Settings_MyInfoPageActivity extends PreferenceActivity implements O
 						try{
 							postUrl2 = new URL(serverName+"/"+controllerName+"/"+methodName);
 							connection2 = (HttpURLConnection) postUrl2.openConnection();
-							connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
+							connection2.setConnectTimeout(CommonConstant.serverConnectTimeOut);
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
