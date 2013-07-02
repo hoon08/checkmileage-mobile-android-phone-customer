@@ -9,7 +9,7 @@ import kr.co.bettersoft.checkmileage.activities.GCMIntentService;
 import kr.co.bettersoft.checkmileage.activities.MainActivity;
 import kr.co.bettersoft.checkmileage.activities.Main_TabsActivity;
 import kr.co.bettersoft.checkmileage.activities.MyMileagePageActivity;
-import kr.co.bettersoft.checkmileage.common.CommonUtils;
+import kr.co.bettersoft.checkmileage.common.CommonConstant;
 
 
 import android.app.Activity;
@@ -82,7 +82,7 @@ public class DummyActivity extends Activity {
 		}
 		count = 0;		// 버그 수정용 초기화
 		// 결과는 true 가 나온다.
-		isRunningProcess(this, CommonUtils.packageNames);		// 실행중인지 확인.
+		isRunningProcess(this, CommonConstant.packageNames);		// 실행중인지 확인.
 		if(count==1){		// 최초 실행.(나밖에없음)	
 			// 테스트 및 노멀은 같다. 그냥 실행한다. 마일리지 변경사항, 이벤트는 알려줘야 한다.
 			

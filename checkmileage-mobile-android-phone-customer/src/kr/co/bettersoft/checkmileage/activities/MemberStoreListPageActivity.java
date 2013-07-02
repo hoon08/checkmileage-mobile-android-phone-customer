@@ -23,7 +23,7 @@ import kr.co.bettersoft.checkmileage.activities.R;
 import kr.co.bettersoft.checkmileage.activities.MemberStoreInfoPage.backgroundUpdateLogToServer;
 import kr.co.bettersoft.checkmileage.adapters.MemberStoreSearchListAdapter;
 import kr.co.bettersoft.checkmileage.common.CheckMileageCustomerRest;
-import kr.co.bettersoft.checkmileage.common.CommonUtils;
+import kr.co.bettersoft.checkmileage.common.CommonConstant;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageLogs;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMembers;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMerchants;
@@ -133,7 +133,7 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	String[] tmpJobs = null;
 	// 이미지
 	float fImgSize = 0;			// 이미지 사이즈 저장변수.
-	String imgthumbDomain = CommonUtils.imgthumbDomain; 					// Img 가져올때 파일명만 있을 경우 앞에 붙일 도메인. 
+	String imgthumbDomain = CommonConstant.imgthumbDomain; 					// Img 가져올때 파일명만 있을 경우 앞에 붙일 도메인. 
 
 	// 화면 구성
 	Spinner searchSpinnerType;		// 상단 업종 목록

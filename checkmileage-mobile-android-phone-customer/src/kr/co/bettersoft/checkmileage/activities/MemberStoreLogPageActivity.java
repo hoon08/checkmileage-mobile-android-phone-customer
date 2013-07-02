@@ -13,7 +13,7 @@ import java.util.List;
 import kr.co.bettersoft.checkmileage.activities.R;
 import kr.co.bettersoft.checkmileage.activities.MemberStoreListPageActivity.backgroundGetMerchantInfo;
 import kr.co.bettersoft.checkmileage.adapters.MileageLogAdapter;
-import kr.co.bettersoft.checkmileage.common.CommonUtils;
+import kr.co.bettersoft.checkmileage.common.CommonConstant;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMemberMileageLogs;
 
 import org.json.JSONArray;
@@ -48,7 +48,7 @@ public class MemberStoreLogPageActivity extends Activity {
 
 	String controllerName = "";
 	String methodName = "";
-	String serverName = CommonUtils.serverNames;
+	String serverName = CommonConstant.serverNames;
 
 	URL postUrl2;
 	HttpURLConnection connection2;
@@ -190,7 +190,7 @@ public class MemberStoreLogPageActivity extends Activity {
 						try{
 							postUrl2 = new URL(serverName+"/"+controllerName+"/"+methodName);
 							connection2 = (HttpURLConnection) postUrl2.openConnection();
-							connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
+							connection2.setConnectTimeout(CommonConstant.serverConnectTimeOut);
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");

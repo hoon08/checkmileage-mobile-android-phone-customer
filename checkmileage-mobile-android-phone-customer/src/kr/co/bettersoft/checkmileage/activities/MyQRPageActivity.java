@@ -28,7 +28,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import kr.co.bettersoft.checkmileage.activities.R;
-import kr.co.bettersoft.checkmileage.common.CommonUtils;
+import kr.co.bettersoft.checkmileage.common.CommonConstant;
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
 import kr.co.bettersoft.checkmileage.utils.AES256Cipher;
 
@@ -74,7 +74,7 @@ public class MyQRPageActivity extends Activity {
 	// 서버 통신 용	 			///////////////////////////////////////////////
 	String controllerName="";
 	String methodName="";
-	String serverName = CommonUtils.serverNames;
+	String serverName = CommonConstant.serverNames;
 	URL postUrl2 ;
 	HttpURLConnection connection2;
 	int responseCode= 0;
@@ -456,7 +456,7 @@ public class MyQRPageActivity extends Activity {
 	public String encodeAES(String plainText){
 		String encodeText = "";
 		try {
-			encodeText = AES256Cipher.AES_Encode(plainText, CommonUtils.key);
+			encodeText = AES256Cipher.AES_Encode(plainText, CommonConstant.key);
 			Log.d(TAG,"plainText::"+plainText+"//encodeText::"+encodeText);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -468,7 +468,7 @@ public class MyQRPageActivity extends Activity {
 	public String decodeAES(String encodeText){
 		String decodeText="";
 		try {
-			decodeText = AES256Cipher.AES_Decode(encodeText, CommonUtils.key);
+			decodeText = AES256Cipher.AES_Decode(encodeText, CommonConstant.key);
 			Log.d(TAG,"encodeText::"+encodeText+"//decodeText::"+decodeText);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -621,7 +621,7 @@ public class MyQRPageActivity extends Activity {
 							try{
 								postUrl2 = new URL(serverName+"/"+controllerName+"/"+methodName);
 								connection2 = (HttpURLConnection) postUrl2.openConnection();
-								connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
+								connection2.setConnectTimeout(CommonConstant.serverConnectTimeOut);
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");

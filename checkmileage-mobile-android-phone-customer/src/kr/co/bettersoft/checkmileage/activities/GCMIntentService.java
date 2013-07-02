@@ -15,7 +15,7 @@
  */
 package kr.co.bettersoft.checkmileage.activities;
 
-import static kr.co.bettersoft.checkmileage.common.CommonUtils.SENDER_ID;
+import static kr.co.bettersoft.checkmileage.common.CommonConstant.SENDER_ID;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,7 +26,7 @@ import java.util.Calendar;
 
 import kr.co.bettersoft.checkmileage.activities.R;
 import kr.co.bettersoft.checkmileage.common.CheckMileageCustomerRest;
-import kr.co.bettersoft.checkmileage.common.CommonUtils;
+import kr.co.bettersoft.checkmileage.common.CommonConstant;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMembers;
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
 

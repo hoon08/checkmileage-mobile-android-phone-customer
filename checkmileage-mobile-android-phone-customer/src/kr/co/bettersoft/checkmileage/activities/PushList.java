@@ -19,7 +19,7 @@ import java.util.List;
 
 import kr.co.bettersoft.checkmileage.activities.R;
 import kr.co.bettersoft.checkmileage.adapters.PushEventListAdapter;
-import kr.co.bettersoft.checkmileage.common.CommonUtils;
+import kr.co.bettersoft.checkmileage.common.CommonConstant;
 import kr.co.bettersoft.checkmileage.domain.CheckMileagePushEvent;
 
 import org.json.JSONArray;
@@ -63,14 +63,14 @@ public class PushList extends Activity {
 	String myQRcode = "";
 	String controllerName = "";
 	String methodName = "";
-	String serverName = CommonUtils.serverNames;
+	String serverName = CommonConstant.serverNames;
 
 	URL postUrl2;
 	HttpURLConnection connection2;
 
 	//	String imgthumbDomain = CommonUtils.imgthumbDomain; 					// Img 가져올때 파일명만 있을 경우 앞에 붙일 도메인.  
 	//	String imgDomain = CommonUtils.imgDomain; 					// Img 가져올때 파일명만 있을 경우 앞에 붙일 도메인.  
-	String imgPushDomain = CommonUtils.imgPushDomain;			// 푸시 이미지 전용 도메인
+	String imgPushDomain = CommonConstant.imgPushDomain;			// 푸시 이미지 전용 도메인
 
 	public List<CheckMileagePushEvent> entries;	// 1차적으로 조회한 결과. (가맹점 상세 정보 제외)
 	public List<CheckMileagePushEvent> dbInEntries;	// db에 넣을 거
@@ -560,7 +560,7 @@ public class PushList extends Activity {
 							try{
 								postUrl2 = new URL(serverName+"/"+controllerName+"/"+methodName);
 								connection2 = (HttpURLConnection) postUrl2.openConnection();
-								connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
+								connection2.setConnectTimeout(CommonConstant.serverConnectTimeOut);
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");

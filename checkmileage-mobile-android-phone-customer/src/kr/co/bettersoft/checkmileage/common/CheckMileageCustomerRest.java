@@ -41,7 +41,7 @@ public class CheckMileageCustomerRest {
 	int responseCode = 0;
 	String controllerName ="";
 	String methodName ="";
-	String serverName = CommonUtils.serverNames;
+	String serverName = CommonConstant.serverNames;
 	URL postUrl2 = null;
 	HttpURLConnection connection2 = null;
 	int isRunning = 0;		// 통신 도중 중복 호출을 방지하기 위함.
@@ -665,7 +665,7 @@ public class CheckMileageCustomerRest {
 		try{
 			postUrl2 = new URL(fullUrl);
 			connection2 = (HttpURLConnection) postUrl2.openConnection();
-			connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
+			connection2.setConnectTimeout(CommonConstant.serverConnectTimeOut);
 			connection2.setDoOutput(true);
 			connection2.setInstanceFollowRedirects(false);
 			connection2.setRequestMethod("POST");

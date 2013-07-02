@@ -37,7 +37,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.TextView;
 
-public class CommonUtils {
+public class CommonConstant {
 
 	public String TAG = "CommonUtils";
 	

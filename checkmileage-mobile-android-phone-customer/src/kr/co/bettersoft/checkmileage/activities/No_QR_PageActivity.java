@@ -16,7 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import kr.co.bettersoft.checkmileage.activities.R;
-import kr.co.bettersoft.checkmileage.common.CommonUtils;
+import kr.co.bettersoft.checkmileage.common.CommonConstant;
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -47,7 +47,7 @@ public class No_QR_PageActivity extends Activity {
 	// 서버 통신용
 	String controllerName ="";
 	String methodName ="";
-	String serverName = CommonUtils.serverNames;
+	String serverName = CommonConstant.serverNames;
 	URL postUrl2 = null;
 	HttpURLConnection connection2 = null;
 	int responseCode = 0;
@@ -65,7 +65,7 @@ public class No_QR_PageActivity extends Activity {
 				if(b.getInt("showAlert")==1){					 // 경고창 . 
 					//
 					new AlertDialog.Builder(returnThis())
-					.setTitle(CommonUtils. alertTitle )                                        // *** "Carrot" 하드코딩 --> 변수사용 
+					.setTitle(CommonConstant. alertTitle )                                        // *** "Carrot" 하드코딩 --> 변수사용 
 					.setMessage(b.getString("msg"))
 					.setIcon(R.drawable.ic_dialog_img)		
 					.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -252,7 +252,7 @@ public class No_QR_PageActivity extends Activity {
 						try{
 							postUrl2 = new URL(serverName+"/"+controllerName+"/"+methodName);
 							connection2 = (HttpURLConnection) postUrl2.openConnection();
-							connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
+							connection2.setConnectTimeout(CommonConstant.serverConnectTimeOut);
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");

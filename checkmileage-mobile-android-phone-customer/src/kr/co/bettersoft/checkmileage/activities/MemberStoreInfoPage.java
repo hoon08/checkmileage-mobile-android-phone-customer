@@ -26,7 +26,7 @@ import java.util.Date;
 import kr.co.bettersoft.checkmileage.activities.R;
 import kr.co.bettersoft.checkmileage.activities.MyQRPageActivity.backgroundUpdateLogToServer;
 import kr.co.bettersoft.checkmileage.common.CheckMileageCustomerRest;
-import kr.co.bettersoft.checkmileage.common.CommonUtils;
+import kr.co.bettersoft.checkmileage.common.CommonConstant;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageLogs;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMemberMileageLogs;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMembers;
@@ -112,7 +112,7 @@ public class MemberStoreInfoPage extends Activity {
 	//	Bitmap imageFile= null;			// 이미지 파일
 
 
-	String imgDomain = CommonUtils.imgDomain; 					// Img 가져올때 파일명만 있을 경우 앞에 붙일 도메인.   
+	String imgDomain = CommonConstant.imgDomain; 					// Img 가져올때 파일명만 있을 경우 앞에 붙일 도메인.   
 	Bitmap bm = null;
 	String latatude = "";
 	String longitude = "";

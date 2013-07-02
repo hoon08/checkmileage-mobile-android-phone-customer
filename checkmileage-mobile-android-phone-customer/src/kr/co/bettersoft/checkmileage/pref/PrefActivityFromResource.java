@@ -75,7 +75,7 @@ import kr.co.bettersoft.checkmileage.activities.Settings_AboutPageActivity;
 import kr.co.bettersoft.checkmileage.activities.myWebView;
 import kr.co.bettersoft.checkmileage.activities.GCMIntentService.backgroundUpdateMyGCMtoServer;
 import kr.co.bettersoft.checkmileage.activities.MemberStoreInfoPage.backgroundUpdateLogToServer;
-import kr.co.bettersoft.checkmileage.common.CommonUtils;
+import kr.co.bettersoft.checkmileage.common.CommonConstant;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMembers;
 
 
@@ -124,7 +124,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	int sharePrefsFlag = 1;					// 어플내 자체 프립스를 얻기 위한 미끼. 1,-1 값을 바꿔가며 저장하면 리스너가 동작한다. - 그때 동작하는 프리퍼런스를 잡는다.
 
 	// 서버 통신 관련
-	String serverName = CommonUtils.serverNames;
+	String serverName = CommonConstant.serverNames;
 	static String controllerName = "";		// JSON 서버 통신명 컨트롤러 명
 	static String methodName = "";			// JSON 서버 통신용 메소드 명
 	static int responseCode = 0;			// JSON 서버 통신 결과
@@ -348,14 +348,14 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		if(preference.equals(findPreference("pref_app_terms"))){
 			//			Toast.makeText(PrefActivityFromResource.this, "웹뷰 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
 			Intent webIntent = new Intent(PrefActivityFromResource.this, myWebView.class);
-			webIntent.putExtra("loadingURL", CommonUtils.termsPolicyURL);
+			webIntent.putExtra("loadingURL", CommonConstant.termsPolicyURL);
 			startActivity(webIntent);
 		}
 		// 개인정보 보호정책..  pref_app_privacy
 		if(preference.equals(findPreference("pref_app_privacy"))){
 			//			Toast.makeText(PrefActivityFromResource.this, "웹뷰 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
 			Intent webIntent = new Intent(PrefActivityFromResource.this, myWebView.class);
-			webIntent.putExtra("loadingURL", CommonUtils.privacyPolicyURL);
+			webIntent.putExtra("loadingURL", CommonConstant.privacyPolicyURL);
 			startActivity(webIntent);
 		}
 		//		// 탈퇴.  pref_app_leave
@@ -521,7 +521,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 						try{
 							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);				 
 							connection2 = (HttpURLConnection) postUrl2.openConnection();
-							connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
+							connection2.setConnectTimeout(CommonConstant.serverConnectTimeOut);
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
@@ -630,7 +630,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							try{
 								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);	 
 								connection2 = (HttpURLConnection) postUrl2.openConnection();
-								connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
+								connection2.setConnectTimeout(CommonConstant.serverConnectTimeOut);
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
@@ -754,7 +754,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							try{
 								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);		 
 								connection2 = (HttpURLConnection) postUrl2.openConnection();
-								connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
+								connection2.setConnectTimeout(CommonConstant.serverConnectTimeOut);
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
@@ -835,7 +835,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 						try{
 							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);		 
 							connection2 = (HttpURLConnection) postUrl2.openConnection();
-							connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
+							connection2.setConnectTimeout(CommonConstant.serverConnectTimeOut);
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
 							connection2.setRequestMethod("POST");
@@ -1257,7 +1257,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							try{
 								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
 								connection2 = (HttpURLConnection) postUrl2.openConnection();
-								connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
+								connection2.setConnectTimeout(CommonConstant.serverConnectTimeOut);
 								connection2.setDoOutput(true);
 								connection2.setInstanceFollowRedirects(false);
 								connection2.setRequestMethod("POST");
