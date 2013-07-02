@@ -15,7 +15,7 @@
  */
 package kr.co.bettersoft.checkmileage.activities;
 
-import static kr.co.bettersoft.checkmileage.common.CommonUtilities.SENDER_ID;
+import static kr.co.bettersoft.checkmileage.common.CommonUtils.SENDER_ID;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -118,18 +118,18 @@ public class GCMIntentService extends GCMBaseIntentService {
 		}
 	}
 
-	// 비동기로 gcm 서버에 레지스터.. 두번 등록 할 필요 없으므로 실행 안함
-	public class backgroundServerRegister extends  AsyncTask<Void, Void, Void> { 
-		@Override protected void onPostExecute(Void result) {  
-		} 
-		@Override protected void onPreExecute() {  
-		} 
-		@Override protected Void doInBackground(Void... params) {  
-			Log.d(TAG,"backgroundServerRegister");
-			ServerUtilities.register(localContext, localRegistrationId);
-			return null; 
-		}
-	} 
+//	// 비동기로 gcm 서버에 레지스터.. 두번 등록 할 필요 없으므로 실행 안함
+//	public class backgroundServerRegister extends  AsyncTask<Void, Void, Void> { 
+//		@Override protected void onPostExecute(Void result) {  
+//		} 
+//		@Override protected void onPreExecute() {  
+//		} 
+//		@Override protected Void doInBackground(Void... params) {  
+//			Log.d(TAG,"backgroundServerRegister");
+//			ServerUtilities.register(localContext, localRegistrationId);
+//			return null; 
+//		}
+//	} 
 
 	// 비동기로 GCM 아이디 업뎃 호출  -- 캐럿 서버에 gcm 아이디 업뎃
 	/**
@@ -310,13 +310,13 @@ public class GCMIntentService extends GCMBaseIntentService {
 	protected void onUnregistered(Context context, String registrationId) {
 		Log.i(TAG, "Device unregistered");
 		//        displayMessage(context, getString(R.string.gcm_unregistered));
-		if (GCMRegistrar.isRegisteredOnServer(context)) {
-			ServerUtilities.unregister(context, registrationId);
-		} else {
-			// This callback results from the call to unregister made on
-			// ServerUtilities when the registration to the server failed.
-			Log.i(TAG, "Ignoring unregister callback");
-		}
+//		if (GCMRegistrar.isRegisteredOnServer(context)) {
+//			ServerUtilities.unregister(context, registrationId);
+//		} else {
+//			// This callback results from the call to unregister made on
+//			// ServerUtilities when the registration to the server failed.
+//			Log.i(TAG, "Ignoring unregister callback");
+//		}
 	}
 
 	/**

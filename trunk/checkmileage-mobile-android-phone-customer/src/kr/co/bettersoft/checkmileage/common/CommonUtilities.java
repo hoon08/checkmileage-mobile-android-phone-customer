@@ -27,46 +27,46 @@ import android.content.Intent;
  */
 public final class CommonUtilities {
 
-	/**
-	 * Base URL of the Demo Server (such as http://my_host:8080/gcm-demo)
-	 */
-	//    static final String SERVER_URL = "http://192.168.10.112:8080/GCMServerTest1/";		// blue.
-	//    static final String SERVER_URL = "http://chattingday.onemobileservice.com/chattingDayGatheringMessageController/testGCM/";
-
-	/**
-	 * Google API project id registered to use GCM.
-	 */
-	//    static final String SENDER_ID = "568602772620";				// yes. blue.
-	public static final String SENDER_ID = "944691534021";				// yes. server / gcm register 할때 사용
-
-	/**
-	 * Tag used on log messages.
-	 */
-	public static final String TAG = "GCMCommonUtilities";
-
-	/**
-	 * Intent used to display a message in the screen.
-	 */
-	public static final String DISPLAY_MESSAGE_ACTION =
-		"co.kr.bettersoft.checkmileage_mobile_android_phone_customer.DISPLAY_MESSAGE";
-
-	/**
-	 * Intent's extra that contains the message to be displayed.
-	 */
-	public static final String EXTRA_MESSAGE = "message";
-
-	/**
-	 * Notifies UI to display a message.
-	 * <p>
-	 * This method is defined in the common helper because it's used both by
-	 * the UI and the background service.
-	 *
-	 * @param context application's context.
-	 * @param message message to be displayed.
-	 */
-	public static void displayMessage(Context context, String message) {
-		Intent intent = new Intent(DISPLAY_MESSAGE_ACTION);
-		intent.putExtra(EXTRA_MESSAGE, message);
-		context.sendBroadcast(intent);
-	}
+//	/**
+//	 * Base URL of the Demo Server (such as http://my_host:8080/gcm-demo)
+//	 */
+//	//    static final String SERVER_URL = "http://192.168.10.112:8080/GCMServerTest1/";		// blue.
+//	//    static final String SERVER_URL = "http://chattingday.onemobileservice.com/chattingDayGatheringMessageController/testGCM/";
+//
+//	/**
+//	 * Google API project id registered to use GCM.
+//	 */
+//	//    static final String SENDER_ID = "568602772620";				// yes. blue.
+//	public static final String SENDER_ID = "944691534021";				// yes. server / gcm register 할때 사용
+//
+//	/**
+//	 * Tag used on log messages.
+//	 */
+//	public static final String TAG = "GCMCommonUtilities";
+//
+//	/**
+//	 * Intent used to display a message in the screen.
+//	 */
+//	public static final String DISPLAY_MESSAGE_ACTION =
+//		"co.kr.bettersoft.checkmileage_mobile_android_phone_customer.DISPLAY_MESSAGE";
+//
+//	/**
+//	 * Intent's extra that contains the message to be displayed.
+//	 */
+//	public static final String EXTRA_MESSAGE = "message";
+//
+//	/**
+//	 * Notifies UI to display a message.
+//	 * <p>
+//	 * This method is defined in the common helper because it's used both by
+//	 * the UI and the background service.
+//	 *
+//	 * @param context application's context.
+//	 * @param message message to be displayed.
+//	 */
+//	public static void displayMessage(Context context, String message) {
+//		Intent intent = new Intent(DISPLAY_MESSAGE_ACTION);
+//		intent.putExtra(EXTRA_MESSAGE, message);
+//		context.sendBroadcast(intent);
+//	}
 }
