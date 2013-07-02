@@ -47,6 +47,26 @@ public class CommonUtils {
 	//	static int callCode = 0;		// 호출 모드 . 읽기:1, 쓰기:2, 초기화:3
 	//	static int qrResult = 0;		// 처리 결과값. 성공:1, 실패:: 파일없음:-3,입출력오류:-2,그외:-1
 
+	/**
+	 * Google API project id registered to use GCM.
+	 */
+	//    static final String SENDER_ID = "568602772620";				// yes. blue.
+	public static final String SENDER_ID = "944691534021";				// yes. server / gcm register 할때 사용
+	/**
+	 * Intent used to display a message in the screen.
+	 */
+	public static final String DISPLAY_MESSAGE_ACTION =
+		"co.kr.bettersoft.checkmileage_mobile_android_phone_customer.DISPLAY_MESSAGE";
+	/**
+	 * Intent's extra that contains the message to be displayed.
+	 */
+	public static final String EXTRA_MESSAGE = "message";
+	public static void displayMessage(Context context, String message) {
+	Intent intent = new Intent(DISPLAY_MESSAGE_ACTION);
+	intent.putExtra(EXTRA_MESSAGE, message);
+	context.sendBroadcast(intent);
+	}
+	
 	public static int serverConnectTimeOut = 10000;
 
 	public static String imgDomain = "http://www.mcarrot.net/upload/profile/"; 	
