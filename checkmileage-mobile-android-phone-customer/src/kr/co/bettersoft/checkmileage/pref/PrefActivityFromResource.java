@@ -65,7 +65,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import kr.co.bettersoft.checkmileage.activities.R;
-import kr.co.bettersoft.checkmileage.activities.CommonUtils;
 import kr.co.bettersoft.checkmileage.activities.MainActivity;
 import kr.co.bettersoft.checkmileage.activities.Main_TabsActivity;
 import kr.co.bettersoft.checkmileage.activities.MemberStoreInfoPage;
@@ -76,6 +75,7 @@ import kr.co.bettersoft.checkmileage.activities.Settings_AboutPageActivity;
 import kr.co.bettersoft.checkmileage.activities.myWebView;
 import kr.co.bettersoft.checkmileage.activities.GCMIntentService.backgroundUpdateMyGCMtoServer;
 import kr.co.bettersoft.checkmileage.activities.MemberStoreInfoPage.backgroundUpdateLogToServer;
+import kr.co.bettersoft.checkmileage.common.CommonUtils;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMembers;
 
 
@@ -1229,7 +1229,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 							try{
 								// 자신의 아이디를 넣어서 조회
 								Date today = new Date();
-								SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+								SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 								String nowDate = sf.format(today);
 								obj.put("checkMileageId", qrCode);	// checkMileageId 	사용자 아이디
 								obj.put("merchantId", "");		// merchantId		가맹점 아이디.

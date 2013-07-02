@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package kr.co.bettersoft.checkmileage.activities;
+package kr.co.bettersoft.checkmileage.common;
 /**
  * CommonUtilities
  * GCM 용. SENDER_ID , DISPLAY_MESSAGE_ACTION 사용
@@ -37,23 +37,23 @@ public final class CommonUtilities {
 	 * Google API project id registered to use GCM.
 	 */
 	//    static final String SENDER_ID = "568602772620";				// yes. blue.
-	static final String SENDER_ID = "944691534021";				// yes. server / gcm register 할때 사용
+	public static final String SENDER_ID = "944691534021";				// yes. server / gcm register 할때 사용
 
 	/**
 	 * Tag used on log messages.
 	 */
-	static final String TAG = "GCMCommonUtilities";
+	public static final String TAG = "GCMCommonUtilities";
 
 	/**
 	 * Intent used to display a message in the screen.
 	 */
-	static final String DISPLAY_MESSAGE_ACTION =
+	public static final String DISPLAY_MESSAGE_ACTION =
 		"co.kr.bettersoft.checkmileage_mobile_android_phone_customer.DISPLAY_MESSAGE";
 
 	/**
 	 * Intent's extra that contains the message to be displayed.
 	 */
-	static final String EXTRA_MESSAGE = "message";
+	public static final String EXTRA_MESSAGE = "message";
 
 	/**
 	 * Notifies UI to display a message.
@@ -64,7 +64,7 @@ public final class CommonUtilities {
 	 * @param context application's context.
 	 * @param message message to be displayed.
 	 */
-	static void displayMessage(Context context, String message) {
+	public static void displayMessage(Context context, String message) {
 		Intent intent = new Intent(DISPLAY_MESSAGE_ACTION);
 		intent.putExtra(EXTRA_MESSAGE, message);
 		context.sendBroadcast(intent);

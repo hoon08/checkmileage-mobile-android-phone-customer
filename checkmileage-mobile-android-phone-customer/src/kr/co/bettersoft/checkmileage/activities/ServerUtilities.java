@@ -16,8 +16,8 @@
 package kr.co.bettersoft.checkmileage.activities;
 
 //import static com.example.demoactivity2.CommonUtilities.SERVER_URL;
-import static kr.co.bettersoft.checkmileage.activities.CommonUtilities.TAG;
-import static kr.co.bettersoft.checkmileage.activities.CommonUtilities.displayMessage;
+import static kr.co.bettersoft.checkmileage.common.CommonUtilities.TAG;
+import static kr.co.bettersoft.checkmileage.common.CommonUtilities.displayMessage;
 
 //import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 
@@ -38,6 +38,7 @@ import java.util.Map.Entry;
 import java.util.Random;
 
 import kr.co.bettersoft.checkmileage.activities.R;
+import kr.co.bettersoft.checkmileage.common.CommonUtilities;
 
 /**
  * Helper class used to communicate with the demo server.

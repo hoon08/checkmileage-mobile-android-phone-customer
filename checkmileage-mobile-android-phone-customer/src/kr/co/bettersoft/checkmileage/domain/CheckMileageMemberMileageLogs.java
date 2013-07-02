@@ -16,6 +16,7 @@ public class CheckMileageMemberMileageLogs {
 	private String modifyDate;			// 수정일  - 사용o
 	private String registerDate;		// 등록일 - 사용x
 	private String checkMileageMileagesIdCheckMileageMileages;		// 키값. 중요. 키값으로 조회함.
+	
 	public String getCheckMileageId() {
 		return checkMileageId;
 	}
@@ -63,5 +64,8 @@ public class CheckMileageMemberMileageLogs {
 		this.content = content;
 		this.mileage = mileage;
 		this.modifyDate = modifyDate;
+	}
+	public CheckMileageMemberMileageLogs() {
+		// TODO Auto-generated constructor stub
 	}
 }

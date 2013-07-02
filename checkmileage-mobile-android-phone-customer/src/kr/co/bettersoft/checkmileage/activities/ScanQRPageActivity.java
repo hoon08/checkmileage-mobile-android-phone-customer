@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import kr.co.bettersoft.checkmileage.activities.R;
+import kr.co.bettersoft.checkmileage.common.CommonUtils;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMemberSettings;
 
 import org.json.JSONException;
@@ -297,7 +298,7 @@ public class ScanQRPageActivity extends Activity {
 						}
 						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 						try{
-							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+							postUrl2 = new URL(serverName+"/"+controllerName+"/"+methodName);
 							connection2 = (HttpURLConnection) postUrl2.openConnection();
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);
@@ -491,7 +492,7 @@ public class ScanQRPageActivity extends Activity {
 						}
 						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 						try{
-							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
+							postUrl2 = new URL(serverName+"/"+controllerName+"/"+methodName);
 							connection2 = (HttpURLConnection) postUrl2.openConnection();
 							//							connection2.setConnectTimeout(10000);
 							connection2.setDoOutput(true);
@@ -683,7 +684,7 @@ public class ScanQRPageActivity extends Activity {
 						}
 						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
 						try{
-							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);		 
+							postUrl2 = new URL(serverName+"/"+controllerName+"/"+methodName);		 
 							connection2 = (HttpURLConnection) postUrl2.openConnection();
 							connection2.setDoOutput(true);
 							connection2.setInstanceFollowRedirects(false);

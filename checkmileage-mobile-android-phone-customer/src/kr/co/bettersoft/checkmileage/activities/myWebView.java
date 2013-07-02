@@ -10,6 +10,7 @@ package kr.co.bettersoft.checkmileage.activities;
 import java.util.Locale;
 
 import kr.co.bettersoft.checkmileage.activities.R;
+import kr.co.bettersoft.checkmileage.common.CommonUtils;
 
 import org.apache.http.util.EncodingUtils;
 
