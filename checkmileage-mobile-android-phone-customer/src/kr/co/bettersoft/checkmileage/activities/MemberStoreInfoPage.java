@@ -24,6 +24,8 @@ import java.util.Date;
 //import java.util.List;
 
 import kr.co.bettersoft.checkmileage.activities.R;
+import kr.co.bettersoft.checkmileage.activities.CreateQRPageActivity.RunnableSaveQRtoServer;
+import kr.co.bettersoft.checkmileage.activities.CreateQRPageActivity.backgroundSaveQRtoServer;
 import kr.co.bettersoft.checkmileage.activities.MyQRPageActivity.backgroundUpdateLogToServer;
 import kr.co.bettersoft.checkmileage.common.CheckMileageCustomerRest;
 import kr.co.bettersoft.checkmileage.common.CommonConstant;
@@ -70,6 +72,9 @@ import android.widget.Toast;
 public class MemberStoreInfoPage extends Activity {
 	String TAG = "MemberStoreInfoPage";
 
+	final int GET_MERCHANT_INFO = 301; 
+	final int UPDATE_LOG_TO_SERVER = 302; 
+	
 	// 내 좌표 업뎃용				///////////////////////////////////////////////
 	String myLat2;
 	String myLon2;
@@ -249,6 +254,17 @@ public class MemberStoreInfoPage extends Activity {
 				if(b.getInt("showErrToast")==1){
 					Toast.makeText(MemberStoreInfoPage.this, R.string.error_message, Toast.LENGTH_SHORT).show();
 				}
+				
+				switch (msg.what)
+				{
+					case GET_MERCHANT_INFO   : runOnUiThread(new RunnableGetMerchantInfo());	
+						break;
+					case UPDATE_LOG_TO_SERVER   : runOnUiThread(new RunnableUpdateLogToServer());	
+					break;
+					default : 
+						break;
+				}	
+				
 			}catch(Exception e){
 				//				Toast.makeText(MyMileagePageActivity.this, "에러가 발생하였습니다."+entriesFn.size(), Toast.LENGTH_SHORT).show();
 				e.printStackTrace();
@@ -326,7 +342,8 @@ public class MemberStoreInfoPage extends Activity {
 		if(merchantId.length()>0){
 			//			getMerchantInfo_pre();
 			
-			new backgroundGetMerchantInfo().execute();
+//			new backgroundGetMerchantInfo().execute();
+			handler.sendEmptyMessage(GET_MERCHANT_INFO);
 //			try {
 //				getMerchantInfo();				// 가맹점 정보 가져옴
 //			} catch (JSONException e) {
@@ -345,7 +362,14 @@ public class MemberStoreInfoPage extends Activity {
 	////////////////////////////////////////////////////////////////////////////////////////////
 // 비동기 통신.
 
-
+	/**
+	 * 러너블. 가맹점 정보를 가져온다.
+	 */
+	class RunnableGetMerchantInfo implements Runnable {
+		public void run(){
+			new backgroundGetMerchantInfo().execute();
+		}
+	}
 	/**
 	 * 비동기로 가맹점 정보를 가져온다.
 	 * backgroundGetMerchantInfo
@@ -586,6 +610,14 @@ public class MemberStoreInfoPage extends Activity {
 
 	
 	// 서버에 로깅하기.
+	/**
+	 * 러너블. 서버에 로깅한다.
+	 */
+	class RunnableUpdateLogToServer implements Runnable {
+		public void run(){
+			new backgroundUpdateLogToServer().execute();
+		}
+	}
 	/**
 	 * 비동기로 사용자의 위치 정보 및 정보 로깅
 	 * backgroundUpdateLogToServer
@@ -1047,7 +1079,8 @@ public class MemberStoreInfoPage extends Activity {
 		//		getMerchantInfoForOnCreate();		//  *** 페이지별 업무 - 가맹점 상세 정보 가져오기..  로깅 구현 이후 주석 처리 할것.
 		if(isUpdating==0){
 //			loggingToServer();		// *** 일단 보류. 나중에 주석 풀것.. 원래 있던 getMerchantInfoForOnCreate 을 대신 수행..
-			new backgroundUpdateLogToServer().execute();
+//			new backgroundUpdateLogToServer().execute();
+			handler.sendEmptyMessage(UPDATE_LOG_TO_SERVER);
 		}
 	}
 

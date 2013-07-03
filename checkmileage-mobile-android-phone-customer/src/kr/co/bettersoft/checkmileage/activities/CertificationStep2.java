@@ -46,6 +46,9 @@ import java.util.Date;
 
 import kr.co.bettersoft.checkmileage.activities.R;
 import kr.co.bettersoft.checkmileage.activities.CertificationStep1;
+import kr.co.bettersoft.checkmileage.activities.MyMileagePageActivity.RunnableGetMyMileageList;
+import kr.co.bettersoft.checkmileage.activities.MyMileagePageActivity.RunnableUpdateLogToServer;
+import kr.co.bettersoft.checkmileage.activities.MyMileagePageActivity.backgroundGetMyMileageList;
 import kr.co.bettersoft.checkmileage.common.CheckMileageCustomerRest;
 import kr.co.bettersoft.checkmileage.common.CommonConstant;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMembers;
@@ -80,10 +83,9 @@ import android.widget.Toast;
 
 public class CertificationStep2 extends Activity {
 	
-
-	Button requestCertiNumBtn, certiNumConfirmBtn;	// 인증번호 요청 버튼, 인증 버튼 , 하단 확인 버튼	
-	EditText userPhoneNumber, userCertiNumber;			// 사용자 전화번호 입력창 , 인증번호 입력창
-	String TAG = "CertificationStep1";
+	String TAG = "CertificationStep2";
+	final int CERTIFICATION_STEP_1 = 101; 
+	final int CERTIFICATION_STEP_2 = 102; 
 	
 	String phoneNum = "";
 	String qrcode ="";
@@ -108,7 +110,8 @@ public class CertificationStep2 extends Activity {
 	// 설정 파일 저장소  --> QR 코드도 저장하는걸로..
 	SharedPreferences sharedPrefCustom;
 	
-	
+	Button requestCertiNumBtn, certiNumConfirmBtn;	// 인증번호 요청 버튼, 인증 버튼 , 하단 확인 버튼	
+	EditText userPhoneNumber, userCertiNumber;			// 사용자 전화번호 입력창 , 인증번호 입력창
 	// 키보드 자동 숨기기 위한 부모 레이아웃(리스너 달아서 키보드 숨김)과 입력 매니저
 	View parentLayout;
 	InputMethodManager imm;		// 키보드 제어
@@ -184,6 +187,16 @@ public class CertificationStep2 extends Activity {
 					}
 					pb1.setVisibility(View.INVISIBLE);
 				}
+				
+				switch (msg.what)
+				{
+					case CERTIFICATION_STEP_1   : runOnUiThread(new RunnableCertificationStep_1());	
+						break;
+					case CERTIFICATION_STEP_2   : runOnUiThread(new RunnableCertificationStep_2());	
+						break;
+					default : 
+						break;
+				}				
 				
 			}catch(Exception e){
 				e.printStackTrace();
@@ -309,7 +322,8 @@ public class CertificationStep2 extends Activity {
 			@Override
 			public void onClick(View v) {
 				if((userPhoneNumber.getText()+"").length()>0){
-					new backgroundThreadCertificationStep_1().execute();
+//					new backgroundThreadCertificationStep_1().execute();
+					handler.sendEmptyMessage(CERTIFICATION_STEP_1);
 //					try {
 //						showPb();
 //						certificationStep1();
@@ -334,7 +348,8 @@ public class CertificationStep2 extends Activity {
 					// 서버로 인증번호를 보내서 인증번호를 확인한다.
 					hideKeyboard();
 					showPb();
-					new backgroundThreadCertificationStep_2().execute();
+//					new backgroundThreadCertificationStep_2().execute();
+					handler.sendEmptyMessage(CERTIFICATION_STEP_2);
 //					try {
 //						certificationStep2();
 //					} catch (JSONException e) {
@@ -350,10 +365,20 @@ public class CertificationStep2 extends Activity {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
-	// 싱글 스레드 사용	
+	//  
+	
+	
+		/**
+		 * 러너블.서버와 통신하여인증 1단계 수행.
+		 */
+		class RunnableCertificationStep_1 implements Runnable {
+			public void run(){
+				new backgroundThreadCertificationStep_1().execute();
+			}
+		}
 		/**
 		 * backgroundThreadCertificationStep_1
-		 * 비동기 스레드  서버와 통신하여 채팅방 목록을 가져온다.
+		 * 비동기 스레드  서버와 통신하여인증 1단계 수행.
 		 * @author blue
 		 *
 		 */
@@ -385,9 +410,6 @@ public class CertificationStep2 extends Activity {
 				return null; 
 			}
 		}
-	
-	
-	
 	/*
 	 * 서버와 통신하여 인증 1단계 수행.
 	 * request certi number
@@ -502,10 +524,17 @@ public class CertificationStep2 extends Activity {
 //    	}
 //    }
 	
-		
+		/**
+		 * 러너블.서버와 통신하여 인증2단계 수행.
+		 */
+		class RunnableCertificationStep_2 implements Runnable {
+			public void run(){
+				new backgroundThreadCertificationStep_2().execute();
+			}
+		}
 		/**
 		 * backgroundThreadCertificationStep_2
-		 * 비인증2단계 수행.
+		 * 인증2단계 수행.
 		 * @author blue
 		 *
 		 */
@@ -538,8 +567,6 @@ public class CertificationStep2 extends Activity {
 				return null; 
 			}
 		}	
-		
-		
 //	/*
 //	 * 서버와 통신하여 인증2단계 수행.
 //	 * http://checkmileage.onemobileservice.com/checkMileageCertificationController/requestAdmission
@@ -648,6 +675,7 @@ public class CertificationStep2 extends Activity {
 		certified = true;		
 	}
 	
+	///////////////////////////////////////////////////////////////////////////////////////
 	
 //	// 현재 시각 구하기.
 //	/**
@@ -680,6 +708,8 @@ public class CertificationStep2 extends Activity {
 //		return nowTime;
 //		//		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
 //	}
+	
+	
 	
 	// 키보드 숨김
 	/**
@@ -738,6 +768,6 @@ public class CertificationStep2 extends Activity {
 				}
 		).start();
 	}
-
+////////////////////////////////////////////////////////////////////////////////////////////////
 	
 }

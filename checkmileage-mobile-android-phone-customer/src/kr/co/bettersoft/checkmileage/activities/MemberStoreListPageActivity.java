@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Locale;
 
 import kr.co.bettersoft.checkmileage.activities.R;
+import kr.co.bettersoft.checkmileage.activities.MemberStoreInfoPage.RunnableGetMerchantInfo;
+import kr.co.bettersoft.checkmileage.activities.MemberStoreInfoPage.RunnableUpdateLogToServer;
+import kr.co.bettersoft.checkmileage.activities.MemberStoreInfoPage.backgroundGetMerchantInfo;
 import kr.co.bettersoft.checkmileage.activities.MemberStoreInfoPage.backgroundUpdateLogToServer;
 import kr.co.bettersoft.checkmileage.adapters.MemberStoreSearchListAdapter;
 import kr.co.bettersoft.checkmileage.common.CheckMileageCustomerRest;
@@ -87,6 +90,11 @@ import android.os.AsyncTask;
 public class MemberStoreListPageActivity extends Activity implements OnItemSelectedListener, OnEditorActionListener{
 
 	String TAG = "MemberStoreListPageActivity";
+
+	final int GET_BUSINESS_KIND_LIST = 401; 
+	final int GET_MEMBER_STORE_LIST = 402; 
+	final int GET_MERCHANT_INFO = 403; 
+	final int UPDATE_LOG_TO_SERVER = 404; 
 
 	int app_end = 0;	// 뒤로가기 버튼으로 닫을때 2번만에 닫히도록	// 처음 두번 자동 실행  되는거.
 	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
@@ -255,6 +263,21 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 					searchSpinnerType.setAdapter(aa2);
 					jobKindSearched = true;			// 업종 검색 끝.
 				}
+				
+				switch (msg.what)
+				{
+					case GET_BUSINESS_KIND_LIST   : runOnUiThread(new RunnableGetBusinessKindList());	
+						break;
+					case GET_MEMBER_STORE_LIST   : runOnUiThread(new RunnableGetMemberStoreList());	
+						break;
+					case GET_MERCHANT_INFO   : runOnUiThread(new RunnableGetMerchantInfo());	
+						break;
+					case UPDATE_LOG_TO_SERVER   : runOnUiThread(new RunnableUpdateLogToServer());	
+						break;
+					default : 
+						break;
+				}	
+
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -270,6 +293,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		super.onCreate(icicle);
 		setContentView(R.layout.member_store_list);
 
+		checkMileageCustomerRest = new CheckMileageCustomerRest();
+		
 		checkMileageCustomerRest = new CheckMileageCustomerRest();
 
 		// prefs
@@ -384,7 +409,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 				showPb2();
 				indexDataTotal = entries1.size();
 				Log.d(TAG,"onScroll indexDataTotal:"+indexDataTotal);
-				new backgroundGetMerchantInfo().execute();		// 비동기 실행
+//				new backgroundGetMerchantInfo().execute();		// 비동기 실행
+				handler.sendEmptyMessage(GET_MERCHANT_INFO);
 			}
 		}
 		// 스크롤 시작, 끝, 스크롤 중.. 이라는 사실을 알수 있다.  스크롤중 조회시 에러가 발생하기 때문에 스크롤 중에는 조회가 되지 않도록 한다.. 
@@ -432,7 +458,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 
 		searchWordType = jobs[arg2];
 
-		new backgroundGetMemberStoreList().execute();
+//		new backgroundGetMemberStoreList().execute();
+		handler.sendEmptyMessage(GET_MEMBER_STORE_LIST);
 
 		//		try {
 		//			getMemberStoreList();
@@ -451,6 +478,14 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 비동기
 
+	/**
+	 * 러너블. 검색을 위한 가맹점 업종리스트를 가져온다.
+	 */
+	class RunnableGetBusinessKindList implements Runnable {
+		public void run(){
+			new backgroundGetBusinessKindList().execute();
+		}
+	}
 	/**
 	 * backgroundGetBusinessKindList
 	 *  비동기로 검색을 위한 가맹점 업종리스트를 가져온다.
@@ -683,7 +718,14 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 
 
 
-
+	/**
+	 * 러너블.  가맹점 목록을 가져온다
+	 */
+	class RunnableGetMemberStoreList implements Runnable {
+		public void run(){
+			new backgroundGetMemberStoreList().execute();
+		}
+	}
 	/**
 	 * backgroundGetMemberStoreList
 	 *  비동기로 가맹점 목록을 가져온다
@@ -1008,6 +1050,14 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 
 
 	/**
+	 * 러너블.   가맹점 정보 얻어오는함수 호출
+	 */
+	class RunnableGetMerchantInfo implements Runnable {
+		public void run(){
+			new backgroundGetMerchantInfo().execute();
+		}
+	}
+	/**
 	 * backgroundGetMerchantInfo
 	 *  비동기로 가맹점 정보 얻어오는함수 호출
 	 *
@@ -1039,11 +1089,6 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			return null; 
 		}
 	}
-
-
-
-
-
 	// 가맹점 URL로 이미지 가져오기.가맹점 이미지 URL로부터 이미지 받아와서 도메인에 저장한다. + 결과물에 더하기			-- 2차 검색
 	/**
 	 * getMerchantInfo
@@ -1148,7 +1193,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 		gridView  = (GridView)findViewById(R.id.gridview);
 		gridView.setEnabled(false);
 		indexDataTotal =0;
-		new backgroundGetMemberStoreList().execute();
+//		new backgroundGetMemberStoreList().execute();
+		handler.sendEmptyMessage(GET_MEMBER_STORE_LIST);
 		//		try {
 		//			getMemberStoreList();		
 		//		} catch (JSONException e) {
@@ -1159,6 +1205,15 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	}
 
 
+	
+	/**
+	 * 러너블.사용자의 위치 정보 및 정보 로깅
+	 */
+	class RunnableUpdateLogToServer implements Runnable {
+		public void run(){
+			new backgroundUpdateLogToServer().execute();
+		}
+	}
 	/**
 	 * 비동기로 사용자의 위치 정보 및 정보 로깅
 	 * backgroundUpdateLogToServer
@@ -1203,7 +1258,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 				if((!jobKindSearched) && (isRunning==0)){				// 업종 검색이 완료되지 않았고, 실행중인 작업이 없을 경우.
 					isRunning = 1;		// 연속 실행 방지 (다른 실행 거부)
 					//			getBusinessKindList();
-					new backgroundGetBusinessKindList().execute();			// 비동기로 변환
+//					new backgroundGetBusinessKindList().execute();			// 비동기로 변환
+					handler.sendEmptyMessage(GET_BUSINESS_KIND_LIST);
 				}
 				//				controllerName = "checkMileageLogController";
 				//				methodName = "registerLog";
@@ -1484,7 +1540,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 			e.printStackTrace();
 		}
 
-		new backgroundGetMerchantInfo().execute();	// getMerchantInfo(entries1); 를 비동기로 실행
+//		new backgroundGetMerchantInfo().execute();	// getMerchantInfo(entries1); 를 비동기로 실행
+		handler.sendEmptyMessage(GET_MERCHANT_INFO);
 		/////////
 		//				processBusinessKindListData();
 	}
@@ -1601,7 +1658,9 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 					}
 				}
 		).start();
-		new backgroundUpdateLogToServer().execute();	// 비동기로 전환	
+//		new backgroundUpdateLogToServer().execute();	// 비동기로 전환	
+		handler.sendEmptyMessage(UPDATE_LOG_TO_SERVER);
+		
 		//			loggingToServer();		// *** 서버에 로깅.. 검색시에 로깅하기..  페이지 열릴때 호출 + 검색시 호출. 해서 두번 호출됨.. 위치 변경하려고 했으나 그러면 스레드 충돌로 행걸리기 때문에 최초에만 두번 찍도록..
 		new Thread(
 				new Runnable(){
