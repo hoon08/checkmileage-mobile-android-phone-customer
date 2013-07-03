@@ -11,22 +11,11 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Calendar;
 import java.util.Locale;
 
 import kr.co.bettersoft.checkmileage.activities.R;
-import kr.co.bettersoft.checkmileage.activities.CertificationStep2.RunnableCertificationStep_1;
-import kr.co.bettersoft.checkmileage.activities.CertificationStep2.RunnableCertificationStep_2;
-import kr.co.bettersoft.checkmileage.activities.CertificationStep2.backgroundThreadCertificationStep_1;
-import kr.co.bettersoft.checkmileage.activities.MemberStoreListPageActivity.backgroundGetMerchantInfo;
 import kr.co.bettersoft.checkmileage.common.CheckMileageCustomerRest;
-import kr.co.bettersoft.checkmileage.common.CommonConstant;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMembers;
 
 import org.json.JSONObject;
@@ -40,12 +29,6 @@ public class CreateQRPageActivity extends Activity {
 	String TAG = "CreateQRPageActivity";
 	
 	final int SAVE_QR_TO_SERVER = 201; 
-	
-//	String controllerName = "";
-//	String methodName = "";
-//	String serverName = CommonUtils.serverNames;
-//	URL postUrl2;
-//	HttpURLConnection connection2;
 	
 	CheckMileageCustomerRest checkMileageCustomerRest;
 	String callResult = "";
@@ -71,7 +54,6 @@ public class CreateQRPageActivity extends Activity {
 
 	// Locale
 	Locale systemLocale = null ;
-	//    String strDisplayCountry = "" ;
 	String strCountry = "" ;
 	String strLanguage = "" ;
 
@@ -135,7 +117,6 @@ public class CreateQRPageActivity extends Activity {
 		 */
 		Log.i("CreateQRPageActivity", "save qrcode to file : "+qrcode);
 
-//		new backgroundSaveQRtoServer().execute();		//  비동기 실행 - 서버에 먼저 저장  
 		handler.sendEmptyMessage(SAVE_QR_TO_SERVER);
 	}
 
@@ -180,23 +161,6 @@ public class CreateQRPageActivity extends Activity {
 		saveQR.putString("qrcode", qrCode);
 		saveQR.commit();
 
-//		// 파일에 저장 // *** 파일 사용 안함
-//		try {
-//			File qrFileDirectory = new File(CommonUtils.qrFileSavedPath);
-//			qrFileDirectory.mkdirs();
-//
-//			File myFile = new File(CommonUtils.qrFileSavedPathFile);
-//			myFile.createNewFile();
-//			FileOutputStream fOut = new FileOutputStream(myFile);
-//			OutputStreamWriter myOutWriter = 
-//									new OutputStreamWriter(fOut);
-//			myOutWriter.append(qrCode);
-//			myOutWriter.close();
-//			fOut.close();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-		
 		// 저장끝나고 나서 액티비티 이동.
 		goMainTabs();
 	}
@@ -267,11 +231,7 @@ public class CreateQRPageActivity extends Activity {
 			checkMileageMembersParam.setCountryCode(strCountry);
 			checkMileageMembersParam.setLanguageCode(strLanguage);
 			// 호출
-	//		if(!pullDownRefreshIng){
-//				showPb();
-	//		}
 			callResult = checkMileageCustomerRest.RestSaveQRtoServer(checkMileageMembersParam);
-//			hidePb();
 			// 결과 처리
 			if(callResult.equals("S")){	
 				Log.d(TAG, "register user S");
@@ -284,152 +244,11 @@ public class CreateQRPageActivity extends Activity {
 				startActivity(backToNoQRIntent);
 				finish();
 			}
-			
-//			saveQRtoServer();					// 서버에도 저장함.			// test1234 아이디로 테스트시에 주석처리하지 않으면 에러가 발생한다.
 			return null; 
 		}
 	}
-//	/*
-//	 *  서버에 생성한 QR 저장
-//	 *  checkMileageMemberController registerMember 
-//	 *  
-//	 *  checkMileageId  password  phoneNumber email birthday  gender  latitude  longitude
-//	 *  deviceType  registrationId  activateYn  modifyDate  registerDate
-//	 *  
-//	 *  checkMileageMember   CheckMileageMember
-//	 */
-//	/**
-//	 * saveQRtoServer
-//	 *  서버에 생성한 qr 저장한다
-//	 *
-//	 * @param 
-//	 * @param
-//	 * @return
-//	 */
-//	public void saveQRtoServer(){
-//		Log.i(TAG, "saveQRtoServer");
-//		controllerName = "checkMileageMemberController";
-//		methodName = "registerMember";
-//
-//		// locale get
-//		systemLocale = getResources().getConfiguration(). locale;
-//		//      strDisplayCountry = systemLocale.getDisplayCountry();
-//		strCountry = systemLocale .getCountry();
-//		strLanguage = systemLocale .getLanguage();
-//
-//		// 서버 통신부
-//		new Thread(
-//				new Runnable(){
-//					public void run(){
-//						JSONObject obj = new JSONObject();
-//						try{
-//							obj.put("checkMileageId", qrcode);			  
-//							obj.put("password", "");				
-//							obj.put("phoneNumber", phoneNumber);			
-//							obj.put("email", "");			
-//							obj.put("birthday", "");			
-//							obj.put("gender", "");			
-//							obj.put("latitude", "");			
-//							obj.put("longitude", "");			
-//							obj.put("deviceType", "AS");			
-//							obj.put("registrationId", "");			
-//							obj.put("activateYn", "Y");			
-//							obj.put("receiveNotificationYn", "Y");			
-//
-//							obj.put( "countryCode", strCountry ); 
-//							obj.put( "languageCode" , strLanguage );
-//
-//							String nowTime = getNow();
-//							Log.i(TAG, "nowTime::"+nowTime);
-//							obj.put("modifyDate", nowTime);			
-//							obj.put("registerDate", nowTime);		
-//							Log.d(TAG,"myQRcode::"+qrcode);
-//						}catch(Exception e){
-//							e.printStackTrace();
-//						}
-//						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
-//						try{
-//							postUrl2 = new URL(serverName+"/"+controllerName+"/"+methodName);
-//							connection2 = (HttpURLConnection) postUrl2.openConnection();
-//							connection2.setConnectTimeout(CommonUtils.serverConnectTimeOut);
-//							connection2.setDoOutput(true);
-//							connection2.setInstanceFollowRedirects(false);
-//							connection2.setRequestMethod("POST");
-//							connection2.setRequestProperty("Content-Type", "application/json");
-//							//							connection2.connect();		// *** 
-//							OutputStream os2 = connection2.getOutputStream();
-//							os2.write(jsonString.getBytes("UTF-8"));
-//							os2.flush();
-//							Thread.sleep(200);	
-//							//							System.out.println("postUrl      : " + postUrl2);
-//							//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
-//							int responseCode = connection2.getResponseCode();
-//							//							os2.close();		// 
-//							if(responseCode==200||responseCode==204){
-//								Log.d(TAG, "register user S");
-//								//								connection2.disconnect();
-//								
-//								new backgroundSaveQRforPref().execute();		// 비동기 실행 - 설정에 저장 -- 끝나면 서버에 저장 -- 이후 이동하는 걸로..
-//								
-//								
-//							}else{
-//								Log.e(TAG, "register user F");		// 오류 발생시 에러 창 띄우고 돌아간다.. 통신에러 발생할수 있다.
-//								String alrtMsg = getString(R.string.error_message);
-//								alertMsg(alrtMsg);		// toast 사용시 에러 발생하므로 핸들러 통한 토스트
-//								//								Toast.makeText(CreateQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
-//								//								connection2.disconnect();
-//								Intent backToNoQRIntent = new Intent(CreateQRPageActivity.this, No_QR_PageActivity.class);
-//								startActivity(backToNoQRIntent);
-//								finish();
-//							}
-//						}catch(Exception e){ 
-//							//							connection2.disconnect();
-//							e.printStackTrace();			// 오류 발생시 에러 창 띄우고 돌아간다.. 통신에러 발생할수 있다.
-//							String alrtMsg = getString(R.string.error_message);
-//							alertMsg(alrtMsg);		// toast 사용시 에러 발생하므로 핸들러 통한 토스트
-//							//							 Toast.makeText(CreateQRPageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
-//							Intent backToNoQRIntent = new Intent(CreateQRPageActivity.this, No_QR_PageActivity.class);
-//							startActivity(backToNoQRIntent);
-//							finish();
-//						}
-//					}
-//				}
-//		).start();
-//	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-//	// 현시각
-//	/**
-//	 * getNow
-//	 *  현시각을 추출한다
-//	 *
-//	 * @param
-//	 * @param
-//	 * @return nowTime
-//	 */
-//	public String getNow(){
-//		c = Calendar.getInstance();
-//		todayYear = c.get(Calendar.YEAR);
-//		todayMonth = c.get(Calendar.MONTH)+1;			// 꺼내면 0부터 시작이니까 +1 해준다.
-//		todayDay = c.get(Calendar.DATE);
-//		todayHour = c.get(Calendar.HOUR_OF_DAY);
-//		todayMinute = c.get(Calendar.MINUTE);
-//		todaySecond = c.get(Calendar.SECOND);
-//		String tempMonth = Integer.toString(todayMonth);
-//		String tempDay = Integer.toString(todayDay);
-//		String tempHour = Integer.toString(todayHour);
-//		String tempMinute = Integer.toString(todayMinute);
-//		String tempSecond = Integer.toString(todaySecond);
-//		if(tempMonth.length()==1) tempMonth = "0"+tempMonth;
-//		if(tempDay.length()==1) tempDay = "0"+tempDay;
-//		if(tempHour.length()==1) tempHour = "0"+tempHour;
-//		if(tempMinute.length()==1) tempMinute = "0"+tempMinute;
-//		if(tempSecond.length()==1) tempSecond = "0"+tempSecond;
-//		String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute+":"+tempSecond;
-//		return nowTime;
-//		//		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
-//	}
 
 	/**
 	 * alertMsg

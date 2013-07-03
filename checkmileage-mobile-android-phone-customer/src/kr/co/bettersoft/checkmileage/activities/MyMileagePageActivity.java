@@ -9,33 +9,21 @@ package kr.co.bettersoft.checkmileage.activities;
  * 아답터를 꼬진거를 써서 페이지 올때마다 getView 한다.. 나중에 고쳐야 겠다..
  * 
  */
-import java.io.BufferedReader;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import kr.co.bettersoft.checkmileage.activities.R;
-import kr.co.bettersoft.checkmileage.activities.MemberStoreInfoPage.backgroundUpdateLogToServer;
-import kr.co.bettersoft.checkmileage.activities.ScanQRPageActivity.RunnableCheckAlreadyExistID;
-import kr.co.bettersoft.checkmileage.activities.ScanQRPageActivity.RunnableGetUserSettingsFromServer;
-import kr.co.bettersoft.checkmileage.activities.ScanQRPageActivity.RunnableSaveQRtoServer;
-import kr.co.bettersoft.checkmileage.activities.ScanQRPageActivity.backgroundGetUserSettingsFromServer;
 import kr.co.bettersoft.checkmileage.adapters.MyMileageListAdapter;
 import kr.co.bettersoft.checkmileage.common.CheckMileageCustomerRest;
 import kr.co.bettersoft.checkmileage.common.CommonConstant;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageLogs;
-import kr.co.bettersoft.checkmileage.domain.CheckMileageMembers;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMileage;
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
 
@@ -47,21 +35,15 @@ import org.json.JSONObject;
 
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.backup.RestoreObserver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -109,13 +91,6 @@ public class MyMileagePageActivity extends Activity {
 
 
 	// 서버 통신용
-//	int responseCode = 0;
-//	String controllerName = "";
-//	String methodName = "";
-//	String serverName = CommonConstant.serverNames;
-//	URL postUrl2;
-//	HttpURLConnection connection2;
-
 	CheckMileageCustomerRest checkMileageCustomerRest;
 	String callResult = "";
 	String tempstr = "";
@@ -475,13 +450,6 @@ public class MyMileagePageActivity extends Activity {
 				intent.putExtra("checkMileageMerchantsMerchantID", entriesFn.get(position).getCheckMileageMerchantsMerchantID());		// 가맹점 아이디
 				intent.putExtra("idCheckMileageMileages", entriesFn.get(position).getIdCheckMileageMileages());		// 고유 식별 번호. (상세보기 조회용도)
 				intent.putExtra("myMileage", entriesFn.get(position).getMileage());									// 내 마일리지    // 가맹점에 대한 내 마일리지
-				//				// img 는 문자열로 바꿔서 넣는다. 꺼낼땐 역순임.			 // BMP -> 문자열 		
-				//				ByteArrayOutputStream baos = new ByteArrayOutputStream();   
-				//				String bitmapToStr = "";
-				//				entriesFn.get(position).getMerchantImage().compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object    
-				//				byte[] b = baos.toByteArray();  
-				//				bitmapToStr = Base64.encodeToString(b, Base64.DEFAULT); 
-				//				intent.putExtra("imageFileStr", bitmapToStr);	
 				startActivity(intent);
 			}
 		});
@@ -532,250 +500,9 @@ public class MyMileagePageActivity extends Activity {
 				getDBData();	
 			}
 			isRunning = 0;
-			//			try {
-			//				getMyMileageList();
-			//			} catch (JSONException e) {
-			//				e.printStackTrace();
-			//			} catch (IOException e) {
-			//				e.printStackTrace();
-			//			}
-
 			return null ;
 		}
 	}
-	//	/**
-	//	 * getMyMileageList
-	//	 * 서버와 통신하여 내 마일리지 목록을 가져온다.
-	//	 *
-	//	 * @param
-	//	 * @param
-	//	 * @return
-	//	 */
-	//	public void getMyMileageList() throws JSONException, IOException {
-	//		//		Log.i(TAG, "getMyMileageList");
-	//			//		if(CheckNetwork()){
-	//			controllerName = "checkMileageMileageController";
-	//			methodName = "selectMemberMerchantMileageList";
-	//			showPb();
-	//
-	//			new Thread(
-	//					new Runnable(){
-	//						public void run(){
-	//							JSONObject obj = new JSONObject();
-	//							try{
-	//								// 자신의 아이디를 넣어서 조회
-	//								obj.put("activateYn", "Y");
-	//								obj.put("checkMileageMembersCheckMileageId", myQRcode);
-	//								Log.i(TAG, "myQRcode::"+myQRcode);
-	//							}catch(Exception e){
-	//								e.printStackTrace();
-	//							}
-	//							String jsonString = "{\"checkMileageMileage\":" + obj.toString() + "}";
-	//							try{
-	//								postUrl2 = new URL(serverName+"/"+controllerName+"/"+methodName);
-	//								connection2 = (HttpURLConnection) postUrl2.openConnection();
-	//								Thread.sleep(200);
-	//								connection2.setConnectTimeout(CommonConstant.serverConnectTimeOut);
-	//								connection2.setDoOutput(true);
-	//								connection2.setInstanceFollowRedirects(false);
-	//								connection2.setRequestMethod("POST");
-	//								connection2.setRequestProperty("Content-Type", "application/json");
-	//								//								connection2.connect();		// **
-	//								Thread.sleep(200);
-	//								OutputStream os2 = connection2.getOutputStream();
-	//								os2.write(jsonString.getBytes("UTF-8"));
-	//								os2.flush();
-	//								Thread.sleep(200);
-	//								//								System.out.println("postUrl      : " + postUrl2);
-	//								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
-	//								responseCode = connection2.getResponseCode();
-	//								InputStream in =  connection2.getInputStream();
-	//								//								os2.close();
-	//								// 조회한 결과를 처리.
-	//								theData1(in);
-	//								//								connection2.disconnect();
-	//							}catch(Exception e){ 
-	//								e.printStackTrace();
-	//								hidePb();
-	//								isRunning = 0;
-	//								getDBData();						// 5회 재시도에도 실패하면 db에서 꺼내서 보여준다.
-	//							}
-	//						}
-	//					}
-	//			).start();
-	//	}
-	//	/*
-	//	 * 일단 마일리지 목록 결과를 받음. (가맹점 정보는 없이 아이디만 들어있는 상태) -- 1차 검색 결과 처리부
-	//	 */
-	//	/**
-	//	 * theData1
-	//	 *  마일리지 목록을 가져온것을 처리한다
-	//	 *
-	//	 * @param in
-	//	 * @param
-	//	 * @return
-	//	 */
-	//	public void theData1(InputStream in){
-	//		Log.d(TAG,"theData");
-	//		BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);
-	//		StringBuilder builder = new StringBuilder();
-	//		String line =null;
-	//		try {
-	//			while((line=reader.readLine())!=null){
-	//				builder.append(line).append("\n");
-	//			}
-	//		} catch (IOException e) {
-	//			e.printStackTrace();
-	//		}
-	//		//		Log.d(TAG,"수신::"+builder.toString());
-	//		String tempstr = builder.toString();		
-	//
-	//		JSONArray jsonArray2 = null;
-	//		try {
-	//			jsonArray2 = new JSONArray(tempstr);
-	//		} catch (JSONException e1) {
-	//			e1.printStackTrace();
-	//		}
-	//		int max = jsonArray2.length();
-	//		if(responseCode==200 || responseCode==204){
-	//			try {
-	//				entries = new ArrayList<CheckMileageMileage>(max);
-	//				String tmp_idCheckMileageMileages = "";
-	//				String tmp_mileage = "";
-	//				String tmp_modifyDate = "";
-	//				String tmp_shortDate = "";
-	//				String tmpstr2 = "";
-	//				String tmp_checkMileageMembersCheckMileageId = "";
-	//				String tmp_checkMileageMerchantsMerchantId = "";
-	//				String tmp_companyName = "";
-	//				String tmp_introduction = "";		//prstr = jsonobj2.getString("introduction");		// prSentence --> introduction
-	//				String tmp_workPhoneNumber = "";
-	//				String tmp_profileThumbnailImageUrl = "";
-	//				Bitmap bm = null;
-	//				if(max>0){
-	//					for ( int i = 0; i < max; i++ ){
-	//						JSONObject jsonObj = jsonArray2.getJSONObject(i).getJSONObject("checkMileageMileage");
-	//						//  idCheckMileageMileages,  mileage,  modifyDate,  checkMileageMembersCheckMileageID,  checkMileageMerchantsMerchantID
-	//						// 객체 만들고 값 받은거 넣어서 저장..  저장값: 인덱스번호, 수정날짜, 아이디, 가맹점아이디.
-	//
-	//						tmp_idCheckMileageMileages = jsonObj.getString("idCheckMileageMileages");
-	//						try{
-	//							tmp_mileage = jsonObj.getString("mileage");
-	//						}catch(Exception e){
-	//							tmp_mileage = "0";
-	//						}
-	//						try{
-	//							tmp_modifyDate = jsonObj.getString("modifyDate");
-	//							//							Log.d(TAG,"tmp_modifyDate:"+tmp_modifyDate);
-	//							String tmpstr = getString(R.string.last_update);
-	//							if(tmp_modifyDate.length()>9){
-	//								//								tmp_shortDate = tmp_modifyDate.substring(0, 10);
-	//								//								tmp_modifyDate = tmp_shortDate;
-	//								//								Log.d(TAG,"tmp_modifyDate.substring(0, 4):"+tmp_modifyDate.substring(0, 4)+"//tmp_modifyDate.substring(5, 7):"+tmp_modifyDate.substring(5, 7)+"//tmp_modifyDate.substring(8, 10):"+tmp_modifyDate.substring(8, 10));
-	//								tmpstr2 = tmp_modifyDate.substring(0, 4)+ getString(R.string.year) 		// 년
-	//								+ tmp_modifyDate.substring(5, 7)+ getString(R.string.month) 					// 월
-	//								+ tmp_modifyDate.substring(8, 10)+ getString(R.string.day) 					// 일
-	//								//								+ tmp_modifyDate.substring(0, 4)+ getString(R.string.year)					// 시
-	//								//								+ tmp_modifyDate.substring(0, 4)+ getString(R.string.year)					// 분
-	//								;
-	//								tmp_modifyDate = tmpstr2;
-	//							}
-	//							tmp_modifyDate = tmpstr+":"+tmp_modifyDate;
-	//						}catch(Exception e){
-	//							tmp_modifyDate = "";
-	//						}
-	//						try{
-	//							tmp_checkMileageMembersCheckMileageId = jsonObj.getString("checkMileageMembersCheckMileageId");
-	//						}catch(Exception e){
-	//							tmp_checkMileageMembersCheckMileageId = "";
-	//						}
-	//						try{
-	//							tmp_checkMileageMerchantsMerchantId = jsonObj.getString("checkMileageMerchantsMerchantId");
-	//						}catch(Exception e){
-	//							tmp_checkMileageMerchantsMerchantId = "";
-	//						}
-	//						try{  
-	//							tmp_introduction = jsonObj.getString("introduction");
-	//						}catch(Exception e){
-	//							tmp_introduction = "";
-	//						}
-	//						try{
-	//							tmp_companyName = jsonObj.getString("companyName");
-	//						}catch(Exception e){
-	//							tmp_companyName = "";
-	//						}
-	//						try{
-	//							tmp_workPhoneNumber = jsonObj.getString("workPhoneNumber");
-	//						}catch(Exception e){
-	//							tmp_workPhoneNumber = "";
-	//						}
-	//						try{
-	//							tmp_profileThumbnailImageUrl = jsonObj.getString("profileThumbnailImageUrl");
-	//						}catch(Exception e){
-	//							tmp_profileThumbnailImageUrl = "";
-	//						}
-	//						// tmp_profileThumbnailImageUrl 있을때.
-	//						if(tmp_profileThumbnailImageUrl!=null && tmp_profileThumbnailImageUrl.length()>0){
-	//							if(tmp_profileThumbnailImageUrl.contains("http")){		// url 포함한 경우
-	//								try{
-	//									bm = LoadImage(tmp_profileThumbnailImageUrl);				 
-	//								}catch(Exception e3){}
-	//							}else{		// url 포함하지 않으면 붙여준다.
-	//								try{
-	//									bm = LoadImage(imgthumbDomain+tmp_profileThumbnailImageUrl);				 
-	//								}catch(Exception e3){
-	//									Log.w(TAG, imgthumbDomain+tmp_profileThumbnailImageUrl+" -- fail");
-	//								}
-	//							}
-	//						}else{
-	//							BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.empty_60_60);
-	//							bm = dw.getBitmap();
-	//						}
-	//						if(bm==null){		//  없을때.. 
-	//							//							dbSaveEnable = false;
-	//							BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.empty_60_60);
-	//							bm = dw.getBitmap();
-	//						}
-	//						entries.add(new CheckMileageMileage(tmp_idCheckMileageMileages,
-	//								tmp_mileage,
-	//								tmp_modifyDate,
-	//								tmp_checkMileageMembersCheckMileageId,
-	//								tmp_checkMileageMerchantsMerchantId,
-	//								tmp_companyName,
-	//								tmp_introduction,
-	//								tmp_workPhoneNumber,
-	//								tmp_profileThumbnailImageUrl,
-	//								//								bm2
-	//								bm
-	//								// 그 외 섬네일 이미지, 가맹점 이름
-	//						));
-	//					}
-	//				}
-	//			}catch (JSONException e) {
-	//				dbSaveEnable = false;
-	//				e.printStackTrace();
-	//			}finally{
-	//				dbInEntries = entries; 
-	//				//				reTry = 1;				// 재시도 횟수 복구
-	////				searched = true;					// ??? 연속시 연속
-	//				// db 에 데이터를 넣는다.
-	//				try{
-	//					if(dbSaveEnable){		// 이미지까지 성공적으로 가져온 경우.
-	//						saveDataToDB();
-	//					}else{
-	//						alertToUser();		// 이미지 가져오는데 실패한 경우.
-	//						// 어쨎든 처리가 끝나면 (공통) -  db를 검사하여 데이터가 있으면 보여주고  entriesFn = dbOutEntries
-	//					}	// 처리가 끝나면 공통으로 해야할 showInfo(); (그전에 entriesFn 설정 한다)
-	//				}catch(Exception e){}
-	//				finally{
-	//					getDBData();			//db 에 잇으면 그거 쓰고 없으면 없다고 알림. * 에러나면 이전 데이터를 보여주기 때문에 db에 있는 정보가 정확하다고 볼수는 없음.. 
-	//				}
-	//			}
-	//		}else{			// 요청 실패시	 토스트 띄우고 화면 유지. -- 토스트는 에러남
-	//			showMSG();
-	//			//			Toast.makeText(MyMileagePageActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
-	//		}
-	//	}
 
 
 	/**
@@ -814,11 +541,9 @@ public class MyMileagePageActivity extends Activity {
 				checkMileageLogsParam.setViewName("CheckMileageCustomerMerchantListView");
 
 				// 호출
-				//			if(!pullDownRefreshIng){
-				//				showPb();
-				//			}
+								showPb();
 				callResult = checkMileageCustomerRest.RestUpdateLogToServer(checkMileageLogsParam);
-
+				hidePb();
 				isUpdating = 0;
 				// 페이지별 업무. 마일리지 조회.
 					Log.w(TAG,"onResume, search");
@@ -834,110 +559,15 @@ public class MyMileagePageActivity extends Activity {
 					//									}else{
 					//										dontTwice = 0;
 					//									}
+					
+					
 			}else{
 				Log.w(TAG,"already updating..");
 			}
-
-			//			updateLogToServer();
+			
 			return null; 
 		}
 	}
-	//	/**
-	//	 * 사용자 위치 정보 및 정보 로깅
-	//	 * 
-	//	 */
-	//	public void updateLogToServer(){
-	//		if(isUpdating==0){
-	//			isUpdating = 1;
-	//			Log.i(TAG, "updateLocationToServer");
-	//			controllerName = "checkMileageLogController";
-	//			methodName = "registerLog";
-	//					
-	//			phoneNum = sharedPrefCustom.getString("phoneNum", "");	
-	//			myLat2 = sharedPrefCustom.getString("myLat2", "");	
-	//			myLon2 = sharedPrefCustom.getString("myLon2", "");	
-	//			qrCode = sharedPrefCustom.getString("qrCode", "");	
-	//			
-	//			new Thread(
-	//					new Runnable(){
-	//						public void run(){
-	//							JSONObject obj = new JSONObject();
-	//							try{
-	//								// 자신의 아이디를 넣어서 조회
-	//								Date today = new Date();
-	//								SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	//								String nowDate = sf.format(today);
-	//								obj.put("checkMileageId", qrCode);	// checkMileageId 	사용자 아이디
-	//								obj.put("merchantId", "");		// merchantId		가맹점 아이디.
-	//								obj.put("viewName", "CheckMileageCustomerMerchantListView");		// viewName			출력된 화면.
-	//								obj.put("parameter01", phoneNum);		// parameter01		사용자 전화번호.
-	//								
-	//								// **** 일단 공백 보냄. 나중에 좌표 보내게 되면 그때 바꿔서 사용
-	////								obj.put("parameter02", myLat2);		// parameter02		위도.
-	////								obj.put("parameter03", myLon2);		// parameter03		경도.
-	//								obj.put("parameter02", "");		// parameter02		위도.
-	//								obj.put("parameter03", "");		// parameter03		경도.
-	//								
-	//								obj.put("parameter04", "");		// parameter04		검색일 경우 검색어.
-	//								obj.put("parameter05", "");		// parameter05		예비용도.
-	//								obj.put("parameter06", "");		// parameter06		예비용도.
-	//								obj.put("parameter07", "");		// parameter07		예비용도.
-	//								obj.put("parameter08", "");		// parameter08		예비용도.
-	//								obj.put("parameter09", "");		// parameter09		예비용도.
-	//								obj.put("parameter10", "");		// parameter10		예비용도.
-	//								obj.put("registerDate", nowDate);		// registerDate		등록 일자.
-	//							}catch(Exception e){
-	//								e.printStackTrace();
-	//							}
-	//							String jsonString = "{\"checkMileageLog\":" + obj.toString() + "}";
-	//							try{
-	//								postUrl2 = new URL(serverName+"/"+controllerName+"/"+methodName);
-	//								connection2 = (HttpURLConnection) postUrl2.openConnection();
-	//								connection2.setConnectTimeout(CommonConstant.serverConnectTimeOut);
-	//								connection2.setDoOutput(true);
-	//								connection2.setInstanceFollowRedirects(false);
-	//								connection2.setRequestMethod("POST");
-	//								connection2.setRequestProperty("Content-Type", "application/json");
-	//								//								connection2.connect();
-	//								Thread.sleep(200);
-	//								OutputStream os2 = connection2.getOutputStream();
-	//								os2.write(jsonString.getBytes("UTF-8"));
-	//								os2.flush();
-	//								Thread.sleep(200);
-	//								responseCode = connection2.getResponseCode();
-	//								// 조회한 결과를 처리.
-	//								if(responseCode==200 || responseCode==204){
-	//									Log.d(TAG,"updateLogToServer S");
-	//								}else{
-	//									Log.d(TAG,"updateLogToServer F / "+responseCode);
-	//								}
-	//							}catch(Exception e){ 
-	//								Log.d(TAG,"updateLocationToServer->fail");
-	//							}finally{
-	//								isUpdating = 0;
-	//								// 페이지별 업무. 마일리지 조회.
-	//								if(!searched){
-	//									Log.w(TAG,"onResume, search");
-	////									if(dontTwice==0){
-	//										if(isRunning<1){
-	//											isRunning = 1;
-	//											myQRcode = MyQRPageActivity.qrCode;
-	//											new backgroundGetMyMileageList().execute();
-	//										}else{
-	//											Log.w(TAG, "already running..");
-	//										}
-	////									}else{
-	////										dontTwice = 0;
-	////									}
-	//								}
-	//							}
-	//						}
-	//					}
-	//			).start();
-	//		}else{
-	//			Log.w(TAG,"already updating..");
-	//		}
-	//	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////
 
