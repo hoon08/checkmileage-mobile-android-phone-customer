@@ -6,79 +6,37 @@ package kr.co.bettersoft.checkmileage.pref;
  * 
  * 터치시 이벤트 설정도 여기서한다
  */
-import java.io.BufferedReader;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-
-//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.CheckBoxPreference;
-import android.preference.EditTextPreference;
-import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
-import android.support.v4.app.DialogFragment;
 import android.util.Log;
-import android.view.View;
-import android.webkit.WebView;
-import android.widget.DatePicker;
 import android.widget.Toast;
-
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import kr.co.bettersoft.checkmileage.activities.R;
 import kr.co.bettersoft.checkmileage.activities.MainActivity;
-import kr.co.bettersoft.checkmileage.activities.Main_TabsActivity;
-import kr.co.bettersoft.checkmileage.activities.MemberStoreInfoPage;
-import kr.co.bettersoft.checkmileage.activities.MemberStoreListPageActivity;
-import kr.co.bettersoft.checkmileage.activities.MyMileagePageActivity;
 import kr.co.bettersoft.checkmileage.activities.MyQRPageActivity;
 import kr.co.bettersoft.checkmileage.activities.Settings_AboutPageActivity;
 import kr.co.bettersoft.checkmileage.activities.myWebView;
-import kr.co.bettersoft.checkmileage.activities.GCMIntentService.backgroundUpdateMyGCMtoServer;
-import kr.co.bettersoft.checkmileage.activities.MemberStoreInfoPage.backgroundUpdateLogToServer;
-import kr.co.bettersoft.checkmileage.activities.Settings_MyInfoPageActivity.backgroundGetUserInfo;
-import kr.co.bettersoft.checkmileage.activities.Settings_MyInfoPageActivity.backgroundUpdateToServer;
 import kr.co.bettersoft.checkmileage.common.CheckMileageCustomerRest;
 import kr.co.bettersoft.checkmileage.common.CommonConstant;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageLogs;
@@ -184,12 +142,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		checkMileageCustomerRest = new CheckMileageCustomerRest();
 		
 		getNow();
-		//		Toast.makeText(PrefActivityFromResource.this, "Year:"+todayYear+",Month:"+todayMonth+",Day:"+todayDay, Toast.LENGTH_SHORT).show();
-
-		// 1. \res\xml\preferences.xml로 부터 Preference 계층구조를 읽어와
-		// 2. 이 PreferenceActivity의 계층구조로 지정/표현 하고
-		// 3. \data\data\패키지이름\shared_prefs\패키지이름_preferences.xml 생성
-		// 4. 이 후 Preference에 변경 사항이 생기면 파일에 자동 저장
 		addPreferencesFromResource(R.xml.settings);
 
 		/*
@@ -200,7 +152,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 
 		
 		isUpdating=1;		// onresume 의 것과 충돌하지 않고 하나만 실행되도록..
-//		new backgroundGetUserInfo().execute();				// 사용자 정보를 받아온다.
 		handler.sendEmptyMessage(GET_USER_INFO);
 		
 		if(!resumeCalled){			// 한번만 .. 느리니까
@@ -220,8 +171,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			defaultPref = PreferenceManager.getDefaultSharedPreferences(this);
 			defaultPref.registerOnSharedPreferenceChangeListener(this);			 
 
-			//		category1 = (PreferenceCategory)findPreference("category1");
-			//			Preference passwordCheck = findPreference("preference_lock_chk");
 
 			// 프리퍼런스 동기화 (공유용 - 디폴트 간 동기화)
 			SharedPreferences.Editor init2 = sharedPrefCustom.edit();		// 강제 호출용도  .. 단어명은 의미없다.
@@ -251,41 +200,9 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 	@Override
 	public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
 			Preference preference) {
-		// sub_checkbox란 키를 가지고 있는 Preference항목이 이벤트 발생 시 실행 
-		//		if(preference.equals((CheckBoxPreference)findPreference("sub_checkbox"))) {
-		// Preference 데이터 파일중 "sub_checkbox" 키와 연결된 boolean 값에 따라
-		// category1 (ListPreference, RingtonePreference 포함)을 활성화/비활성화
-
-		// //     테스트용.  체크박스가 체크되었는지 여부를 통해 이벤트 발생..비번 에서는 비번이 있는지 여부로 할것..
-		//			category1.setEnabled(mainPreference.getBoolean("sub_checkbox", false));
-		//			if(((CheckBoxPreference)findPreference("sub_checkbox")).isChecked()){
-		//				// 조건에 따라 특정 항목을 dis enable 할수 있다.
-		//				Preference pref = findPreference("pref_app_qna");
-		//				pref.setEnabled(false);
-		//			}else{
-		//				Preference pref = findPreference("pref_app_qna");
-		//				pref.setEnabled(true);
-		//			}
-		//테스트용 . ////
-		//		}
-		/*
-		 * 		 *  checkMileageId /		 그냥 쓰기.
-		 *  password /			업뎃											비번에서 별도.	 처리						.
-		 *  phoneNumber /			그냥 쓰기.
-		 *  email /				업뎃											pref_user_email						//
-		 *  birthday /			업뎃											pref_user_birth						//
-		 *  gender /			업뎃											pref_user_sex						//
-		 *  latitude /				그냥 쓰기. 별도 업뎃? 어플 실행시?
-		 *  longitude /				그냥 쓰기. 별도 업뎃? 어플 실행시?
-		 *  deviceType /			그냥 쓰기.
-		 *  registrationId /		그냥 쓰기.
-		 *  activateYn /		업뎃 (탈퇴시)																		//
-		 *  modifyDate /		업뎃 - 										현시각. 년월일시분  yyyyMMdd-hh:mm	(그때그때)	/	
-		 */
 
 		// 알림 수신 설정 여부.
 		if(preference.equals((CheckBoxPreference)findPreference("preference_alarm_chk"))){
-			//	Toast.makeText(PrefActivityFromResource.this, "preference_lock_password", Toast.LENGTH_SHORT).show();
 			SharedPreferences.Editor saveGCMCustom = sharedPrefCustom.edit();		// 공용에 저장해 준다.
 			yn = ((CheckBoxPreference)findPreference("preference_alarm_chk")).isChecked();
 			saveGCMCustom.putBoolean("gcmReceive", yn);
@@ -294,7 +211,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			if(updateLv<2){		// 0또는 1일경우. 1 증가. (최대 2까지)
 				updateLv = updateLv+1;
 				if(updateLv==1){
-//					updateGCMToServer(yn);
 					handler.sendEmptyMessage(UPDATE_GCM_TO_SERVER );
 				}
 			}
@@ -303,18 +219,13 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 
 		// 자주 묻는 질문 등의 경우 인텐트로 웹뷰 실시
 		if(preference.equals(findPreference("pref_app_qna"))){
-			//			Toast.makeText(PrefActivityFromResource.this, "웹뷰 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
 			Intent webIntent = new Intent(PrefActivityFromResource.this, myWebView.class);
 			webIntent.putExtra("loadingURL", "http://www.mcarrot.net/mFaq.do");
-			//			webIntent.putExtra("loadingURL", memberInfo.getCountryCode());
-			//			webIntent.putExtra("loadingURL", memberInfo.getLanguageCode());
-			//			webIntent.putExtra("loadingURL", "http://www.mcarrot.net/senchaIndex.do");			// sencha test page
 			startActivity(webIntent);
 		}
 
 		// 공지사항.  pref_app_notify
 		if(preference.equals(findPreference("pref_app_notify"))){
-			//			Toast.makeText(PrefActivityFromResource.this, "웹뷰 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
 			Intent webIntent = new Intent(PrefActivityFromResource.this, myWebView.class);
 			webIntent.putExtra("loadingURL", "http://www.mcarrot.net/mNoticeBoardList.do");
 			startActivity(webIntent);
@@ -322,62 +233,19 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 
 		// 이용 약관..  pref_app_terms
 		if(preference.equals(findPreference("pref_app_terms"))){
-			//			Toast.makeText(PrefActivityFromResource.this, "웹뷰 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
 			Intent webIntent = new Intent(PrefActivityFromResource.this, myWebView.class);
 			webIntent.putExtra("loadingURL", CommonConstant.termsPolicyURL);
 			startActivity(webIntent);
 		}
 		// 개인정보 보호정책..  pref_app_privacy
 		if(preference.equals(findPreference("pref_app_privacy"))){
-			//			Toast.makeText(PrefActivityFromResource.this, "웹뷰 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
 			Intent webIntent = new Intent(PrefActivityFromResource.this, myWebView.class);
 			webIntent.putExtra("loadingURL", CommonConstant.privacyPolicyURL);
 			startActivity(webIntent);
 		}
-		//		// 탈퇴.  pref_app_leave
-		//		if(preference.equals(findPreference("pref_app_leave"))){
-		//		//	//		//	Toast.makeText(PrefActivityFromResource.this, R.string.leave_toast_message, Toast.LENGTH_SHORT).show();
-		//			new AlertDialog.Builder(this)
-		//			.setTitle("회원 탈퇴")
-		//			.setMessage("탈퇴 시 기존 마일리지가 소멸됩니다.\n정말로 탈퇴하시겠습니까?")
-		//			.setIcon(android.R.drawable.ic_dialog_alert)
-		//			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-		//				public void onClick(DialogInterface dialog, int whichButton) {
-		//					memberInfo.setActivateYn("N");	// 서버에 비활성화 시킨다.
-		//					memberDeactivation();
-		//					// 모바일 내에서도 QR코드,비번 설정 등을 날려 버린다. 그 외 정보들은 인증 받으면서 서버에서 받은걸로 업뎃 해준다....
-		//					SharedPreferences.Editor init = sharedPrefCustom.edit();
-		//					init.putString("qrcode", "");		init.putBoolean("appLocked", false);	
-		//					init.putString("password", "");
-		//					init.commit();
-		//					goodBye(thePrefs);
-		//					// db 의 사용자 테이블 드랍.
-		//					try{
-		//						SQLiteDatabase db = null;
-		//						db= openOrCreateDatabase( "sqlite_carrotDB.db",             
-		//						          SQLiteDatabase.CREATE_IF_NECESSARY ,null );
-		//						db.execSQL("DROP TABLE user_info");
-		//						db.close();
-		//					}catch(Exception e){
-		//						e.printStackTrace();
-		//					}
-		//					Toast.makeText(PrefActivityFromResource.this, "이용해 주셔서 감사합니다.", Toast.LENGTH_SHORT).show(); 
-		//					finish();
-		//				}
-		//			})
-		//			.setNegativeButton(android.R.string.no, null).show();
-
-		//			Intent webIntent = new Intent(PrefActivityFromResource.this, myWebView.class);
-		//			webIntent.putExtra("loadingURL", "http://m.naver.com");
-		//			startActivity(webIntent);
-		//		}
-
-
 
 		// 이벤트 알림  pref_push_list
 		if(preference.equals(findPreference("pref_push_list"))){
-			//			AlertShow_Message();				// 준비중입니다.
-			// 이벤트 목록 구현 이후 하단 주석 해제.
 			Intent PushListIntent = new Intent(PrefActivityFromResource.this, kr.co.bettersoft.checkmileage.activities.PushList.class);
 			startActivity(PushListIntent);
 
@@ -385,15 +253,11 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 
 		// 이 앱은 ? pref_app_what
 		if(preference.equals(findPreference("pref_app_what"))){
-			//			Toast.makeText(PrefActivityFromResource.this, "웹뷰 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
 			Intent aboutIntent = new Intent(PrefActivityFromResource.this, Settings_AboutPageActivity.class);
-			//			webIntent.putExtra("loadingURL", "http://m.naver.com");
 			startActivity(aboutIntent);
 		}
-
 		return super.onPreferenceTreeClick(preferenceScreen, preference);
 	}	
-
 
 	// 주 용도는 resume 때 자체 프리퍼런스 전달하여 컨트롤 할 수 있게 하는 것. 
 	/**
@@ -468,33 +332,15 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			updateDone.putString("updateYN2", "Y");		// 폰으로 업뎃 끝 이후. --> 하위 페이지에서 완료됨.
 			updateDone.commit();
 			Log.i(TAG,"update settings to mobile step1 done");
-			//			(Preference)findPreference("preference_alarm_chk").
-			//			if(defaultPref!=null){		// 자체 설정. 
-			//				Map<String, ?> map = defaultPref.getAll();
-			//				Log.d(TAG, "map.size"+map.size());	
-			//				Set set  = map.keySet();
-			//				Iterator ii = set.iterator();
-			//				String iikey="";
-			//				String iivalue="";
-			//				Object obj = null;
-			//				while(ii.hasNext()){
-			//					iikey =( String)ii.next();
-			//					obj = (Object) map.get(iikey);
-			////					iivalue  = (String)obj;
-			//					Log.d(TAG, iikey+"//"+obj);	
-			//				}
-			//			}
 		}else{
 			//			Log.e(TAG,"업뎃 필요 x");
 		}
 		isUpdating=0;		// oncreate 흐름도의 끝자락에서 서버 로깅 호출을 위해.. (onresume 의 것은 이후 두번째 onresume 부터 호출되도록..) 
-//		loggingToServer();
 		handler.sendEmptyMessage(UPDATE_LOG_TO_SERVER);
 	}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-
 	/**
 	 * 러너블. 서버로부터 개인 정보를 받아와서 도메인에 저장한다
 	 */
@@ -525,11 +371,7 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			checkMileageMembersParam.setCountryCode(strCountry);
 			checkMileageMembersParam.setLanguageCode(strLanguage);
 			// 호출
-			// if(!pullDownRefreshIng){
-			// showPb();
-			// }
 			callResult = checkMileageCustomerRest.RestGetUserInfo(checkMileageMembersParam);
-			// hidePb();
 			// 결과 처리
 			if(callResult.equals("S")){ //  성공
 				memberInfo = checkMileageCustomerRest.getCheckMileageMembers();
@@ -539,178 +381,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			return null; 
 		}
 	}
-//	/**
-//	 * getUserInfo
-//	 * 서버로부터 개인 정보를 받아와서 도메인에 저장해 둔다
-//	 *
-//	 * @param
-//	 * @param
-//	 * @return
-//	 */
-//	public void getUserInfo(){
-//		// ...
-//		Log.i(TAG, "getUserInfo");
-//		controllerName = "checkMileageMemberController";
-//		methodName = "selectMemberInformation";
-//
-//		new Thread(
-//				new Runnable(){
-//					public void run(){
-//						JSONObject obj = new JSONObject();
-//						try{
-//							// 사용자 아이디를 넣어서 조회
-//							obj.put("activateYn", "Y");
-//							obj.put("checkMileageId", MyQRPageActivity.qrCode);
-//							Log.d(TAG,"checkMileageId:"+ MyQRPageActivity.qrCode);
-//						}catch(Exception e){
-//							e.printStackTrace();
-//						}
-//						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
-//						try{
-//							postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);				 
-//							connection2 = (HttpURLConnection) postUrl2.openConnection();
-//							connection2.setConnectTimeout(CommonConstant.serverConnectTimeOut);
-//							connection2.setDoOutput(true);
-//							connection2.setInstanceFollowRedirects(false);
-//							connection2.setRequestMethod("POST");
-//							connection2.setRequestProperty("Content-Type", "application/json");
-//							//							connection2.connect();		// ** 
-//							Thread.sleep(200);	
-//							OutputStream os2 = connection2.getOutputStream();
-//							os2.write(jsonString.getBytes("UTF-8"));
-//							os2.flush();
-//							Thread.sleep(200);
-//							//							System.out.println("postUrl      : " + postUrl2);
-//							//							System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
-//							responseCode = connection2.getResponseCode();
-//							InputStream in =  connection2.getInputStream();
-//							//							os2.close();
-//							// 조회한 결과를 처리.
-//							theData1(in);
-//							//							connection2.disconnect();
-//						}catch(Exception e){ 
-//							//							connection2.disconnect();
-//							e.printStackTrace();
-//						}
-//					}
-//				}
-//		).start();
-//	}
-//	/*
-//	 * 서버로부터 받아온 개인 정보를 파싱해서 도메인에 저장하는 부분. 업뎃, 탈퇴에서 호출하면 안됨. 멤버 데이터 모두 날아감
-//	 */
-//	/**
-//	 * theData1
-//	 *  서버로부터 받아온 개인 정보를 파싱해서 도메인에 저장한다
-//	 *
-//	 * @param in
-//	 * @param
-//	 * @return
-//	 */
-//	public void theData1(InputStream in){
-//		Log.d(TAG,"theData1");
-//		BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);
-//		StringBuilder builder = new StringBuilder();
-//		String line =null;
-//		JSONObject jsonObject;
-//
-//		// Locale
-//		systemLocale = getResources().getConfiguration(). locale;
-//		//        strDisplayCountry = systemLocale.getDisplayCountry();
-//		strCountry = systemLocale .getCountry();
-//		strLanguage = systemLocale .getLanguage();
-//
-//		try {
-//			while((line=reader.readLine())!=null){
-//				builder.append(line).append("\n");
-//			}
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		/*
-//		 *  일단 받은 내용 여기에 적을것
-//		 *  고객 상세정보::{"checkMileageMember":
-//		 *  {"checkMileageId":"test1234","password":"","phoneNumber":"01022173645",
-//		 *  "email":"","birthday":"","gender":"","latitude":"","longitude":"","deviceType":"AS",
-//		 *  "registrationId":"aaqw","activateYn":"Y","modifyDate":"2012-08-10","registerDate":"2012-08-10"}}
-//		 *  
-//		 *   업데이트 할 것들.  도메인에 저장.
-//		 *  checkMileageId /password /phoneNumber /email /birthday /gender /latitude /longitude /deviceType /registrationId /activateYn /modifyDate /
-//		 */
-//		//		Log.d(TAG,"서버에서 받은 고객 상세정보::"+builder.toString());
-//		String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다
-//		// // // // // // // 바로 바로 화면에 add 하고 터치시 값 가져다가 상세 정보 보도록....
-//		if(responseCode==200 || responseCode==204){
-//			try {
-//				jsonObject = new JSONObject(tempstr);
-//				JSONObject jsonobj2 = jsonObject.getJSONObject("checkMileageMember");
-//				//				Bitmap bm = null;
-//				// 데이터를 전역 변수 도메인에 저장하고 핸들러를 통해 도메인-> 화면에 보여준다..
-//				try{  // 아이디
-//					Log.i(TAG, "checkMileageId:::"+jsonobj2.getString("checkMileageId"));
-//					memberInfo.setCheckMileageId(jsonobj2.getString("checkMileageId"));				
-//				}catch(Exception e){ memberInfo.setCheckMileageId(""); }
-//				try{  // 비번
-//					memberInfo.setPassword(jsonobj2.getString("password"));				
-//				}catch(Exception e){ memberInfo.setPassword(""); }
-//				try{  //전번 
-//					memberInfo.setPhoneNumber(jsonobj2.getString("phoneNumber"));				
-//				}catch(Exception e){ memberInfo.setPhoneNumber(""); }
-//				try{	// 멜
-//					memberInfo.setEmail(jsonobj2.getString("email"));				
-//				}catch(Exception e){ memberInfo.setEmail(""); }
-//				try{	// 생일
-//					memberInfo.setBirthday(jsonobj2.getString("birthday"));				
-//				}catch(Exception e){ memberInfo.setBirthday(""); }
-//				try{	// 성별
-//					memberInfo.setGender(jsonobj2.getString("gender"));				
-//				}catch(Exception e){ memberInfo.setGender(""); }
-//				try{	// 위도
-//					memberInfo.setLatitude(jsonobj2.getString("latitude"));				
-//				}catch(Exception e){ memberInfo.setLatitude(""); }
-//				try{	// 경도
-//					memberInfo.setLongitude(jsonobj2.getString("longitude"));				
-//				}catch(Exception e){ memberInfo.setLongitude(""); }
-//				try{	// 타입
-//					memberInfo.setDeviceType(jsonobj2.getString("deviceType"));				
-//				}catch(Exception e){ memberInfo.setDeviceType(""); }
-//				try{	// 등록ID
-//					memberInfo.setRegistrationId(jsonobj2.getString("registrationId"));				
-//				}catch(Exception e){ memberInfo.setRegistrationId(""); }
-//				try{	// 액티베이트
-//					memberInfo.setActivateYn(jsonobj2.getString("activateYn"));	
-//					if((jsonobj2.getString("activateYn")==null)||(jsonobj2.getString("activateYn").length()<1)){
-//						memberInfo.setActivateYn("Y");
-//					}
-//				}catch(Exception e){ memberInfo.setActivateYn("Y"); }
-//				try{	// 변경일
-//					memberInfo.setModifyDate(jsonobj2.getString("modifyDate"));				
-//				}catch(Exception e){ memberInfo.setModifyDate(""); }
-//				try{	// 알림 수신 여부 
-//					memberInfo.setReceiveNotificationYn(jsonobj2.getString("receiveNotificationYn"));				
-//				}catch(Exception e){ memberInfo.setReceiveNotificationYn(""); }
-//
-//				try{	// 국가 코드
-//					memberInfo.setCountryCode(jsonobj2.getString("countryCode"));				
-//				}catch(Exception e){ memberInfo.setCountryCode(strCountry); }
-//				try{	// 언어 코드
-//					memberInfo.setLanguageCode(jsonobj2.getString("languageCode"));				
-//				}catch(Exception e){ memberInfo.setLanguageCode(strLanguage); }
-//
-//				// 그 외 activateYn 는 수동 조작. 이시점에 저장 완료.
-//				
-//				updateServerSettingsToPrefs();				// 서버에서 가져온 정보를 프리퍼런스에 저장 
-//				
-//			} catch (JSONException e) {		
-//				e.printStackTrace();
-//				Log.w(TAG,tempstr.length()+"");		// 0 이면 서버에 정보 없음.
-//
-//			} 
-//		}else{			// 요청 실패시	 토스트 띄우고 화면 유지.
-//			Log.d(TAG, "Err.. responseCode:"+responseCode);
-//			//			Toast.makeText(PrefActivityFromResource.this, R.string.error_message, Toast.LENGTH_SHORT).show();
-//		}
-//	}
 	
 
 	/**
@@ -738,17 +408,12 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			// 파리미터 세팅
 			CheckMileageMembers checkMileageMembersParam = memberInfo; 
 			// 호출
-			// if(!pullDownRefreshIng){
-			// showPb();
-			// }
 			callResult = checkMileageCustomerRest.RestUpdateToServer(checkMileageMembersParam);
-			// hidePb();
 			// 결과 처리
 			if(callResult.equals("S")){	// 성공이라 딱히..
 				updateLv = updateLv-1;
 				if(updateLv>0){		// 2였던 경우. (업뎃중 또 변경된 경우 한번더)
 					Log.d(TAG,"Need Update one more time");
-//					updateToServer();
 					handler.sendEmptyMessage(UPDATE_TO_SERVER);
 				}
 			}else{
@@ -757,96 +422,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			return null ;
 		}
 	}
-//	/**
-//	 * updateToServer
-//	 *  서버로 변경된 설정 등을 업데이트 한다
-//	 *
-//	 * @param
-//	 * @param
-//	 * @return
-//	 */
-//	public void updateToServer(){
-//		Log.i(TAG, "updateToServer");
-//		controllerName = "checkMileageMemberController";
-//		methodName = "updateMemberInformation";
-//		if(updateLv>0 &&(memberInfo.getPassword()!=null)){
-//			new Thread(
-//					new Runnable(){
-//						public void run(){
-//							JSONObject obj = new JSONObject();
-//							try{
-//								// 사용자 정보 업뎃.
-//								obj.put("checkMileageId", memberInfo.getCheckMileageId());
-//								obj.put("password", memberInfo.getPassword());
-//								obj.put("phoneNumber", memberInfo.getPhoneNumber());
-//								obj.put("email", memberInfo.getEmail());
-//								obj.put("birthday", memberInfo.getBirthday());
-//								obj.put("gender", memberInfo.getGender());
-//								obj.put("latitude", memberInfo.getLatitude());
-//								obj.put("longitude", memberInfo.getLongitude());
-//								obj.put("deviceType", memberInfo.getDeviceType());
-//								obj.put("registrationId", memberInfo.getRegistrationId());
-//								obj.put("activateYn", memberInfo.getActivateYn());
-//
-//								obj.put("countryCode", memberInfo.getCountryCode());
-//								obj.put("languageCode", memberInfo.getLanguageCode());
-//
-//								obj.put("receiveNotificationYn", memberInfo.getReceiveNotificationYn());
-//								Log.i(TAG, "activateYn::"+memberInfo.getActivateYn());
-//								String nowTime = getNow();
-//								Log.i(TAG, "nowTime::"+nowTime);
-//								obj.put("modifyDate", nowTime);		// 지금 시간으로.
-//							}catch(Exception e){
-//								e.printStackTrace();
-//							}
-//							String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
-//							try{
-//								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);	 
-//								connection2 = (HttpURLConnection) postUrl2.openConnection();
-//								connection2.setConnectTimeout(CommonConstant.serverConnectTimeOut);
-//								connection2.setDoOutput(true);
-//								connection2.setInstanceFollowRedirects(false);
-//								connection2.setRequestMethod("POST");
-//								connection2.setRequestProperty("Content-Type", "application/json");
-//								//								connection2.connect();		// ** 
-//								Thread.sleep(200);
-//								OutputStream os2 = connection2.getOutputStream();
-//								os2.write(jsonString.getBytes("UTF-8"));
-//								os2.flush();
-//								Thread.sleep(200);
-//								//								System.out.println("postUrl      : " + postUrl2);
-//								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
-//								responseCode = connection2.getResponseCode();
-//								//								InputStream in =  connection2.getInputStream();
-//								//								os2.close();
-//								// 조회한 결과를 처리.
-//								if(responseCode==200 || responseCode == 204){	// 성공이라 딱히..
-//									//									theData1(in);		// 서버 결과 가지고 재 세팅하면안됨 <- 는 멤버 정보 받아서 처리하는 녀석임 호출 금지
-//									updateLv = updateLv-1;
-//									if(updateLv>0){		// 2였던 경우. (업뎃중 또 변경된 경우 한번더)
-//										Log.d(TAG,"Need Update one more time");
-//										updateToServer();
-//									}
-//								}else{
-//									Log.w(TAG,"fail to update");
-//								}
-//								//								connection2.disconnect();
-//							}catch(Exception e){ 
-//								//								connection2.disconnect();
-//								e.printStackTrace();
-//							}
-//							//							finally{
-//							//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-//							//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-//							//									CommonUtils.usingNetwork = 0;
-//							//								}
-//							//							}
-//						}
-//					}
-//			).start();
-//		}
-//		// ...
-//	}
 
 	
 	/**
@@ -882,18 +457,13 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			checkMileageMembersParam.setReceiveNotificationYn(strYorN);
 			
 			// 호출
-			// if(!pullDownRefreshIng){
-			// showPb();
-			// }
 			callResult = checkMileageCustomerRest.RestUpdateGCMToServer(checkMileageMembersParam);
-			// hidePb();
 			// 결과 처리
 			if(callResult.equals("S")){	// 성공이라 딱히..
 				Log.d(TAG, "S to receive GCM option update");
 				updateLv = updateLv-1;
 				if(updateLv>0){		// 2였던 경우. (업뎃중 또 변경된 경우 한번더)
 					Log.d(TAG,"Need Update one more time");
-//					updateGCMToServer(yn);
 					handler.sendEmptyMessage(UPDATE_GCM_TO_SERVER );
 				}
 			}else{
@@ -902,107 +472,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			return null ;
 		}
 	}
-//	/**
-//	 * updateGCMToServer
-//	 *  서버에 알림 수신 설정 값을 업뎃한다
-//	 *
-//	 * @param checked
-//	 * @param
-//	 * @return
-//	 */
-//	public void updateGCMToServer(Boolean checked){  
-//		Log.i(TAG, "updateGCMToServer");
-//		controllerName = "checkMileageMemberController";
-//		methodName = "updateReceiveNotification";
-//		if(checked){
-//			strYorN="Y";
-//		}else{
-//			strYorN="N";
-//		}
-//		if(updateLv>0){
-//			new Thread(
-//					new Runnable(){
-//						public void run(){
-//							JSONObject obj = new JSONObject();
-//							try{
-//								// 사용자 정보 업뎃.
-//
-//								/*
-//								 * checkMileageId
-//									receiveNotificationYn
-//									activateYn
-//									modifyDate
-//								 */
-//								// checkMileageMember    CheckMileageMember
-//								obj.put("checkMileageId", memberInfo.getCheckMileageId());
-//								obj.put("receiveNotificationYn", strYorN);						// 정해서 넣어.
-//								obj.put("activateYn", memberInfo.getActivateYn());
-//
-//								String nowTime = getNow();
-//								obj.put("modifyDate", nowTime);		// 지금 시간으로.
-//
-//								Log.i(TAG, "checkMileageId::"+memberInfo.getCheckMileageId());
-//								Log.i(TAG, "receiveNotificationYn::"+strYorN);
-//								Log.i(TAG, "activateYn::"+memberInfo.getActivateYn());
-//								Log.i(TAG, "nowTime::"+nowTime);
-//
-//							}catch(Exception e){
-//								e.printStackTrace();
-//							}
-//							String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
-//							try{
-//								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);		 
-//								connection2 = (HttpURLConnection) postUrl2.openConnection();
-//								connection2.setConnectTimeout(CommonConstant.serverConnectTimeOut);
-//								connection2.setDoOutput(true);
-//								connection2.setInstanceFollowRedirects(false);
-//								connection2.setRequestMethod("POST");
-//								connection2.setRequestProperty("Content-Type", "application/json");
-//								//								connection2.connect();		// ** 
-//								Thread.sleep(200);
-//								OutputStream os2 = connection2.getOutputStream();
-//								os2.write(jsonString.getBytes("UTF-8"));
-//								os2.flush();
-//								Thread.sleep(200);
-//								//								System.out.println("postUrl      : " + postUrl2);
-//								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
-//								responseCode = connection2.getResponseCode();
-//								//								InputStream in =  connection2.getInputStream();
-//								//								os2.close();
-//								// 조회한 결과를 처리.
-//								if(responseCode==200 || responseCode == 204){	// 성공이라 딱히..
-//									//									theData1(in);		// 서버 결과 가지고 재 세팅하면안됨 <- 는 멤버 정보 받아서 처리하는 녀석임 호출 금지
-//									Log.d(TAG, "S to receive GCM option update");
-//									updateLv = updateLv-1;
-//									if(updateLv>0){		// 2였던 경우. (업뎃중 또 변경된 경우 한번더)
-//										Log.d(TAG,"Need Update one more time");
-//										//										updateGCMToServer_pre(yn);
-//										updateGCMToServer(yn);
-//									}
-//								}else{
-//									Log.w(TAG,"fail to update");
-//								}
-//								//								connection2.disconnect();
-//							}catch(Exception e){ 
-//								//								connection2.disconnect();
-//								e.printStackTrace();
-//							}
-//							//							finally{
-//							//								CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-//							//								if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-//							//									CommonUtils.usingNetwork = 0;
-//							//								}
-//							//							}
-//						}
-//					}
-//			).start();
-//		}
-//		// ...
-//	}
-
-
-
-	
 
 	
 	/**
@@ -1039,113 +508,15 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 				checkMileageLogsParam.setParameter04("");
 				checkMileageLogsParam.setViewName("CheckMileageCustomerPreferenceView");
 				// 호출
-//				if(!pullDownRefreshIng){
-//					showPb();
-//				}
 				callResult = checkMileageCustomerRest.RestUpdateLogToServer(checkMileageLogsParam);
 //				
 				isUpdating = 0;
 			}else{
 				Log.w(TAG,"already updating..");
 			}
-			
-//			updateLogToServer();
 			return null; 
 		}
 	}
-//	/**
-//	 * 사용자 위치 정보 및 정보 로깅
-//	 * 
-//	 */
-//	public void updateLogToServer(){
-//		if(isUpdating==0){
-//			isUpdating = 1;
-//			Log.i(TAG, "updateLogToServer");
-//			controllerName = "checkMileageLogController";
-//			methodName = "registerLog";
-//					
-//			phoneNum = sharedPrefCustom.getString("phoneNum", "");	
-//			myLat2 = sharedPrefCustom.getString("myLat2", "");	
-//			myLon2 = sharedPrefCustom.getString("myLon2", "");	
-//			qrCode = sharedPrefCustom.getString("qrCode", "");	
-//			
-////			Log.d(TAG,"phoneNum:"+phoneNum);
-////			Log.d(TAG,"myLat2:"+myLat2);
-////			Log.d(TAG,"myLon2:"+myLon2);
-////			Log.d(TAG,"qrCode:"+qrCode);
-//			
-//			new Thread(
-//					new Runnable(){
-//						public void run(){
-//							JSONObject obj = new JSONObject();
-//							try{
-//								// 자신의 아이디를 넣어서 조회
-//								Date today = new Date();
-//								SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//								String nowDate = sf.format(today);
-//								obj.put("checkMileageId", qrCode);	// checkMileageId 	사용자 아이디
-//								obj.put("merchantId", "");		// merchantId		가맹점 아이디.
-//								obj.put("viewName", "CheckMileageCustomerPreferenceView");		// viewName			출력된 화면.
-//								obj.put("parameter01", phoneNum);		// parameter01		사용자 전화번호.
-//								
-//								// **** 좌표 업뎃 안함. 나중에 업뎃시 바꿔서 사용 할 것
-////								obj.put("parameter02", myLat2);		// parameter02		위도.
-////								obj.put("parameter03", myLon2);		// parameter03		경도.
-//								obj.put("parameter02", "");		// parameter02		위도.
-//								obj.put("parameter03", "");		// parameter03		경도.
-//								
-//								obj.put("parameter04", "");		// parameter04		검색일 경우 검색어.
-//								obj.put("parameter05", "");		// parameter05		예비용도.
-//								obj.put("parameter06", "");		// parameter06		예비용도.
-//								obj.put("parameter07", "");		// parameter07		예비용도.
-//								obj.put("parameter08", "");		// parameter08		예비용도.
-//								obj.put("parameter09", "");		// parameter09		예비용도.
-//								obj.put("parameter10", "");		// parameter10		예비용도.
-//								obj.put("registerDate", nowDate);		// registerDate		등록 일자.
-//							}catch(Exception e){
-//								e.printStackTrace();
-//							}
-//							String jsonString = "{\"checkMileageLog\":" + obj.toString() + "}";
-//							try{
-//								postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
-//								connection2 = (HttpURLConnection) postUrl2.openConnection();
-//								connection2.setConnectTimeout(CommonConstant.serverConnectTimeOut);
-//								connection2.setDoOutput(true);
-//								connection2.setInstanceFollowRedirects(false);
-//								connection2.setRequestMethod("POST");
-//								connection2.setRequestProperty("Content-Type", "application/json");
-//								//								connection2.connect();
-//								Thread.sleep(200);
-//								OutputStream os2 = connection2.getOutputStream();
-//								os2.write(jsonString.getBytes("UTF-8"));
-//								os2.flush();
-//								Thread.sleep(200);
-//								responseCode = connection2.getResponseCode();
-//								// 조회한 결과를 처리.
-//								if(responseCode==200 || responseCode==204){
-//									Log.d(TAG,"updateLogToServer S");
-//								}else{
-//									Log.d(TAG,"updateLogToServer F / "+responseCode);
-//								}
-//							}catch(Exception e){ 
-//								Log.d(TAG,"updateLocationToServer->fail");
-//							}finally{
-//								isUpdating = 0;
-//								
-//								// 설정 변경하고 온 경우 업뎃 한번 쳐주기.
-//								if(updateLv>0){		// 2였던 경우= (업뎃중 또 변경된 경우 ->한번더)
-//									Log.d(TAG,"Need Update one more time");
-//									//				updateToServer_pre();
-//									updateToServer();
-//								}
-//							}
-//						}
-//					}
-//			).start();
-//		}else{
-//			Log.w(TAG,"already updating..");
-//		}
-//	}
 	
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// utils
@@ -1188,7 +559,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		if(tempSecond.length()==1) tempSecond = "0"+tempSecond;
 		String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute+":"+tempSecond;
 		return nowTime;
-		//		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
 	}
 
 	
@@ -1203,7 +573,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
-				//				finish();
 			}
 		});
 		alert_internet_status.show();
@@ -1259,7 +628,6 @@ public class PrefActivityFromResource extends PreferenceActivity implements OnSh
 		.registerOnSharedPreferenceChangeListener(this); 		// 리스너 등록
 		
 		if(isUpdating==0){
-//			loggingToServer();
 			handler.sendEmptyMessage(UPDATE_LOG_TO_SERVER);
 		}
 	}

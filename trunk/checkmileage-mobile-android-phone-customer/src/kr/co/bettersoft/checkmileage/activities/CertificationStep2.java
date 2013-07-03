@@ -33,31 +33,14 @@ package kr.co.bettersoft.checkmileage.activities;
  *   
  *  
  */
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import kr.co.bettersoft.checkmileage.activities.R;
-import kr.co.bettersoft.checkmileage.activities.CertificationStep1;
-import kr.co.bettersoft.checkmileage.activities.MyMileagePageActivity.RunnableGetMyMileageList;
-import kr.co.bettersoft.checkmileage.activities.MyMileagePageActivity.RunnableUpdateLogToServer;
-import kr.co.bettersoft.checkmileage.activities.MyMileagePageActivity.backgroundGetMyMileageList;
 import kr.co.bettersoft.checkmileage.common.CheckMileageCustomerRest;
 import kr.co.bettersoft.checkmileage.common.CommonConstant;
 import kr.co.bettersoft.checkmileage.domain.CheckMileageMembers;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
-//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -69,16 +52,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class CertificationStep2 extends Activity {
@@ -90,12 +70,6 @@ public class CertificationStep2 extends Activity {
 	String phoneNum = "";
 	String qrcode ="";
 	
-//	int responseCode = 0;
-//	String serverName = CommonUtils.serverNames;
-//	String controllerName = "";
-//	String methodName = "";
-//	URL postUrl2;
-//	HttpURLConnection connection2 ;
 	CheckMileageCustomerRest checkMileageCustomerRest;
 	String callResult = "";
 	String tempstr = "";
@@ -103,7 +77,6 @@ public class CertificationStep2 extends Activity {
 	// checkMileageCustomerRest = new CheckMileageCustomerRest();	// oncreate
 	
 	Boolean loading = false;
-	
 	
 	Boolean certified = false;	
 	String certiResult="";
@@ -115,19 +88,6 @@ public class CertificationStep2 extends Activity {
 	// 키보드 자동 숨기기 위한 부모 레이아웃(리스너 달아서 키보드 숨김)과 입력 매니저
 	View parentLayout;
 	InputMethodManager imm;		// 키보드 제어
-	
-	// 시간관련
-	Calendar c = Calendar.getInstance();
-	int todayYear = 0;						// 지금 -  년 월 일 시 분
-	int todayMonth = 0;
-	int todayDay = 0;
-	int todayHour = 0;
-	int todayMinute = 0;
-	int todaySecond = 0;
-	int birthYear = 0;						// 생년월일 - 년 월 일
-	int birthMonth= 0;
-	int birthDay = 0;
-	
 	
 	// 진행바
 	ProgressBar pb1;		// 중단 로딩 진행바
@@ -322,16 +282,7 @@ public class CertificationStep2 extends Activity {
 			@Override
 			public void onClick(View v) {
 				if((userPhoneNumber.getText()+"").length()>0){
-//					new backgroundThreadCertificationStep_1().execute();
 					handler.sendEmptyMessage(CERTIFICATION_STEP_1);
-//					try {
-//						showPb();
-//						certificationStep1();
-//					} catch (JSONException e) {
-//						e.printStackTrace();
-//					} catch (IOException e) {
-//						e.printStackTrace();
-//					}
 				}else{		// 전번없음
 					showResultDialog(getString(R.string.no_phone_num));
 				}
@@ -342,28 +293,17 @@ public class CertificationStep2 extends Activity {
 			@Override
 			public void onClick(View v) {
 				if((userCertiNumber.getText()+"").length()!=4){
-//					userCertifiedComplete();		// 패스 시켜줌		// test 용 *** 
 					showResultDialog(getString(R.string.input_certi_4nums));		// 원본. 나중에 주석 제거하여 사용. *** 
 				}else{
 					// 서버로 인증번호를 보내서 인증번호를 확인한다.
 					hideKeyboard();
 					showPb();
-//					new backgroundThreadCertificationStep_2().execute();
 					handler.sendEmptyMessage(CERTIFICATION_STEP_2);
-//					try {
-//						certificationStep2();
-//					} catch (JSONException e) {
-//						e.printStackTrace();
-//					} catch (IOException e) {
-//						e.printStackTrace();
-//					}
 				}
 			}
 		});
 	}
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	//  
 	
@@ -394,9 +334,7 @@ public class CertificationStep2 extends Activity {
 				CheckMileageMembers checkMileageMembersParam = new CheckMileageMembers(); 	
 				checkMileageMembersParam.setPhoneNumber(userPhoneNumber.getText()+"");	
 				// 호출
-//				if(!pullDownRefreshIng){
 					showPb();
-//				}
 				callResult = checkMileageCustomerRest.RestCertificationStep_1(checkMileageMembersParam);
 				hidePb();
 				// 결과 처리
@@ -410,120 +348,8 @@ public class CertificationStep2 extends Activity {
 				return null; 
 			}
 		}
-	/*
-	 * 서버와 통신하여 인증 1단계 수행.
-	 * request certi number
-	 * 인증번호 요청
-	 * 
-	 * http://checkmileage.onemobileservice.com/checkMileageCertificationController/requestCertification
-	 * 파라메터 : phoneNumber, activateYn, modifyDate, registerDate
-	 * 예 ) phoneNumber : 01085858025
-	 * activateYn : Y
-	 * modifyDate : 2013-03-06 14:20:12
-	 * registerDate : 2013-03-06 14:20:12
-	 * 
-	 * (인증 제한 시간은 2분. 나중에 변경 가능하다..)
-	 * 
-	 * checkMileageCertification	결과.
-	 * String idCheckMileageCertifications;                // 테이블 아이디.
-	 * String phoneNumber;                                 // 휴대전화 번호.
-	 * String certificationNumber;                         // 인증 번호.
-	 * String activateYn;                                  // 활성화 여부.
-	 * String modifyDate;                                  // 수정 일자.
-	 * String registerDate;                                // 등록 일자.
-	 * String totalCount;                                  // 갯수.
-	 * String result;                                      // 처리 결과.
-	 */
-//	public void certificationStep1() throws JSONException, IOException {
-//		Log.i("certificationStep1", "certificationStep1");
-//		controllerName = "checkMileageCertificationController";		
-//		methodName = "requestCertification";						
-//		new Thread(
-//				new Runnable(){
-//					public void run(){
-//						JSONObject obj = new JSONObject();
-//    					// 시각
-//    					Date today = new Date();
-//    				    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//    				    String nowDate = sf.format(today);
-////						String nowTime = getNow();
-//						try{
-//							obj.put("phoneNumber", userPhoneNumber.getText()+"");	
-////							Log.d(TAG,"phoneNumber::"+ userPhoneNumber.getText()+"");
-//							obj.put("activateYn", "Y");
-//							obj.put("modifyDate", nowDate);
-//							obj.put("registerDate", nowDate);
-//						}catch(Exception e){
-//							e.printStackTrace();
-//						}
-//						String jsonString = "{\"checkMileageCertification\":" + obj.toString() + "}";
-//						try{
-//							  postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);
-//							  connection2 = (HttpURLConnection) postUrl2.openConnection();
-//					  		  connection2.setDoOutput(true);
-//					  		  connection2.setInstanceFollowRedirects(false);
-//					  		  connection2.setRequestMethod("POST");
-//					  		  connection2.setRequestProperty("Content-Type", "application/json");
-//					  		  OutputStream os2 = connection2.getOutputStream();
-//					  		  os2.write(jsonString.getBytes("UTF-8"));
-//					  		  os2.flush();
-//					  		  System.out.println("postUrl      : " + postUrl2);
-//					  		  System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
-//					  		  responseCode = connection2.getResponseCode();
-//					  		  InputStream in =  connection2.getInputStream();
-//					  		  theData1(in);
-//						}catch(Exception e){ 
-//						 e.printStackTrace();
-//						 hidePb();
-//						}  
-//    				}
-//    			}
-//    	).start();
-//	}
-//	/*
-//	 * 인증 1단계의 결과를 받음.
-//	 */
-//	public void theData1(InputStream in){
-//		Log.d(TAG,"theData");
-//		hidePb();
-//    	BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-//    	StringBuilder builder = new StringBuilder();
-//    	String line =null;
-//    	try {
-//			while((line=reader.readLine())!=null){
-//				builder.append(line).append("\n");
-//			}
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-////    	Log.d(TAG,"수신::"+builder.toString());
-//    	String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다... 용도에 맞게 구현할 것.
-//    	
-//    	JSONObject jsonObject;
-//		try {
-//			jsonObject = new JSONObject(tempstr);
-//			String jstring2 = jsonObject.getString("checkMileageCertification").toString(); 
-//	    	JSONObject jsonObject2 = new JSONObject(jstring2);
-//	    	certiResult = jsonObject2.getString("result").toString(); 
-//	    	Log.d(TAG,"certiResult:"+certiResult);
-//		} catch (JSONException e) {
-//			e.printStackTrace();
-//		} 
-//    	if(responseCode==200 || responseCode==204){		// 인증 성공시
-//    		// QR데이터를 꺼내어 저장..
-//    		// 기타 정보들을 설정 파일에 저장....
-//    		if(certiResult.equals("SUCCESS")){				// 인증 성공
-//    			Log.i(TAG, "SUCCESS");
-//    			showResultDialog(getString(R.string.certi_num_req_success));	
-//    		}else{														// 인증 실패
-//    			Log.i(TAG, "FAIL_ADMISSION");
-//    			showResultDialog(getString(R.string.certi_num_req_fail));
-//    		}
-//    	}else{			// 인증 실패시	 토스트 띄우고 화면 유지.
-//    		alertMsg();
-//    	}
-//    }
-	
+
+		
 		/**
 		 * 러너블.서버와 통신하여 인증2단계 수행.
 		 */
@@ -551,9 +377,7 @@ public class CertificationStep2 extends Activity {
 				checkMileageMembersParam.setPhoneNumber(userPhoneNumber.getText()+"");	
 				checkMileageMembersParam.setCertiNum(userCertiNumber.getText()+"");
 				// 호출
-//				if(!pullDownRefreshIng){
 					showPb();
-//				}
 				callResult = checkMileageCustomerRest.RestCertificationStep_2(checkMileageMembersParam);
 				hidePb();
 				// 결과 처리
@@ -567,103 +391,6 @@ public class CertificationStep2 extends Activity {
 				return null; 
 			}
 		}	
-//	/*
-//	 * 서버와 통신하여 인증2단계 수행.
-//	 * http://checkmileage.onemobileservice.com/checkMileageCertificationController/requestAdmission
-//	 * 파라메터 : phoneNumber, certificationNumber, activateYn
-//	 * 예 ) phoneNumber : 01085858025
-//	 * certificationNumber : 4792
-//	 * activateYn : Y
-//	 * 
-//	 * 
-//	 */
-//	public void certificationStep2() throws JSONException, IOException {
-//    	Log.i(TAG, "certificationStep2");
-//    	
-//    	controllerName = "checkMileageCertificationController";		// 서버 조회시 컨트롤러 이름
-//    	methodName = "requestAdmission";							// 서버 조회시 메서드 이름
-//    	
-//    	new Thread(
-//    			new Runnable(){
-//    				public void run(){
-//    					 // 전달 데이터
-//						JSONObject obj = new JSONObject();
-//						phoneNum = userPhoneNumber.getText()+"";
-//						try{
-//							obj.put("phoneNumber", phoneNum);			// 전번
-//							obj.put("certificationNumber", userCertiNumber.getText()+"");	// 승인번호		
-//							obj.put("activateYn", "Y");
-//						}catch(Exception e){
-//							e.printStackTrace();
-//						}
-//						String jsonString = "{\"checkMileageCertification\":" + obj.toString() + "}";
-//						try{
-//							  URL postUrl2 = new URL("http://"+serverName+"/"+controllerName+"/"+methodName);	
-//					  		  HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
-//					  		  connection2.setDoOutput(true);
-//					  		  connection2.setInstanceFollowRedirects(false);
-//					  		  connection2.setRequestMethod("POST");
-//					  		  connection2.setRequestProperty("Content-Type", "application/json");
-//					  		  OutputStream os2 = connection2.getOutputStream();
-//					  		  os2.write(jsonString.getBytes("UTF-8"));
-//					  		  os2.flush();
-//					  		  System.out.println("postUrl      : " + postUrl2);
-//					  		  System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
-//					  		  responseCode = connection2.getResponseCode();
-//					  		  InputStream in =  connection2.getInputStream();
-//					  		  theData2(in);
-//						}catch(Exception e){ 
-//						 e.printStackTrace();
-//						}finally{
-//							hidePb();
-//						}
-//    				}
-//    			}
-//    	).start();
-//	}
-//	/*
-//	 * 인증 2단계의 결과를 받음.
-//	 */
-//	public void theData2(InputStream in){
-//		Log.d(TAG,"theData");
-//    	BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-//    	StringBuilder builder = new StringBuilder();
-//    	String line =null;
-//    	try {
-//			while((line=reader.readLine())!=null){
-//				builder.append(line).append("\n");
-//			}
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-////    	Log.d(TAG,"get ::"+builder.toString());
-//    	String tempstr = builder.toString();		// 받은 데이터를 가공하여 사용할 수 있다... 용도에 맞게 구현할 것.
-//    	
-//    	JSONObject jsonObject;
-//		try {
-//			jsonObject = new JSONObject(tempstr);
-//			String jstring2 = jsonObject.getString("checkMileageCertification").toString(); 
-//	    	JSONObject jsonObject2 = new JSONObject(jstring2);
-//	    	certiResult = jsonObject2.getString("result").toString(); 
-//	    	Log.d(TAG,"certiResult:"+certiResult);
-//		} catch (JSONException e) {
-//			e.printStackTrace();
-//		} 
-//    	if(responseCode==200 || responseCode==204){		// 인증 성공시
-//    		// QR데이터를 꺼내어 저장..
-//    		// 기타 정보들을 설정 파일에 저장....
-//    		if(certiResult.equals("SUCCESS_ADMISSION")){				// 인증 성공
-//    			Log.i(TAG, "SUCCESS_ADMISSION");
-//    	    	userCertifiedComplete();		// 패스 시켜줌
-//    		}else{														// 인증 실패
-//    			Log.i(TAG, "FAIL_ADMISSION");
-//    			showResultDialog(getString(R.string.certi_fail));
-//    		}
-//    	}else{			// 인증 실패시	 토스트 띄우고 화면 유지.
-//    		alertMsg();
-////    		Toast.makeText(CertificationStep1.this, R.string.certi_fail_msg, Toast.LENGTH_SHORT).show();
-//    	}
-//	}
 	
 	public void userCertifiedComplete(){
 		// 인증 완료 후 작업
@@ -676,40 +403,6 @@ public class CertificationStep2 extends Activity {
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////
-	
-//	// 현재 시각 구하기.
-//	/**
-//	 * getNow
-//	 *  현재 시각 구한다
-//	 *
-//	 * @param
-//	 * @param
-//	 * @return nowTime
-//	 */
-//	public String getNow(){
-//		c = Calendar.getInstance();
-//		todayYear = c.get(Calendar.YEAR);
-//		todayMonth = c.get(Calendar.MONTH)+1;			// 꺼내면 0부터 시작이니까 +1 해준다.
-//		todayDay = c.get(Calendar.DATE);
-//		todayHour = c.get(Calendar.HOUR_OF_DAY);
-//		todayMinute = c.get(Calendar.MINUTE);
-//		todaySecond = c.get(Calendar.SECOND);
-//		String tempMonth = Integer.toString(todayMonth);
-//		String tempDay = Integer.toString(todayDay);
-//		String tempHour = Integer.toString(todayHour);
-//		String tempMinute = Integer.toString(todayMinute);
-//		String tempSecond = Integer.toString(todaySecond);
-//		if(tempMonth.length()==1) tempMonth = "0"+tempMonth;
-//		if(tempDay.length()==1) tempDay = "0"+tempDay;
-//		if(tempHour.length()==1) tempHour = "0"+tempHour;
-//		if(tempMinute.length()==1) tempMinute = "0"+tempMinute;
-//		if(tempSecond.length()==1) tempSecond = "0"+tempSecond;
-//		String nowTime = Integer.toString(todayYear)+"-"+tempMonth+"-"+tempDay+" "+tempHour+":"+tempMinute+":"+tempSecond;
-//		return nowTime;
-//		//		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
-//	}
-	
-	
 	
 	// 키보드 숨김
 	/**

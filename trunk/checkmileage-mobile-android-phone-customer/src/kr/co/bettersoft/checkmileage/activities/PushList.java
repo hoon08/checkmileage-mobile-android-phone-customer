@@ -5,12 +5,9 @@ package kr.co.bettersoft.checkmileage.activities;
  * 가맹점에서 보내온 이벤트 목록보기. 특정 버튼 터치하여 상세 화면으로 이동 가능.
  * 
  */
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,8 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kr.co.bettersoft.checkmileage.activities.R;
-import kr.co.bettersoft.checkmileage.activities.No_QR_PageActivity.RunnableGetQRNumFromServerByPhoneNumber;
-import kr.co.bettersoft.checkmileage.activities.No_QR_PageActivity.backgroundGetQRNumFromServerByPhoneNumber;
 import kr.co.bettersoft.checkmileage.adapters.PushEventListAdapter;
 import kr.co.bettersoft.checkmileage.common.CheckMileageCustomerRest;
 import kr.co.bettersoft.checkmileage.common.CommonConstant;
@@ -39,8 +34,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -76,19 +69,10 @@ public class PushList extends Activity {
 	Bitmap tmp_imageFile = null;
 	
 	// 서버 통신 용
-	int responseCode = 0;
-	String controllerName = "";
-	String methodName = "";
-	String serverName = CommonConstant.serverNames;
-	URL postUrl2;
-	HttpURLConnection connection2;
-	
 	CheckMileageCustomerRest checkMileageCustomerRest;
 	String callResult = "";
 	String tempstr = "";
 	JSONObject jsonObject;
-	//	String imgthumbDomain = CommonUtils.imgthumbDomain; 					// Img 가져올때 파일명만 있을 경우 앞에 붙일 도메인.  
-	//	String imgDomain = CommonUtils.imgDomain; 					// Img 가져올때 파일명만 있을 경우 앞에 붙일 도메인.  
 
 	Boolean dbSaveEnable = true;			// db 저장 가능 여부
 	public static Boolean searched = false;		// 조회 했는가?
@@ -131,16 +115,6 @@ public class PushList extends Activity {
 	"modifyDate TEXT," +											// 이벤트 등록일
 	"companyName TEXT," +										// 업체명
 	"imageFile TEXT" +											// 이미지 파일(문자화)
-	//	       "idCheckMileageMileages TEXT," +								// 서버 db에 저장된 인덱스 키				// 저장할 데이터 들..
-	//	       "mileage TEXT," +											// 마일리지 값
-	//	       "modifyDate TEXT," +											// 수정일시
-	//	       "checkMileageMembersCheckMileageId TEXT," +					// 사용자 아이디
-	//	       "checkMileageMerchantsMerchantId TEXT," +					// 가맹점 아이디
-	//	       "companyName TEXT," +										// 가맹점 이름
-	//	       "introduction TEXT," +										// 가맹점 소개글
-	//	       "workPhoneNumber TEXT," +									// 가맹점 전번
-	//	       "profileThumbnailImageUrl TEXT," +							// 섬네일 이미지 url
-	//	       "bm TEXT" +													// 섬네일 이미지(string화 시킨 값)
 	");" ;
 
 	// 테이블 조회 쿼리
@@ -289,7 +263,6 @@ public class PushList extends Activity {
 				}
 			}
 			c.close();
-			//			 db.close();		// db 는 마지막에 한번 닫음.
 			entriesFn = dbOutEntries;						//  *** 꺼낸 데이터를 결과 데이터에 세팅 
 		}catch(Exception e){e.printStackTrace();}
 		showEventList();									//  *** 결과 데이터를 화면에 보여준다.		 데이터 있는지 여부는 결과 처리에서 함께..
@@ -377,7 +350,6 @@ public class PushList extends Activity {
 		if(isRunning<1){								// 중복 실행 방지
 			isRunning = isRunning+1;
 			myQRcode = MyQRPageActivity.qrCode;
-//			new backgroundGetMyEventList().execute();	// 이벤트 리스트 조회
 			handler.sendEmptyMessage(GET_MY_EVENT_LIST);
 		}else{
 			Log.w(TAG, "already running..");
@@ -441,19 +413,14 @@ public class PushList extends Activity {
 		@Override protected Void doInBackground(Void... params) { 
 
 			// 파리미터 세팅
-//			CheckMileageLogs checkMileageLogsParam = new CheckMileageLogs();
-//			checkMileageLogsParam.setCheckMileageId(qrCode);
-//			checkMileageLogsParam.setParameter01(phoneNum);
-//			checkMileageLogsParam.setParameter04("");
-//			checkMileageLogsParam.setViewName("CheckMileageCustomerQRView");
 			 CheckMileageMembers checkMileageMembersParam = new CheckMileageMembers(); 
 			 checkMileageMembersParam.setCheckMileageId(myQRcode);
 			// 호출
 			// if(!pullDownRefreshIng){
-			// showPb();
+			 showPb();
 			// }
 			callResult = checkMileageCustomerRest.RestGetMyEventList(checkMileageMembersParam);
-			// hidePb();
+			 hidePb();
 			// 결과 처리
 			 if(callResult.equals("S")){ //  성공
 			     Log.i(TAG, "S");
@@ -465,285 +432,11 @@ public class PushList extends Activity {
 			     Log.i(TAG, "F");
 		     }
 			 
-//			try {
-//				getMyEventList();
-//			} catch (JSONException e) {
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
 			return null ;
 		}
 	}
-	/*
-	 * 내 이벤트 목록 을 가져온다.
-	 * 
-	 * 도메인 : checkMileageMerchantMarketing  
-	 * 컨트롤러 : checkMileageMerchantMarketingController
-	 * 메서드 : selectMemberMerchantMarketingList
-	 * 보내는 파라미터 : checkMileageId  activateYn
-	 * 받는 데이터 : List<CheckMileageMerchantMarketing>
-	 */
-	//	public void getMyEventList_pre(){
-	//		new Thread(
-	//				new Runnable(){
-	//					public void run(){
-	//						Log.d(TAG,"getMyEventList_pre");
-	//						try{
-	//							Thread.sleep(CommonUtils.threadWaitngTime);
-	//						}catch(Exception e){
-	//						}finally{
-	//							if(CommonUtils.usingNetwork<1){
-	//								CommonUtils.usingNetwork = CommonUtils.usingNetwork +1;
-	//								try {
-	//									getMyEventList();
-	//								} catch (JSONException e) {
-	//									e.printStackTrace();
-	//								} catch (IOException e) {
-	//									e.printStackTrace();
-	//								}
-	//							}else{
-	//								getMyEventList_pre();
-	//							}
-	//						}
-	//					}
-	//				}
-	//			).start();
-	//	}
-//	/**
-//	 * getMyEventList
-//	 *  내 이벤트 목록 을 가져온다.
-//	 *
-//	 * @param
-//	 * @param
-//	 * @return
-//	 */
-//	public void getMyEventList() throws JSONException, IOException {
-//		Log.i(TAG, "getMyEventList");
-//		if(true){
-//			//		if(CheckNetwork()){
-//			controllerName = "checkMileageMerchantMarketingController";
-//			methodName = "selectMemberMerchantMarketingList";
-//			showPb();
-//			new Thread(
-//					new Runnable(){
-//						public void run(){
-//							JSONObject obj = new JSONObject();
-//							try{
-//								// 자신의 아이디를 넣어서 조회
-//								obj.put("activateYn", "Y");
-//								obj.put("checkMileageId", myQRcode);
-//								Log.i(TAG, "myQRcode::"+myQRcode);
-//							}catch(Exception e){
-//								e.printStackTrace();
-//							}
-//							String jsonString = "{\"checkMileageMerchantMarketing\":" + obj.toString() + "}";
-//							try{
-//								postUrl2 = new URL(serverName+"/"+controllerName+"/"+methodName);
-//								connection2 = (HttpURLConnection) postUrl2.openConnection();
-//								connection2.setConnectTimeout(CommonConstant.serverConnectTimeOut);
-//								connection2.setDoOutput(true);
-//								connection2.setInstanceFollowRedirects(false);
-//								connection2.setRequestMethod("POST");
-//								connection2.setRequestProperty("Content-Type", "application/json");
-//								//								connection2.connect();		// *** 
-//								Thread.sleep(200);	
-//								OutputStream os2 = connection2.getOutputStream();
-//								os2.write(jsonString.getBytes("UTF-8"));
-//								os2.flush();
-//								Thread.sleep(200);
-//								//								System.out.println("postUrl      : " + postUrl2);
-//								//								System.out.println("responseCode : " + connection2.getResponseCode());		// 200 , 204 : 정상
-//								responseCode = connection2.getResponseCode();
-//								InputStream in =  connection2.getInputStream();
-//								//								os2.close();
-//								// 조회한 결과를 처리.
-//								getMyEventListResult(in);
-//								//								connection2.disconnect();
-//							}catch(Exception e){ 
-//								//								connection2.disconnect();
-//								// 다시
-//								//								if(reTry>0){
-//								//									Log.w(TAG, "fail and retry remain : "+reTry);
-//								//									reTry = reTry-1;
-//								//									try {
-//								//										Thread.sleep(200);
-//								//										getMyMileageList();
-//								//									} catch (Exception e1) {
-//								//										Log.w(TAG,"again is failed() and again... ;");
-//								//									}	
-//								//								}else{
-//								//									Log.w(TAG,"reTry failed - init reTry");
-//								//									reTry = 3;
-//								//									hidePb();
-//								//									isRunning = isRunning-1;
-//								//									getEventDBData();						// n회 재시도에도 실패하면 db에서 꺼내서 보여준다.
-//								//								}
-//							}
-//							//							CommonUtils.usingNetwork = CommonUtils.usingNetwork -1;
-//							//							if(CommonUtils.usingNetwork < 0){	// 0 보다 작지는 않게
-//							//								CommonUtils.usingNetwork = 0;
-//							//							}
-//						}
-//					}
-//			).start();
-//		}else{
-//			isRunning = isRunning-1;		// 작업중인 카운팅만 다시 되돌림 -1
-//		}
-//	}
 
-//	// 이벤트 조회 결과를 처리하는 부분
-//	/**
-//	 * getMyEventListResult
-//	 *  이벤트 조회 결과를 처리한다
-//	 *
-//	 * @param in
-//	 * @param
-//	 * @return
-//	 */
-//	public void getMyEventListResult(InputStream in){
-//		Log.d(TAG,"getMyEventListResult");
-//		BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);
-//		StringBuilder builder = new StringBuilder();
-//		String line =null;
-//		
-//		try {
-//			while((line=reader.readLine())!=null){
-//				builder.append(line).append("\n");
-//			}
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		//		Log.d(TAG,"수신::"+builder.toString());
-//		String tempstr = builder.toString();		
-//		JSONArray jsonArray2 = null;
-//		try {
-//			jsonArray2 = new JSONArray(tempstr);
-//		} catch (JSONException e1) {
-//			e1.printStackTrace();
-//		}
-//		int max = jsonArray2.length();
-//		if(responseCode==200 || responseCode==204){
-//			try {
-//				entries = new ArrayList<CheckMileagePushEvent>(max);
-//
-//				//				String tmp_imageFileStr = "";
-//				if(max>0){
-//					for ( int i = 0; i < max; i++ ){
-//						doneCnt++;
-//						JSONObject jsonObj = jsonArray2.getJSONObject(i).getJSONObject("checkMileageMerchantMarketing");
-//						//  idCheckMileageMileages,  mileage,  modifyDate,  checkMileageMembersCheckMileageID,  checkMileageMerchantsMerchantID
-//						// 객체 만들고 값 받은거 넣어서 저장..  저장값: 인덱스번호, 수정날짜, 아이디, 가맹점아이디.
-//
-//						//						tmp_idCheckMileageMileages = jsonObj.getString("idCheckMileageMileages");
-//						try{
-//							tmp_subject = jsonObj.getString("subject");
-//						}catch(Exception e){
-//							Log.d(TAG,"subject F");
-//							tmp_subject = "";
-//						}
-//						try{
-//							tmp_content = jsonObj.getString("content");
-//						}catch(Exception e){
-//							Log.d(TAG,"content F");
-//							tmp_content = "";
-//						}
-//						try{
-//							if(jsonObj.getString("imageFileUrl").length()>0){
-//								tmp_imageFileUrl = imgPushDomain+jsonObj.getString("imageFileUrl");
-//							}else{
-//								tmp_imageFileUrl = "";
-//							}
-//
-//						}catch(Exception e){
-//							Log.d(TAG,"imageFileUrl F");
-//							tmp_imageFileUrl = "";
-//						}
-//						try{
-//							tmp_modifyDate = jsonObj.getString("modifyDate");
-//							if(tmp_modifyDate!=null && tmp_modifyDate.length()>15){
-//								Log.d(TAG,"tmp_modifyDate:"+tmp_modifyDate);
-//								Log.d(TAG,"tmp_modifyDate.substring(0, 4):"+tmp_modifyDate.substring(0, 4)+"//tmp_modifyDate.substring(5, 7):"+tmp_modifyDate.substring(5, 7)+"//tmp_modifyDate.substring(8, 10):"+tmp_modifyDate.substring(8, 10));
-//								Log.d(TAG,"tmp_modifyDate.substring(11, 13):"+tmp_modifyDate.substring(11, 13)+"//tmp_modifyDate.substring(14, 16):"+tmp_modifyDate.substring(14, 16));
-//								tmpstr2 = tmp_modifyDate.substring(0, 4)+ getString(R.string.year) 		// 년
-//								+ tmp_modifyDate.substring(5, 7)+ getString(R.string.month) 					// 월
-//								+ tmp_modifyDate.substring(8, 10)+ getString(R.string.day) 					// 일
-//								+ tmp_modifyDate.substring(11, 13)+ getString(R.string.hour)					// 시
-//								+ tmp_modifyDate.substring(14, 16)+ getString(R.string.minute)					// 분
-//								;
-//
-//							}
-//
-//
-//							tmpstr2 = tmp_modifyDate.substring(0, 4)+ getString(R.string.year) 		// 년
-//							+ tmp_modifyDate.substring(5, 7)+ getString(R.string.month) 					// 월
-//							+ tmp_modifyDate.substring(8, 10)+ getString(R.string.day) 					// 일
-//							//							+ tmp_modifyDate.substring(0, 4)+ getString(R.string.year)					// 시
-//							//							+ tmp_modifyDate.substring(0, 4)+ getString(R.string.year)					// 분
-//							;
-//							tmp_modifyDate = tmpstr2;
-//						}catch(Exception e){
-//							Log.d(TAG,"modifyDate F");
-//							tmp_modifyDate = "";
-//						}
-//						try{
-//							tmp_companyName = jsonObj.getString("companyName");
-//						}catch(Exception e){
-//							Log.d(TAG,"companyName F");
-//							tmp_companyName = "";
-//						}
-//						// tmp_imageFileUrl 있을때.
-//						if(tmp_imageFileUrl.length()>0){
-//							try{
-//								tmp_imageFile = LoadImage(tmp_imageFileUrl);
-//							}catch(Exception e3){
-//								Log.w(TAG, tmp_imageFileUrl+" -- fail");
-//							}
-//						}else{
-//							Log.d(TAG,"tmp_imageFileUrl length 0");
-//							BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.empty_320_240);
-//							tmp_imageFile = dw.getBitmap();
-//						}
-//						if(tmp_imageFile==null){		//  없을때.. 
-//							Log.d(TAG,"last tmp_imageFileUrl null");
-//							BitmapDrawable dw = (BitmapDrawable) returnThis().getResources().getDrawable(R.drawable.empty_320_240);
-//							tmp_imageFile = dw.getBitmap();
-//						}
-//						entries.add(new CheckMileagePushEvent(
-//								tmp_subject,  tmp_content,
-//								tmp_imageFileUrl,  tmp_modifyDate,
-//								tmp_companyName,  "",
-//								tmp_imageFile
-//								// 그 외 섬네일 이미지, 가맹점 이름
-//						));
-//
-//					}
-//				}
-//			}catch (JSONException e) {
-//				doneCnt--;
-//				//				dbSaveEnable = false;
-//				e.printStackTrace();
-//			}finally{
-//				dbInEntries = entries; 
-//				searched = true;
-//				// db 에 데이터를 넣는다.
-//				try{
-//					if(dbSaveEnable){		// 이미지까지 성공적으로 가져온 경우.
-//						saveEventDataToDB();
-//					}else{
-//						alertToUser();		// 이미지 가져오는데 실패한 경우.
-//						// 어쨎든 처리가 끝나면 (공통) -  db를 검사하여 데이터가 있으면 보여주고  entriesFn = dbOutEntries
-//					}	// 처리가 끝나면 공통으로 해야할 showInfo(); (그전에 entriesFn 설정 한다)
-//				}catch(Exception e){}
-//				finally{
-//					getEventDBData();			//db 에 잇으면 그거 쓰고 없으면 없다고 알림. * 에러나면 이전 데이터를 보여주기 때문에 db에 있는 정보가 정확하다고 볼수는 없음.. 
-//				}
-//			}
-//		}else{			// 요청 실패시	 토스트는 에러남 - 
-//			showMSG();    // 핸들러 통한 토스트
-//		}
-//	}
-
+	//////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public void processMyEventListData(){
 		tempstr = checkMileageCustomerRest.getTempstr();
@@ -754,7 +447,6 @@ public class PushList extends Activity {
 			e1.printStackTrace();
 		}
 		int max = jsonArray2.length();
-		if(responseCode==200 || responseCode==204){
 			try {
 				entries = new ArrayList<CheckMileagePushEvent>(max);
 
@@ -802,9 +494,7 @@ public class PushList extends Activity {
 								+ tmp_modifyDate.substring(11, 13)+ getString(R.string.hour)					// 시
 								+ tmp_modifyDate.substring(14, 16)+ getString(R.string.minute)					// 분
 								;
-
 							}
-
 
 							tmpstr2 = tmp_modifyDate.substring(0, 4)+ getString(R.string.year) 		// 년
 							+ tmp_modifyDate.substring(5, 7)+ getString(R.string.month) 					// 월
@@ -870,16 +560,8 @@ public class PushList extends Activity {
 					getEventDBData();			//db 에 잇으면 그거 쓰고 없으면 없다고 알림. * 에러나면 이전 데이터를 보여주기 때문에 db에 있는 정보가 정확하다고 볼수는 없음.. 
 				}
 			}
-		}else{			// 요청 실패시	 토스트는 에러남 - 
-			showMSG();    // 핸들러 통한 토스트
-		}
 	}
 	
-	
-	
-	
-
-//////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -1072,8 +754,5 @@ public class PushList extends Activity {
 	public void onDestroy(){
 		db.close();			//사용이 끝났으니 db 는 닫아준다
 		super.onDestroy();
-		//			try{
-		//				connection2.disconnect();
-		//				}catch(Exception e){}
 	}
 }
