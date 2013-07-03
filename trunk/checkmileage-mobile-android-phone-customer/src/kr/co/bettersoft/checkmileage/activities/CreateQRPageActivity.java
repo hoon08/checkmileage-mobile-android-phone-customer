@@ -21,6 +21,9 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import kr.co.bettersoft.checkmileage.activities.R;
+import kr.co.bettersoft.checkmileage.activities.CertificationStep2.RunnableCertificationStep_1;
+import kr.co.bettersoft.checkmileage.activities.CertificationStep2.RunnableCertificationStep_2;
+import kr.co.bettersoft.checkmileage.activities.CertificationStep2.backgroundThreadCertificationStep_1;
 import kr.co.bettersoft.checkmileage.activities.MemberStoreListPageActivity.backgroundGetMerchantInfo;
 import kr.co.bettersoft.checkmileage.common.CheckMileageCustomerRest;
 import kr.co.bettersoft.checkmileage.common.CommonConstant;
@@ -35,8 +38,9 @@ import org.json.JSONObject;
  */
 public class CreateQRPageActivity extends Activity {
 	String TAG = "CreateQRPageActivity";
-	SharedPreferences sharedPrefCustom;
-
+	
+	final int SAVE_QR_TO_SERVER = 201; 
+	
 //	String controllerName = "";
 //	String methodName = "";
 //	String serverName = CommonUtils.serverNames;
@@ -56,7 +60,7 @@ public class CreateQRPageActivity extends Activity {
 	// 시간 관련
 	Calendar c = Calendar.getInstance();
 
-	
+	SharedPreferences sharedPrefCustom;
 
 	int todayYear = 0;						// 지금 -  년 월 일 시 분
 	int todayMonth = 0;
@@ -71,7 +75,8 @@ public class CreateQRPageActivity extends Activity {
 	String strCountry = "" ;
 	String strLanguage = "" ;
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	// 핸들러
 	Handler handler = new Handler(){
 		@Override
@@ -84,32 +89,20 @@ public class CreateQRPageActivity extends Activity {
 			}catch(Exception e){
 				e.printStackTrace();
 			}
+			
+			switch (msg.what)
+			{
+				case SAVE_QR_TO_SERVER   : runOnUiThread(new RunnableSaveQRtoServer());	
+					break;
+				default : 
+					break;
+			}	
+			
 		}
 	};
-	/**
-	 * alertMsg
-	 *  화면에 error 토스트 띄운다
-	 *
-	 * @param alrtmsg
-	 * @param
-	 * @return
-	 */
-	public void alertMsg(final String alrtmsg){						// 에러 토스트 함수화
-		new Thread(
-				new Runnable(){
-					public void run(){
-						Message message = handler.obtainMessage();
-						Bundle b = new Bundle();
-						//						String alrtMsg = getString(R.string.certi_fail_msg);
-						b.putInt("showErrToast", 1);
-						b.putString("msg", alrtmsg);			
-						message.setData(b);
-						handler.sendMessage(message);
-					}
-				}
-		).start();
-	}
-
+	
+///////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -142,41 +135,13 @@ public class CreateQRPageActivity extends Activity {
 		 */
 		Log.i("CreateQRPageActivity", "save qrcode to file : "+qrcode);
 
-		new backgroundSaveQRtoServer().execute();		//  비동기 실행 - 서버에 먼저 저장  
-
+//		new backgroundSaveQRtoServer().execute();		//  비동기 실행 - 서버에 먼저 저장  
+		handler.sendEmptyMessage(SAVE_QR_TO_SERVER);
 	}
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	
-	
-	
-	public void goMainTabs(){
-		/*
-		 * MyQR페이지에 생성된 QR로 QR이미지 받아서 보여줌.
-		 */
-		Log.i("CreateQRPageActivity", "load qrcode to img : "+qrcode);
-		MyQRPageActivity.qrCode = qrcode;
-		Main_TabsActivity.myQR = qrcode;
 
-		new Thread(
-				new Runnable(){
-					public void run(){
-						try{
-							Thread.sleep(300);
-							Log.i("CreateQRPageActivity", "qrResult::"+qrResult);		// 읽기 결과 받음.
-							// 나의 QR 코드 보기로 이동.
-							Log.i("CreateQRPageActivity", "QR registered Success");
-							Intent intent2 = new Intent(CreateQRPageActivity.this, Main_TabsActivity.class);
-							startActivity(intent2);
-							finish();		// 다른 액티비티를 호출하고 자신은 종료.
-						}catch(InterruptedException ie){
-							ie.printStackTrace();
-						}
-					}
-				}
-		).start();
-	}
-	
-	
 	
 	// 비동기로 호출. 설정에 저장
 	/**
@@ -232,14 +197,50 @@ public class CreateQRPageActivity extends Activity {
 //			e.printStackTrace();
 //		}
 		
-		
-//		new backgroundSaveQRtoServer().execute();		// 설정에 저장 끝나면 .. 비동기 실행 - 서버에 저장 --> 서버에 먼저 저장후 설정에 저장 - 이후 이동으로 변경.
-		
 		// 저장끝나고 나서 액티비티 이동.
 		goMainTabs();
 	}
 
-	// 비동기로 호출. 서버에 저장
+
+	public void goMainTabs(){
+		/*
+		 * MyQR페이지에 생성된 QR로 QR이미지 받아서 보여줌.
+		 */
+		Log.i("CreateQRPageActivity", "load qrcode to img : "+qrcode);
+		MyQRPageActivity.qrCode = qrcode;
+		Main_TabsActivity.myQR = qrcode;
+
+		new Thread(
+				new Runnable(){
+					public void run(){
+						try{
+							Thread.sleep(300);
+							Log.i("CreateQRPageActivity", "qrResult::"+qrResult);		// 읽기 결과 받음.
+							// 나의 QR 코드 보기로 이동.
+							Log.i("CreateQRPageActivity", "QR registered Success");
+							Intent intent2 = new Intent(CreateQRPageActivity.this, Main_TabsActivity.class);
+							startActivity(intent2);
+							finish();		// 다른 액티비티를 호출하고 자신은 종료.
+						}catch(InterruptedException ie){
+							ie.printStackTrace();
+						}
+					}
+				}
+		).start();
+	}
+	
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	/**
+	 * 러너블.서버에 qr 저장
+	 */
+	class RunnableSaveQRtoServer implements Runnable {
+		public void run(){
+			new backgroundSaveQRtoServer().execute();
+		}
+	}
 	/**
 	 * backgroundSaveQRtoServer
 	 * 비동기로 서버에 qr 저장하는 함수 호출
@@ -257,6 +258,9 @@ public class CreateQRPageActivity extends Activity {
 			Log.d(TAG,"backgroundSaveQRtoServer");
 
 			// 파리미터 세팅
+			systemLocale = getResources().getConfiguration(). locale;
+			strCountry = systemLocale .getCountry();
+			strLanguage = systemLocale .getLanguage();
 			CheckMileageMembers checkMileageMembersParam = new CheckMileageMembers(); 	
 			checkMileageMembersParam.setCheckMileageId(qrcode);
 			checkMileageMembersParam.setPhoneNumber(phoneNumber);
@@ -393,6 +397,8 @@ public class CreateQRPageActivity extends Activity {
 //		).start();
 //	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 //	// 현시각
 //	/**
 //	 * getNow
@@ -424,5 +430,32 @@ public class CreateQRPageActivity extends Activity {
 //		return nowTime;
 //		//		Log.e(TAG, "Now to millis : "+ Long.toString(c.getTimeInMillis()));
 //	}
+
+	/**
+	 * alertMsg
+	 *  화면에 error 토스트 띄운다
+	 *
+	 * @param alrtmsg
+	 * @param
+	 * @return
+	 */
+	public void alertMsg(final String alrtmsg){						// 에러 토스트 함수화
+		new Thread(
+				new Runnable(){
+					public void run(){
+						Message message = handler.obtainMessage();
+						Bundle b = new Bundle();
+						//						String alrtMsg = getString(R.string.certi_fail_msg);
+						b.putInt("showErrToast", 1);
+						b.putString("msg", alrtmsg);			
+						message.setData(b);
+						handler.sendMessage(message);
+					}
+				}
+		).start();
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////
+	
 
 }

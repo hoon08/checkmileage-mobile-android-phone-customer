@@ -117,4 +117,6 @@ public class CheckMileageMileage {
 		this.merchantImg = profileThumbnailImageUrl;
 		this.merchantImage = merchantImage;
 	}
+	public CheckMileageMileage() {
+	}
 }

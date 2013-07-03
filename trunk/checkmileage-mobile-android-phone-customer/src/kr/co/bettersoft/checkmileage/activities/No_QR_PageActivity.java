@@ -16,7 +16,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import kr.co.bettersoft.checkmileage.activities.R;
+import kr.co.bettersoft.checkmileage.common.CheckMileageCustomerRest;
 import kr.co.bettersoft.checkmileage.common.CommonConstant;
+import kr.co.bettersoft.checkmileage.domain.CheckMileageMembers;
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -37,25 +39,32 @@ import android.widget.Toast;
 
 public class No_QR_PageActivity extends Activity {
 	String TAG = "No_QR_PageActivity";
-	String phoneNumber= "";
-
-	Button button1;
-	Button button2;
-	Button button3;
-
+	final int GET_QR_NUM_FROM_SERVER_BY_PHONE_NUMBER = 701;
 	
-	// 서버 통신용
-	String controllerName ="";
-	String methodName ="";
-	String serverName = CommonConstant.serverNames;
-	URL postUrl2 = null;
-	HttpURLConnection connection2 = null;
-	int responseCode = 0;
+	String phoneNumber= "";
 	
 	// 설정 파일 저장소  --> 전번 꺼내기 용도
 	SharedPreferences sharedPrefCustom;
 	
+	// 화면 구성
+	Button button1;
+	Button button2;
+	Button button3;
 	
+	// 서버 통신용
+//	String controllerName ="";
+//	String methodName ="";
+//	String serverName = CommonConstant.serverNames;
+//	URL postUrl2 = null;
+//	HttpURLConnection connection2 = null;
+//	int responseCode = 0;
+	CheckMileageCustomerRest checkMileageCustomerRest;
+	String callResult = "";
+	String tempstr = "";
+	JSONObject jsonObject;
+	
+	
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	// 핸들러
 	Handler handler = new Handler(){
 		@Override
@@ -74,6 +83,16 @@ public class No_QR_PageActivity extends Activity {
 						}})
 						.setNegativeButton("", null).show();
 				}
+				
+				switch (msg.what)
+				{
+					case GET_QR_NUM_FROM_SERVER_BY_PHONE_NUMBER : runOnUiThread(new RunnableGetQRNumFromServerByPhoneNumber());
+					break;
+					default : 
+					break;
+				}
+
+				
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -89,6 +108,8 @@ public class No_QR_PageActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		checkMileageCustomerRest = new CheckMileageCustomerRest();
+		
 		Log.i("No_QR_PageActivity", "select method to get QR");
 		setContentView(R.layout.no_qr_page);
 		button1 = (Button) findViewById(R.id.button1);
@@ -205,7 +226,16 @@ public class No_QR_PageActivity extends Activity {
 		}
 	}
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * 러너블.  사용자 전번을 가지고 서버와 통신하여 QR 코드가 있다면 가져오는 함수 호출한다
+	 */
+	class RunnableGetQRNumFromServerByPhoneNumber implements Runnable {
+		public void run(){
+			new backgroundGetQRNumFromServerByPhoneNumber().execute();
+		}
+	}
 	/**
 	 * backgroundGetQRFromServerByPhoneNumber
 	 *  비동기로 사용자 전번을 가지고 서버와 통신하여 QR 코드가 있다면 가져오는 함수 호출한다
@@ -221,122 +251,141 @@ public class No_QR_PageActivity extends Activity {
 		} 
 		@Override protected Void doInBackground(Void... params) {  
 			Log.d(TAG,"backgroundGetQRNumFromServerByPhoneNumber");
-			getQRNumFromServerByPhoneNumber();
+			
+			// 파리미터 세팅
+//			CheckMileageLogs checkMileageLogsParam = new CheckMileageLogs();
+//			checkMileageLogsParam.setCheckMileageId(qrCode);
+//			checkMileageLogsParam.setParameter01(phoneNum);
+//			checkMileageLogsParam.setParameter04("");
+//			checkMileageLogsParam.setViewName("CheckMileageCustomerQRView");
+			 CheckMileageMembers checkMileageMembersParam = new CheckMileageMembers(); 
+			 checkMileageMembersParam.setPhoneNumber(phoneNumber);
+			// 호출
+			// if(!pullDownRefreshIng){
+			// showPb();
+			// }
+			callResult = checkMileageCustomerRest.RestGetQRNumFromServerByPhoneNumber(checkMileageMembersParam);
+			// hidePb();
+			// 결과 처리
+			 if(callResult.equals("S")){ // 인증 성공
+			     Log.i(TAG, "S");
+			     tempstr = checkMileageCustomerRest.getTempstr();
+			     // ... 이후 처리. 전번 꺼내서 사용하는 부분 필요. @@@ 
+			     Log.d(TAG,"tempstr:"+tempstr);
+		     }else{ // 인증 실패
+			     Log.i(TAG, "F");
+		     }
+			
+//			getQRNumFromServerByPhoneNumber();
 			return null; 
 		}
 	}
-	/**
-	 * getQRNumFromServerByPhoneNumber
-	 *  사용자 전번을 가지고 서버와 통신하여 QR 코드가 있다면 가져온다.
-	 * @param 
-	 * @param
-	 * @return
-	 */
-	public void getQRNumFromServerByPhoneNumber(){
-		Log.i(TAG, "getQRNumFromServerByPhoneNumber");
-		controllerName = "checkMileageMileageController";
-		methodName = "selectMemberExistByPhoneNumber";
-//		showPb();
-		new Thread(
-				new Runnable(){
-					public void run(){
-						JSONObject obj = new JSONObject();
-						try{
-							obj.put("phoneNumber", phoneNumber);
-							obj.put("activateYn", "Y");
-						}catch(Exception e){
-							e.printStackTrace();
-						}
-						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
-						InputStream in = null;
-						try{
-							postUrl2 = new URL(serverName+"/"+controllerName+"/"+methodName);
-							connection2 = (HttpURLConnection) postUrl2.openConnection();
-							connection2.setConnectTimeout(CommonConstant.serverConnectTimeOut);
-							connection2.setDoOutput(true);
-							connection2.setInstanceFollowRedirects(false);
-							connection2.setRequestMethod("POST");
-							connection2.setRequestProperty("Content-Type", "application/json");
-							//							connection2.connect();		
-							Thread. sleep(200);
-							OutputStream os2 = connection2.getOutputStream();
-							os2.write(jsonString.getBytes("UTF-8"));
-							os2.flush();
-							Thread. sleep(200);
-							responseCode = connection2.getResponseCode();
-							in =  connection2.getInputStream();
-							resultTotalCountByPhoneNumber(in);
-						}catch(Exception e){ 
-//							hidePb();
-							e.printStackTrace();
-							alert(getString(R.string.request_failed));
-						}
-					}
-				}).start();
-	}
-	
-	
-	// 고객 숫자 확인
-	/**
-	 * resultTotalCountByPhoneNumber
-	 *  전번 통한 고객 숫자 확인. 1명 있으면 qr 코드 가져와야 한다
-	 *
-	 * @param in
-	 * @param
-	 * @return
-	 */
-	public void resultTotalCountByPhoneNumber(InputStream in){
-		Log.d(TAG,"resultTotalCountByPhoneNumber");
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);
-		StringBuilder builder = new StringBuilder();
-		String line =null;
-		JSONObject jsonObject;
-		try {
-			while((line=reader.readLine())!=null){
-				builder.append(line).append("\n");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-//		hidePb();
-		Log.w(TAG,"resultTotalCountByPhoneNumber ::"+builder.toString());
-		
-//		String tempstr = builder.toString();	
-//		if(responseCode==200 || responseCode==204){		// 요청 성공
-//			try {
-//				jsonObject = new JSONObject(tempstr);
-//				JSONObject jsonobj2 = jsonObject.getJSONObject("checkMileageMileage");
-//				String result = "";
-//				try{
-//					result = jsonobj2.getString("result"); 
-//					hidePb();
-//					if(result.equals("SUCCESS")){
-//						//						showMsg("캐럿을 사용하였습니다.");
-//						showResultDialog(getString(R.string.carrot_use_success));				// 캐럿을 사용하였습니다.
-//					}else{
-//						//						showMsg("캐럿 사용에 실패하였습니다.\n 다시 시도해 주십시오.");
-//						showResultDialog(getString(R.string.carrot_use_failed));			// 캐럿 사용에 실패하였습니다.\n 다시 시도해 주십시오.
+//	/**
+//	 * getQRNumFromServerByPhoneNumber
+//	 *  사용자 전번을 가지고 서버와 통신하여 QR 코드가 있다면 가져온다.
+//	 * @param 
+//	 * @param
+//	 * @return
+//	 */
+//	public void getQRNumFromServerByPhoneNumber(){
+//		Log.i(TAG, "getQRNumFromServerByPhoneNumber");
+//		controllerName = "checkMileageMileageController";
+//		methodName = "selectMemberExistByPhoneNumber";
+////		showPb();
+//		new Thread(
+//				new Runnable(){
+//					public void run(){
+//						JSONObject obj = new JSONObject();
+//						try{
+//							obj.put("phoneNumber", phoneNumber);
+//							obj.put("activateYn", "Y");
+//						}catch(Exception e){
+//							e.printStackTrace();
+//						}
+//						String jsonString = "{\"checkMileageMember\":" + obj.toString() + "}";
+//						InputStream in = null;
+//						try{
+//							postUrl2 = new URL(serverName+"/"+controllerName+"/"+methodName);
+//							connection2 = (HttpURLConnection) postUrl2.openConnection();
+//							connection2.setConnectTimeout(CommonConstant.serverConnectTimeOut);
+//							connection2.setDoOutput(true);
+//							connection2.setInstanceFollowRedirects(false);
+//							connection2.setRequestMethod("POST");
+//							connection2.setRequestProperty("Content-Type", "application/json");
+//							//							connection2.connect();		
+//							Thread. sleep(200);
+//							OutputStream os2 = connection2.getOutputStream();
+//							os2.write(jsonString.getBytes("UTF-8"));
+//							os2.flush();
+//							Thread. sleep(200);
+//							responseCode = connection2.getResponseCode();
+//							in =  connection2.getInputStream();
+//							resultTotalCountByPhoneNumber(in);
+//						}catch(Exception e){ 
+////							hidePb();
+//							e.printStackTrace();
+//							alert(getString(R.string.request_failed));
+//						}
 //					}
-//				}catch(Exception e){
-//					//					showMsg("캐럿 사용에 실패하였습니다.\n 다시 시도해 주십시오.");
-//					showResultDialog(getString(R.string.carrot_use_failed));			// 캐럿 사용에 실패하였습니다.\n 다시 시도해 주십시오.
-//				}
-//				Log.w(TAG,"result:"+result);
-//				init();
-//			} catch (JSONException e) {
-//				e.printStackTrace();
-//			} 
-//		}else{			// 요청 실패시	 토스트 띄우고 화면 유지.  200, 204 이외의 경우.
-//			//			showMsg("요청이 실패하였습니다.\n잠시후 다시 시도해 주십시오.");
-//			showResultDialog(getString(R.string.request_failed));		// 요청이 실패하였습니다.\n잠시후 다시 시도해 주십시오.
+//				}).start();
+//	}
+	
+	
+//	// 고객 숫자 확인
+//	/**
+//	 * resultTotalCountByPhoneNumber
+//	 *  전번 통한 고객 숫자 확인. 1명 있으면 qr 코드 가져와야 한다
+//	 *
+//	 * @param in
+//	 * @param
+//	 * @return
+//	 */
+//	public void resultTotalCountByPhoneNumber(InputStream in){
+//		Log.d(TAG,"resultTotalCountByPhoneNumber");
+//		BufferedReader reader = new BufferedReader(new InputStreamReader(in), 8192);
+//		StringBuilder builder = new StringBuilder();
+//		String line =null;
+//		JSONObject jsonObject;
+//		try {
+//			while((line=reader.readLine())!=null){
+//				builder.append(line).append("\n");
+//			}
+//		} catch (IOException e) {
+//			e.printStackTrace();
 //		}
-	}
-	
-	
-	
-	
-	
-	
+////		hidePb();
+//		Log.w(TAG,"resultTotalCountByPhoneNumber ::"+builder.toString());
+//		
+////		String tempstr = builder.toString();	
+////		if(responseCode==200 || responseCode==204){		// 요청 성공
+////			try {
+////				jsonObject = new JSONObject(tempstr);
+////				JSONObject jsonobj2 = jsonObject.getJSONObject("checkMileageMileage");
+////				String result = "";
+////				try{
+////					result = jsonobj2.getString("result"); 
+////					hidePb();
+////					if(result.equals("SUCCESS")){
+////						//						showMsg("캐럿을 사용하였습니다.");
+////						showResultDialog(getString(R.string.carrot_use_success));				// 캐럿을 사용하였습니다.
+////					}else{
+////						//						showMsg("캐럿 사용에 실패하였습니다.\n 다시 시도해 주십시오.");
+////						showResultDialog(getString(R.string.carrot_use_failed));			// 캐럿 사용에 실패하였습니다.\n 다시 시도해 주십시오.
+////					}
+////				}catch(Exception e){
+////					//					showMsg("캐럿 사용에 실패하였습니다.\n 다시 시도해 주십시오.");
+////					showResultDialog(getString(R.string.carrot_use_failed));			// 캐럿 사용에 실패하였습니다.\n 다시 시도해 주십시오.
+////				}
+////				Log.w(TAG,"result:"+result);
+////				init();
+////			} catch (JSONException e) {
+////				e.printStackTrace();
+////			} 
+////		}else{			// 요청 실패시	 토스트 띄우고 화면 유지.  200, 204 이외의 경우.
+////			//			showMsg("요청이 실패하였습니다.\n잠시후 다시 시도해 주십시오.");
+////			showResultDialog(getString(R.string.request_failed));		// 요청이 실패하였습니다.\n잠시후 다시 시도해 주십시오.
+////		}
+//	}
 	
 	
 	@Override
