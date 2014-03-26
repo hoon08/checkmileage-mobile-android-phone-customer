@@ -7,30 +7,21 @@ package kr.co.bettersoft.checkmileage.activities;
  * 화면 구성은 최상단에 타이틀,  상단부에 이미지(첨부 이미지). 하단부에 텍스트. 
  * 타이틀, 이미지는 고정상태고 하단 텍스트의 내용이 많을 경우 스크롤 되도록 한다. 
  */
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import kr.co.bettersoft.checkmileage.activities.R;
-import kr.co.bettersoft.checkmileage.domain.CheckMileageMerchants;
 import kr.co.bettersoft.checkmileage.domain.CheckMileagePushEvent;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;

@@ -51,7 +51,7 @@ public class MemberStoreInfoPage extends Activity {
 	String TAG = "MemberStoreInfoPage";
 
 	final int GET_MERCHANT_INFO = 301; 
-	final int UPDATE_LOG_TO_SERVER = 302; 
+	final int UPDATE_LOG_TO_SERVER = 302;
 	
 	// 내 좌표 업뎃용				///////////////////////////////////////////////
 	String myLat2;
@@ -160,7 +160,8 @@ public class MemberStoreInfoPage extends Activity {
 								longitude = (Float.parseFloat(longitude) * 10000)+"";
 							}
 							if(latatude.length()>0 && latatude.length()<10){
-								Intent mapIntent = new Intent(MemberStoreInfoPage.this, MemberStoreMapPageActivity.class);	// *** 
+								Intent mapIntent = new Intent(MemberStoreInfoPage.this, MemberStoreMapPageActivity.class);	// @@@ 
+//								Intent mapIntent = new Intent(MemberStoreInfoPage.this, MainTestMap1Activity.class);	// @@@ 
 								mapIntent.putExtra("latatude", latatude);
 								mapIntent.putExtra("longitude", longitude);
 								mapIntent.putExtra("companyName", merchantData.getCompanyName());
@@ -264,6 +265,13 @@ public class MemberStoreInfoPage extends Activity {
 		// prefs
 		sharedPrefCustom = getSharedPreferences("MyCustomePref",
 				Context.MODE_WORLD_READABLE | Context.MODE_WORLD_WRITEABLE);
+		
+		
+		if(isUpdating==0){
+//			loggingToServer();		// *** 일단 보류. 나중에 주석 풀것.. 원래 있던 getMerchantInfoForOnCreate 을 대신 수행..
+//			new backgroundUpdateLogToServer().execute();
+			handler.sendEmptyMessage(UPDATE_LOG_TO_SERVER);
+		}
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -324,7 +332,7 @@ public class MemberStoreInfoPage extends Activity {
 				hidePb();
 				// 결과 처리
 				if(callResult.equals("S")){		
-					processMerchantStoreInfoData();	// 화면에 뿌려준다.		ㄴㅇㄹ
+					processMerchantStoreInfoData();	// 화면에 뿌려준다.	
 				}else{														 
 					showMSG();
 				}
@@ -538,45 +546,45 @@ public class MemberStoreInfoPage extends Activity {
 	}
 
 
-	/*
-	 * Bitmap 이미지 리사이즈 -- xml 자체 설정으로 대체
-	 * Src : 원본 Bitmap
-	 * newHeight : 새로운 높이
-	 * newWidth : 새로운 넓이
-	 * 참고 소스 : http://skyswim42.egloos.com/3477279 ( webview 에서 capture 화면 resizing 하는 source 도 있음 )
-	 */
-	private BitmapDrawable BitmapResizePrc(Bitmap Src, float newHeight, float newWidth)
-	{
-		BitmapDrawable Result = null;
-		int width = Src.getWidth();
-		int height = Src.getHeight();
-
-		// calculate the scale - in this case = 0.4f
-		float scaleWidth = ((float) newWidth) / width;
-		float scaleHeight = ((float) newHeight) / height;
-
-		// createa matrix for the manipulation
-		Matrix matrix = new Matrix();
-
-		// resize the bit map
-		matrix.postScale(scaleWidth, scaleHeight);
-
-		// rotate the Bitmap 회전 시키려면 주석 해제!
-		//matrix.postRotate(45);
-
-		// recreate the new Bitmap
-		Bitmap resizedBitmap = Bitmap.createBitmap(Src, 0, 0, width, height, matrix, true);
-
-		// check
-		width = resizedBitmap.getWidth();
-		height = resizedBitmap.getHeight();
-		//		Log.i("ImageResize", "Image Resize Result : " + Boolean.toString((newHeight==height)&&(newWidth==width)) );
-
-		// make a Drawable from Bitmap to allow to set the BitMap
-		// to the ImageView, ImageButton or what ever
-		Result = new BitmapDrawable(resizedBitmap);
-		return Result;
-	}
+//	/*
+//	 * Bitmap 이미지 리사이즈 -- xml 자체 설정으로 대체
+//	 * Src : 원본 Bitmap
+//	 * newHeight : 새로운 높이
+//	 * newWidth : 새로운 넓이
+//	 * 참고 소스 : http://skyswim42.egloos.com/3477279 ( webview 에서 capture 화면 resizing 하는 source 도 있음 )
+//	 */
+//	private BitmapDrawable BitmapResizePrc(Bitmap Src, float newHeight, float newWidth)
+//	{
+//		BitmapDrawable Result = null;
+//		int width = Src.getWidth();
+//		int height = Src.getHeight();
+//
+//		// calculate the scale - in this case = 0.4f
+//		float scaleWidth = ((float) newWidth) / width;
+//		float scaleHeight = ((float) newHeight) / height;
+//
+//		// createa matrix for the manipulation
+//		Matrix matrix = new Matrix();
+//
+//		// resize the bit map
+//		matrix.postScale(scaleWidth, scaleHeight);
+//
+//		// rotate the Bitmap 회전 시키려면 주석 해제!
+//		//matrix.postRotate(45);
+//
+//		// recreate the new Bitmap
+//		Bitmap resizedBitmap = Bitmap.createBitmap(Src, 0, 0, width, height, matrix, true);
+//
+//		// check
+//		width = resizedBitmap.getWidth();
+//		height = resizedBitmap.getHeight();
+//		//		Log.i("ImageResize", "Image Resize Result : " + Boolean.toString((newHeight==height)&&(newWidth==width)) );
+//
+//		// make a Drawable from Bitmap to allow to set the BitMap
+//		// to the ImageView, ImageButton or what ever
+//		Result = new BitmapDrawable(resizedBitmap);
+//		return Result;
+//	}
 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -719,11 +727,11 @@ public class MemberStoreInfoPage extends Activity {
 	protected void onResume(){
 		super.onResume();
 		//		getMerchantInfoForOnCreate();		//  *** 페이지별 업무 - 가맹점 상세 정보 가져오기..  로깅 구현 이후 주석 처리 할것.
-		if(isUpdating==0){
-//			loggingToServer();		// *** 일단 보류. 나중에 주석 풀것.. 원래 있던 getMerchantInfoForOnCreate 을 대신 수행..
-//			new backgroundUpdateLogToServer().execute();
-			handler.sendEmptyMessage(UPDATE_LOG_TO_SERVER);
-		}
+//		if(isUpdating==0){
+////			loggingToServer();		// *** 일단 보류. 나중에 주석 풀것.. 원래 있던 getMerchantInfoForOnCreate 을 대신 수행..
+////			new backgroundUpdateLogToServer().execute();
+//			handler.sendEmptyMessage(UPDATE_LOG_TO_SERVER);
+//		}
 	}
 
 	@Override			// 이 액티비티가 종료될때 실행. 

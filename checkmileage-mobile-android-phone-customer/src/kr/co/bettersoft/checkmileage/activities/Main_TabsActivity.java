@@ -11,14 +11,7 @@ import java.util.List;
 import java.util.Locale;
 
 import kr.co.bettersoft.checkmileage.activities.R;
-import kr.co.bettersoft.checkmileage.common.CommonConstant;
 import kr.co.bettersoft.checkmileage.pref.DummyActivity;
-import kr.co.bettersoft.checkmileage.pref.PrefActivityFromResource;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-//import co.kr.bettersoft.checkmileage_mobile_android_phone_customer.R;
 
 import com.google.android.gcm.GCMRegistrar;
 
@@ -31,23 +24,15 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TabHost;
-import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 
 public class Main_TabsActivity extends TabActivity implements OnTabChangeListener {

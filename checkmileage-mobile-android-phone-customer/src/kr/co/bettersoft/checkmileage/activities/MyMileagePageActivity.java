@@ -89,7 +89,6 @@ public class MyMileagePageActivity extends Activity {
 	/////////////////////////////////////////////////////////////////////////////
 
 
-
 	// 서버 통신용
 	CheckMileageCustomerRest checkMileageCustomerRest;
 	String callResult = "";
@@ -574,7 +573,7 @@ public class MyMileagePageActivity extends Activity {
 	// 서버에서 받아온 내 마일리지 리스트 데이터 처리하여 화면에 뿌려준다.
 	public void processMyMileageListData(){
 		try {
-			tempstr = CheckMileageCustomerRest.getTempstr();
+			tempstr = checkMileageCustomerRest.getTempstr();
 			JSONArray jsonArray2 = new JSONArray(tempstr);
 			int max = jsonArray2.length();
 			try {
@@ -582,7 +581,7 @@ public class MyMileagePageActivity extends Activity {
 				String tmp_idCheckMileageMileages = "";
 				String tmp_mileage = "";
 				String tmp_modifyDate = "";
-				String tmp_shortDate = "";
+//				String tmp_shortDate = "";
 				String tmpstr2 = "";
 				String tmp_checkMileageMembersCheckMileageId = "";
 				String tmp_checkMileageMerchantsMerchantId = "";

@@ -33,7 +33,6 @@ package kr.co.bettersoft.checkmileage.activities;
  *   
  *  
  */
-import java.util.Calendar;
 
 import kr.co.bettersoft.checkmileage.activities.R;
 import kr.co.bettersoft.checkmileage.common.CheckMileageCustomerRest;
@@ -79,7 +78,6 @@ public class CertificationStep2 extends Activity {
 	Boolean loading = false;
 	
 	Boolean certified = false;	
-	String certiResult="";
 	// 설정 파일 저장소  --> QR 코드도 저장하는걸로..
 	SharedPreferences sharedPrefCustom;
 	
@@ -381,7 +379,7 @@ public class CertificationStep2 extends Activity {
 				callResult = checkMileageCustomerRest.RestCertificationStep_2(checkMileageMembersParam);
 				hidePb();
 				// 결과 처리
-				if(certiResult.equals("SUCCESS_ADMISSION")){				// 인증 성공
+				if(callResult.equals("SUCCESS_ADMISSION")){				// 인증 성공
 	    			Log.i(TAG, "SUCCESS_ADMISSION");
 	    	    	userCertifiedComplete();		// 패스 시켜줌
 	    		}else{														// 인증 실패

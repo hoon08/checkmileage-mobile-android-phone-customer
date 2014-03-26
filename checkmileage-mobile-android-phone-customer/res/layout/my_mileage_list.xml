@@ -44,7 +44,6 @@
                         android:orientation="horizontal" >
 
                         <TextView
-                            xmlns:android="http://schemas.android.com/apk/res/android"
                             android:id="@+id/merchantName"
                             android:layout_width="150dp"
                             android:layout_height="wrap_content"
@@ -56,7 +55,6 @@
                             android:textSize="20dp" />
 
                         <TextView
-                            xmlns:android="http://schemas.android.com/apk/res/android"
                             android:id="@+id/mileage"
                             android:layout_width="80dp"
                             android:layout_height="wrap_content"
@@ -69,7 +67,6 @@
                     </LinearLayout>
 
                     <TextView
-                        xmlns:android="http://schemas.android.com/apk/res/android"
                         android:id="@+id/merchantIntro"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
@@ -79,7 +76,6 @@
                         android:textSize="13dp" />
 
                     <TextView
-                        xmlns:android="http://schemas.android.com/apk/res/android"
                         android:id="@+id/merchantDate"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"

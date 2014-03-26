@@ -63,7 +63,7 @@ public class ScanQRPageActivity extends Activity {
 		@Override
 		public void handleMessage(Message msg){
 			Bundle b = msg.getData();
-			int showQR =  b.getInt("showQR");		// 값을 넣지 않으면 0 을 꺼내었다.
+//			int showQR =  b.getInt("showQR");		// 값을 넣지 않으면 0 을 꺼내었다.
 
 			if(b.getInt("showErrToast")==1){
 				Toast.makeText(ScanQRPageActivity.this, R.string.fail_scan_qr, Toast.LENGTH_SHORT).show();
