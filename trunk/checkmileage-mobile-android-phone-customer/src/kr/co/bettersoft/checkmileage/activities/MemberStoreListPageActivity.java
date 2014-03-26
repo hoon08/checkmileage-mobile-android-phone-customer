@@ -68,7 +68,8 @@ public class MemberStoreListPageActivity extends Activity implements OnItemSelec
 	final int GET_MERCHANT_INFO = 403; 
 	final int UPDATE_LOG_TO_SERVER = 404; 
 
-	int app_end = 0;	// 뒤로가기 버튼으로 닫을때 2번만에 닫히도록	// 처음 두번 자동 실행  되는거.
+	int app_end = 0;	// 뒤로가기 버튼으로 닫을때 2번만에 닫히도록	
+	// 처음 두번 자동 실행  되는거.
 	DummyActivity dummyActivity = (DummyActivity)DummyActivity.dummyActivity;
 	MainActivity mainActivity = (MainActivity)MainActivity.mainActivity;
 

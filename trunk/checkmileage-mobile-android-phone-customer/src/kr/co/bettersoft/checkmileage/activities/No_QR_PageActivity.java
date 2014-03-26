@@ -153,6 +153,8 @@ public class No_QR_PageActivity extends Activity {
 			}
 		});
 
+		
+//		handler.sendEmptyMessage(GET_QR_NUM_FROM_SERVER_BY_PHONE_NUMBER);	// 기능 보류. 실행시 에러 발생함.
 	}
 
 	

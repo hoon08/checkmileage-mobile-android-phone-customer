@@ -36,8 +36,8 @@ public class CheckMileageCustomerRest {
 	String controllerName ="";
 	String methodName ="";
 	String serverName = CommonConstant.serverNames;
-	URL postUrl2 = null;
-	HttpURLConnection connection2 = null;
+	
+
 	int isRunning = 0;		// 통신 도중 중복 호출을 방지하기 위함.
 	String fullUrl = "";
 	String inputJson = "";
@@ -47,8 +47,8 @@ public class CheckMileageCustomerRest {
 	JSONObject obj = new JSONObject();
 	
 	// 현 시각
-	Date today ;
-	SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//	Date today ;
+//	SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	String nowTime = "";	// 현시각
     
 	// 결과
@@ -151,7 +151,7 @@ public class CheckMileageCustomerRest {
 				String jstring2 = jsonObject.getString("checkMileageCertification").toString(); 
 		    	JSONObject jsonObject2 = new JSONObject(jstring2);
 		    	callResult = jsonObject2.getString("result").toString(); 
-		    	Log.d(TAG,"certiResult:"+callResult);
+		    	Log.d(TAG,"callResult:"+callResult);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			} 
@@ -419,6 +419,9 @@ public class CheckMileageCustomerRest {
 		
 		// 서버 호출 결과 처리
 		if(callResult.equals("S")){
+			
+			Log.d(TAG,"tempstr:"+tempstr);
+			
 			// @@@ 있으면 가져오는건데.. 해당 전번으로 고객 수 많으면 곤란하니까 일단 주석 처리 해둠..
 //			// 파라미터 셋팅
 //			controllerName = "checkMileageMemberController";
@@ -819,8 +822,8 @@ public class CheckMileageCustomerRest {
 	// 공용 서버 호출 메소드
 	public String callServerMethod(String fullUrl, String inputJson){
 		try{
-			postUrl2 = new URL(fullUrl);
-			connection2 = (HttpURLConnection) postUrl2.openConnection();
+			URL postUrl2 = new URL(fullUrl);
+			HttpURLConnection connection2 = (HttpURLConnection) postUrl2.openConnection();
 			connection2.setConnectTimeout(CommonConstant.serverConnectTimeOut);
 			connection2.setDoOutput(true);
 			connection2.setInstanceFollowRedirects(false);
@@ -853,7 +856,7 @@ public class CheckMileageCustomerRest {
 		}catch(Exception e){ 
 			e.printStackTrace();
 			callResult="";
-			initNetwork();
+//			initNetwork();
 		}
 		isRunning = 0;
 		return callResult;
@@ -874,20 +877,20 @@ public class CheckMileageCustomerRest {
 	}
 	
 	// tempstr
-	public static String getTempstr(){
+	public String getTempstr(){
 		return tempstr;
 	}
 	
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 // 유틸
 	
-	// 넷웍 초기화
-	public void initNetwork(){
-		if(connection2!=null){
-			connection2.disconnect();
-			connection2 = null;
-		}
-		postUrl2 = null;
-	}
+//	// 넷웍 초기화
+//	public void initNetwork(){
+//		if(connection2!=null){
+//			connection2.disconnect();
+//			connection2 = null;
+//		}
+//		postUrl2 = null;
+//	}
 }
 

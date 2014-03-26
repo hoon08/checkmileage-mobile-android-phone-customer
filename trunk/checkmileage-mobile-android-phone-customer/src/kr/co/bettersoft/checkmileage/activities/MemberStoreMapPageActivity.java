@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kr.co.bettersoft.checkmileage.activities.R;
-import kr.co.bettersoft.checkmileage.activities.MyQRPageActivity.backgroundUpdateLogToServer;
 
 import android.content.Context;
 import android.content.Intent;

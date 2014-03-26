@@ -191,7 +191,7 @@ public class MyQRPageActivity extends Activity {
 		SQLiteDatabase db = null;
 		db= openOrCreateDatabase( "sqlite_carrotDB.db",             
 				SQLiteDatabase.CREATE_IF_NECESSARY ,null );
-		String data_key="";
+//		String data_key="";
 		String data_value="";
 
 		// BMP -> 문자열 

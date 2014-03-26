@@ -3,6 +3,12 @@
     android:versionCode="8"
     android:versionName="1.1.3" >
     
+    <permission
+        android:name="kr.co.bettersoft.checkmileage.activities.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="kr.co.bettersoft.checkmileage.activities.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <permission android:name="kr.co.bettersoft.checkmileage.activities.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -32,6 +38,10 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	
+	<uses-feature
+    android:glEsVersion="0x00020000"
+    android:required="true" />
+	
 	<uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="15" />
@@ -39,23 +49,26 @@
 	     android:icon="@drawable/icon"
 	     android:label="@string/AppName"
 	    >
+	    
+	    <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyA_H_BNmFN8365UrpkoWEZo5tQPXLPa0Kw" />
+	    
 	 	<uses-library android:name="com.google.android.maps" />
-	    <activity android:name="CreateQRPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-	    <activity android:name="Main_TabsActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light"  
+	    <activity android:name="kr.co.bettersoft.checkmileage.activities.CreateQRPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+	    <activity android:name="kr.co.bettersoft.checkmileage.activities.Main_TabsActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light"  
 	         android:windowSoftInputMode="adjustPan"
 	        ></activity>
-	    <activity android:name="MainActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light"  >
+	    <activity android:name="kr.co.bettersoft.checkmileage.activities.MainActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light"  >
 	    </activity>
-	    <activity android:name="MemberStoreInfoPage" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-	    <activity android:name="MemberStoreListPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" 
+	    <activity android:name="kr.co.bettersoft.checkmileage.activities.MemberStoreInfoPage" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+	    <activity android:name="kr.co.bettersoft.checkmileage.activities.MemberStoreListPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" 
 	        
 	        ></activity>
-	    <activity android:name="MemberStoreLogPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-	    <activity android:name="MemberStoreMapPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-	    <activity android:name="MyMileagePageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-	    <activity android:name="MyQRPageActivity" android:screenOrientation="portrait"  android:theme="@android:style/Theme.Light" ></activity>
-	    <activity android:name="No_QR_PageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-	    <activity android:name="ScanQRPageActivity"
+	    <activity android:name="kr.co.bettersoft.checkmileage.activities.MemberStoreLogPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+	    <activity android:name="kr.co.bettersoft.checkmileage.activities.MemberStoreMapPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+	    <activity android:name="kr.co.bettersoft.checkmileage.activities.MyMileagePageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+	    <activity android:name="kr.co.bettersoft.checkmileage.activities.MyQRPageActivity" android:screenOrientation="portrait"  android:theme="@android:style/Theme.Light" ></activity>
+	    <activity android:name="kr.co.bettersoft.checkmileage.activities.No_QR_PageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+	    <activity android:name="kr.co.bettersoft.checkmileage.activities.ScanQRPageActivity"
 				  android:theme="@android:style/Theme.Light.NoTitleBar"
                   android:label="@string/app_name"
                   android:configChanges="orientation"
@@ -75,24 +88,22 @@
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
-	    <activity android:name="Settings_AboutPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-	    <activity android:name="Settings_FAQPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-	    <activity android:name="Settings_NotifyPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-		<activity android:name="Settings_MyInfoPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-		<activity android:name="Settings_InfoPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-		<activity android:name="Settings_TermsPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-		<activity android:name="Settings_LeavePageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-		<activity android:name="SettingsPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-		<activity android:name="Settings_PasswordPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-		<activity android:name="UnlockPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-		<activity android:name="kr.co.bettersoft.checkmileage.common.CommonConstant"></activity>
-		
+	    <activity android:name="kr.co.bettersoft.checkmileage.activities.Settings_AboutPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+	    <activity android:name="kr.co.bettersoft.checkmileage.activities.Settings_FAQPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+	    <activity android:name="kr.co.bettersoft.checkmileage.activities.Settings_NotifyPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="kr.co.bettersoft.checkmileage.activities.Settings_MyInfoPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="kr.co.bettersoft.checkmileage.activities.Settings_InfoPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="kr.co.bettersoft.checkmileage.activities.Settings_TermsPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="kr.co.bettersoft.checkmileage.activities.Settings_LeavePageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="kr.co.bettersoft.checkmileage.activities.SettingsPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="kr.co.bettersoft.checkmileage.activities.Settings_PasswordPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="kr.co.bettersoft.checkmileage.activities.UnlockPageActivity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
 		
 		<activity android:name="kr.co.bettersoft.checkmileage.pref.MainActivity_disabled" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
 		<activity android:name="kr.co.bettersoft.checkmileage.pref.Password" android:windowSoftInputMode="stateAlwaysVisible"  android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
 		<activity android:name="kr.co.bettersoft.checkmileage.pref.Profile" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
 		<activity android:name="kr.co.bettersoft.checkmileage.pref.PrefActivityFromResource" android:screenOrientation="portrait"  android:theme="@android:style/Theme.Light" ></activity>
-		<activity android:name="PrefActivityFromIntent" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+		<activity android:name="kr.co.bettersoft.checkmileage.activities.PrefActivityFromIntent" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
 		
 		<receiver
             android:name="com.google.android.gcm.GCMBroadcastReceiver"
@@ -114,8 +125,8 @@
           application uses a custom BroadcastReceiver that redefines its name.
         -->
         <service android:name="kr.co.bettersoft.checkmileage.activities.GCMIntentService" />
-        <activity android:name="CertificationStep1" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
-        <activity android:name="CertificationStep2" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+        <activity android:name="kr.co.bettersoft.checkmileage.activities.CertificationStep1" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+        <activity android:name="kr.co.bettersoft.checkmileage.activities.CertificationStep2" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
         <activity android:name="myWebView" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
         
         <activity android:name="kr.co.bettersoft.checkmileage.pref.DummyActivity"   >
@@ -124,9 +135,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="UpdateLocationToServerActivity"  ></activity>
-        <activity android:name="PushList" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+        <activity android:name="kr.co.bettersoft.checkmileage.activities.UpdateLocationToServerActivity"  ></activity>
+        <activity android:name="kr.co.bettersoft.checkmileage.activities.PushList" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
         <activity android:name="kr.co.bettersoft.checkmileage.activities.PushDetail" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
+        <activity android:name="kr.co.bettersoft.checkmileage.activities.MainTestMap1Activity" android:screenOrientation="portrait" android:theme="@android:style/Theme.Light" ></activity>
         
         
 	</application>

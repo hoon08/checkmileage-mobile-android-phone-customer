@@ -54,6 +54,7 @@ import com.google.zxing.client.android.camera.CameraManager;
 import com.google.zxing.client.android.result.ResultHandler;
 import com.google.zxing.client.android.result.ResultHandlerFactory;
 
+
 /**
  * The barcode reader activity itself. This is loosely based on the CameraPreview
  * example included in the Android SDK.

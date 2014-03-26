@@ -146,7 +146,7 @@
     <string name="input_customer_phone_num">사용자 전화번호 입력</string>
     <string name="request_certi_num">인증번호 요청</string>
     <string name="certi_num">인증번호</string>
-    <string name="request_certify">인증 요청</string>
+    <string name="request_certify">승인 요청</string>
     <string name="get_qr_by_phone_num">전화번호로 가져오기</string>
     
     <string name="my_location">내 위치</string>

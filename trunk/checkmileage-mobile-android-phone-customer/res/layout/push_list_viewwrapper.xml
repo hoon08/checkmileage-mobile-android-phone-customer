@@ -52,7 +52,6 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        xmlns:android="http://schemas.android.com/apk/res/android"
                         android:id="@+id/push_list_wrapper_subject"
                         android:layout_width="170dp"
                         android:layout_height="wrap_content"
@@ -67,7 +66,6 @@
                 </LinearLayout>
 
                 <TextView
-                    xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/push_list_wrapper_content"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
@@ -77,7 +75,6 @@
                     android:textSize="13dp" />
 
                 <TextView
-                    xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/push_list_wrapper_modifydate"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
